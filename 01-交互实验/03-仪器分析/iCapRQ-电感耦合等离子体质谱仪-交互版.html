@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电感耦合等离子体质谱仪(ICP-MS) | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#151226;--border:rgba(255,255,255,.06);--accent:#e11d8f;--accent-glow:#f472b6;--accent-bg:rgba(225,29,143,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1f0a1a 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(225,29,143,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(225,29,143,.16),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(225,29,143,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#1f0a1a)}.lb{padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#e11d8f,#f472b6);color:#fff}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(225,29,143,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr4{grid-template-columns:1fr 1fr}}
+.bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));transition:width .3s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:15px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+.cond{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}@media(max-width:560px){.cond{grid-template-columns:1fr}}
+.cd{padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.02)}
+.cd .cl{font-size:9.5px;color:#64748b}.cd .cv{font-size:13px;font-weight:800;margin-top:2px;color:#64748b}
+.cd.pass .cv{color:var(--green)}.cd.pass{border-color:rgba(52,211,153,.3)}
+.cd.fail .cv{color:var(--rose)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">电感耦合等离子体质谱仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">iCap RQ</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">ICP-MS · 6000K 氩等离子体 · 痕量金属元素定量（ppt 级）</div>
+  <div class="hst">
+    <div><span class="n">~6000K</span><span class="l">氩等离子体</span></div>
+    <div><span class="n">3 前提</span><span class="l">点火硬门槛</span></div>
+    <div><span class="n">15-30min</span><span class="l">点火后稳定</span></div>
+    <div><span class="n">5min</span><span class="l">灭火后安全窗</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它凭什么能测到 ppt 级</div>
+  <div class="sd">ICP-MS 是环境痕量金属检测的"天花板"——水、土壤消解液里的铅、镉、砷、汞、铬……浓度低到 <b>ng/L（ppt）级</b>都能测。样品雾化后进入约 6000K 的氩等离子体，原子被瞬间电离成离子，再送入四极杆质谱按质荷比分离计数。灵敏度极高，但也极"娇气"：真空、气路、冷却水一样不到位，轻则数据全废，重则烧毁矩管。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔥</div><div class="in">氩等离子体电离</div><div class="id">高频线圈把氩气激发成约 6000K 的等离子体炬，样品气溶胶进入后原子被电离为正离子——这是全流程的心脏。</div><span class="it">6000K 炬管</span></div>
+    <div class="ic"><div class="ii">🌀</div><div class="in">高真空质谱</div><div class="id">离子经锥孔进入高真空四极杆区，按质荷比 m/z 分离并逐个计数。真空度不达标离子会被残余气体散射，无法计数。</div><span class="it">真空是前提</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">循环水冷却</div><div class="id">线圈和炬管功率极大，必须有循环水冷却。冷却水没开就点火，矩管/线圈会在几秒内烧毁。</div><span class="it">冷却命门</span></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">内标 + 标准曲线</div><div class="id">加内标元素（如 In、Rh）校正基体和漂移，配合标准系列定量。分析结束必须用 1% 硝酸冲洗管路。</div><span class="it">定量与养护</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。ICP-MS 的红线比普通仪器多得多——<b>真空不到位、点火三前提不满足、氩气/冷却水没开、灭火不到 5 分钟就去拆炬管，系统都会拦住你</b>。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ iCap RQ ICP-MS 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">iCap RQ 电感耦合等离子体质谱仪</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 开机（主电源 → 打开工作站软件）</div>
+    <div class="pwr">
+      <div class="pb" id="bw1" onclick="boot(1)">主电源 ON<span class="po">step 1</span></div>
+      <div class="pb" id="bw2" onclick="boot(2)">打开工作站软件<span class="po">step 2</span></div>
+      <div class="pb" style="opacity:.5;cursor:default">Power/System 指示灯<span class="po">自动</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 启动真空系统（Turbo pump 需 ≥800Hz、真空 LED 变绿才算达标）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnVac" onclick="startVac()" disabled>🌀 启动真空系统</button>
+    </div>
+    <div class="bar"><i id="barVac"></i></div>
+    <div class="cond">
+      <div class="cd" id="cTurbo"><div class="cl">Turbo pump speed</div><div class="cv" id="vTurbo">0 Hz</div></div>
+      <div class="cd" id="cExh"><div class="cl">RF Exhaust</div><div class="cv" id="vExh">— mbar</div></div>
+      <div class="cd" id="cPen"><div class="cl">Penning 真空</div><div class="cv" id="vPen">— mbar</div></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">③ 点火前准备（<b style="color:var(--rose)">氩气、循环水、蠕动泵，一个都不能少</b>）</div>
+    <div class="cols">
+      <div class="fld"><label>氩气供气压力 (MPa，需 &gt;0.6)</label><input type="number" id="iAr" value="0.65" step="0.05"></div>
+      <div class="fld"><label>&nbsp;</label>
+        <div class="acts" style="margin:0;justify-content:flex-start">
+          <button class="btn b2" id="btnAr" onclick="prep('ar')" disabled>💨 通氩气</button>
+          <button class="btn b2" id="btnWater" onclick="prep('water')" disabled>💧 开循环水</button>
+          <button class="btn b2" id="btnPump" onclick="prep('pump')" disabled>🔧 检查蠕动泵</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 点火（真空达标 + 三前提满足 + 氩气/循环水/蠕动泵齐备）</div>
+    <div class="acts">
+      <button class="btn b1" id="btnIgnite" onclick="ignite()" disabled>🔥 点燃等离子体</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑤ 稳定 15-30min → 调谐/建方法 → 进样分析</div>
+    <div class="acts">
+      <button class="btn b2" id="btnStab" onclick="stabilize()" disabled>⏱️ 稳定 + 测水信号</button>
+      <button class="btn b2" id="btnMethod" onclick="makeMethod()" disabled>🧪 调谐 + 建方法</button>
+    </div>
+    <div class="bar"><i id="barStab"></i></div>
+    <div class="dp">
+      <div class="dv"><div class="dl">水信号 (cps)</div><div class="dd" id="dWater">—</div></div>
+      <div class="dv"><div class="dl">Pb 浓度 (μg/L)</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">测量状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnMeasure" onclick="measure()" disabled>▶ 进样分析</button>
+      <button class="btn b2" id="btnRinse" onclick="rinse()" disabled>🚿 1%硝酸冲洗(10min)</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 关机反序（关等离子体 → 待机 standby → 卸真空 → 关冷却水/氩气/排风）</div>
+    <div class="pwr4">
+      <div class="pb" id="sh1" onclick="shut(1)">Closedown 关等离子体<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">等待 standby<span class="po">step 2</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">卸真空 Vacuum Off<span class="po">step 3</span></div>
+      <div class="pb" id="sh4" onclick="shut(4)">关冷却水/氩气/排风<span class="po">step 4</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑦ 检修 / 拆雾化室（<b style="color:var(--rose)">等离子体灭后必须等 ≥5min</b>）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnMaint" onclick="maintain()">🔧 拆雾化室 / 检修炬管</button>
+      <span id="cdSafe" style="font-size:11px;color:#64748b;align-self:center"></span>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌀</div><div class="in">真空达标才能点火</div><div class="id">Turbo pump speed 需接近 1000Hz、RF Exhaust 在 0.4~0.6 mbar、Penning 真空 &lt;5.3×10⁻⁷ mbar，三个前提全满足才可点火。真空不到位强行点火，离子无法计数、数据全废。</div><span class="it">三前提硬门槛</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">氩气+循环水未开禁点火</div><div class="id">点火前必须先通氩气（&gt;0.6MPa）、开循环水冷却、检查蠕动泵泵管。冷却水没开就点火 → 矩管/线圈几秒烧毁，这是最烧钱的红线。</div><span class="it">致命红线</span></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">稳定 15-30min + 硝酸冲洗</div><div class="id">点火后须稳定 15~30min，测水信号应 &lt;1000 cps 再上样。分析结束必须用 1% 硝酸冲洗仪器约 10min，否则盐分沉积堵塞锥孔/雾化器。</div><span class="it">养护红线</span></div>
+    <div class="ic"><div class="ii">☢️</div><div class="in">灭火 5min 安全窗</div><div class="id">等离子体关闭至少 5min 后才能触碰矩管/锥体（高温）；等离子体未消失严禁拆雾化室——会释放 UV 射线，可致严重眼损伤甚至失明。前真空泵表面可超 80℃。</div><span class="it">人身安全</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把真空、气路、点火三前提和安全窗走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={boot:0,vac:false,ar:false,water:false,pump:false,ignited:false,stable:false,method:false,measuring:false,rinsed:false,shut:0,plasmaOffAt:null};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4200);}
+
+function boot(n){
+  if(S.ignited){warn('等离子体已点燃，请勿动电源');return;}
+  if(n!==S.boot+1){warn('顺序错误：先开主电源，再打开工作站软件');log('开机顺序错误，已阻断',false);return;}
+  S.boot=n;$('bw'+n).classList.add('on');
+  log('开启：'+['主电源（Power黄→Vacuum黄变绿→System蓝闪）','工作站软件（Instrument Control）'][n-1]);
+  if(n===2){setSts('🟡 已开机，待抽真空','sa');$('btnVac').disabled=false;}
+}
+function startVac(){
+  if(S.vac){warn('真空已达标');return;}
+  if(S.boot<2){warn('请先开机并打开工作站软件');return;}
+  setSts('🌀 抽真空中…','sa');log('启动真空系统（Vacuum → ON），涡轮泵升速…');
+  $('btnVac').disabled=true;let p=0;
+  const iv=setInterval(()=>{p+=8;if(p>100)p=100;$('barVac').style.width=p+'%';
+    const hz=Math.round(p*10);$('vTurbo').textContent=hz+' Hz';
+    if(p>=100){clearInterval(iv);
+      $('vTurbo').textContent='≈1000 Hz';$('cTurbo').classList.add('pass');
+      $('vExh').textContent='0.5 mbar';$('cExh').classList.add('pass');
+      $('vPen').textContent='3.1×10⁻⁷';$('cPen').classList.add('pass');
+      S.vac=true;setSts('🟢 真空达标','sok');
+      log('真空达标：Turbo≈1000Hz / Exhaust 0.5mbar / Penning 3.1e-7mbar（点火三前提全满足）',true);
+      ['btnAr','btnWater','btnPump'].forEach(id=>$(id).disabled=false);
+    }
+  },130);
+}
+function prep(k){
+  if(!S.vac){warn('请先启动真空系统并等待达标');return;}
+  if(k==='ar'){
+    const ar=+$('iAr').value;
+    if(ar<=0.6){warn('⚠️ 氩气供气压力必须 >0.6 MPa！当前 '+ar+' MPa，等离子体无法稳定');log('氩气压力不足('+ar+'MPa)，已阻断',false);return;}
+    S.ar=true;$('btnAr').classList.add('on');$('btnAr').textContent='✅ 氩气已通';log('通氩气：'+ar+' MPa（>0.6，合格）',true);
+  }
+  if(k==='water'){S.water=true;$('btnWater').classList.add('on');$('btnWater').textContent='✅ 循环水已开';log('打开循环水冷却装置（点火前硬性前提）',true);}
+  if(k==='pump'){S.pump=true;$('btnPump').classList.add('on');$('btnPump').textContent='✅ 泵管已检查';log('检查蠕动泵泵管：完好、无堵塞',true);}
+  if(S.ar&&S.water&&S.pump){$('btnIgnite').disabled=false;log('点火前准备全部就绪',true);}
+}
+function ignite(){
+  if(S.ignited){warn('等离子体已点燃');return;}
+  if(!S.vac){warn('真空未达标，禁止点火');return;}
+  if(!S.ar||!S.water||!S.pump){
+    warn('⚠️ 冷却水/氩气/蠕动泵未全部就绪，禁止点火！无冷却水点火会烧毁矩管');
+    log('点火前提不满足（氩气/循环水/蠕动泵未齐），已阻断',false);return;}
+  S.ignited=true;$('btnIgnite').classList.add('on');$('btnIgnite').textContent='🔥 Operate';
+  setSts('🔥 等离子体已点燃 (Operate)','sa');
+  log('点火成功：等离子体建立，状态走到 Operate',true);
+  $('btnStab').disabled=false;
+}
+function stabilize(){
+  if(!S.ignited){warn('请先点燃等离子体');return;}
+  if(S.stable){warn('已稳定');return;}
+  setSts('⏱️ 稳定中(15-30min)…','sa');log('等离子体稳定中（操作规程：15~30min）…');
+  $('btnStab').disabled=true;let p=0;
+  const iv=setInterval(()=>{p+=10;if(p>100)p=100;$('barStab').style.width=p+'%';
+    if(p>=100){clearInterval(iv);
+      const w=Math.round(Math.random()*300+400);$('dWater').textContent=w+' cps';
+      S.stable=true;setSts('🟢 已稳定','sok');
+      log('稳定完成，测水信号 '+w+' cps（<1000，合格）',true);
+      $('btnMethod').disabled=false;
+    }
+  },140);
+}
+function makeMethod(){
+  if(!S.stable){warn('请先稳定并测水信号');return;}
+  if(S.method){warn('方法已建立');return;}
+  S.method=true;$('btnMethod').classList.add('on');$('btnMethod').textContent='✅ 方法已建';
+  log('自动调谐(tune B: 7Li>50/59Co>100/115In>220/238U>300 Mcps/ppm) + 建标准曲线方法完成',true);
+  $('btnMeasure').disabled=false;
+}
+function measure(){
+  if(!S.ignited){warn('请先点燃等离子体');return;}
+  if(!S.stable){warn('请先稳定 15-30min');return;}
+  if(!S.method){warn('请先调谐并建立方法');return;}
+  if(S.measuring)return;
+  S.measuring=true;setSts('📡 进样分析中…','sa');$('dState').textContent='分析中';
+  log('进样分析（内标校正 + 标准曲线定量）…');
+  let p=0;const iv=setInterval(()=>{p++;if(p>=8){clearInterval(iv);
+    const c=(Math.random()*8+0.5).toFixed(3);
+    $('dC').textContent=c;$('dState').textContent='完成';setSts('✅ 分析完成','sok');S.measuring=false;
+    log('分析完成：Pb '+c+' μg/L（示例值）。<b>记得下一步用 1%硝酸冲洗</b>',true);
+    $('btnRinse').disabled=false;
+    [1,2,3,4].forEach(n=>$('sh'+n).disabled=false);
+  }},150);
+}
+function rinse(){
+  if(!S.ignited){warn('等离子体未点燃');return;}
+  S.rinsed=true;$('btnRinse').classList.add('on');$('btnRinse').textContent='✅ 已冲洗';
+  log('用 1% 硝酸冲洗仪器约 10min（清除盐分，防锥孔/雾化器堵塞）',true);
+}
+function shut(n){
+  const order=['Closedown 关等离子体','等待 standby','卸真空 Vacuum Off','关冷却水/氩气/排风'];
+  if(n!==S.shut+1){
+    warn('关机顺序错误：必须 关等离子体 → 待机standby → 卸真空 → 关冷却水/氩气/排风');
+    log('关机顺序错误，已阻断',false);return;}
+  if(n===1 && !S.rinsed){warn('⚠️ 建议先用 1%硝酸冲洗再关等离子体，否则盐分沉积堵塞锥孔');}
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){S.ignited=false;S.plasmaOffAt=Date.now();setSts('🌙 等离子体已关，待机中','sa');log('Closedown：等离子体已熄灭，开始进入 standby');startSafeCountdown();}
+  else{log('执行：'+order[n-1]);}
+  if(n===2)log('✔ 已到 standby 状态',true);
+  if(n===3)log('✔ 卸真空完成（Vacuum → Off）',true);
+  if(n===4){setSts('🔒 已完全关机','si');log('关机完成：冷却水/氩气/排风已关。填写《仪器设备使用记录表》',true);}
+}
+let safeTimer=null;
+function startSafeCountdown(){
+  // 操作规程真实为≥5min，此处以15秒演示"安全窗口倒计时"概念
+  let left=15;$('cdSafe').textContent='⏳ 灭火安全窗：还需等 '+left+'s（真实为≥5min）';
+  clearInterval(safeTimer);
+  safeTimer=setInterval(()=>{left--;
+    if(left<=0){clearInterval(safeTimer);$('cdSafe').textContent='✅ 已过安全窗，可检修';$('cdSafe').style.color='var(--green)';}
+    else{$('cdSafe').textContent='⏳ 灭火安全窗：还需等 '+left+'s（真实为≥5min）';}
+  },1000);
+}
+function maintain(){
+  if(S.ignited){warn('☢️ 等离子体未熄灭，严禁拆雾化室！UV 射线可致严重眼损伤/失明，高温可致烫伤');log('等离子体运行中试图拆炬管，已阻断（人身安全红线）',false);return;}
+  if(S.plasmaOffAt===null){warn('尚未运行等离子体');return;}
+  const passed=(Date.now()-S.plasmaOffAt)/1000;
+  if(passed<15){warn('☢️ 等离子体刚熄灭，须等至少 5min（本演示 15s）再触碰矩管/锥体，否则高温烫伤');log('灭火不足安全窗即检修，已阻断',false);return;}
+  log('安全窗已过，可安全拆雾化室 / 检修炬管、锥体',true);warn('');
+}
+function resetAll(){
+  S={boot:0,vac:false,ar:false,water:false,pump:false,ignited:false,stable:false,method:false,measuring:false,rinsed:false,shut:0,plasmaOffAt:null};
+  clearInterval(safeTimer);
+  [1,2].forEach(n=>$('bw'+n).classList.remove('on'));
+  [1,2,3,4].forEach(n=>{$('sh'+n).classList.remove('on');$('sh'+n).disabled=true;});
+  ['btnVac','btnAr','btnWater','btnPump','btnIgnite','btnStab','btnMethod','btnMeasure','btnRinse'].forEach(id=>{$(id).disabled=true;$(id).classList.remove('on');});
+  $('btnVac').textContent='🌀 启动真空系统';$('btnAr').textContent='💨 通氩气';$('btnWater').textContent='💧 开循环水';$('btnPump').textContent='🔧 检查蠕动泵';
+  $('btnIgnite').textContent='🔥 点燃等离子体';$('btnMethod').textContent='🧪 调谐 + 建方法';$('btnRinse').textContent='🚿 1%硝酸冲洗(10min)';
+  ['cTurbo','cExh','cPen'].forEach(id=>$(id).className='cd');
+  $('vTurbo').textContent='0 Hz';$('vExh').textContent='— mbar';$('vPen').textContent='— mbar';
+  $('barVac').style.width='0%';$('barStab').style.width='0%';
+  $('dWater').textContent='—';$('dC').textContent='—';$('dState').textContent='待机';$('cdSafe').textContent='';$('cdSafe').style.color='#64748b';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

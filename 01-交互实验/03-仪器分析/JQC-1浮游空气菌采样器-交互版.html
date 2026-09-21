@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浮游空气菌采样器 · 叙事式教学</title>
+<style>
+:root{
+  --bg:#0a0e17; --card:#111827; --card2:#0f172a;
+  --accent:#bef264; --accent2:#67e8f9; --danger:#f87171; --ok:#34d399;
+  --txt:#e5e7eb; --sub:#94a3b8; --line:#1e293b;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+#sp{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:99;transition:width .15s}
+.hero{padding:74px 22px 50px;text-align:center;background:
+  radial-gradient(1200px 420px at 50% -10%,rgba(190,242,100,.16),transparent),
+  radial-gradient(900px 360px at 80% 0%,rgba(103,232,249,.10),transparent),
+  linear-gradient(180deg,#0c1322,#0a0e17);border-bottom:1px solid var(--line)}
+.hero .badge{display:inline-block;font-size:12px;letter-spacing:.22em;color:var(--accent);border:1px solid rgba(190,242,100,.35);border-radius:999px;padding:5px 14px;margin-bottom:18px}
+.hero h1{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
+.hero h1 b{color:var(--accent)}
+.hero p{color:var(--sub);max-width:680px;margin:0 auto;font-size:15px}
+main{max-width:880px;margin:0 auto;padding:10px 18px 60px}
+.act{margin:46px 0;opacity:0;transform:translateY(22px);transition:opacity .6s,transform .6s}
+.act.in{opacity:1;transform:none}
+.act h2{font-size:22px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.act h2 .n{font-family:var(--mono);font-size:13px;color:var(--accent);border:1px solid rgba(190,242,100,.4);border-radius:8px;padding:2px 9px}
+.act .lead{color:var(--sub);font-size:14px;margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card .ic{font-size:22px;margin-bottom:8px}
+.card h3{font-size:15px;margin-bottom:6px;color:var(--accent2)}
+.card p{font-size:13px;color:var(--sub)}
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.step::before{counter-increment:s;content:counter(s);flex:0 0 30px;height:30px;border-radius:8px;background:rgba(190,242,100,.14);color:var(--accent);font-weight:800;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+.step b{color:var(--txt)}
+.step span{color:var(--sub);font-size:13.5px}
+.sim{background:linear-gradient(180deg,#0e1626,#0c1322);border:1px solid rgba(190,242,100,.28);border-radius:18px;padding:22px;box-shadow:0 0 0 1px rgba(190,242,100,.05),0 18px 50px -28px rgba(190,242,100,.25)}
+.sim h3{font-size:16px;margin-bottom:4px;color:var(--accent)}
+.sim .hint{color:var(--sub);font-size:13px;margin-bottom:16px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.btn{flex:1 1 auto;min-width:120px;background:var(--card2);border:1px solid var(--line);color:var(--txt);font-size:13.5px;font-weight:600;padding:11px 12px;border-radius:10px;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.go{background:linear-gradient(90deg,rgba(190,242,100,.9),rgba(103,232,249,.85));color:#06121a;border:none;font-weight:800}
+.btn.go:hover{filter:brightness(1.08)}
+.btn.alt{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:#fecaca}
+.lights{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 16px}
+.lt{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12.5px;color:var(--sub)}
+.dot{width:10px;height:10px;border-radius:50%;background:#334155;flex:0 0 10px;transition:.2s}
+.dot.on{background:var(--ok);box-shadow:0 0 9px var(--ok)}
+.dot.bad{background:var(--danger);box-shadow:0 0 9px var(--danger)}
+.field{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:13.5px}
+.field input{width:96px;background:#0a1322;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:14px;text-align:center}
+.field .u{color:var(--sub)}
+.bar{height:9px;background:#0a1322;border-radius:99px;overflow:hidden;margin-bottom:6px;border:1px solid var(--line)}
+.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}
+.barlab{font-size:12px;color:var(--sub);margin-bottom:14px;font-family:var(--mono)}
+#warn{min-height:44px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.45);color:#fecaca;border-radius:11px;padding:11px 13px;font-size:13.5px;margin-bottom:12px;display:none}
+#warn.show{display:block;animation:flash .4s}
+@keyframes flash{from{background:rgba(248,113,113,.4)}to{background:rgba(248,113,113,.1)}}
+#log{background:#070d18;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-family:var(--mono);font-size:12.5px;color:#86efac;height:150px;overflow:auto;white-space:pre-wrap;line-height:1.65}
+#log .w{color:#fca5a5}
+.gold{background:linear-gradient(180deg,rgba(190,242,100,.08),transparent);border:1px solid rgba(190,242,100,.3);border-radius:16px;padding:20px 22px}
+.gold h3{color:var(--accent);font-size:16px;margin-bottom:12px}
+.gold ul{list-style:none;display:grid;gap:10px}
+.gold li{padding-left:26px;position:relative;font-size:14px;color:var(--txt)}
+.gold li::before{content:"◆";position:absolute;left:0;color:var(--accent)}
+.gold li b{color:var(--accent2)}
+.maint{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.maint .card p{font-size:12.5px}
+footer{text-align:center;padding:34px 18px 50px;color:var(--sub);font-size:12.5px;border-top:1px solid var(--line);margin-top:30px}
+footer b{color:var(--accent)}
+@media(max-width:680px){.cards,.lights,.maint{grid-template-columns:1fr}.hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<header class="hero">
+  <div class="badge">ENVLA B · 育人 · 叙事式教学</div>
+  <h1>浮游空气菌采样器</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">JQC-1</b> · 依据受控操作规程构建（已脱敏）</div>
+  <p>一台把"看不见的空气微生物"逮到培养皿上的仪器。本页用一线真实受控操作规程改写，按 5 幕叙事带你走完一次合规采样——每一步都做错即提醒。</p>
+</header>
+
+<main>
+
+  <!-- 01 开篇引入 -->
+  <section class="act">
+    <h2><span class="n">01</span>开篇 · 空气里真的"干净"吗</h2>
+    <p class="lead">你以为无菌室里空气一尘不染？其实每立方米空气里飘着几十到上千个微生物——细菌、真菌孢子。</p>
+    <div class="cards">
+      <div class="card"><div class="ic">🏭</div><h3>为什么要测</h3><p>制药车间、食品洁净区、医院手术室，要向检查员证明"这里够干净"，靠的就是浮游空气菌采样。</p></div>
+      <div class="card"><div class="ic">🦠</div><h3>怎么逮菌</h3><p>用高速气流把带菌颗粒"撞"到培养皿上，送进培养箱养几天，数出长出来的菌落（CFU）。</p></div>
+      <div class="card"><div class="ic">📊</div><h3>结果怎么算</h3><p>CFU/m³ = 数出的菌落数 ÷ 采样体积(m³)。采样量越大，越能抓到稀有的菌。</p></div>
+    </div>
+  </section>
+
+  <!-- 02 科学原理 -->
+  <section class="act">
+    <h2><span class="n">02</span>原理 · 3 个关键概念</h2>
+    <p class="lead">JQC-1 是一台"单级撞击式"采样器：多孔采样头 + 100 L/min 高速气流。</p>
+    <div class="cards">
+      <div class="card"><div class="ic">💥</div><h3>撞击法（安德森原理）</h3><p>100 L/min 气流从采样头小孔喷出，带菌颗粒因惯性"撞"在下方培养基表面——流速越快，撞得越牢、回收率越高。</p></div>
+      <div class="card"><div class="ic">🌬️</div><h3>流量与流速</h3><p>额定流量 100 L/min，采样口流速 0.38 m/s。流量不稳 = 体积算错 = 浓度全错，所以采样量要准。</p></div>
+      <div class="card"><div class="ic">🔢</div><h3>菌落计数</h3><p>培养后数 CFU，再除以采样体积得到 CFU/m³。常用采样量 500 L，高标准会采到 1000 L 以上。</p></div>
+    </div>
+  </section>
+
+  <!-- 03 操作流程 -->
+  <section class="act">
+    <h2><span class="n">03</span>流程 · 一次合规采样的 8 步</h2>
+    <p class="lead">顺序错一步，采到的样就可能被污染或计数失真。下面这 8 步就是操作规程的"主线"。</p>
+    <div class="steps">
+      <div class="step"><div><b>进房前灭菌</b><br><span>采样器进入被测房间前，先用该房间的消毒剂把整机"洗"一遍，别把外界菌带进去。</span></div></div>
+      <div class="step"><div><b>75% 酒精消毒</b><br><span>用 75% 酒精擦拭双手、采样头、平皿外壁——三处交叉污染高发点。</span></div></div>
+      <div class="step"><div><b>装皿调水平</b><br><span>取出合规平皿放入皿座，调成基本水平，培养基不平会流出、采集不均。</span></div></div>
+      <div class="step"><div><b>蒸发残余酒精 ≥1min</b><br><span>装好采样头按采样键，让残余酒精蒸发至少 1 分钟——酒精会杀死采集到的菌。</span></div></div>
+      <div class="step"><div><b>设采样量</b><br><span>按功能键设采样量（10~6000 L），常用 500 L，按标准设定。</span></div></div>
+      <div class="step"><div><b>开始采样</b><br><span>按采样键，泵转、采样量累加，到设定值自动停泵并保存。</span></div></div>
+      <div class="step"><div><b>取皿盖盖编号</b><br><span>卸采样头、取皿、盖平皿盖、写明日期，按附录号码编号，别暴露污染。</span></div></div>
+      <div class="step"><div><b>送培养计数</b><br><span>倒置送培养箱，养出菌落后数 CFU，折算 CFU/m³ 出报告。</span></div></div>
+    </div>
+  </section>
+
+  <!-- 04 交互模拟台 -->
+  <section class="act">
+    <div class="sim">
+      <h3>🧪 交互模拟台 · 自己走一遍</h3>
+      <p class="hint">按真实操作规程红线设计：顺序错、漏一步、量超范围都会立刻提醒。点亮全部状态灯，就能完成一次合规采样。</p>
+
+      <div class="lights">
+        <div class="lt"><span class="dot" id="l1"></span>采样器已灭菌</div>
+        <div class="lt"><span class="dot" id="l2"></span>酒精已消毒</div>
+        <div class="lt"><span class="dot" id="l3"></span>培养皿水平</div>
+        <div class="lt"><span class="dot" id="l4"></span>酒精已蒸发</div>
+        <div class="lt"><span class="dot" id="l5"></span>采样量合规</div>
+        <div class="lt"><span class="dot" id="l6"></span>采样完成</div>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="b1" onclick="disinfect()">① 进房前灭菌采样器</button>
+        <button class="btn" id="b2" onclick="alcohol()">② 75%酒精消毒</button>
+        <button class="btn" id="b3" onclick="levelPlate()">③ 培养皿调水平</button>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="b4" onclick="evaporate()">④ 蒸发残余酒精(≥1min)</button>
+        <button class="btn alt" id="b7" onclick="resetAll()">↺ 重置</button>
+      </div>
+
+      <div class="field">
+        <span>采样量设定</span>
+        <input id="iVol" type="number" value="500" min="10" max="6000" step="10">
+        <span class="u">L（范围 10~6000）</span>
+        <button class="btn" id="b5" style="flex:0 0 auto;min-width:90px" onclick="setVol()">设量</button>
+      </div>
+
+      <div class="bar"><i id="evBar"></i></div>
+      <div class="barlab" id="evLab">蒸发进度：待开始</div>
+
+      <div class="row">
+        <button class="btn go" id="b6" onclick="startSample()">⑤ 开始采样</button>
+        <button class="btn" id="b8" onclick="coverPlate()" disabled>⑥ 取皿盖盖编号</button>
+      </div>
+
+      <div class="bar"><i id="smBar"></i></div>
+      <div class="barlab" id="smLab">采样进度：待开始</div>
+
+      <div id="warn"></div>
+      <div id="log">— 日志 —</div>
+    </div>
+  </section>
+
+  <!-- 05 总结黄金法则 -->
+  <section class="act">
+    <div class="gold">
+      <h3>◆ 黄金法则 · 记住这 6 条</h3>
+      <ul>
+        <li><b>灭：</b>采样器进被测房间前必须先灭菌，否则把外界菌带进去污染样品。</li>
+        <li><b>消：</b>双手、采样头、平皿外壁必须用 75% 酒精消毒，三处交叉污染高发。</li>
+        <li><b>等：</b>装样后残余酒精要蒸发 ≥1min 再采样，酒精会杀死采集到的菌、让计数偏低。</li>
+        <li><b>平：</b>培养皿必须调基本水平，倾斜会让培养基流出、采集不均。</li>
+        <li><b>量：</b>采样量锁定在 10~6000 L，按标准设（常用 500 L），流量稳才能算准浓度。</li>
+        <li><b>盖：</b>采样完立刻取皿、盖平皿盖、写日期编号，别在空气中暴露污染。</li>
+      </ul>
+      <div class="maint">
+        <div class="card"><div class="ic">🔋</div><h3>每4月通电</h3><p>长期不用期间，至少每 4 个月通电 0.5 小时，保护电池与电路。</p></div>
+        <div class="card"><div class="ic">🎯</div><h3>每年标定</h3><p>仪器每年标定一次，保证流量与计数精度。</p></div>
+        <div class="card"><div class="ic">📦</div><h3>轻搬轻放</h3><p>搬运少受振动，最好放专用包装箱，避免撞击损坏采样泵。</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  本页依据 <b>某机构真实受控操作规程（JQC-1 型浮游空气菌采样器）</b> 改写构建 · 环境实验「育人」阶段交互培训 · 仅作教学演示，实操以现行受控文件为准
+</footer>
+
+<script>
+const S={disinfected:false,sterilized:false,level:false,evap:false,vol:500,volOK:true,sampling:false,done:false,covered:false};
+let evTimer=null, smTimer=null;
+function log(m,w){const e=document.getElementById('log');const d=document.createElement('div');if(w)d.className='w';d.textContent='› '+m;e.appendChild(d);e.scrollTop=e.scrollHeight;}
+function warn(m){const e=document.getElementById('warn');e.textContent='⚠ '+m;e.classList.add('show');clearTimeout(warn._t);warn._t=setTimeout(()=>e.classList.remove('show'),3500);log(m,true);}
+function light(id,st){const e=document.getElementById(id);e.className='dot'+(st===true?' on':st===false?' bad':'');}
+function syncLights(){
+  light('l1',S.disinfected);light('l2',S.sterilized);light('l3',S.level);
+  light('l4',S.evap);light('l5',S.volOK);light('l6',S.done);
+}
+function refresh(){syncLights();
+  document.getElementById('b4').disabled=S.evap;
+  document.getElementById('b5').disabled=S.sampling||S.done;
+  document.getElementById('b6').disabled=!(S.disinfected&&S.sterilized&&S.level&&S.evap&&S.volOK)||S.sampling||S.done;
+  document.getElementById('b8').disabled=!S.done||S.covered;
+}
+function disinfect(){S.disinfected=true;log('采样器已用房间消毒剂灭菌');refresh();}
+function alcohol(){if(!S.disinfected){warn('先给采样器灭菌再消毒！顺序不能反（操作规程红线）');return;}S.sterilized=true;log('双手/采样头/平皿外 75%酒精消毒完成');refresh();}
+function levelPlate(){if(!S.sterilized){warn('先把双手和采样头消毒，再装平皿调水平！');return;}S.level=true;log('培养皿装入皿座并调至基本水平');refresh();}
+function evaporate(){
+  if(!S.level){warn('还没装平皿调水平，先完成前几步！');return;}
+  if(S.evap)return;
+  let p=0;const bar=document.getElementById('evBar'),lab=document.getElementById('evLab');
+  log('开始蒸发残余酒精（≥1min）…');
+  evTimer=setInterval(()=>{p+=4;if(p>=100){p=100;clearInterval(evTimer);S.evap=true;lab.textContent='蒸发进度：完成（≥1min）';log('残余酒精已蒸发 ≥1min，可采样');refresh();}else{lab.textContent='蒸发进度：'+p+'%';}bar.style.width=p+'%';},60);
+}
+function setVol(){
+  const v=parseFloat(document.getElementById('iVol').value);
+  if(isNaN(v)){warn('采样量必须是数字！');return;}
+  if(v<10||v>6000){S.volOK=false;S.vol=v;warn('采样量必须在 10~6000 L！当前 '+v+' L 超范围（操作规程红线）');refresh();return;}
+  S.volOK=true;S.vol=v;log('采样量设定为 '+v+' L（合规）');refresh();
+}
+function startSample(){
+  if(!(S.disinfected&&S.sterilized&&S.level&&S.evap&&S.volOK)){warn('前置条件未满足：灭菌→酒精→水平→蒸发→量合规，全部点亮才能采样！');return;}
+  if(S.sampling||S.done)return;
+  S.sampling=true;refresh();
+  let p=0;const bar=document.getElementById('smBar'),lab=document.getElementById('smLab');
+  const total=S.vol;let cur=0;
+  log('采样开始：泵启动，流量 100 L/min，目标 '+total+' L');
+  smTimer=setInterval(()=>{cur+=total/25;p+=4;if(p>=100){p=100;clearInterval(smTimer);S.sampling=false;S.done=true;lab.textContent='采样进度：完成（'+total+' L）';log('采样完成，泵已停，数据已保存');refresh();}else{lab.textContent='采样中：'+Math.min(cur,total).toFixed(0)+' / '+total+' L';}bar.style.width=p+'%';},60);
+}
+function coverPlate(){
+  if(!S.done){warn('还没采样完，不能取皿！');return;}
+  if(S.covered)return;
+  S.covered=true;log('取皿→盖平皿盖→写日期编号，采样闭环完成 ✅');refresh();
+  const e=document.getElementById('warn');e.style.display='none';
+  document.getElementById('log').appendChild(Object.assign(document.createElement('div'),{textContent:'🎉 一次合规的浮游空气菌采样走通了！'}));
+}
+function resetAll(){if(evTimer)clearInterval(evTimer);if(smTimer)clearInterval(smTimer);
+  S.disinfected=S.sterilized=S.level=S.evap=S.done=S.covered=false;S.volOK=true;S.vol=500;S.sampling=false;
+  document.getElementById('iVol').value=500;
+  document.getElementById('evBar').style.width='0%';document.getElementById('smBar').style.width='0%';
+  document.getElementById('evLab').textContent='蒸发进度：待开始';document.getElementById('smLab').textContent='采样进度：待开始';
+  document.getElementById('warn').style.display='none';
+  log('已重置，可重新走一遍');refresh();
+}
+// 初始化
+setVol();refresh();
+// 滚动进度 + 入场
+const sp=document.getElementById('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.act').forEach(a=>io.observe(a));
+</script>
+</body>
+</html>

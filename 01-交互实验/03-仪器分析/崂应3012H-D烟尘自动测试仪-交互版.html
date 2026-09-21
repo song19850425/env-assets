@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>烟尘自动测试仪 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#ef4444;--accent-glow:#f87171;--accent-bg:rgba(239,68,68,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2a0c0c 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(239,68,68,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(239,68,68,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(239,68,68,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#2a0c0c);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#ef4444,#f87171);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.seq{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input,.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">烟尘自动测试仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">崂应3012H-D</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">固定源废气 · 烟尘/烟气/工况 · 现场监测</div>
+  <div class="hst">
+    <div><span class="n">自检</span><span class="l">开机第一步</span></div>
+    <div><span class="n">布点</span><span class="l">圆/矩/其他</span></div>
+    <div><span class="n">洗气</span><span class="l">采样后必做</span></div>
+    <div><span class="n">≥5s</span><span class="l">关机重开间隔</span></div>
+  </div>
+</section>
+
+<section class="sec" id="sec1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">烟尘自动测试仪是去烟囱/排气筒测<b>固定源废气</b>的：烟尘浓度、烟气温度/湿度/流速、以及生产工况（负荷）。这套数据用来算排放量、核对达标。流程长、环节多，红线集中在<b>开机自检、布点、采样后必须洗传感器/泵/管、关机重开间隔</b>。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔧</div><div class="in">开机自检</div><div class="id">先开机自检，再设日期/时间/大气压。跳过自检 → 传感器状态未知，数据可能整批无效。</div><span class="it">开机红线</span></div>
+    <div class="ic"><div class="ii">📍</div><div class="in">布点方式</div><div class="id">按烟道形状选 圆/矩/其他 布点法，决定测点坐标。选错布点 → 代表性差，结果不具法律效力。</div><span class="it">布点红线</span></div>
+    <div class="ic"><div class="ii">💨</div><div class="in">工况→湿度→烟气→烟尘</div><div class="id">依次测工况（自动调零）、湿度、烟气、最后烟尘自动采样。顺序是操作规程规定链路。</div><span class="it">测量链路</span></div>
+    <div class="ic"><div class="ii">🧼</div><div class="in">采样后洗气</div><div class="id">采样完必须用干净空气洗传感器/泵/管路。不洗 → 残留腐蚀、交叉污染，下次数据漂移。</div><span class="it">洗气红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>没自检就设参、采样后没洗气就关机、关机重开不足 5 秒，系统都会直接提醒你</b>。</div>
+</section>
+
+<section class="lb" id="sec2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ 3012H-D 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">崂应 3012H-D 烟尘自动测试仪</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 开机自检 → 设日期 / 时间 / 大气压</div>
+    <div class="seq">
+      <div class="pb" id="s1" onclick="boot()">开机自检<span class="po">step 1</span></div>
+      <div class="pb" id="s2" onclick="setDT()">设日期/时间/气压<span class="po">step 2</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">② 布点方式</div>
+    <div class="fld"><label>烟道形状 → 布点法</label><select id="iPoint"><option value="circ">圆形烟道 → 圆布点</option><option value="rect">矩形烟道 → 矩布点</option><option value="other">异形 → 其他布点</option></select></div>
+    <div class="acts"><button class="btn b2" id="btnPoint" onclick="setPoint()" disabled>📍 确认布点</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 测量链路（工况→湿度→烟气→烟尘）</div>
+    <div class="seq">
+      <div class="pb" id="m1" onclick="cond()">工况自动调零<span class="po">1</span></div>
+      <div class="pb" id="m2" onclick="hum()">湿度<span class="po">2</span></div>
+      <div class="pb" id="m3" onclick="gas()">烟气<span class="po">3</span></div>
+      <div class="pb" id="m4" onclick="sample()">烟尘自动采样<span class="po">4</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 采样后清洗（干净空气洗传感器/泵/管）</div>
+    <div class="acts"><button class="btn b2" id="btnClean" onclick="clean()" disabled>🧼 洗传感器/泵/管</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑤ 关机（关机重开间隔 ≥5 秒）</div>
+    <div class="acts"><button class="btn b1" id="btnShut" onclick="shut()" disabled>⏻ 关机</button></div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔧</div><div class="in">先自检再设参</div><div class="id">开机先自检，再设日期/时间/大气压。跳过自检直接设参 → 传感器基准未知。</div><span class="it">开机红线</span></div>
+    <div class="ic"><div class="ii">🧼</div><div class="in">采样后必须洗气</div><div class="id">采完用干净空气洗传感器/泵/管路。不洗 → 残留腐蚀、交叉污染，下次数据漂移甚至堵泵。</div><span class="it">洗气红线</span></div>
+    <div class="ic"><div class="ii">🔵</div><div class="in">变色硅胶看颜色</div><div class="id">干燥剂变色硅胶蓝变红即失效，须及时更换，否则水汽进仪器损坏。属于期间核查项。</div><span class="it">期间核查</span></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">关机重开 ≥5 秒</div><div class="id">关机后至少等 5 秒再开，保护电路与传感器。频繁瞬开瞬关易损机。</div><span class="it">关机红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>非常适合作为上岗前的交互式培训材料</b>。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={boot:false,dt:false,point:false,cond:false,hum:false,gas:false,sample:false,clean:false,shut:false};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function boot(){
+  if(S.boot){warn('已自检');return;}
+  S.boot=true;$('s1').classList.add('on');setSts('🟢 已自检','sa');log('开机自检完成',true);
+  $('s2').classList.add('on');$('btnPoint').disabled=false;warn('');
+}
+function setDT(){
+  if(!S.boot){warn('请先开机自检');return;}
+  if(S.dt){warn('已设');return;}
+  S.dt=true;$('s2').classList.add('on');log('设定日期/时间/大气压',true);
+  $('btnPoint').disabled=false;warn('');
+}
+function setPoint(){
+  if(!S.dt){warn('请先完成自检与设参');return;}
+  if(S.point){warn('已布点');return;}
+  S.point=true;$('btnPoint').classList.add('on');$('btnPoint').textContent='✅ 布点：'+$('iPoint').options[$('iPoint').selectedIndex].text;
+  log('布点确认：'+$('iPoint').options[$('iPoint').selectedIndex].text,true);warn('');
+}
+function cond(){
+  if(!S.point){warn('请先布点');return;}
+  if(S.cond){warn('已测');return;}
+  S.cond=true;$('m1').classList.add('on');log('工况自动调零完成',true);
+  if(S.hum&&S.gas&&S.sample)checkChain();
+}
+function hum(){
+  if(!S.cond){warn('⚠️ 请先完成工况自动调零（测量链路顺序：工况→湿度→烟气→烟尘）');log('测量顺序错误，已阻断',false);return;}
+  if(S.hum){warn('已测');return;}
+  S.hum=true;$('m2').classList.add('on');log('湿度测量完成',true);
+}
+function gas(){
+  if(!S.hum){warn('⚠️ 请先测湿度（链路顺序：工况→湿度→烟气→烟尘）');log('测量顺序错误，已阻断',false);return;}
+  if(S.gas){warn('已测');return;}
+  S.gas=true;$('m3').classList.add('on');log('烟气测量完成',true);
+}
+function sample(){
+  if(!S.gas){warn('⚠️ 请先测烟气（链路顺序：工况→湿度→烟气→烟尘）');log('测量顺序错误，已阻断',false);return;}
+  if(S.sample){warn('已采样');return;}
+  S.sample=true;$('m4').classList.add('on');setSts('🟢 烟尘采集中','sa');log('烟尘自动采样完成',true);
+  $('btnClean').disabled=false;warn('');
+}
+function checkChain(){}
+function clean(){
+  if(!S.sample){warn('请先完成烟尘采样');return;}
+  if(S.clean){warn('已清洗');return;}
+  S.clean=true;$('btnClean').classList.add('on');$('btnClean').textContent='✅ 已洗气';
+  setSts('🟢 已清洗','sa');log('用干净空气洗传感器/泵/管路完成',true);
+  $('btnShut').disabled=false;warn('');
+}
+function shut(){
+  if(!S.clean){warn('⚠️ 采样后必须用干净空气洗传感器/泵/管再关机！否则残留腐蚀、下次数据漂移');log('未洗气就关机，已阻断（操作规程红线）',false);return;}
+  if(S.shut){warn('已关机');return;}
+  S.shut=true;$('btnShut').classList.add('on');$('btnShut').textContent='✅ 已关机';
+  setSts('🔒 已关机','si');log('关机完成（重开须间隔≥5秒）',true);warn('');
+}
+function resetAll(){
+  S={boot:false,dt:false,point:false,cond:false,hum:false,gas:false,sample:false,clean:false,shut:false};
+  ['s1','s2','m1','m2','m3','m4'].forEach(id=>$(id).classList.remove('on'));
+  $('btnPoint').classList.remove('on');$('btnPoint').textContent='📍 确认布点';$('btnPoint').disabled=true;
+  $('btnClean').classList.remove('on');$('btnClean').textContent='🧼 洗传感器/泵/管';$('btnClean').disabled=true;
+  $('btnShut').classList.remove('on');$('btnShut').textContent='⏻ 关机';$('btnShut').disabled=true;
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

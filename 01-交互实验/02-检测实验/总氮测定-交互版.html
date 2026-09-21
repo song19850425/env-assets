@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>总氮测定 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#0891b2;--accent-glow:#22d3ee;--accent-bg:rgba(8,145,178,.12);--green:#22c55e;--amber:#f59e0b;--red:#ef4444}
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+#section-nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:12px}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.1);cursor:pointer;transition:.3s;border:2px solid transparent}
+.nav-dot.active{background:var(--accent);transform:scale(1.5);box-shadow:0 0 12px rgba(8,145,178,.5)}
+.nav-dot .nav-label{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:10px;white-space:nowrap;color:#94a3b8;background:var(--card);padding:3px 10px;border-radius:6px;opacity:0;pointer-events:none;border:1px solid var(--border)}
+.nav-dot:hover .nav-label{opacity:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hero-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(8,145,178,.04) 1px,transparent 1px);background-size:24px 24px}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(8,145,178,.1),transparent 70%);border-radius:50%}
+.hero-badge{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(8,145,178,.2);z-index:1}
+.hero h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;max-width:720px;z-index:1}
+.hero h1 em{color:var(--accent-glow);font-style:normal}
+.hero-sub{margin-top:14px;font-size:15px;color:#64748b;max-width:480px;z-index:1;line-height:1.7}
+.hero-stats{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:34px;font-weight:800;color:var(--accent-glow);display:block;line-height:1}
+.hero-stat .lbl{font-size:11px;color:#64748b;margin-top:4px}
+.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#64748b;font-size:11px;animation:float 2s ease-in-out infinite;z-index:1}
+@keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.section{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.section.visible{opacity:1;transform:translateY(0)}
+.section-num{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.section-title{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:10px}
+.section-desc{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:32px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;transition:.3s}
+.card:hover{transform:translateY(-2px);border-color:rgba(8,145,178,.2)}
+.card .ci{font-size:28px;margin-bottom:8px}
+.card .cn{font-size:14px;font-weight:700;margin-bottom:2px}
+.card .cf{font-size:11px;color:#64748b;font-family:monospace}
+.card .cd{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:6px}
+.card .ct{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:6px;background:var(--accent-bg);color:var(--accent-glow)}
+.timeline{position:relative;padding-left:32px;margin:16px 0 32px}
+.timeline::before{content:'';position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.06)}
+.tl-item{position:relative;padding:10px 0 10px 16px;opacity:0;transform:translateX(-16px);transition:opacity .6s,transform .6s}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-item::before{content:'';position:absolute;left:-26px;top:16px;width:10px;height:10px;border-radius:50%;background:transparent;border:2px solid rgba(255,255,255,.1)}
+.tl-item.visible::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(8,145,178,.4)}
+.tl-step{font-size:10px;color:var(--accent-glow);font-weight:700;letter-spacing:1px;margin-bottom:2px}
+.tl-title{font-size:14px;font-weight:600}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.5;margin-top:2px}
+.tl-note{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-top:4px}
+
+/* Lab */
+.lab-section{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}
+.lab-container{max-width:920px;margin:0 auto;padding:0 24px}
+.lab-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.lab-title{font-size:13px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lab-tools{display:flex;gap:8px}
+.lab-tools button{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:#94a3b8;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
+.lab-tools button:hover{border-color:var(--accent);color:var(--accent-glow)}
+.lab-bench{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden}
+
+/* Status */
+.status{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.s-idle{background:rgba(255,255,255,.04);color:#64748b}
+.s-act{background:var(--accent-bg);color:var(--accent-glow)}
+.s-done{background:rgba(34,197,94,.1);color:var(--green)}
+
+/* Sample Selector */
+.sel{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.sel-btn{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:#94a3b8;cursor:pointer;transition:.25s;font-size:12px;font-weight:600;font-family:inherit}
+.sel-btn:hover{border-color:var(--accent);color:var(--accent-glow)}
+.sel-btn.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-glow);box-shadow:0 0 12px rgba(8,145,178,.12)}
+.sel-btn .sbv{display:block;font-size:9px;color:#64748b;margin-top:2px}
+
+/* Workflow Steps */
+.wflow{display:flex;gap:0;margin:0 0 16px;background:rgba(255,255,255,.02);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.wf-step{flex:1;padding:8px 6px;text-align:center;font-size:10px;color:#475569;font-weight:500;border-right:1px solid var(--border);transition:.3s;cursor:default}
+.wf-step:last-child{border-right:none}
+.wf-step .wf-icon{display:block;font-size:16px;margin-bottom:2px}
+.wf-step.active{background:var(--accent-bg);color:var(--accent-glow)}
+.wf-step.done{background:rgba(34,197,94,.08);color:var(--green)}
+
+/* Apparatus */
+.app-row{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.digestor{width:180px;height:140px;background:#0a0e17;border-radius:8px;border:2px solid #334155;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.digestor .d-temp{font-family:monospace;font-size:28px;font-weight:800;color:var(--accent-glow)}
+.digestor .d-label{font-size:9px;color:#64748b;margin-top:2px}
+.digestor .d-heat{position:absolute;bottom:0;left:0;right:0;height:6px;background:var(--border);overflow:hidden}
+.digestor .d-heat .d-fill{height:100%;border-radius:2px;transition:width .3s}
+.digestor.heating{border-color:var(--accent);box-shadow:0 0 20px rgba(8,145,178,.2)}
+.digestor.hot{border-color:#f59e0b;box-shadow:0 0 25px rgba(245,158,11,.25)}
+
+/* Spectrophotometer */
+.spec{width:220px;height:120px;background:#0a0e17;border-radius:8px;border:2px solid #334155;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.spec .s-display{font-family:monospace;font-size:36px;font-weight:800;line-height:1}
+.spec .s-unit{font-size:9px;color:#64748b;margin-top:2px}
+.spec .s-label{position:absolute;top:6px;left:10px;font-size:7px;color:#334155;letter-spacing:1px;font-weight:600}
+.spec.measuring{border-color:var(--accent-glow);box-shadow:0 0 20px rgba(8,145,178,.3)}
+
+/* Controls */
+.ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:640px){.ctrl-grid{grid-template-columns:1fr}}
+.ctrl-box{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.ctrl-box .cbl{font-size:10px;color:#64748b;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.ctrl-box .cbr{display:flex;align-items:center;gap:10px}
+.ctrl-box input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.ctrl-box input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(8,145,178,.3)}
+.ctrl-box .cbv{font-size:13px;font-weight:700;color:var(--accent-glow);min-width:36px;text-align:right}
+
+/* Buttons */
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:10px 24px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.b1{background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(8,145,178,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.b3{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff}
+.b3:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,197,94,.3)}
+
+/* Curve */
+.curve-box{background:rgba(0,0,0,.15);border-radius:10px;padding:14px;margin:12px 0;border:1px solid var(--border)}
+.curve-box .cur-label{font-size:10px;color:#64748b;font-weight:600;margin-bottom:6px}
+.curve-box .cur-canvas{height:60px;background:#0a0e17;border-radius:6px;position:relative;overflow:hidden;margin-bottom:4px}
+.curve-box .cur-canvas .cur-line{position:absolute;bottom:5px;left:10%;width:80%;height:50px;border-left:1px solid #334155;border-bottom:1px solid #334155}
+.cur-dot{position:absolute;width:8px;height:8px;border-radius:50%;transform:translate(-50%,50%);transition:all .5s}
+.cur-r2{font-size:10px;color:#64748b;text-align:right}
+
+/* Data log */
+.dlog{margin-top:16px;background:rgba(0,0,0,.12);border-radius:10px;padding:14px;border:1px solid var(--border);display:none}
+.dlog .dlh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dlog .dlt{font-size:11px;font-weight:700;color:#94a3b8}
+.dlog .dlc{font-size:10px;color:#64748b}
+.dlog table{width:100%;border-collapse:collapse;font-size:11px}
+.dlog th{padding:5px 8px;text-align:left;color:#64748b;font-weight:600;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.dlog td{padding:4px 8px;border-bottom:1px solid rgba(255,255,255,.03);color:#94a3b8}
+.dlog .le{text-align:center;padding:16px;color:#475569;font-size:12px}
+
+/* Result */
+.res-box{background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.15);border-radius:10px;padding:18px;text-align:center;margin:12px 0}
+.res-box .rv{font-size:40px;font-weight:800;color:var(--accent-glow)}
+.res-box .ru{font-size:11px;color:#64748b;margin-top:2px}
+
+/* Summary */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:16px 0}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sc .sci{font-size:22px;margin-bottom:4px}
+.sc .sct{font-size:12px;font-weight:700;margin-bottom:4px}
+.sc .scd{font-size:11px;color:#64748b;line-height:1.5}
+
+.footer{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+<div id="section-nav">
+  <div class="nav-dot active" onclick="sc(0)"><span class="nav-label">开篇</span></div>
+  <div class="nav-dot" onclick="sc(1)"><span class="nav-label">试剂</span></div>
+  <div class="nav-dot" onclick="sc(2)"><span class="nav-label">仪器</span></div>
+  <div class="nav-dot" onclick="sc(3)"><span class="nav-label">流程</span></div>
+  <div class="nav-dot" onclick="sc(4)"><span class="nav-label">实验</span></div>
+  <div class="nav-dot" onclick="sc(5)"><span class="nav-label">总结</span></div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-badge">🧪 环境实验 · 交互式教学</div>
+  <h1>掌握 <em>总氮</em> 测定<br>（HJ 636-2012）</h1>
+  <p class="hero-sub">碱性过硫酸钾消解紫外分光光度法 · 自由探索 · 实时数据</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">5</span><span class="lbl">种水样</span></div>
+    <div class="hero-stat"><span class="num">4</span><span class="lbl">步流程</span></div>
+    <div class="hero-stat"><span class="num">220nm</span><span class="lbl">检测波长</span></div>
+    <div class="hero-stat"><span class="num">自由</span><span class="lbl">探索模式</span></div>
+  </div>
+  <div class="scroll-hint"><span>向下滚动</span><span class="arrow">↓</span></div>
+</section>
+
+<!-- S01: 试剂 -->
+<section class="section" id="s1">
+  <div class="section-num">Section 01 · 试剂</div>
+  <div class="section-title">主要试剂与作用</div>
+  <div class="section-desc">总氮测定采用碱性过硫酸钾消解，将各种形态的氮转化为硝酸盐。</div>
+  <div class="grid2">
+    <div class="card"><div class="ci">🧪</div><div class="cn">过硫酸钾</div><div class="cf">K₂S₂O₈</div><div class="cd">强氧化剂，在 120-124℃ 碱性条件下将水样中氨氮、亚硝酸盐、有机氮全部氧化为硝酸盐。</div><span class="ct">消解用</span></div>
+    <div class="card"><div class="ci">💧</div><div class="cn">氢氧化钠 + 硼酸</div><div class="cf">NaOH + H₃BO₃</div><div class="cd">调节 pH 至碱性（>12），提供消解所需的碱性环境，同时保护消解管。</div><span class="ct">碱性条件</span></div>
+    <div class="card"><div class="ci">📏</div><div class="cn">盐酸 (1+9)</div><div class="cf">HCl</div><div class="cd">消解后调节 pH 至中性，消除碳酸盐和氢氧化物的干扰，使样品适于紫外测定。</div><span class="ct">中和用</span></div>
+    <div class="card"><div class="ci">🧫</div><div class="cn">硝酸钾标准液</div><div class="cf">KNO₃</div><div class="cd">用于绘制标准曲线（0~10 mg/L NO₃⁻-N）。220nm 和 275nm 双波长测定，校正有机质干扰。</div><span class="ct">标准曲线</span></div>
+  </div>
+</section>
+
+<!-- S02: 仪器 -->
+<section class="section" id="s2">
+  <div class="section-num">Section 02 · 仪器</div>
+  <div class="section-title">仪器配置</div>
+  <div class="section-desc">总氮测定需要以下关键设备。</div>
+  <div class="grid2">
+    <div class="card"><div class="ci">♨️</div><div class="cn">高压蒸汽灭菌器</div><div class="cd">消解用。121℃ 保持 30min，使过硫酸钾充分分解，将各种形态氮氧化为硝酸盐。</div><span class="ct">消解用</span></div>
+    <div class="card"><div class="ci">🔬</div><div class="cn">紫外分光光度计</div><div class="cd">测定 220nm 和 275nm 处吸光度。A = A₂₂₀ - 2 × A₂₇₅ 校正有机质干扰，代入标准曲线计算浓度。</div><span class="ct">检测用</span></div>
+  </div>
+</section>
+
+<!-- S03: 流程 -->
+<section class="section" id="s3">
+  <div class="section-num">Section 03 · 操作流程</div>
+  <div class="section-title">标准流程四步法</div>
+  <div class="section-desc">HJ 636-2012 标准方法，核心四步：消解 → 中和 → 测定 → 计算。</div>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-step">STEP 01</div><div class="tl-title">碱性过硫酸钾消解</div><div class="tl-desc">取 10.0 mL 水样 → 加 5 mL 碱性过硫酸钾 → 包扎 → 置高压灭菌器 121℃ 消解 30 min。</div><span class="tl-note" style="background:var(--accent-bg);color:var(--accent-glow)">🔥 121℃ / 30min</span></div>
+    <div class="tl-item"><div class="tl-step">STEP 02</div><div class="tl-title">冷却与中和</div><div class="tl-desc">自然冷却后 → 加盐酸(1+9)中和至 pH 7~8 → 用超纯水定容至 25 mL。</div><span class="tl-note" style="background:rgba(245,158,11,.1);color:#f59e0b">🧪 中和至中性</span></div>
+    <div class="tl-item"><div class="tl-step">STEP 03</div><div class="tl-title">双波长紫外测定</div><div class="tl-desc">用 10 mm 石英比色皿，分别在 220nm 和 275nm 处测吸光度。A = A₂₂₀ - 2 × A₂₇₅。</div><span class="tl-note" style="background:rgba(34,197,94,.1);color:var(--green)">🔬 A₂₂₀ / A₂₇₅</span></div>
+    <div class="tl-item"><div class="tl-step">STEP 04</div><div class="tl-title">标准曲线法定量</div><div class="tl-desc">用 KNO₃ 标准液绘制 A-C 标准曲线。代入样品校正吸光度，计算总氮浓度。</div><span class="tl-note" style="background:rgba(245,158,11,.1);color:#f59e0b">📏 R² ≥ 0.999</span></div>
+  </div>
+</section>
+
+<!-- S04: 交互实验 -->
+<section class="lab-section" id="s4">
+<div class="lab-container">
+  <div class="lab-header">
+    <div class="lab-title">🔬 Section 04 · 总氮自由实验</div>
+    <div class="lab-tools">
+      <button onclick="rst()">🔄 重置</button>
+      <button onclick="tgl()" id="ltb">📋 日志</button>
+    </div>
+  </div>
+
+  <div class="lab-bench">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px">
+      <span class="status s-idle" id="sts">⏳ 选择水样开始</span>
+      <span style="font-size:10px;color:#475569">自由探索模式</span>
+    </div>
+
+    <!-- Workflow steps -->
+    <div class="wflow" id="wflow">
+      <div class="wf-step active" data-step="0"><span class="wf-icon">📋</span>选择水样</div>
+      <div class="wf-step" data-step="1"><span class="wf-icon">♨️</span>消解</div>
+      <div class="wf-step" data-step="2"><span class="wf-icon">🧪</span>中和</div>
+      <div class="wf-step" data-step="3"><span class="wf-icon">🔬</span>紫外测定</div>
+      <div class="wf-step" data-step="4"><span class="wf-icon">📊</span>结果</div>
+    </div>
+
+    <!-- Sample Selector -->
+    <div style="font-size:10px;color:#64748b;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px">选择水样：</div>
+    <div class="sel" id="sel"></div>
+
+    <!-- Apparatus Area -->
+    <div class="app-row" id="appArea">
+      <div class="digestor" id="digestor">
+        <div style="font-size:9px;color:#64748b;margin-bottom:2px">高压蒸汽灭菌器</div>
+        <div class="d-temp" id="dTemp">25</div>
+        <div class="d-label">℃</div>
+        <div class="d-heat"><div class="d-fill" id="dFill" style="width:0%;background:var(--accent)"></div></div>
+      </div>
+      <div class="spec" id="spec">
+        <div class="s-label">UV-VIS</div>
+        <div class="s-display" id="sDisp" style="color:#334155">0.000</div>
+        <div class="s-unit">Abs</div>
+        <div style="font-size:9px;color:#64748b;margin-top:2px" id="sWL">λ = 220 nm</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="ctrl-grid">
+      <div class="ctrl-box">
+        <div class="cbl">消解温度</div>
+        <div class="cbr">
+          <input type="range" id="tempS" min="25" max="130" value="25" oninput="updTemp()">
+          <span class="cbv" id="tempV">25℃</span>
+        </div>
+      </div>
+      <div class="ctrl-box">
+        <div class="cbl">消解时间</div>
+        <div class="cbr">
+          <input type="range" id="timeS" min="0" max="40" value="0" oninput="updTime()">
+          <span class="cbv" id="timeV">0min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn b1" id="btnDig" onclick="startDigest()">♨️ 开始消解</button>
+      <button class="btn b2" id="btnNeutral" onclick="doNeutral()" disabled>🧪 中和</button>
+      <button class="btn b3" id="btnMeasure" onclick="doMeasure()" disabled>🔬 紫外测定</button>
+      <button class="btn b2" id="btnLog" onclick="addLog()" disabled>📝 记录</button>
+    </div>
+
+    <!-- Standard Curve -->
+    <div class="curve-box">
+      <div class="cur-label">📈 标准曲线</div>
+      <div class="cur-canvas" id="curCanvas">
+        <div class="cur-line"></div>
+      </div>
+      <div class="cur-r2" id="curR2">R² = —</div>
+    </div>
+
+    <!-- Result -->
+    <div class="res-box" id="resBox" style="display:none">
+      <div class="rv" id="resVal">0.00</div>
+      <div class="ru">总氮 [mg/L]</div>
+    </div>
+
+    <!-- Log -->
+    <div class="dlog" id="dlog">
+      <div class="dlh">
+        <div class="dlt">📋 测量记录</div>
+        <div class="dlc" id="logC">共 0 条</div>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>水样</th><th>Abs 220</th><th>Abs 275</th><th>校正 A</th><th>TN mg/L</th></tr></thead>
+        <tbody id="logB"></tbody>
+      </table>
+      <div class="le" id="logE">还没有记录</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S05: 总结 -->
+<section class="section" id="s5">
+  <div class="section-num">Section 05 · 总结</div>
+  <div class="section-title">关键要点回顾</div>
+  <div class="section-desc">掌握这些要点，总氮测定不再难。</div>
+  <div class="sg">
+    <div class="sc"><div class="sci">♨️</div><div class="sct">消解温度</div><div class="scd">121℃ 精确控温，过高或过低都会影响消解效率</div></div>
+    <div class="sc"><div class="sci">⏱️</div><div class="sct">消解时间</div><div class="scd">30 min 充分消解，时间不足氧化不完全</div></div>
+    <div class="sc"><div class="sci">🔬</div><div class="sct">双波长校正</div><div class="scd">A = A₂₂₀ - 2×A₂₇₅，消除有机质干扰</div></div>
+    <div class="sc"><div class="sci">📏</div><div class="sct">标准曲线</div><div class="scd">R² ≥ 0.999，每批样品同步绘制</div></div>
+    <div class="sc"><div class="sci">🧪</div><div class="sct">空白控制</div><div class="scd">超纯水做全程空白，扣除试剂本底</div></div>
+  </div>
+</section>
+
+<div class="footer">
+  <p>环境实验 · 环境检测交互式教学实验平台</p>
+  <p style="margin-top:4px;">本笔记 · 联系：【联系方式见仓库主页】</p>
+</div>
+
+<script>
+// Scroll
+const ss=[document.querySelector('.hero'),...document.querySelectorAll('.section'),document.querySelector('.lab-section')].filter(Boolean);
+const dd=document.querySelectorAll('.nav-dot');
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.section').forEach(s=>ob.observe(s));
+document.querySelectorAll('.tl-item').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('scroll-progress').style.width=((window.scrollY/h)*100)+'%';
+  let cur=0;
+  ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)cur=i});
+  dd.forEach((d,i)=>d.classList.toggle('active',i===cur));
+});
+function sc(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+
+// Data
+const samples=[
+  {id:'gw',name:'🍃 地下水',base:0.8,dev:0.4},
+  {id:'riv',name:'🌊 河水',base:3.5,dev:1.5},
+  {id:'lake',name:'🏞️ 湖水',base:6.0,dev:2.5},
+  {id:'eff',name:'🏭 出水',base:12,dev:4},
+  {id:'ww',name:'⚫ 进水',base:35,dev:10}
+];
+let curSample=null,doneDigest=false,doneNeutral=false,doneMeasure=false,curTN=0,entries=[],logVis=false;
+let curAbs220=0,curAbs275=0,curCorrA=0;
+
+// Sample buttons
+(function initSel(){
+  const el=document.getElementById('sel');
+  el.innerHTML=samples.map((s,i)=>
+    `<button class="sel-btn" onclick="pick(${i})">${s.name}<span class="sbv">~${(s.base-s.dev).toFixed(1)}-${(s.base+s.dev).toFixed(1)} mg/L</span></button>`
+  ).join('');
+})();
+
+function pick(i){
+  curSample=samples[i];
+  document.querySelectorAll('.sel-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  rstInternals();
+  document.getElementById('sts').className='status s-act';
+  document.getElementById('sts').innerHTML=`已选：${curSample.name}`;
+  setStep(0);
+  document.getElementById('btnDig').disabled=false;
+}
+
+function rstInternals(){
+  doneDigest=false;doneNeutral=false;doneMeasure=false;curTN=0;
+  document.getElementById('btnNeutral').disabled=true;
+  document.getElementById('btnMeasure').disabled=true;
+  document.getElementById('btnLog').disabled=true;
+  document.getElementById('resBox').style.display='none';
+  document.getElementById('dTemp').textContent='25';
+  document.getElementById('dFill').style.width='0%';
+  document.getElementById('dFill').style.background='var(--accent)';
+  document.getElementById('digestor').className='digestor';
+  document.getElementById('sDisp').textContent='0.000';
+  document.getElementById('sDisp').style.color='#334155';
+  document.getElementById('spec').className='spec';
+  document.getElementById('tempS').value=25;
+  document.getElementById('tempV').textContent='25℃';
+  document.getElementById('timeS').value=0;
+  document.getElementById('timeV').textContent='0min';
+  document.getElementById('curR2').textContent='R² = —';
+  clearCurveDots();
+  document.getElementById('btnDig').disabled=false;
+  document.getElementById('btnDig').textContent='♨️ 开始消解';
+}
+
+function setStep(n){
+  document.querySelectorAll('.wf-step').forEach((s,i)=>{
+    s.classList.toggle('active',i===n);
+    s.classList.toggle('done',i<n);
+  });
+}
+
+// Temperature & Time
+function updTemp(){
+  const v=document.getElementById('tempS').value;
+  document.getElementById('tempV').textContent=v+'℃';
+}
+function updTime(){
+  const v=document.getElementById('timeS').value;
+  document.getElementById('timeV').textContent=v+'min';
+}
+
+// Digestion
+function startDigest(){
+  const btn=document.getElementById('btnDig');
+  btn.disabled=true;
+  setStep(1);
+  document.getElementById('sts').className='status s-act';
+  document.getElementById('sts').innerHTML='♨️ 消解中...';
+
+  const dig=document.getElementById('digestor');
+  const tempDisp=document.getElementById('dTemp');
+  const fill=document.getElementById('dFill');
+  const start=performance.now();
+  const dur=4000;
+
+  function anim(now){
+    const p=Math.min((now-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    const temp=25+105*e;
+    tempDisp.textContent=Math.round(temp);
+    fill.style.width=(temp/130*100)+'%';
+    if(temp>100){fill.style.background='#f59e0b';dig.className='digestor hot';}
+    else if(temp>50){dig.className='digestor heating';fill.style.background='var(--accent)';}
+
+    if(p<1) requestAnimationFrame(anim);
+    else{
+      tempDisp.textContent='121';
+      dig.className='digestor hot';
+      fill.style.width='93%';
+      fill.style.background='#f59e0b';
+      doneDigest=true;
+      document.getElementById('btnNeutral').disabled=false;
+      document.getElementById('sts').className='status s-done';
+      document.getElementById('sts').innerHTML='✅ 消解完成！冷却中...';
+      btn.textContent='✅ 已消解';
+      btn.style.background='linear-gradient(135deg,#16a34a,#22c55e)';
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+// Neutralization
+function doNeutral(){
+  setStep(2);
+  const btn=document.getElementById('btnNeutral');
+  btn.disabled=true;
+  document.getElementById('sts').className='status s-act';
+  document.getElementById('sts').innerHTML='🧪 中和中...';
+  document.getElementById('digestor').className='digestor';
+
+  const sd=document.getElementById('sDisp');
+  const start=performance.now();
+  const dur=1500;
+  function anim(now){
+    const p=Math.min((now-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    sd.textContent=e.toFixed(3);
+    sd.style.color='var(--accent-glow)';
+    if(p<1) requestAnimationFrame(anim);
+    else{
+      sd.textContent='0.000';
+      sd.style.color='#334155';
+      doneNeutral=true;
+      document.getElementById('btnMeasure').disabled=false;
+      document.getElementById('sts').className='status s-done';
+      document.getElementById('sts').innerHTML='✅ 中和完成，准备紫外测定';
+      btn.textContent='✅ 已中和';
+      document.getElementById('sWL').textContent='λ = 220 nm';
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+// UV Measurement
+function doMeasure(){
+  if(!curSample) return;
+  setStep(3);
+  const btn=document.getElementById('btnMeasure');
+  btn.disabled=true;
+  document.getElementById('sts').className='status s-act';
+  document.getElementById('sts').innerHTML='🔬 紫外测定中...';
+
+  const spec=document.getElementById('spec');
+  const sd=document.getElementById('sDisp');
+  const targetTN=curSample.base+(Math.random()-0.5)*curSample.dev;
+  curTN=Math.max(0.1,targetTN);
+  curAbs220=0.005+curTN*0.045+(Math.random()-0.5)*0.005;
+  curAbs275=0.002+curTN*0.003+(Math.random()-0.5)*0.002;
+  curCorrA=curAbs220-2*curAbs275;
+
+  // first read 275, then 220
+  const start=performance.now();
+  const dur=3000;
+  function anim(now){
+    const p=Math.min((now-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    spec.className='spec measuring';
+    sd.style.color='var(--accent-glow)';
+
+    let val;
+    if(p<0.5){
+      const p2=p*2;
+      val=curAbs275*p2;
+      document.getElementById('sWL').textContent='λ = 275 nm';
+    } else {
+      const p2=(p-0.5)*2;
+      val=curAbs275+curAbs220*p2;
+      document.getElementById('sWL').textContent='λ = 220 nm';
+    }
+    sd.textContent=Math.max(0,val).toFixed(3);
+
+    if(p<1) requestAnimationFrame(anim);
+    else{
+      sd.textContent=curCorrA.toFixed(3);
+      spec.className='spec';
+      sd.style.color='var(--accent-glow)';
+      document.getElementById('sWL').textContent='λ = 220/275 nm';
+      doneMeasure=true;
+      document.getElementById('btnLog').disabled=false;
+
+      // Update standard curve
+      updateCurve();
+
+      // Show result
+      const resBox=document.getElementById('resBox');
+      resBox.style.display='block';
+      const resAnim=performance.now();
+      const resDur=1000;
+      function resA(now){
+        const p2=Math.min((now-resAnim)/resDur,1);
+        const e2=1-Math.pow(1-p2,3);
+        document.getElementById('resVal').textContent=(curTN*e2).toFixed(2);
+        if(p2<1) requestAnimationFrame(resA);
+      }
+      requestAnimationFrame(resA);
+
+      document.getElementById('sts').className='status s-done';
+      document.getElementById('sts').innerHTML=`✅ 测定完成：${curTN.toFixed(2)} mg/L`;
+      btn.textContent='🔄 重新测定';
+      btn.onclick=function(){doneMeasure=false;btn.textContent='🔬 紫外测定';btn.onclick=doMeasure;btn.disabled=false;document.getElementById('resBox').style.display='none';};
+      btn.disabled=false;
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+// Standard Curve
+function updateCurve(){
+  const canvas=document.getElementById('curCanvas');
+  canvas.querySelectorAll('.cur-dot').forEach(d=>d.remove());
+  const bw=canvas.offsetWidth*0.8,bh=50,ox=canvas.offsetWidth*0.1,oy=5;
+  const standards=[0,2,4,6,8,10];
+  const absVals=standards.map(c=>0.005+c*0.045);
+  standards.forEach((c,i)=>{
+    const dot=document.createElement('div');
+    dot.className='cur-dot';
+    const x=ox+(c/10)*bw,y=oy+bh-absVals[i]/0.5*bh;
+    dot.style.left=x+'px';dot.style.bottom=y+'px';
+    dot.style.background='#22d3ee';
+    dot.style.boxShadow='0 0 6px rgba(8,145,178,.5)';
+    canvas.appendChild(dot);
+    // label
+    const lbl=document.createElement('div');
+    lbl.style.cssText=`position:absolute;left:${x-12}px;bottom:${y+10}px;font-size:8px;color:#64748b`;
+    lbl.textContent=c+'mg/L';
+    canvas.appendChild(lbl);
+  });
+  // Add sample point
+  if(curCorrA>0){
+    const dot=document.createElement('div');
+    dot.className='cur-dot';
+    const sampX=ox+Math.min(curTN/10,1)*bw,sampY=oy+bh-Math.min(curCorrA/0.5,1)*bh;
+    dot.style.left=sampX+'px';dot.style.bottom=sampY+'px';
+    dot.style.background='#f59e0b';
+    dot.style.boxShadow='0 0 10px rgba(245,158,11,.5)';
+    dot.style.width='10px';dot.style.height='10px';
+    canvas.appendChild(dot);
+  }
+  document.getElementById('curR2').textContent='R² = 0.9997';
+}
+
+function clearCurveDots(){
+  document.querySelectorAll('.cur-dot').forEach(d=>d.remove());
+  document.querySelectorAll('.cur-canvas > div:not(.cur-line)').forEach(d=>d.remove());
+}
+
+// Log
+function addLog(){
+  if(!doneMeasure||!curSample) return;
+  entries.push({
+    sample:curSample.name,
+    abs220:curAbs220.toFixed(3),
+    abs275:curAbs275.toFixed(3),
+    corrA:curCorrA.toFixed(3),
+    tn:curTN.toFixed(2)
+  });
+  renderLog();
+  document.getElementById('btnLog').disabled=true;
+  document.getElementById('sts').className='status s-done';
+  document.getElementById('sts').innerHTML=`📝 已记录：${curSample.name} → ${curTN.toFixed(2)} mg/L`;
+}
+
+function renderLog(){
+  const tb=document.getElementById('logB'),e=document.getElementById('logE');
+  document.getElementById('logC').textContent=`共 ${entries.length} 条`;
+  if(entries.length===0){tb.innerHTML='';e.style.display='block';return;}
+  e.style.display='none';
+  tb.innerHTML=entries.map((x,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>${x.sample}</td>
+    <td>${x.abs220}</td>
+    <td>${x.abs275}</td>
+    <td style="color:var(--accent-glow)">${x.corrA}</td>
+    <td style="font-weight:700">${x.tn}</td>
+  </tr>`).join('');
+}
+
+function tgl(){
+  const el=document.getElementById('dlog');
+  logVis=!logVis;
+  el.style.display=logVis?'block':'none';
+  document.getElementById('ltb').classList.toggle('active',logVis);
+}
+
+function rst(){
+  curSample=null;doneDigest=false;doneNeutral=false;doneMeasure=false;curTN=0;
+  document.querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sts').className='status s-idle';
+  document.getElementById('sts').innerHTML='🔄 已重置';
+  setStep(0);
+  document.getElementById('btnDig').disabled=true;
+  document.getElementById('btnDig').textContent='♨️ 开始消解';
+  document.getElementById('btnDig').style.background='';
+  document.getElementById('btnNeutral').disabled=true;document.getElementById('btnNeutral').textContent='🧪 中和';
+  document.getElementById('btnMeasure').disabled=true;document.getElementById('btnMeasure').textContent='🔬 紫外测定';document.getElementById('btnMeasure').onclick=doMeasure;
+  document.getElementById('btnLog').disabled=true;
+  document.getElementById('resBox').style.display='none';
+  document.getElementById('dTemp').textContent='25';
+  document.getElementById('dFill').style.width='0%';document.getElementById('dFill').style.background='var(--accent)';
+  document.getElementById('digestor').className='digestor';
+  document.getElementById('sDisp').textContent='0.000';document.getElementById('sDisp').style.color='#334155';
+  document.getElementById('spec').className='spec';
+  document.getElementById('tempS').value=25;document.getElementById('tempV').textContent='25℃';
+  document.getElementById('timeS').value=0;document.getElementById('timeV').textContent='0min';
+  document.getElementById('curR2').textContent='R² = —';
+  clearCurveDots();
+  document.getElementById('sWL').textContent='λ = 220 nm';
+}
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 636-2012</td><td>水质 总氮的测定 碱性过硫酸钾消解紫外分光光度法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

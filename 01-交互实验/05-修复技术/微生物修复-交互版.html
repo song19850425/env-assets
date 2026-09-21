@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原位微生物修复 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#16a34a;--accent-glow:#4ade80;--accent-bg:rgba(22,163,74,.12);--green:#22c55e}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(22,163,74,.04) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(22,163,74,.2);z-index:1}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:10px}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:4px}
+.lb{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}
+.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(34,197,94,.1);color:var(--green)}
+.cv-wrap{width:100%;height:260px;background:#0a0e17;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin:12px 0;position:relative}
+.cv-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:480px){.dp{grid-template-columns:1fr 1fr}}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:18px;font-weight:800;margin-top:2px}
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}@media(max-width:640px){.ct{grid-template-columns:1fr}}
+.cb{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.cb .cl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:4px;text-transform:uppercase}
+.cb .cr{display:flex;align-items:center;gap:8px}
+.cb input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.cb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(22,163,74,.3)}
+.cb .cv{font-size:12px;font-weight:700;color:var(--accent-glow);min-width:32px;text-align:right}
+.cb select{width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit;cursor:pointer}
+.ch{height:140px;background:#0a0e17;border-radius:8px;border:1px solid var(--border);margin:12px 0;position:relative;overflow:hidden}
+.ch canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(22,163,74,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+<section class="hr">
+  <div class="hg"></div>
+  <div class="hb">🌱 环境实验</div>
+  <h1 class="h1">掌握 <em>原位微生物</em> 修复</h1>
+  <div style="color:#64748b;font-size:15px;margin-top:12px;z-index:1">In-situ Bioremediation · 好氧/厌氧模式 · 细菌降解模拟</div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">微生物修复技术</div>
+  <div class="sd">利用微生物的代谢活动将土壤/地下水中的有机污染物降解为无害物质（CO₂、H₂O）。好氧和厌氧两种模式适用于不同污染物。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🦠</div><div class="in">好氧降解</div><div class="id">在有氧条件下，好氧菌将有机物氧化分解为 CO₂ 和 H₂O。适用于石油烃、苯系物等。降解速率快。</div></div>
+    <div class="ic"><div class="ii">🧫</div><div class="in">厌氧降解</div><div class="id">在缺氧条件下，厌氧菌通过还原脱氯等方式降解氯代烃等难降解污染物。速率较慢但适用范围更广。</div></div>
+    <div class="ic"><div class="ii">💉</div><div class="in">生物强化</div><div class="id">注入特定高效降解菌种或营养液，加速微生物生长繁殖，提高降解效率。</div></div>
+    <div class="ic"><div class="ii">📊</div><div class="in">关键因素</div><div class="id">温度(15-35℃)、pH(6.5-8.0)、营养物(N/P比)、溶解氧影响微生物活性。</div></div>
+  </div>
+</section>
+
+<section class="lb">
+<div class="lc"><div class="lbb">
+  <span class="sts si" id="sts">⏳ 调节参数后启动</span>
+  <div class="cv-wrap" id="cvWrap"><canvas id="cv"></canvas></div>
+  <div class="dp">
+    <div class="dv"><div class="dl">运行天数</div><div class="dd" style="color:var(--accent-glow)" id="dDays">0</div></div>
+    <div class="dv"><div class="dl">细菌密度</div><div class="dd" style="color:#4ade80" id="dBac">0</div></div>
+    <div class="dv"><div class="dl">污染物</div><div class="dd" style="color:var(--green)" id="dConc">100</div></div>
+    <div class="dv"><div class="dl">降解率</div><div class="dd" style="color:var(--accent-glow)" id="dEff">0%</div></div>
+  </div>
+  <div class="ct">
+    <div class="cb"><div class="cl">模式</div><select id="sMode" onchange="u()"><option value="aerobic" selected>好氧 (快速)</option><option value="anaerobic">厌氧 (慢速·广谱)</option></select></div>
+    <div class="cb"><div class="cl">温度 (℃)</div><div class="cr"><input type="range" id="sTemp" min="5" max="45" value="28" oninput="u()"><span class="cv" id="vTemp">28</span></div></div>
+    <div class="cb"><div class="cl">pH</div><div class="cr"><input type="range" id="sPH" min="4" max="9" value="7" step="0.5" oninput="u()"><span class="cv" id="vPH">7.0</span></div></div>
+    <div class="cb"><div class="cl">营养注入速率</div><div class="cr"><input type="range" id="sNut" min="0" max="10" value="5" step="0.5" oninput="u()"><span class="cv" id="vNut">5.0</span></div></div>
+  </div>
+  <div class="ch" id="ch"><canvas id="cvChart"></canvas></div>
+  <div class="acts">
+    <button class="btn b1" id="btnRun" onclick="run()">🦠 开始降解</button>
+    <button class="btn b2" onclick="rst()">🔄 重置</button>
+  </div>
+  <div style="font-size:11px;color:#64748b;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px;margin-top:8px" id="info"><strong>提示：</strong>好氧模式降解速率快，适合石油烃类；厌氧模式慢但能处理氯代烃。</div>
+</div></div>
+</section>
+
+<section class="sec">
+  <div class="sn">总结</div><div class="st">关键要点</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌡️</div><div class="in">温度控制</div><div class="id">最佳温度 20-35℃，过高或过低都会抑制微生物活性，降解效率下降。</div></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">pH 敏感</div><div class="id">最佳 pH 6.5-8.0。pH < 5 或 > 9 时大部分降解菌无法存活。</div></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">营养平衡</div><div class="id">C:N:P = 100:10:1，营养不足微生物无法繁殖，过量则导致二次污染。</div></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">周期长</div><div class="id">微生物修复通常需要数月到数年，是修复技术中周期较长但成本较低的一种。</div></div>
+  </div>
+</section>
+<div class="ft">环境实验 · 本笔记</div>
+
+<script>
+const ss=[document.querySelector('.hr'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';});
+
+let running=false,timer=null,days=0,conc=100,inC=100,bac=1,chartData=[];
+let c,ctx,w,h,cC,ctxC,wC,hC;
+let bacteria=[];
+
+function sz(){
+  const cw=document.getElementById('cvWrap');c=document.getElementById('cv');c.width=cw.offsetWidth;c.height=cw.offsetHeight;w=c.width;h=c.height;ctx=c.getContext('2d');
+  const ch=document.getElementById('ch');cC=document.getElementById('cvChart');cC.width=ch.offsetWidth;cC.height=ch.offsetHeight;wC=cC.width;hC=cC.height;ctxC=cC.getContext('2d');
+}
+
+function initBac(){
+  bacteria=[];for(let i=0;i<30;i++){bacteria.push({x:Math.random()*w,y:h*0.2+Math.random()*h*0.6,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:2+Math.random()*3,alive:true})}
+}
+
+function drawBG(){
+  const c=ctx;
+  c.fillStyle='#0f172a';c.fillRect(0,0,w,h);
+  // soil texture
+  for(let i=0;i<60;i++){c.fillStyle=`rgba(255,255,255,${.01+Math.random()*.02})`;c.fillRect(Math.random()*w,Math.random()*h,2,2);}
+  c.fillStyle='rgba(22,163,74,.06)';c.fillRect(0,h*0.2,w,h*0.65);
+  c.fillStyle='#475569';c.font='9px sans-serif';c.fillText('土壤微环境·微生物降解区',8,14);
+
+  // bacteria
+  const density=bacteria.length;
+  bacteria.forEach(b=>{
+    if(!b.alive)return;
+    b.x+=b.vx;b.y+=b.vy;
+    if(b.x<0||b.x>w)b.vx*=-1;if(b.y<h*0.2||b.y>h*0.85)b.vy*=-1;
+    // reproduce when in good condition
+    const temp=parseInt(document.getElementById('sTemp').value);
+    const ph=parseFloat(document.getElementById('sPH').value);
+    const nut=parseFloat(document.getElementById('sNut').value);
+    const mode=document.getElementById('sMode').value;
+    const factor=(temp>=15&&temp<=35?1:0.2)*(ph>=6&&ph<=8?1:0.2)*(nut/10+0.1);
+    if(running&&days>0&&Math.random()<factor*0.01&&bacteria.length<200){
+      bacteria.push({x:b.x+(Math.random()-.5)*20,y:b.y+(Math.random()-.5)*20,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:2+Math.random()*3,alive:true});
+    }
+    // degrade contaminants
+    if(running&&days>0&&Math.random()<factor*0.02){
+      conc-=0.1;if(conc<0)conc=0;
+    }
+
+    const a=Math.min(1,bacteria.length/100);
+    c.beginPath();c.arc(b.x,b.y,b.r,0,Math.PI*2);
+    c.fillStyle=`rgba(${mode==='aerobic'?74:100},${mode==='aerobic'?222:180},${mode==='aerobic'?128:100},${0.2+a*0.4})`;
+    c.fill();
+    if(mode==='aerobic'){c.shadowColor='rgba(74,222,128,.2)';c.shadowBlur=8;c.fill();c.shadowBlur=0;}
+  });
+}
+
+function drawChart(){
+  const c=ctxC;c.clearRect(0,0,wC,hC);
+  if(chartData.length<2)return;
+  const padL=35,padR=10,padT=10,padB=18,cw=wC-padL-padR,ch2=hC-padT-padB,maxV=Math.max(...chartData,100);
+  const xs=i=>padL+(i/(chartData.length-1))*cw,ys=v=>padT+ch2-(v/maxV)*ch2;
+  c.strokeStyle='rgba(255,255,255,.04)';for(let i=0;i<5;i++){c.beginPath();c.moveTo(0,ch2/5*i+padT);c.lineTo(wC,ch2/5*i+padT);c.stroke();}
+  c.beginPath();c.moveTo(xs(0),hC-padB);
+  chartData.forEach((v,i)=>c.lineTo(xs(i),ys(v)));
+  c.lineTo(xs(chartData.length-1),hC-padB);c.closePath();
+  c.fillStyle='rgba(74,222,128,.08)';c.fill();
+  c.beginPath();c.strokeStyle='#4ade80';c.lineWidth=2;c.shadowColor='rgba(74,222,128,.3)';c.shadowBlur=4;
+  chartData.forEach((v,i)=>{if(i===0)c.moveTo(xs(0),ys(v));else c.lineTo(xs(i),ys(v));});c.stroke();c.shadowBlur=0;
+  const last=chartData.length-1;c.beginPath();c.arc(xs(last),ys(chartData[last]),4,0,Math.PI*2);c.fillStyle='#4ade80';c.fill();
+  c.fillStyle='#475569';c.font='8px sans-serif';
+  c.fillText('0',padL-6,hC-padB+2);c.fillText(maxV.toFixed(0),padL-24,padT+4);
+  c.fillText('天数',wC-22,hC-2);
+}
+
+function run(){
+  if(running){clearInterval(timer);timer=null;running=false;document.getElementById('btnRun').textContent='▶ 继续';document.getElementById('btnRun').className='btn b1';document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='⏸ 已暂停';return;}
+  if(days===0){inC=100;conc=inC;bac=1;chartData=[conc];initBac();}
+  running=true;document.getElementById('btnRun').textContent='⏸ 暂停';document.getElementById('btnRun').className='btn b2';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='🦠 微生物降解中...';
+
+  timer=setInterval(()=>{
+    days+=2;
+    const mode=document.getElementById('sMode').value;
+    const temp=parseInt(document.getElementById('sTemp').value);
+    const ph=parseFloat(document.getElementById('sPH').value);
+    const nut=parseFloat(document.getElementById('sNut').value)/10;
+
+    const tempF=Math.max(0,1-Math.abs(temp-28)/20);
+    const phF=Math.max(0,1-Math.abs(ph-7)*2);
+    const nutF=nut;
+    const modeF=mode==='aerobic'?1.5:0.8;
+    const growthF=tempF*phF*nutF*modeF;
+
+    // bacterial growth (S-curve)
+    const maxBac=200;
+    bac=Math.min(maxBac,bac+growthF*3*(1-bac/maxBac)+0.5);
+
+    // degrade
+    const degRate=growthF*0.01*bac/50;
+    conc=Math.max(0,conc-degRate*conc*0.05);
+    const pct=((inC-conc)/inC)*100;
+
+    document.getElementById('dDays').textContent=days;
+    document.getElementById('dBac').textContent=Math.round(bac*100)/100;
+    document.getElementById('dConc').textContent=Math.round(conc);
+    document.getElementById('dEff').textContent=Math.min(100,pct).toFixed(1)+'%';
+    chartData.push(Math.max(0,conc));
+    drawChart();
+
+    let tip='';
+    if(pct<20)tip='🦠 微生物适应期：正在增殖，降解缓慢';
+    else if(pct<60)tip='⚡ 对数降解期：微生物大量繁殖，降解速率最快';
+    else tip='🐢 减速期：残留污染物难降解，需补充营养或切换模式';
+
+    document.getElementById('info').innerHTML=
+      `<strong>${mode==='aerobic'?'好氧':'厌氧'}模式</strong> | ${temp}℃ | pH ${ph} | 营养 ${nut}<br>
+       <span style="font-size:10px;">${tip}</span>`;
+
+    // adjust bacteria count display
+    if(pct>95){clearInterval(timer);timer=null;running=false;
+      document.getElementById('sts').className='sts sok';document.getElementById('sts').innerHTML='✅ 修复完成！';document.getElementById('btnRun').disabled=true;}
+  },500);
+}
+
+function u(){
+  document.getElementById('vTemp').textContent=document.getElementById('sTemp').value;
+  document.getElementById('vPH').textContent=document.getElementById('sPH').value;
+  document.getElementById('vNut').textContent=document.getElementById('sNut').value;
+}
+
+function rst(){if(timer){clearInterval(timer);timer=null;}
+  running=false;days=0;conc=100;inC=100;bac=1;chartData=[];bacteria=[];
+  document.getElementById('btnRun').textContent='🦠 开始降解';document.getElementById('btnRun').className='btn b1';document.getElementById('btnRun').disabled=false;
+  document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='🔄 已重置';
+  document.getElementById('dDays').textContent='0';document.getElementById('dBac').textContent='0';
+  document.getElementById('dConc').textContent='100';document.getElementById('dEff').textContent='0%';
+  document.getElementById('info').innerHTML='<strong>提示：</strong>调节参数后启动。';initBac();drawChart();}
+
+let aid=null;
+function lp(){ctx.clearRect(0,0,w,h);drawBG();aid=requestAnimationFrame(lp);}
+window.addEventListener('resize',()=>{sz();});
+window.addEventListener('load',()=>{sz();initBac();drawChart();lp();});
+</script>
+</body>
+</html>

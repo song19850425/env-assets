@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>环境空气PM2.5采样 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#0ea5e9;--accent-glow:#7dd3fc;--accent-bg:rgba(14,165,233,.12);--green:#22c55e}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(14,165,233,.04) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(14,165,233,.2);z-index:1}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}.ic .ii{font-size:22px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:4px}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(34,197,94,.1);color:var(--green)}
+.cv-wrap{width:100%;height:280px;background:#0a0e17;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin:12px 0;position:relative}
+.cv-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:480px){.dp{grid-template-columns:1fr 1fr}}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px}
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}@media(max-width:640px){.ct{grid-template-columns:1fr}}
+.cb{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.cb .cl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:4px;text-transform:uppercase}
+.cb .cr{display:flex;align-items:center;gap:8px}
+.cb input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.cb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(14,165,233,.3)}
+.cb .cv{font-size:12px;font-weight:700;color:var(--accent-glow);min-width:32px;text-align:right}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}.btn:disabled{opacity:.35}
+.b1{background:linear-gradient(135deg,#0ea5e9,#7dd3fc);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(14,165,233,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(14,165,233,.1),transparent 70%);border-radius:50%}
+.lh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">🌬️ 环境实验 · 现场采样系列</div>
+  <h1 class="h1">掌握 <em>环境空气PM2.5</em> 采样</h1>
+  <div class="hs" style="color:#94a3b8;font-size:15px;margin-top:12px;z-index:1">HJ 194-2017 / HJ 656-2013 · 滤膜称重法 · 流量校准</div>
+  <div class="hst">
+    <div><span class="n">3步</span><span class="l">操作流程</span></div>
+    <div><span class="n">6项</span><span class="l">环境参数</span></div>
+    <div><span class="n">实时</span><span class="l">体积累计</span></div>
+    <div><span class="n">自动</span><span class="l">采样监测</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">方法与原理</div><div class="st">PM2.5 手工监测</div>
+  <div class="sd">环境空气PM2.5手工监测采用滤膜称重法：用采样器将空气中的PM2.5颗粒捕集在滤膜上，通过采样前后滤膜重量差和采样体积计算浓度。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌀</div><div class="in">中流量采样器</div><div class="id">流量 100 L/min，配 PM2.5 切割头（切割粒径 D₅₀ = 2.5 μm）。适用于常规环境空气质量监测。</div><span class="it">100 L/min</span></div>
+    <div class="ic"><div class="ii">🌪️</div><div class="in">大流量采样器</div><div class="id">流量 1.05 m³/min，采样量大，适合低浓度区域或后续成分分析。能耗高、噪音大。</div><span class="it">1.05 m³/min</span></div>
+    <div class="ic"><div class="ii">🧻</div><div class="in">滤膜</div><div class="id">玻璃纤维滤膜或石英滤膜。采样前需在恒温恒湿箱（20±1℃/50±5%RH）中平衡 24h 后称重。</div><span class="it">恒温恒湿平衡</span></div>
+    <div class="ic"><div class="ii">⚖️</div><div class="in">称量条件</div><div class="id">十万分之一天平，恒温恒湿间（20±1℃/50±5%RH），滤膜称量前需去除静电。两次称量差 < 0.04mg。</div><span class="it">十万分之一天平</span></div>
+  </div>
+</section>
+
+<section class="lb">
+<div class="lc"><div class="lbb">
+  <div class="lh"><div class="lt">🌬️ 环境空气采样模拟</div></div>
+  <span class="sts si" id="sts">⏳ 准备滤膜</span>
+  <div class="cv-wrap" id="cvWrap"><canvas id="cv"></canvas></div>
+  <div class="dp">
+    <div class="dv"><div class="dl">采样时间</div><div class="dd" style="color:var(--accent-glow);font-size:22px" id="dTime">0:00</div></div>
+    <div class="dv"><div class="dl">采样体积</div><div class="dd" style="font-size:22px" id="dVol">0.00 m³</div></div>
+    <div class="dv"><div class="dl">采样流量</div><div class="dd" style="color:var(--green);font-size:22px" id="dFlowShow">100 L/min</div></div>
+  </div>
+  <div class="ct">
+    <div class="cb"><div class="cl">流量 (L/min)</div><div class="cr"><input type="range" id="sFlow" min="50" max="150" value="100" oninput="u()"><span class="cv" id="vFlow">100</span></div></div>
+    <div class="cb"><div class="cl">采样时间 (h)</div><div class="cr"><input type="range" id="sHrs" min="1" max="24" value="24" oninput="u()"><span class="cv" id="vHrs">24</span></div></div>
+    <div class="cb" style="grid-column:1/-1"><div class="cl">环境条件</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
+        <div><div style="font-size:9px;color:#64748b">温度</div>
+          <div class="cr"><input type="range" id="sTemp" min="-10" max="45" value="25" oninput="u()"><span class="cv" id="vTemp">25℃</span></div>
+        </div>
+        <div><div style="font-size:9px;color:#64748b">湿度 (%)</div>
+          <div class="cr"><input type="range" id="sHum" min="20" max="95" value="55" oninput="u()"><span class="cv" id="vHum">55</span></div>
+        </div>
+        <div><div style="font-size:9px;color:#64748b">气压 (hPa)</div>
+          <div class="cr"><input type="range" id="sPress" min="980" max="1040" value="1013" oninput="u()"><span class="cv" id="vPress">1013</span></div>
+        </div>
+        <div><div style="font-size:9px;color:#64748b">风速 (m/s)</div>
+          <div class="cr"><input type="range" id="sWind" min="0" max="15" value="3" step="0.5" oninput="u()"><span class="cv" id="vWind">3.0</span></div>
+        </div>
+        <div><div style="font-size:9px;color:#64748b">风向</div>
+          <select id="sDir" style="width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit">
+            <option value="N">北风</option><option value="NE">东北风</option><option value="E">东风</option>
+            <option value="SE">东南风</option><option value="S" selected>南风</option><option value="SW">西南风</option>
+            <option value="W">西风</option><option value="NW">西北风</option>
+          </select>
+        </div>
+        <div><div style="font-size:9px;color:#64748b">天气</div>
+          <select id="sWeather" style="width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit">
+            <option value="sunny" selected>☀️ 晴</option><option value="cloudy">⛅ 多云</option>
+            <option value="rainy">🌧️ 雨</option><option value="foggy">🌫️ 雾</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="cb"><div class="cl">采样器类型</div><select id="sType" onchange="u()">
+      <option value="med" selected>中流量 100 L/min</option>
+      <option value="high">大流量 1.05 m³/min</option>
+    </select></div>
+  </div>
+  <div style="text-align:center;padding:14px;margin:12px 0;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)">
+    <div style="font-size:22px;font-weight:800;color:var(--accent-glow)" id="statusVal">准备就绪</div>
+    <div style="font-size:11px;color:#64748b;margin-top:4px" id="statusHint">安装滤膜 → 校准流量 → 开始采样</div>
+  </div>
+  <div class="acts">
+    <button class="btn b1" id="btnInstall" onclick="installFilter()">🧻 安装滤膜</button>
+    <button class="btn b2" id="btnCal" onclick="calibrate()" disabled>📏 流量校准</button>
+    <button class="btn b1" id="btnStart" onclick="startSampling()" disabled style="background:linear-gradient(135deg,#16a34a,#4ade80);color:#000">▶ 开始采样</button>
+    <button class="btn b2" onclick="rst()">🔄 重置</button>
+  </div>
+  <div style="font-size:11px;color:#64748b;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px;margin-top:6px" id="info"><strong>流程：</strong>装滤膜 → 校准流量 → 开始采样 → 记录数据</div>
+</div></div>
+</section>
+
+<section class="sec">
+  <div class="sn">总结</div><div class="st">关键要点</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌀</div><div class="in">切割头</div><div class="id">PM2.5 切割头必须定期清洁校准，D₅₀ = 2.5 μm 是关键</div></div>
+    <div class="ic"><div class="ii">🧻</div><div class="in">滤膜平衡</div><div class="id">采样前后必须在同一条件下平衡 24h 称重，消除水分影响</div></div>
+    <div class="ic"><div class="ii">📏</div><div class="in">流量核查</div><div class="id">采样前后各做一次流量校准，偏差 > 5% 数据无效</div></div>
+    <div class="ic"><div class="ii">⚖️</div><div class="in">称量精度</div><div class="id">十万分之一天平，两次称量差 < 0.04mg</div></div>
+  </div>
+</section>
+<div class="ft">环境实验 · 环境空气采样 · 依据 HJ 194-2017 / HJ 656-2013</div>
+
+<script>
+const ss=[document.querySelector('.hr'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';});
+
+let c,ctx,w,h;
+let installed=false,calibrated=false,sampling=false,finished=false;
+let sampleTime=0,vol=0;
+let timer=null;
+let airParticles=[];
+
+function sz(){const cw=document.getElementById('cvWrap');c=document.getElementById('cv');c.width=cw.offsetWidth;c.height=cw.offsetHeight;w=c.width;h=c.height;ctx=c.getContext('2d');initParticles();}
+
+function initParticles(){
+  airParticles=[];
+  for(let i=0;i<60;i++){
+    airParticles.push({
+      x:Math.random()*w,y:Math.random()*h*0.38,
+      vx:0.2+Math.random()*0.8,vy:(Math.random()-0.5)*0.2,
+      r:1+Math.random()*3,a:0.03+Math.random()*0.08
+    });
+  }
+}
+
+function drawSampler(){
+  ctx.clearRect(0,0,w,h);
+  // Sky background
+  ctx.fillStyle='#0f172a';ctx.fillRect(0,0,w,h*0.4);
+  ctx.fillStyle='#1a1510';ctx.fillRect(0,h*0.4,w,h*0.6);
+
+  // Ground line
+  ctx.strokeStyle='#475569';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,h*0.4);ctx.lineTo(w,h*0.4);ctx.stroke();
+  ctx.fillStyle='#475569';ctx.font='9px sans-serif';ctx.fillText('地面',6,h*0.38);
+
+  // Sampler body
+  const bx=w*0.3,bw=80,bh=120,by=h*0.32;
+  ctx.fillStyle='#1e293b';ctx.fillRect(bx,by,bw,bh);
+  ctx.strokeStyle='#475569';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
+
+  // Cutting head
+  ctx.fillStyle='#334155';ctx.fillRect(bx-8,by-18,bw+16,22);
+  ctx.fillStyle='#475569';ctx.font='7px sans-serif';ctx.fillText('PM2.5切割头',bx+2,by-4);
+
+  // Filter holder
+  const fy=by+20;
+  if(installed){
+    ctx.fillStyle='rgba(255,255,255,.06)';ctx.fillRect(bx+10,fy,bw-20,10);
+    ctx.fillStyle='rgba(255,255,255,.08)';ctx.font='6px sans-serif';ctx.fillText('滤膜 ✓',bx+26,fy+8);
+  }
+
+  // Flow meter
+  ctx.fillStyle='#0a0e17';ctx.fillRect(bx-30,by+60,20,30);
+  ctx.fillStyle='rgba(14,165,233,.3)';ctx.fillRect(bx-28,by+85-calibrated*15,16,Math.max(5,calibrated*15));
+  ctx.fillStyle='#475569';ctx.font='6px sans-serif';ctx.fillText('流量',bx-30,by+104);
+
+  // Pump
+  if(sampling){
+    ctx.fillStyle='rgba(14,165,233,.1)';ctx.fillRect(bx+10,by+85,bw-20,20);
+    ctx.fillStyle='rgba(14,165,233,.15)';ctx.font='7px sans-serif';ctx.fillText('⚡ 运行中',bx+22,by+98);
+  }
+
+  // Stack / pole
+  ctx.fillStyle='#334155';ctx.fillRect(bx+bw/2-3,by-80,6,65);
+  // Wind vane
+  ctx.fillStyle='rgba(71,85,105,.3)';ctx.font='7px sans-serif';ctx.fillText('采样杆',bx+bw/2-12,by-85);
+
+  // PM particles in air - animated
+  const weather=document.getElementById('sWeather').value;
+  const densityMap={sunny:15,cloudy:30,rainy:45,foggy:55};
+  const density=sampling?densityMap[weather]*1.5:densityMap[weather];
+  
+  airParticles.forEach((p,i)=>{
+    if(i>=density*3)return;
+    if(sampling||true){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x>w+10){p.x=-10;p.y=Math.random()*h*0.35;}
+      if(p.y>h*0.38||p.y<0)p.vy*=-1;
+    }
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    const a=sampling?Math.min(0.15,0.03+base/500):p.a;
+    ctx.fillStyle=`rgba(200,200,200,${a})`;
+    ctx.fill();
+  });
+
+  // particles going into sampler during sampling
+  if(sampling){
+    ctx.fillStyle='rgba(14,165,233,.05)';
+    ctx.beginPath();ctx.moveTo(bx+bw/2-15,25);ctx.lineTo(bx+bw/2+15,25);ctx.lineTo(bx+bw/2,by-20);ctx.closePath();ctx.fill();
+  }
+
+  // Labels
+  ctx.fillStyle='#475569';ctx.font='8px sans-serif';
+  const type=document.getElementById('sType').value;
+  ctx.fillText(type==='med'?'中流量采样器':'大流量采样器',bx+8,by+bh+16);
+  ctx.fillStyle='rgba(14,165,233,.1)';ctx.font='7px sans-serif';
+  ctx.fillText('环境空气PM2.5监测',10,12);
+}
+
+function installFilter(){
+  installed=true;
+  document.getElementById('btnInstall').disabled=true;
+  document.getElementById('btnInstall').textContent='✅ 滤膜已装';
+  document.getElementById('btnCal').disabled=false;
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='✅ 滤膜已安装，准备流量校准';
+  document.getElementById('statusVal').textContent='滤膜已安装';
+  document.getElementById('statusHint').textContent='点击「流量校准」';
+  drawSampler();
+}
+
+function calibrate(){
+  calibrated=true;
+  document.getElementById('btnCal').disabled=true;
+  document.getElementById('btnCal').textContent='✅ 已校准';
+  document.getElementById('btnStart').disabled=false;
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='✅ 流量校准完成，可开始采样';
+  document.getElementById('statusVal').textContent='✅ 校准完成';
+  document.getElementById('statusHint').textContent='点击「开始采样」';
+  drawSampler();
+}
+
+function startSampling(){
+  if(sampling||finished)return;
+  sampling=true;finished=false;
+  document.getElementById('btnStart').disabled=true;
+  document.getElementById('btnStart').textContent='⏳ 采样中...';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='🌬️ 采样中...';
+
+  const flow=parseInt(document.getElementById('sFlow').value);
+  const hrs=parseInt(document.getElementById('sHrs').value);
+  const type=document.getElementById('sType').value;
+  const actualFlow=type==='med'?flow:flow*10.5;
+
+  let elapsed=0;
+  const totalSecs=hrs*3600;
+  const stepPerTick=Math.max(1,Math.floor(totalSecs/120)); // 120 ticks ≈ 12秒完成
+
+  timer=setInterval(()=>{
+    elapsed=Math.min(elapsed+stepPerTick,totalSecs);
+    sampleTime=elapsed;
+    const pct=elapsed/totalSecs;
+
+    const minutes=elapsed/60;
+    vol=actualFlow*minutes/1000; // m³
+
+    document.getElementById('dTime').textContent=formatTime(elapsed);
+    document.getElementById('dVol').textContent=vol.toFixed(2)+' m³';
+    document.getElementById('dFlowShow').textContent=actualFlow.toFixed(0)+' L/min';
+
+    document.getElementById('statusVal').textContent=`采样中 ${Math.round(pct*100)}%`;
+    document.getElementById('statusHint').textContent=
+      `流量 ${actualFlow.toFixed(0)} L/min | 已采 ${vol.toFixed(1)} m³`;
+
+    if(pct>=1){
+      clearInterval(timer);
+      finishSampling();
+    }
+    drawSampler();
+  },200);
+}
+
+function formatTime(s){
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+function finishSampling(){
+  sampling=false;finished=true;
+  document.getElementById('btnStart').textContent='✅ 采样完成';
+  document.getElementById('sts').className='sts sok';
+  document.getElementById('sts').innerHTML='✅ 采样完成！';
+  document.getElementById('statusVal').textContent='✅ 采样完成';
+  document.getElementById('statusHint').textContent=
+    `采样体积 ${vol.toFixed(1)} m³ | 采样时长 ${formatTime(Math.round(sampleTime))}`;
+
+  const t=document.getElementById('sTemp').value;
+  const h=document.getElementById('sHum').value;
+  const p=document.getElementById('sPress').value;
+  const w=document.getElementById('sWind').value;
+  const dir=document.getElementById('sDir').value;
+  const wea=document.getElementById('sWeather').value;
+  const weaMap={sunny:'☀️ 晴',cloudy:'⛅ 多云',rainy:'🌧️ 雨',foggy:'🌫️ 雾'};
+
+  document.getElementById('info').innerHTML=
+    `<strong>采样完成！</strong>体积 ${vol.toFixed(1)} m³ | 时长 ${formatTime(Math.round(sampleTime))}<br>
+     <span style="font-size:10px;">🌡️ ${t}℃ | 💧 ${h}% | 🌬️ ${p} hPa | 🌀 ${w} m/s ${dir} | ${weaMap[wea]}</span>`;
+}
+
+function u(){
+  document.getElementById('vFlow').textContent=document.getElementById('sFlow').value;
+  document.getElementById('vHrs').textContent=document.getElementById('sHrs').value;
+  document.getElementById('vTemp').textContent=document.getElementById('sTemp').value+'℃';
+  document.getElementById('vHum').textContent=document.getElementById('sHum').value;
+  document.getElementById('vPress').textContent=document.getElementById('sPress').value;
+  document.getElementById('vWind').textContent=parseFloat(document.getElementById('sWind').value).toFixed(1);
+}
+
+function rst(){
+  if(timer){clearInterval(timer);timer=null;}
+  installed=false;calibrated=false;sampling=false;finished=false;
+  sampleTime=0;vol=0;
+  document.getElementById('btnInstall').disabled=false;document.getElementById('btnInstall').textContent='🧻 安装滤膜';
+  document.getElementById('btnCal').disabled=true;document.getElementById('btnCal').textContent='📏 流量校准';
+  document.getElementById('btnStart').disabled=true;document.getElementById('btnStart').textContent='▶ 开始采样';
+  document.getElementById('dTime').textContent='0:00';document.getElementById('dVol').textContent='0.00 m³';
+  document.getElementById('dFlowShow').textContent='100 L/min';
+  document.getElementById('statusVal').textContent='已重置';
+  document.getElementById('statusHint').textContent='安装滤膜 → 校准流量 → 开始采样';
+  document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='🔄 已重置';
+  document.getElementById('info').innerHTML='<strong>流程：</strong>装滤膜 → 校准流量 → 开始采样 → 记录数据';
+  initParticles();drawSampler();
+}
+
+window.addEventListener('resize',()=>{sz();initParticles();});
+let aid=null;
+function animLoop(){ctx.clearRect(0,0,w,h);drawSampler();aid=requestAnimationFrame(animLoop);}
+window.addEventListener('load',()=>{sz();initParticles();animLoop();});
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 194-2017</td><td>环境空气质量手工监测技术规范</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 656-2013</td><td>环境空气颗粒物（PM2.5）手工监测方法（重量法）技术规范</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

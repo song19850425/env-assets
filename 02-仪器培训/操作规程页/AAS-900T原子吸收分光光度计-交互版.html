@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原子吸收分光光度计 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f59e0b;--accent-glow:#fbbf24;--accent-bg:rgba(245,158,11,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1f1407 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(245,158,11,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(245,158,11,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(245,158,11,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#1f1407);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr6{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr6{grid-template-columns:1fr 1fr}}
+.bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));transition:width .3s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:150px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+
+/* ===== 移动端适配（环境实验 操作规程仿真页）===== */
+@media(max-width:680px){
+  .sec{padding:54px 16px}
+  .lb{padding:42px 0}
+  .lc{padding:0 14px}
+  .lbb{padding:16px 14px}
+  .hr{padding:54px 18px;min-height:58vh}
+  .h1{font-size:clamp(25px,7vw,34px)}
+  .hb{font-size:11px;padding:5px 13px}
+  .hs{font-size:14px;padding:0 6px}
+  .hst{gap:16px;margin-top:16px}
+  .hst>div{display:flex;flex-direction:column;align-items:center}
+  .hst .n{font-size:25px}
+  .sd{font-size:13.5px;line-height:1.65}
+  .ic{padding:13px 13px}
+  .ic .in{font-size:13px}.ic .id{font-size:11.5px;line-height:1.55}
+  .lh{font-size:11px}
+  .btn{font-size:15px;padding:13px 18px;width:100%}
+  .acts{flex-direction:column;align-items:stretch;gap:10px}
+  .fld{margin:10px 0}
+  .fld input,.fld select{font-size:16px;padding:12px 12px}
+  .fld label{font-size:11px}
+  .dp{grid-template-columns:1fr 1fr}
+  .dv .dd{font-size:15px}
+  .pb{padding:14px 8px;font-size:13px;min-height:50px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+  .pwr,.pwr6,.seq{grid-template-columns:1fr 1fr}
+  .cols{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  #log{font-size:12px;max-height:140px;padding:10px}
+  .warn{font-size:12px}
+}
+@media(max-width:420px){
+  .dp,.pwr,.pwr6,.seq{grid-template-columns:1fr}
+  .hst{gap:10px}
+  .hst .n{font-size:22px}
+}
+
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">原子吸收分光光度计</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">AAS-900T</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">火焰原子吸收 · 空气-乙炔焰 · 金属元素定量</div>
+  <div class="hst">
+    <div><span class="n">双模式</span><span class="l">火焰 / 石墨炉</span></div>
+    <div><span class="n">0.5MPa</span><span class="l">空气助燃</span></div>
+    <div><span class="n">0.1MPa</span><span class="l">乙炔燃气</span></div>
+    <div><span class="n">5min</span><span class="l">关机洗管路</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">原子吸收分光光度计（AAS）用于测定水样、土壤浸出液等样品中的<b>金属元素含量</b>——铜、铅、镉、锌、铁……是环境检测里出镜率最高的仪器之一。样品雾化成气溶胶进入火焰，高温下金属元素变成基态自由原子，再吸收空心阴极灯发出的特征波长光，吸光度与浓度成正比。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">💨</div><div class="in">雾化和原子化</div><div class="id">样品经雾化器变成气溶胶，进入空气-乙炔火焰，约 2300℃ 高温使金属盐解离为基态自由原子。</div><span class="it">火焰原子化</span></div>
+    <div class="ic"><div class="ii">💡</div><div class="in">特征吸收</div><div class="id">元素空心阴极灯发射该元素特征波长光，基态原子选择性吸收，吸光度 A 与浓度 c 成正比（A=Kc，朗伯-比尔定律）。</div><span class="it">朗伯-比尔</span></div>
+    <div class="ic"><div class="ii">🌬️</div><div class="in">空气-乙炔焰</div><div class="id">空气是助燃气、乙炔是燃气。两者比例决定火焰温度和还原性，直接影响原子化效率与灵敏度。</div><span class="it">气路是命门</span></div>
+    <div class="ic"><div class="ii">📈</div><div class="in">标准曲线定量</div><div class="id">先测标准系列得 A-c 曲线，再测样品吸光度，反查浓度。每批样品必须带标准曲线。</div><span class="it">外标法定量</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>顺序错了、压力错了，系统会直接提醒你</b>，这正是真实实验里最容易出回火爆炸事故的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ 900T 操作模拟台（火焰法）</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">900T 原子吸收分光光度计 · 火焰模式</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 开机顺序（软件连接 → 空气压缩机 → 乙炔气体）</div>
+    <div class="pwr">
+      <div class="pb" id="bw1" onclick="boot(1)">软件连接<span class="po">step 1</span></div>
+      <div class="pb" id="bw2" onclick="boot(2)">空气压缩机<span class="po">step 2</span></div>
+      <div class="pb" id="bw3" onclick="boot(3)">乙炔气体<span class="po">step 3</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 确认气体压力（空气 ≈0.5MPa，乙炔 ≈0.1MPa）</div>
+    <div class="cols">
+      <div class="fld"><label>空气压力 (MPa)</label><input type="number" id="iAir" value="0.5" step="0.1"></div>
+      <div class="fld"><label>乙炔压力 (MPa)</label><input type="number" id="iAcet" value="0.1" step="0.05"></div>
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnP" onclick="setPressure()" disabled>⚙️ 确认气体压力</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 点火（需软件+空压机+乙炔 全开，且压力正常）</div>
+    <div class="acts">
+      <button class="btn b1" id="btnIgnite" onclick="ignite()" disabled>🔥 点火</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 点灯 + 建立方法（<b style="color:var(--rose)">任何测量前必须先做，否则无信号、结果无效</b>）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnMethod" onclick="makeMethod()" disabled>💡 点灯 + 建立方法</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑤ 开始测量</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">吸光度 Abs</div><div class="dd" id="dAbs">—</div></div>
+      <div class="dv"><div class="dl">浓度 mg/L</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">测量状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnMeasure" onclick="measure()" disabled>▶ 开始测量</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 关机顺序（清洗管路 → 关火焰 → 关乙炔 → 排气 → 关空压机 → 关计算机/电源）</div>
+    <div class="pwr6">
+      <div class="pb" id="sh1" onclick="shut(1)">清洗管路<span class="po">超纯水5min</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">关闭火焰<span class="po">step 2</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">关乙炔总阀<span class="po">step 3</span></div>
+      <div class="pb" id="sh4" onclick="shut(4)">排气<span class="po">排尽乙炔</span></div>
+      <div class="pb" id="sh5" onclick="shut(5)">关空压机<span class="po">step 5</span></div>
+      <div class="pb" id="sh6" onclick="shut(6)">关计算机<span class="po">step 6</span></div>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔥</div><div class="in">开机顺序：空气先于乙炔</div><div class="id">必须 软件→空气压缩机→乙炔 依次开启。先开乙炔、助燃气未建立就点火 → 回火、烧毁雾化室甚至爆炸。这是原子吸收最危险的红线。</div><span class="it">致命红线</span></div>
+    <div class="ic"><div class="ii">⚠️</div><div class="in">乙炔压力 ≈0.1MPa</div><div class="id">乙炔钢瓶压力低于 0.6MPa 必须更换（防止丙酮倒灌污染管路）；燃气压力过高（＞0.15MPa）→ 回火风险。空气保持 ≈0.5MPa。</div><span class="it">压力红线</span></div>
+    <div class="ic"><div class="ii">🔥</div><div class="in">关机反序：先熄火再关乙炔</div><div class="id">必须 清洗→关火焰→关乙炔→排气→关空压机→关电源。先关乙炔而火未熄 → 回火；未排尽管路乙炔就关空压机 → 残留燃气隐患。</div><span class="it">反序致命</span></div>
+    <div class="ic"><div class="ii">🧹</div><div class="in">维护周期</div><div class="id">燃烧头定期清洗（0.5% 硝酸浸泡+纯水超声）；空气压缩机滤芯每周查积水；每两月点灯保活；石墨炉循环水半年一换。</div><span class="it">期间核查</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={boot:0,pressure:false,flame:false,method:false,measuring:false,shut:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4000);}
+
+function boot(n){
+  if(S.flame||S.measuring){warn('测量/点火中不可再操作电源');return;}
+  // 致命红线：先开乙炔、助燃气未建立
+  if(n===3 && S.boot<2){warn('⚠️ 必须先开空气压缩机（助燃气），再开乙炔（燃气）！顺序反了有回火爆炸风险');log('开机顺序错误（乙炔先于空气），已阻断',false);return;}
+  if(n!==S.boot+1){warn('顺序错误：必须 软件连接 → 空气压缩机 → 乙炔气体 依次开启');log('开机顺序错误，已阻断',false);return;}
+  S.boot=n; $('bw'+n).classList.add('on');
+  log('开启：'+['软件连接','空气压缩机','乙炔气体'][n-1]);
+  if(n===2) log('✔ 助燃气（空气）已建立，可开启乙炔',true);
+  if(n===3){setSts('🟢 气路已通','sa');$('btnP').disabled=false;$('btnIgnite').disabled=false;warn('');}
+}
+function setPressure(){
+  if(S.pressure){warn('压力已确认');return;}
+  if(S.boot<3){warn('请先完成开机（软件→空压机→乙炔）');return;}
+  const air=+$('iAir').value, ac=+$('iAcet').value;
+  if(air<0.3){warn('助燃空气压力不足（应≈0.5 MPa），火焰温度不够');return;}
+  if(ac<=0){warn('乙炔压力未设置');return;}
+  if(ac>0.15){warn('⚠️ 乙炔压力过高（应≈0.1 MPa），回火风险！');return;}
+  S.pressure=true;$('btnP').classList.add('on');$('btnP').textContent='✅ 压力已确认';
+  log('气体压力已确认：空气 '+air+' MPa / 乙炔 '+ac+' MPa',true);warn('');
+}
+function ignite(){
+  if(S.flame){warn('火焰已点燃');return;}
+  if(S.boot<3){warn('请先开齐 软件→空压机→乙炔');return;}
+  if(!S.pressure){warn('请先确认气体压力');return;}
+  S.flame=true;$('btnIgnite').classList.add('on');$('btnIgnite').textContent='🔥 火焰已点燃';
+  setSts('🔥 火焰已点燃','sa');log('点火成功：空气-乙炔火焰建立',true);
+  $('btnMethod').disabled=false;warn('');
+}
+function makeMethod(){
+  if(S.method){warn('方法已建立');return;}
+  if(!S.flame){warn('请先点火');return;}
+  S.method=true;$('btnMethod').classList.add('on');$('btnMethod').textContent='✅ 方法已建';
+  log('点灯 + 建立标准曲线方法完成（测量前必须先做）',true);
+  $('btnMeasure').disabled=false;warn('');
+}
+function measure(){
+  if(!S.flame){warn('请先点火');return;}
+  if(!S.method){warn('请先建立方法/点灯（操作规程红线：任何测量前必须先建方法）');return;}
+  if(S.measuring)return;
+  S.measuring=true;setSts('📡 测量中…','sa');$('dState').textContent='测量中';
+  log('开始测量（模拟吸光度采集）');
+  let p=0;const iv=setInterval(()=>{p++;if(p>=8){clearInterval(iv);
+    const abs=(Math.random()*0.4+0.1).toFixed(3);
+    const c=(Math.random()*2+0.5).toFixed(3);
+    $('dAbs').textContent=abs;$('dC').textContent=c+' mg/L';
+    $('dState').textContent='完成';setSts('✅ 测量完成','sok');S.measuring=false;
+    log('测量完成：Abs '+abs+'，浓度 '+c+' mg/L（示例值）',true);
+    [1,2,3,4,5,6].forEach(n=>$('sh'+n).disabled=false);
+  }},150);
+}
+function shut(n){
+  const order=['清洗管路(超纯水5min)','关闭火焰','关乙炔总阀','排气(排尽乙炔)','关空气压缩机','关计算机/电源'];
+  if(n!==S.shut+1){
+    // 针对性红线提示
+    if(n===3 && S.shut<2){warn('⚠️ 必须先熄灭火焰，再关乙炔总阀！否则回火/爆炸');}
+    else if(n===5 && S.shut<4){warn('⚠️ 必须先排尽管路乙炔，再关空气压缩机！');}
+    else {warn('关机顺序错误：必须 清洗 → 关火焰 → 关乙炔 → 排气 → 关空压机 → 关计算机');}
+    log('关机顺序错误，已阻断',false);return;
+  }
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){setSts('💧 清洗管路中…','sa');log('开始走超纯水清洗管路（5min）');setTimeout(()=>log('✔ 管路清洗完成（5min）',true),600);}
+  else {log('执行：'+order[n-1]);}
+  if(n===2) log('✔ 火焰已熄灭',true);
+  if(n===4) log('✔ 管路乙炔已排尽',true);
+  if(n===6){setSts('🔒 已关机','si');log('关机完成。记得检查乙炔总阀、空压机排水、台面清理',true);warn('');}
+}
+function resetAll(){
+  S={boot:0,pressure:false,flame:false,method:false,measuring:false,shut:0};
+  [1,2,3].forEach(n=>$('bw'+n).classList.remove('on'));
+  [1,2,3,4,5,6].forEach(n=>{$('sh'+n).classList.remove('on');$('sh'+n).disabled=true;});
+  $('btnP').disabled=true;$('btnIgnite').disabled=true;$('btnMethod').disabled=true;$('btnMeasure').disabled=true;
+  $('btnP').textContent='⚙️ 确认气体压力';$('btnIgnite').textContent='🔥 点火';$('btnMethod').textContent='💡 点灯 + 建立方法';
+  $('dAbs').textContent='—';$('dC').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

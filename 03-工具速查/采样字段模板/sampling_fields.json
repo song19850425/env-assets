@@ -1,0 +1,943 @@
+{
+  "meta": {
+    "title": "环境实验 环境采样原始记录字段模板",
+    "version": "1.0",
+    "source": "环境检测机构采样原始记录空白表（真实结构抽取，机构标识已脱敏）",
+    "domains": [
+      "water",
+      "air",
+      "soil",
+      "noise"
+    ],
+    "domain_labels": {
+      "water": "水和废水采样",
+      "air": "大气采样及现场检测",
+      "soil": "土壤采样",
+      "noise": "环境噪声监测"
+    },
+    "note": "字段可直接映射为 LIMS 采样模块录入表单；required=true 为必填项，qc 为质控要点"
+  },
+  "common": [
+    {
+      "key": "entrust_no",
+      "label": "委托编号",
+      "group": "委托与任务信息",
+      "type": "text",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "任务溯源主键，必填"
+    },
+    {
+      "key": "method_basis",
+      "label": "方法依据",
+      "group": "委托与任务信息",
+      "type": "text",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "填标准/规范号，如 HJ/T 166、GB 3096"
+    },
+    {
+      "key": "sample_date",
+      "label": "采样/监测日期",
+      "group": "现场时空与环境",
+      "type": "date",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "年-月-日，必填"
+    },
+    {
+      "key": "weather",
+      "label": "天气状况",
+      "group": "现场时空与环境",
+      "type": "select",
+      "required": true,
+      "unit": null,
+      "options": [
+        "晴",
+        "多云",
+        "阴",
+        "小雨",
+        "中雨",
+        "雷阵雨",
+        "雪",
+        "雾"
+      ],
+      "qc": "现场必填，影响样品保存与工况判断"
+    },
+    {
+      "key": "sample_no",
+      "label": "样品编号",
+      "group": "样品与检测项目",
+      "type": "text",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "唯一编号，串联采样-交接-分析全链"
+    },
+    {
+      "key": "instrument_model",
+      "label": "仪器型号",
+      "group": "仪器与校准溯源",
+      "type": "text",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "设备溯源，必填"
+    },
+    {
+      "key": "sampler",
+      "label": "采样/监测人",
+      "group": "签字与归档",
+      "type": "text",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "责任人签字"
+    },
+    {
+      "key": "reviewer",
+      "label": "校核",
+      "group": "签字与归档",
+      "type": "text",
+      "required": true,
+      "unit": null,
+      "options": null,
+      "qc": "二级审核签字"
+    }
+  ],
+  "domains": {
+    "water": {
+      "label": "水和废水采样",
+      "formRef": "水和废水采样原始记录表",
+      "qc_title": "样品保存与固定（核心质控）",
+      "qc_points": [
+        "按分析项目加固定剂：加硫酸(COD/磷酸盐/总磷/总氮/氨氮/TOC)、加盐酸(油类)、加氢氧化钠(六价铬)、加硝酸(金属类 B/Na/K/Cu/Zn/Be/Mg/Ca/Mn/Fe/Ni/As/Cd/Pb/Ag)",
+        "溶解氧 DO：现场加硫酸锰+碱性碘化钾固定，盖严颠倒混合",
+        "挥发酚：磷酸调 pH 后加 0.2g 抗坏血酸除去残余氯",
+        "样品性状必记：气味(微弱/明显)、浮油(少量/大量)、臭和味、肉眼可见物"
+      ],
+      "fields": [
+        {
+          "key": "sample_date_w",
+          "label": "采样日期",
+          "group": "现场时空与环境",
+          "type": "date",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "含年/月/日"
+        },
+        {
+          "key": "weather_w",
+          "label": "天气状况",
+          "group": "现场时空与环境",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "晴",
+            "多云",
+            "阴",
+            "雨"
+          ],
+          "qc": null
+        },
+        {
+          "key": "instrument_no_w",
+          "label": "仪器编号及型号",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "溯源"
+        },
+        {
+          "key": "sample_time",
+          "label": "采样时间",
+          "group": "现场时空与环境",
+          "type": "time_range",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "记录起止时间"
+        },
+        {
+          "key": "container_fixative",
+          "label": "采样容器及固定剂",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "容器材质+固定剂对应项目"
+        },
+        {
+          "key": "analysis_items",
+          "label": "分析项目",
+          "group": "样品与检测项目",
+          "type": "multiselect",
+          "required": true,
+          "options": [
+            "pH",
+            "SS",
+            "CODCr",
+            "BOD5",
+            "色度",
+            "氨氮",
+            "磷酸盐",
+            "总磷",
+            "总氮",
+            "石油类",
+            "动植物油",
+            "DO",
+            "CODMn",
+            "LAS",
+            "总铬",
+            "六价铬",
+            "铜",
+            "锌",
+            "铅",
+            "镉",
+            "镍",
+            "银",
+            "汞",
+            "砷",
+            "硼",
+            "铁",
+            "亚铁",
+            "锰",
+            "钾",
+            "钠",
+            "钙",
+            "镁",
+            "锡",
+            "硒",
+            "铝",
+            "铍",
+            "硅",
+            "氟化物",
+            "氰化物",
+            "苯系物",
+            "VOCs",
+            "硝酸盐",
+            "亚硝酸盐",
+            "挥发酚",
+            "硫化物",
+            "硫酸盐",
+            "甲醛",
+            "苯胺",
+            "氯化物",
+            "总硬度",
+            "总碱度",
+            "粪大肠菌群",
+            "总大肠菌群",
+            "大肠杆菌",
+            "菌落总数",
+            "臭和味",
+            "肉眼可见物",
+            "其他"
+          ],
+          "qc": "勾选项目，决定固定剂与容器"
+        },
+        {
+          "key": "onsite_items",
+          "label": "现场测定项目",
+          "group": "样品与检测项目",
+          "type": "multiselect",
+          "required": false,
+          "options": [
+            "pH",
+            "水温",
+            "DO",
+            "电导率",
+            "透明度(塞氏盘)",
+            "余氯"
+          ],
+          "qc": "现场即时测定"
+        },
+        {
+          "key": "sample_trait",
+          "label": "样品性状",
+          "group": "现场性状/记录",
+          "type": "multiselect",
+          "required": true,
+          "options": [
+            "微弱气味",
+            "明显气味",
+            "少量浮油",
+            "大量浮油",
+            "臭和味",
+            "肉眼可见物"
+          ],
+          "qc": "描述性必填"
+        },
+        {
+          "key": "fix_sulfuric",
+          "label": "加硫酸项目",
+          "group": "样品保存与固定(QC)",
+          "type": "multiselect",
+          "required": false,
+          "options": [
+            "COD",
+            "磷酸盐",
+            "总磷",
+            "总氮",
+            "氨氮",
+            "TOC"
+          ],
+          "qc": "硫酸固定 pH≤2"
+        },
+        {
+          "key": "fix_hcl",
+          "label": "加盐酸项目",
+          "group": "样品保存与固定(QC)",
+          "type": "multiselect",
+          "required": false,
+          "options": [
+            "油类"
+          ],
+          "qc": "盐酸固定"
+        },
+        {
+          "key": "fix_naoh",
+          "label": "加氢氧化钠项目",
+          "group": "样品保存与固定(QC)",
+          "type": "multiselect",
+          "required": false,
+          "options": [
+            "六价铬"
+          ],
+          "qc": "NaOH 固定"
+        },
+        {
+          "key": "fix_hno3",
+          "label": "加硝酸项目",
+          "group": "样品保存与固定(QC)",
+          "type": "multiselect",
+          "required": false,
+          "options": [
+            "硼",
+            "钠",
+            "钾",
+            "铜",
+            "锌",
+            "铍",
+            "镁",
+            "钙",
+            "锰",
+            "铁",
+            "镍",
+            "砷",
+            "镉",
+            "铅",
+            "银"
+          ],
+          "qc": "硝酸固定 pH≤2"
+        },
+        {
+          "key": "fix_do",
+          "label": "溶解氧固定",
+          "group": "样品保存与固定(QC)",
+          "type": "text",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": "硫酸锰+碱性碘化钾，现场固定"
+        },
+        {
+          "key": "situation",
+          "label": "采样现场情况简述",
+          "group": "现场性状/记录",
+          "type": "textarea",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sketch",
+          "label": "采样布点示意图",
+          "group": "现场性状/记录",
+          "type": "file",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": "附图"
+        }
+      ]
+    },
+    "air": {
+      "label": "大气采样及现场检测",
+      "formRef": "大气采样及现场检测原始记录表",
+      "qc_title": "采样体积与吸收液（核心质控）",
+      "qc_points": [
+        "采样体积 = 吸收液体积 × 采样流量(L/min) × 采样时间(min)，三项须同时记录且可追溯",
+        "环境条件必记：晴/阴、风速(m/s)、风向、气压(kPa)、气温 —— 用于标况体积换算",
+        "多台采样仪器按 A/B/C/D 分别编号溯源",
+        "采样布点示意图 + 现场情况简述必附"
+      ],
+      "fields": [
+        {
+          "key": "entrust_unit",
+          "label": "委托单位",
+          "group": "委托与任务信息",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "apply_no",
+          "label": "申请单号",
+          "group": "委托与任务信息",
+          "type": "text",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "inspected_unit",
+          "label": "受检单位",
+          "group": "委托与任务信息",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sample_site",
+          "label": "采样地点",
+          "group": "现场时空与环境",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "具体点位"
+        },
+        {
+          "key": "env_cond",
+          "label": "环境条件",
+          "group": "现场时空与环境",
+          "type": "composite",
+          "required": true,
+          "unit": null,
+          "options": [
+            "晴",
+            "阴"
+          ],
+          "qc": "含风速(m/s)/风向/气压(kPa)/气温"
+        },
+        {
+          "key": "wind_speed",
+          "label": "风速",
+          "group": "现场时空与环境",
+          "type": "number",
+          "required": true,
+          "unit": "m/s",
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "wind_dir",
+          "label": "风向",
+          "group": "现场时空与环境",
+          "type": "text",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "pressure",
+          "label": "气压",
+          "group": "现场时空与环境",
+          "type": "number",
+          "required": false,
+          "unit": "kPa",
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "air_temp",
+          "label": "气温",
+          "group": "现场时空与环境",
+          "type": "number",
+          "required": false,
+          "unit": "℃",
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "instrument_air",
+          "label": "采样仪器",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "qc": "多台分编号"
+        },
+        {
+          "key": "measure_item",
+          "label": "测量项目",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sample_pos",
+          "label": "采样位置",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sample_period",
+          "label": "采样时段",
+          "group": "现场时空与环境",
+          "type": "time_range",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "起止时间"
+        },
+        {
+          "key": "absorb_vol",
+          "label": "吸收液体积",
+          "group": "样品与检测项目",
+          "type": "number",
+          "required": true,
+          "unit": "mL",
+          "options": null,
+          "qc": "计算采样体积三要素之一"
+        },
+        {
+          "key": "flow_rate",
+          "label": "采样流量",
+          "group": "样品与检测项目",
+          "type": "number",
+          "required": true,
+          "unit": "L/min",
+          "options": null,
+          "qc": "现场流量计读数"
+        },
+        {
+          "key": "sample_time_min",
+          "label": "采样时间",
+          "group": "样品与检测项目",
+          "type": "number",
+          "required": true,
+          "unit": "min",
+          "options": null,
+          "qc": "累计采样时长"
+        },
+        {
+          "key": "situation_air",
+          "label": "采样现场情况简述",
+          "group": "现场性状/记录",
+          "type": "textarea",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sketch_air",
+          "label": "采样布点示意图",
+          "group": "现场性状/记录",
+          "type": "file",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": "附图"
+        }
+      ]
+    },
+    "soil": {
+      "label": "土壤采样",
+      "formRef": "土壤采样原始记录表",
+      "qc_title": "土壤性状描述（核心质控）",
+      "qc_points": [
+        "方法依据：土壤环境监测技术规范 HJ/T 166-2004",
+        "土壤性状必填四项：颜色 / 湿度 / 植物根系 / 土壤质地（均有标准选项）",
+        "采样点及所在区域污染源、敏感人群、水域分布须画示意图",
+        "样品编号 + 检测项目逐点对应，避免混样"
+      ],
+      "fields": [
+        {
+          "key": "sample_date_s",
+          "label": "采样日期",
+          "group": "现场时空与环境",
+          "type": "date",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sample_period_s",
+          "label": "采样时段",
+          "group": "现场时空与环境",
+          "type": "time_range",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "weather_s",
+          "label": "天气状况",
+          "group": "现场时空与环境",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "晴",
+            "多云",
+            "阴",
+            "雨"
+          ],
+          "qc": null
+        },
+        {
+          "key": "air_temp_s",
+          "label": "气温",
+          "group": "现场时空与环境",
+          "type": "number",
+          "required": false,
+          "unit": "℃",
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "pressure_s",
+          "label": "气压",
+          "group": "现场时空与环境",
+          "type": "number",
+          "required": false,
+          "unit": "kPa",
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "seq_no",
+          "label": "采样序号",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "逐点序号"
+        },
+        {
+          "key": "point_name",
+          "label": "采样点名称",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "test_items",
+          "label": "检测项目",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "soil_color",
+          "label": "颜色",
+          "group": "土壤性状描述",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "红棕",
+            "黄棕",
+            "浅棕",
+            "暗栗",
+            "暗棕",
+            "暗灰",
+            "黑"
+          ],
+          "qc": "性状四要素之一"
+        },
+        {
+          "key": "soil_moist",
+          "label": "湿度",
+          "group": "土壤性状描述",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "干",
+            "潮",
+            "湿",
+            "重潮",
+            "极潮"
+          ],
+          "qc": "性状四要素之一"
+        },
+        {
+          "key": "soil_root",
+          "label": "植物根系",
+          "group": "土壤性状描述",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "无根系",
+            "少量",
+            "中量",
+            "多量",
+            "根密集"
+          ],
+          "qc": "性状四要素之一"
+        },
+        {
+          "key": "soil_texture",
+          "label": "土壤质地",
+          "group": "土壤性状描述",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "砂土",
+            "沙壤土",
+            "轻壤土",
+            "中壤土",
+            "重壤土",
+            "粘土"
+          ],
+          "qc": "性状四要素之一"
+        },
+        {
+          "key": "sketch_soil",
+          "label": "污染源/敏感点/水域分布示意图",
+          "group": "现场性状/记录",
+          "type": "file",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "必附"
+        }
+      ]
+    },
+    "noise": {
+      "label": "环境噪声监测",
+      "formRef": "环境噪声监测原始记录表",
+      "qc_title": "声级计前后校准（核心质控红线）",
+      "qc_points": [
+        "监测前后均须用校准器校准声级计，记录前后校准值(dB(A))，LIMS 应校验两者一致（一般偏差≤0.5dB）",
+        "方法依据：GB 3096-2008 声环境质量标准",
+        "监测目的二选一：声环境功能区监测 / 敏感建筑物监测",
+        "声源及运行工况须说明（防止工况不符导致数据无效）"
+      ],
+      "fields": [
+        {
+          "key": "monitor_date",
+          "label": "监测日期",
+          "group": "现场时空与环境",
+          "type": "date",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "weather_n",
+          "label": "天气",
+          "group": "现场时空与环境",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "晴",
+            "多云",
+            "阴",
+            "雨",
+            "雪",
+            "雾"
+          ],
+          "qc": null
+        },
+        {
+          "key": "wind_dir_n",
+          "label": "风向",
+          "group": "现场时空与环境",
+          "type": "text",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "wind_speed_n",
+          "label": "风速",
+          "group": "现场时空与环境",
+          "type": "number",
+          "required": true,
+          "unit": "m/s",
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "monitor_purpose",
+          "label": "监测目的",
+          "group": "委托与任务信息",
+          "type": "select",
+          "required": true,
+          "unit": null,
+          "options": [
+            "声环境功能区监测",
+            "敏感建筑物监测"
+          ],
+          "qc": null
+        },
+        {
+          "key": "point_name_n",
+          "label": "监测点名称",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "main_sound",
+          "label": "主要声源",
+          "group": "样品与检测项目",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sample_period_n",
+          "label": "采样时段",
+          "group": "现场时空与环境",
+          "type": "time_range",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sound_meter",
+          "label": "声级计型号",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "设备溯源"
+        },
+        {
+          "key": "cal_model",
+          "label": "校准器型号",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "cal_no",
+          "label": "校准器编号",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "cal_before",
+          "label": "监测前校准值",
+          "group": "仪器与校准溯源",
+          "type": "number",
+          "required": true,
+          "unit": "dB(A)",
+          "options": null,
+          "qc": "前后比对红线"
+        },
+        {
+          "key": "cal_after",
+          "label": "监测后校准值",
+          "group": "仪器与校准溯源",
+          "type": "number",
+          "required": true,
+          "unit": "dB(A)",
+          "options": null,
+          "qc": "前后比对红线"
+        },
+        {
+          "key": "anemo_model",
+          "label": "风向风速仪型号",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "anemo_no",
+          "label": "风向风速仪编号",
+          "group": "仪器与校准溯源",
+          "type": "text",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sketch_noise",
+          "label": "测点分布示意图",
+          "group": "现场性状/记录",
+          "type": "file",
+          "required": false,
+          "unit": null,
+          "options": null,
+          "qc": null
+        },
+        {
+          "key": "sound_source_desc",
+          "label": "声源及运行工况说明",
+          "group": "现场性状/记录",
+          "type": "textarea",
+          "required": true,
+          "unit": null,
+          "options": null,
+          "qc": "工况必说明"
+        }
+      ]
+    }
+  }
+}

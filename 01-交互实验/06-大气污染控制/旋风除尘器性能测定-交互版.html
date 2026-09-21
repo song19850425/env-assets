@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="0lRgWVrEfVtgdvQIUh0O3p">
+<head data-page-node-id="cksXKodhVYJY8bJyC3uyIE">
+<meta charset="UTF-8" data-page-node-id="pGCA6zQ0sGfaeD2HlyE7ea">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="Bvjs9beBak8oN1oSE0LHQB">
+<title>旋风除尘器性能测定 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f59e0b;--glow:#fbbf24;--abg:rgba(245,158,11,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2b1a05 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(245,158,11,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(245,158,11,.13),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(245,158,11,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:600px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:720px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(245,158,11,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#2b1a05);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#f59e0b;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:170px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:230px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#fcd34d;line-height:1.7;margin:16px 0}
+.note b{color:#fde68a}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+</style>
+</head>
+<body data-page-node-id="IHfyPoDLwC2jQAt8cu4PDh">
+<div id="sp" data-page-node-id="mfVeitg6coKBIpBIfAvPBw"></div>
+
+<section class="hr" data-page-node-id="qilXgTBvXanv499Ju7V1Bt">
+  <div class="hg" data-page-node-id="6Q09HjgZyCrqw7Yq3LZgxv"></div><div class="hgl" data-page-node-id="p95CD1LP6StmSPOMnABd0H"></div>
+  <div class="hb" data-page-node-id="3JGSy8WnwXEDd3rL884eXY">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1" data-page-node-id="z3OroU0ZmlCloYeibdZRk9">旋风除尘器<br data-page-node-id="682IwvSKF7uUyCQEhY1hkv"><em data-page-node-id="PH3I1I6BG2xSxKO0AJZYNp">性能测定</em></h1>
+  <div class="hs" data-page-node-id="OCwP4VXELBr2WjiUqu4SHY">教材第三部分 10 个控制技术实验里，它是结构最简单、模型最干净的一个。<br data-page-node-id="4IZMd298yEHtmATVhgJDti">但它的核心矛盾——<b style="color:#fcd34d" data-page-node-id="43aqqf9uTDPS3h30pxh2SP">效率是线性的，能耗是平方的</b>——是整门课最重要的一课。</div>
+  <div class="hst" data-page-node-id="l3cJ5M1nQPHT6yaylzU6kx">
+    <div data-page-node-id="7gM1AOPfBdsxm0iaQh38VG"><span class="n" data-page-node-id="8QKYeTTbZXBbBfFumlISYJ">d₅₀</span><span class="l" data-page-node-id="eXzIv7SBALUB7WNGgkUIBB">分割粒径</span></div>
+    <div data-page-node-id="26v00RMkFOcCmjnXPPmrKx"><span class="n" data-page-node-id="brg1gQ4hyR36tmwMFPlMWt">ξ·ρv²/2</span><span class="l" data-page-node-id="ze6QuxEEUMWdceCisSMtLB">阻力公式</span></div>
+    <div data-page-node-id="Yriem80jZmQTuPuOYi37JS"><span class="n" data-page-node-id="HHmI1CVEF8GARDA1ZUECeW">5</span><span class="l" data-page-node-id="CB1laxKxtmy1Hcm9aeAlkG">测量步骤</span></div>
+    <div data-page-node-id="ZxUVb51ghwodPGm49W3bhE"><span class="n" data-page-node-id="hmoXQFjCtvkAaLEhDvrod7">4</span><span class="l" data-page-node-id="Dke3THtrQz66uZQQEuId1N">红线</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1" data-page-node-id="81nxZxl4lqYqD2pVOgWr80">
+  <div class="sn" data-page-node-id="Yi6bHsZfvRCctj3anz1FAf">01 · 开篇引入</div>
+  <div class="st" data-page-node-id="j1QZCDPWDLfAxwlhqBILQZ">为什么除尘系统的第一级<br data-page-node-id="KA7X7sUvE725nX7PjXDuWk">几乎总是它</div>
+  <div class="sd" data-page-node-id="6yPCcpsMwxPak6PWc8yjSc">去电厂、水泥厂、铸造车间看，除尘工艺链的第一级基本都是旋风除尘器。不是因为效率高——它通常只有 70–85%，比袋式和电除尘差远了。是因为三件事：<b data-page-node-id="MXySkMZUhZnPaagjDRAwZm">没有运动部件、耐高温、便宜</b>。它先粗除，把大颗粒干掉，减轻后端袋式或电除尘的负担，同时把高温烟气的热量留住。</div>
+  <div class="sd" data-page-node-id="DrxK75EVxAsD81NS1TyM73">但它有个天生的短板：<b data-page-node-id="nEeXyZERp6GDiNQszPYkgP">细颗粒抓不住</b>。原因在分离机理里——离心力对颗粒质量成正比，颗粒越小，甩到壁面的力越小。于是就引出这门课最核心的概念：<b data-page-node-id="Vq6fj1SfkGIETiC2V44Y5p">分割粒径 d₅₀</b>。</div>
+  <div class="g3" data-page-node-id="MEXKRbn3yfF4ZoU6euLzIi">
+    <div class="ic" data-page-node-id="YWKT0rV9yGSP38pf6Gu6u2"><div class="ii" data-page-node-id="HLKcsCz6nwH9A6QhquY0Qs">🏭</div><div class="in" data-page-node-id="eCochiihvXVQ8sOn8MWxOA">便宜、皮实、耐高温</div><div class="id" data-page-node-id="H63ERcPh1IAR0vtLf3WCJQ">无转动部件、结构简单、维护量低。可处理 400℃ 以上烟气，这是袋式除尘器做不到的。</div><span class="it" data-page-node-id="F5EzPehoMazacWGb6QzDy7">工程价值</span></div>
+    <div class="ic" data-page-node-id="nJNSAJoQumzip4Aw1bTLYp"><div class="ii" data-page-node-id="sE8HR8GX0HyM8z5YEU40fR">📉</div><div class="in" data-page-node-id="P3vqbMKbzGfoUInADMgNvf">效率不高但够用</div><div class="id" data-page-node-id="dC21B0dBKihwQ6LGiS8jmL">常规设计 70–90%。作为预除尘，把入口含尘浓度从几十 g/m³ 降到几 g/m³，后端压力骤减。</div><span class="it" data-page-node-id="NTvdTeBXEJEsIEEWcmDlbD">定位</span></div>
+    <div class="ic" data-page-node-id="yRN22G5Mizah6IGWMARefp"><div class="ii" data-page-node-id="zhQWJgyfeXrttQzT25nEXe">⚡</div><div class="in" data-page-node-id="xperk6SHnrla4qaZUnGhkq">能耗随风速平方涨</div><div class="id" data-page-node-id="F7gnDb5TH00CP0fUnkPU18">想靠加风速提效率？阻力按风速平方上升。效率涨 10 个点，能耗可能翻 3 倍。</div><span class="it" data-page-node-id="cy6qOTN8FIV1HW7GcFPAbn">核心矛盾</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2" data-page-node-id="EQYfvl7HrVRY51xE4O6U5q">
+  <div class="sn" data-page-node-id="9UXXSGDmXzBWQlhqtFTiyj">02 · 科学原理</div>
+  <div class="st" data-page-node-id="AMGPemDNAki6KgxIkakYfW">三个概念撑起整个实验</div>
+  <div class="sd" data-page-node-id="SwWVscUY6m6M3ncWTjIEwG">这个实验的所有数据，都能从下面三个式子里推出来。理解了它们，模拟台里的曲线你就能自己预测。</div>
+  <div class="g2" data-page-node-id="r4DozPH3DB4oA8XNcy1UUd">
+    <div class="ic" data-page-node-id="Lmfala3yqrKFvnzVgWrWFd">
+      <div class="ii" data-page-node-id="zWxqtuZMzpdygTgogbi2mo">🌀</div><div class="in" data-page-node-id="0wD5WGcdfDQyP3UQr4pK2c">① 离心分离</div>
+      <div class="id" data-page-node-id="TdYBn0mH5BVldmEI660MNI">气流从切向进口进入，在筒体内高速旋转。颗粒受离心力甩向外壁，沿壁面下落到灰斗，净气从中心排气管排出。离心力可达重力的<b data-page-node-id="KPzmqs9oVVPLgLzmQfADAk">几百倍</b>——这就是它能抓住微米级颗粒的原因。</div>
+      <div class="fx" data-page-node-id="uY1vcvPJHtTTZpcDolAyF3">F = m·v² / r　（m 为颗粒质量，v 为切向速度，r 为旋转半径）</div>
+    </div>
+    <div class="ic" data-page-node-id="NK3PMxYMKVtsBgBKsPOXKG">
+      <div class="ii" data-page-node-id="LKI12gJCiKlkl49faJjhdJ">🎯</div><div class="in" data-page-node-id="PcTXlMSEwxgMp26npw3N0X">② 分割粒径 d₅₀</div>
+      <div class="id" data-page-node-id="XMAFnbmk5MqYmyEZP4UFn5">除尘效率正好 <b data-page-node-id="e0dmNE2DujZBZPcaUnKFBn">50%</b> 时对应的颗粒粒径。d₅₀ 越小，说明这台除尘器越能抓细颗粒。它随风速升高、颗粒密度增大、筒体减小而变小。</div>
+      <div class="fx" data-page-node-id="fW0Q4lyFNDwaZUk80RyqHW">d₅₀ = √( 9μb / (2πNₑvᵢ(ρₚ−ρ_g)) )　（Lapple 模型）</div>
+    </div>
+    <div class="ic" data-page-node-id="7B2G9L2a4OHfcMb2JLmfEK">
+      <div class="ii" data-page-node-id="OJiaWivCx44du2gnH6hWqJ">📊</div><div class="in" data-page-node-id="crw8QI1yEspRKco6lRkMKC">③ 分级效率曲线</div>
+      <div class="id" data-page-node-id="2kEhEHpvEir5CXpw03pqig">除尘器对不同粒径的效率不同，画成曲线就是分级效率曲线。粒径远大于 d₅₀ → 接近 100%；远小于 d₅₀ → 接近 0%。总效率＝分级效率对粒径分布的加权积分。</div>
+      <div class="fx" data-page-node-id="FIDKWkLcu4Ed6B2RNQTH0K">η(d) = 1 / ( 1 + (d₅₀/d)² )</div>
+    </div>
+    <div class="ic" data-page-node-id="q8q8pADpXDHcVCNsSvP3UC">
+      <div class="ii" data-page-node-id="zdEuHEgd5DqqceKF5RYQcN">💨</div><div class="in" data-page-node-id="swFnaCmFCAgMcbUxBeBWnB">④ 阻力</div>
+      <div class="id" data-page-node-id="DiYB4boCAFwI5wY5ar6zni">进口气流的动压乘以阻力系数。阻力系数 ξ 由结构决定（旋风除尘器一般 5–10）。注意<b data-page-node-id="nqhFLs0TXndPH1YSZC6JAk">风速是平方项</b>——这是所有取舍的根源。</div>
+      <div class="fx" data-page-node-id="SBM4FcbJoMckURTgnLVpPS">ΔP = ξ · ρ_g · vᵢ² / 2</div>
+    </div>
+  </div>
+  <div class="note blue" data-page-node-id="pc5mopwkMP1uAXcepPd7R7">
+    <b data-page-node-id="9nKLD5FkreyXWKQPJEbCTT">把四个式子连起来看</b>：风速 vᵢ 出现在 d₅₀ 的分母里（一次方），也出现在阻力的分子里（<b data-page-node-id="Zf732mhxcMxgFBSQ5BtnsG">平方</b>）。所以风速从 18 提到 30 m/s（+67%），d₅₀ 只降到原来的 77%，总效率大约涨 7–10 个点；但阻力会涨到 <b data-page-node-id="Dp24KQkGIVU2AF5pHVZQtm">2.8 倍</b>。这就是工程上把进口风速卡在 <b data-page-node-id="23lAus304Q0BJNxH7u11oE">12–20 m/s</b> 的原因——再高，能耗买不回那点效率。
+  </div>
+</section>
+
+<section class="sec" id="s3" data-page-node-id="qGgsQf3yY01ccZOOBo9eB1">
+  <div class="sn" data-page-node-id="hLv43B0FZbsFLxeoE975QY">03 · 实验流程</div>
+  <div class="st" data-page-node-id="oKHrHUPolLeC7BLHaUMJhr">五步走完，顺序不能乱</div>
+  <div class="sd" data-page-node-id="1URXEQkkGR9hau7mKELjB2">测点布设与采样按固定污染源监测相关标准（GB/T 16157、HJ 836 等）执行。下面五步是标准链路，<b data-page-node-id="MwgwUBjIjHhGtshUpMtAL6">顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule" data-page-node-id="Bb7VmpDp29weYherRuYeWz"><div class="rn" data-page-node-id="2sLsosmzZdV3vT2Kzy7tFY">STEP 1</div><div data-page-node-id="L8BC1bwSmXTKBlWQgirtDX"><div class="rt" data-page-node-id="UkGJ0m43ZAcok1W3f9TXe6">工况稳定确认</div><div class="rd" data-page-node-id="J8V41cahg1YRynJ8jF35bF">等锅炉／窑炉负荷稳定、风量稳定后才开始测。工况波动时测出的效率没有代表性——因为风量一变，d₅₀ 和阻力全变。</div></div></div>
+  <div class="rule" data-page-node-id="DA481H5lkj6L2WsBA0A1MH"><div class="rn" data-page-node-id="9KseTiYaoezUnoeP0vcFqN">STEP 2</div><div data-page-node-id="RhEspFJpA2IKHORUr9GCpG"><div class="rt" data-page-node-id="hIk4rD60zARlv2ZtBGHB1G">进口风速与风量测定</div><div class="rd" data-page-node-id="qZgOph7WBBmN0eb5F3f3TA">用皮托管测断面动压，换算出流速与风量。<b data-page-node-id="nde7ieqZa3iEabRg8nhfVN">这一步必须最先做</b>——风速是后面所有计算的输入，没有它就算不出 d₅₀，效率数据也无法归一化比较。</div></div></div>
+  <div class="rule" data-page-node-id="IHyE0nywUPGlZlj31ZxBFh"><div class="rn" data-page-node-id="mguJKlyk4QDBUPNM7DHX8j">STEP 3</div><div data-page-node-id="1YKUUiVArXQcjtmEZUqBy9"><div class="rt" data-page-node-id="MlH3WCexdTEeJzB2E1BaSA">除尘器阻力测定</div><div class="rd" data-page-node-id="wuULlxbMW1FAIw0oiRPFkU">同时测进出口全压，差值即阻力。必须进出口<b data-page-node-id="jQuRV4doc4wBV86IoA80BL">同时</b>测，先后测会因为工况漂移算出假阻力。</div></div></div>
+  <div class="rule" data-page-node-id="RfUHGicdEIvRFIZsHrmlyS"><div class="rn" data-page-node-id="HocIDFay0qkwmHf2H5IT0O">STEP 4</div><div data-page-node-id="U5GEumYUw3xtebI4CRV3Sl"><div class="rt" data-page-node-id="Dp30FfvTVJ1lQTnQQPHiPg">总除尘效率测定</div><div class="rd" data-page-node-id="GFgQKJD0FjfZ5zcej2reMd">进出口<b data-page-node-id="R7y8AW3i6rxMSSKTVQkJ4d">同时</b>等速采样，测含尘浓度，按 η=(C_in−C_out)/C_in 计算。进出口不同时采样，浓度不可比。</div></div></div>
+  <div class="rule" data-page-node-id="pSNW9Dnlgo2vew75r1EvEp"><div class="rn" data-page-node-id="LZvFXnFqQzZCQpiXwVSvI3">STEP 5</div><div data-page-node-id="wFdA1m0lC0Nh2DY2ICkMEn"><div class="rt" data-page-node-id="zKAoaxqnDcXCBYgqiHQEiG">分级效率测定</div><div class="rd" data-page-node-id="zFZDrWkfCD0ACi1Gi4DaXm">用分级采样器（如冲击式分级器）把进出口颗粒按粒径分级，逐级算效率，绘出分级效率曲线。这是判断"这台设备到底能抓多细"的唯一方法。</div></div></div>
+</section>
+
+<section class="lb" id="s4" data-page-node-id="2uwQm9QAsYvMnxfa2bibai">
+<div class="lc" data-page-node-id="Ta1a3e0wpP7cbxqW17OdJJ">
+  <div class="lh" data-page-node-id="j8rjkzDWz3rTFf01XlhDPk">
+    <div class="lt" data-page-node-id="05eV2SMNtvnCt2Mp4Oj5iZ">🔬 旋风除尘器性能测定 · 交互模拟台</div>
+    <span class="sts si" id="sts" data-page-node-id="QrYUqKnTYjpAhFe2e4Dt3B">⏳ 未开始</span>
+  </div>
+  <div class="lbb" data-page-node-id="SIkH4faj3CVQdGDrWrwBUb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px" data-page-node-id="oXD0sqwFLFIK7dabCVGm0o">① 按顺序完成五步测量（顺序错误会被阻断）</div>
+    <div class="seq" data-page-node-id="kuVZFq3OksBDVoJx2YpgqA">
+      <button class="pb" id="p1" onclick="step1()" data-page-node-id="SGcucDpSZ19PnWTGqN1yaX">工况稳定确认<span class="po" data-page-node-id="iKdt8O0TfDRvjcgEuukVoz">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled data-page-node-id="B0Bc9Vx29CoMOYYQsV69xN">测进口风速/风量<span class="po" data-page-node-id="SPhBuEEwt3VtX22fQcJoxS">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled data-page-node-id="MCCBr8FFOoKPGCeLmeCope">测阻力<span class="po" data-page-node-id="sdFC7kNbxmnVxjnBfEndkX">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled data-page-node-id="69UVpHkx9BPXWlfFnm3NXG">测总效率<span class="po" data-page-node-id="qk1hJIWZn99eWXNYhADxlH">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled data-page-node-id="RreFBGr924BL8nO6sIryyD">测分级效率<span class="po" data-page-node-id="ydv3ey3rIHx58WHRApAE3b">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2" data-page-node-id="jTUMabbBejInyGQTfQEhJ3">
+      <div data-page-node-id="FPQekvhGqH7xFITdNsJ774">
+        <div class="fld" data-page-node-id="GGYj8Oz2fd7G89K6JEeRwk">
+          <label data-page-node-id="VZz7MqlL3ExbFyWYLBSFMi">进口风速 vᵢ　<b id="vTxt" style="color:#fbbf24" data-page-node-id="nKPC2B1H8FqSgPiGXBLoS4">18.0 m/s</b></label>
+          <input type="range" id="vIn" min="10" max="32" step="0.5" value="18" oninput="onParam()" data-page-node-id="4ErEdDgjcaWl7PTp2xVtKs">
+          <div class="hint" data-page-node-id="oaz2glS4iS4v0q8yQuv44l">常规设计区间 12–20 m/s。低于 12 效率骤降，高于 25 阻力与磨损都不划算。</div>
+        </div>
+        <div class="fld" data-page-node-id="ark5rVBzOACd1C5Ie6VSK4">
+          <label data-page-node-id="Ml3xCSG0ieVikjH2y1ChNI">粉尘类型（粒径分布）</label>
+          <select id="dust" onchange="onParam()" data-page-node-id="FTSxCTCRCLPP1DBDm8ax3S">
+            <option value="coarse" data-page-node-id="zwHAj50XDF7ckHYnU1qAgF">粗粉 · 砂轮打磨／破碎（中位径 20 μm）</option>
+            <option value="mid" selected data-page-node-id="bPTzjP7hmnJz5IEeigalh9">燃煤飞灰（中位径 10 μm）</option>
+            <option value="fine" data-page-node-id="inRrm8CIThw5LDLe8ABjES">细粉 · 焊接烟尘（中位径 2 μm）</option>
+          </select>
+        </div>
+        <div class="fld" data-page-node-id="DMhuuCdxfKAg2AXT9VDsWF">
+          <label data-page-node-id="nmB2RFmVowXKfcMap8EkkB">灰斗排灰口密封状况</label>
+          <select id="leak" onchange="onParam()" data-page-node-id="fosH70ziWEJ5CS1Y2fUzXT">
+            <option value="0" data-page-node-id="9ABYbbGmwBAYVDh1NZhIvB">密封良好（漏风 0%）</option>
+            <option value="0.05" data-page-node-id="2daotEomGUfOzEBgWD88LW">轻微漏风（约 5%）</option>
+            <option value="0.15" data-page-node-id="AObzLi3BMOADzNcGgB6jVc">明显漏风（约 15%）</option>
+          </select>
+          <div class="hint" data-page-node-id="g4fwqeISrYdgAffBYK6jTI">旋风除尘器底部一旦漏风，下部气流会短路把已分离的粉尘重新卷起——这是效率杀手。</div>
+        </div>
+      </div>
+      <div data-page-node-id="0qbYkku4RIhfpJhPmkbm3F">
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px" data-page-node-id="fztExEbb9ZnNu5iBy0fEAy">实时读数（随参数联动，未测的步骤显示理论值）</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr" data-page-node-id="1aqMwDZ7KhRs7GGJ7wA2zM">
+          <div class="dv" data-page-node-id="GBsBt7HimY6251cTLEC4g7"><div class="dl" data-page-node-id="TIlJu3eV7r3NyXGc5oQY4B">分割粒径 d₅₀</div><div class="dd" id="oD50" data-page-node-id="nvFfsFwEtwbhG2zcYgaRaq">—</div><div class="du" data-page-node-id="pjEQMoUfAdEGis8bhsqb5R">μm</div></div>
+          <div class="dv" id="dvP" data-page-node-id="LwBJpMydCBvbjsavXjGzLm"><div class="dl" data-page-node-id="nfcor9lDzbLO4AwWDOT532">除尘器阻力 ΔP</div><div class="dd" id="oDP" data-page-node-id="JLTjNsZZAigNtQu7QpTz5X">—</div><div class="du" data-page-node-id="payPAwBbUpmbReBSj1SNpU">Pa</div></div>
+          <div class="dv" data-page-node-id="nNStrzoKdE8PF6qO8n6mSX"><div class="dl" data-page-node-id="lN0XTxlNe41DBA3kspWV1E">理论总效率</div><div class="dd" id="oEta" data-page-node-id="cWTQfsO6m4uMBS8uGg7zZt">—</div><div class="du" data-page-node-id="q1BhI4y9Kq9dolRxqFaP7O">%</div></div>
+          <div class="dv" id="dvReal" data-page-node-id="C9FYw4im77A0mIr3YVJXly"><div class="dl" data-page-node-id="nYYAOqcj2z8MKkTwEubFue">实测总效率</div><div class="dd" id="oReal" data-page-node-id="cDvEJFXcGUjMyzm1ZpuEWp">—</div><div class="du" data-page-node-id="HaDjGS9ZAmUSe2loWqUGSX">%</div></div>
+        </div>
+        <canvas id="cv" width="900" height="460" data-page-node-id="NdY5EBBzMqFkF65yIhpDGl"></canvas>
+        <div class="legend" data-page-node-id="BAYwMhLPYiFQBgNizuoOiy">
+          <span data-page-node-id="HBivY8EctlxfvYnqaFEDWb"><i style="background:#fbbf24" data-page-node-id="l7IGKlAzFsDPdXMsv2FKnr"></i>分级效率曲线 η(d)</span>
+          <span data-page-node-id="qehc4MbI0AXGrpOoL95jXj"><i style="background:#fb7185;height:0;border-top:2px dashed #fb7185" data-page-node-id="YYPNHA0YN42bS7FyjvWOoH"></i>分割粒径 d₅₀</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px" data-page-node-id="d3RtE5QTmwDaM3xCEEb14b">
+      <button class="btn b2" onclick="resetAll()" data-page-node-id="WRJVfwLT7EIvDZo9HpS6sR">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px" data-page-node-id="9TmNAJSdIaGSemT8ARCm9O"></div>
+    <div class="warn" id="warn" data-page-node-id="TMaJLNXeLuh2v1vs9PT3TN"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5" data-page-node-id="x7TY3Lc3kSCHoFnFS0h0Zu">
+  <div class="sn" data-page-node-id="BpEH5T7JCvnUMCFvEWfBQL">05 · 总结与黄金法则</div>
+  <div class="st" data-page-node-id="G1ADFIaKeNyeKjC4lWkNuY">四条红线，考场和现场都会考</div>
+  <div class="g2" data-page-node-id="lB4JugvWbvo4uXUy2j2alA">
+    <div class="ic" data-page-node-id="1TvYRd5MC3hBieHzUwh1zS"><div class="ii" data-page-node-id="75gzPteLmRUpphzbM4nHKX">1️⃣</div><div class="in" data-page-node-id="EfhuGFqbO6zznKP9dU7up6">先测风速，再测效率</div><div class="id" data-page-node-id="13LxdP1pebHn0AtQPC1PoU">风速是所有计算的输入。跳过风速直接测效率，你拿到一个孤立的效率数字，既算不出 d₅₀，也无法与其他工况比较——等于白测。</div><span class="it" data-page-node-id="1tvPEGxQH94hoE9lcbvWbq">顺序红线</span></div>
+    <div class="ic" data-page-node-id="NX32Gw2cV9yFndsBTovcox"><div class="ii" data-page-node-id="2uhoZetVhD0JdXmx4V9NE6">2️⃣</div><div class="in" data-page-node-id="cXLQAsxrWILKPiWCeDhCT4">进出口必须同时采样</div><div class="id" data-page-node-id="TNb2HG86KlLCUfspiugQnT">总效率是两个浓度之比。先后采样时工况已经变了，比值失去意义。阻力测定同理，必须进出口同时读全压。</div><span class="it" data-page-node-id="kQYKNnAuk0wf7j14aXtu8X">同步红线</span></div>
+    <div class="ic" data-page-node-id="2qlWyePZNYVd8EIBJWvBtx"><div class="ii" data-page-node-id="5FsSevtEkScjUnL4uJRgBd">3️⃣</div><div class="in" data-page-node-id="YHIE2sbX4wRYHfJaFBhtVA">排灰口必须密封</div><div class="id" data-page-node-id="8YUplsjise9MROTmY52uUq">这是旋风除尘器最容易被忽视、后果最严重的一条。灰斗漏风会让已分离粉尘二次夹带，效率可能掉 20–30 个百分点——而设备本身完全正常。</div><span class="it" data-page-node-id="09C3EX6Fd3lhfJGaSoCYhL">密封红线</span></div>
+    <div class="ic" data-page-node-id="80hyHqyhdDXLLOmOdH6v0O"><div class="ii" data-page-node-id="QOwYoMAmUWqHDYjsLYYVDW">4️⃣</div><div class="in" data-page-node-id="OrRzs7yTlAnU6RYTVNCI7X">别靠加风速提效率</div><div class="id" data-page-node-id="qBuUNLnkcib35eQ8FARP1x">效率对风速的敏感度是递减的，阻力对风速是平方增长的。把风速从 18 拉到 30，效率涨不到 10 个点，风机电耗涨近 3 倍。这是判断题，不是计算题。</div><span class="it" data-page-node-id="D9MAKEG4JKfNoQfNMCdzTN">取舍红线</span></div>
+  </div>
+  <div class="note" data-page-node-id="OfajHHHuha4crfeFP1v2h6">
+    <b data-page-node-id="FZ9iYPVDohmhi9ZCDHkzXu">这个实验真正要练的能力</b>：不是记住 Lapple 公式，而是看到一台设备"效率不达标"时，能分清是<b data-page-node-id="p58S4eQhQp0jCH3ezg2Jtc">设备问题</b>（结构／磨损）、<b data-page-node-id="nJx9BcEDTcTq31ACm9ZSMX">运行问题</b>（风速偏离设计点／灰斗漏风／工况波动）、还是<b data-page-node-id="FUu4otpQlulPpms2FMzu1l">粉尘本身的问题</b>（粒径分布比设计煤种更细）。这三类的整改方向完全不同——这才是现场值钱的部分。
+  </div>
+  <div class="sd" style="margin-top:18px" data-page-node-id="vGnimTCUEcaL6PIJjcroWN">
+    教材对应位置：第三部分「大气污染控制实验」中的除尘器性能类实验（旋风／袋式／静电）。<br data-page-node-id="TlB8FWomptfI7Iy5KFB6p0">
+    本页物理模型：Lapple 分级效率模型，阻力系数取 ξ=6，进口宽度按筒体直径的 1/4 取值。<b data-page-node-id="j7I79XGfJcsbUbCA3ahrsh">曲线用于教学演示，不作为工程设计的依据。</b>
+  </div>
+</section>
+
+<footer class="ft" data-page-node-id="hA2j5EdE63A5TVITzERdCg">
+  和小宋一起玩科学 · <b data-page-node-id="A4aHMp0Fh1yMrNq0gKZYd9">环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3<br data-page-node-id="dWrGtN1WRnB3qHRLZ51ayO">
+  <span style="font-size:11px;color:#334155" data-page-node-id="uv81ZwlgfXlrjnY845RZ8l">配套总览：<a href="00-大气污染控制工程实验-课程对照总览.html" style="color:#475569" data-page-node-id="HAD63Z4xMwEUZ56BygFxO7">大气污染控制工程实验 · 课程对照总览</a></span>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const MU=1.81e-5, B=0.1, NE=5, RHOG=1.2, RHOP=2200, XI=6;
+const DUST={coarse:{med:20,label:'粗粉'},mid:{med:10,label:'燃煤飞灰'},fine:{med:2,label:'焊接烟尘'}};
+const SG=2.0, LNSG=Math.log(SG);
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let measured=null, curParam=null;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},6000);}
+
+function d50(vi){return Math.sqrt(9*MU*B/(2*Math.PI*NE*vi*(RHOP-RHOG)))*1e6;}
+function etaOf(d,dd){return 1/(1+Math.pow(dd/d,2));}
+function pdf(d,med){const x=Math.log(d/med);return Math.exp(-x*x/(2*LNSG*LNSG))/(d*LNSG*Math.sqrt(2*Math.PI));}
+function totalEta(dd,med){
+  let num=0,den=0;
+  for(let i=0;i<400;i++){
+    const d=Math.exp(Math.log(0.1)+i*(Math.log(200)-Math.log(0.1))/399);
+    const w=pdf(d,med)*d;
+    num+=etaOf(d,dd)*w; den+=w;
+  }
+  return num/den;
+}
+function params(){
+  return {vi:+$('vIn').value, dust:$('dust').value, leak:+$('leak').value};
+}
+function calc(p){
+  const dd=d50(p.vi);
+  const dp=XI*RHOG*p.vi*p.vi/2;
+  const et=totalEta(dd,DUST[p.dust].med);
+  const real=et*(1-2.5*p.leak);
+  return {dd,dp,et,real};
+}
+function key(p){return p.vi+'|'+p.dust+'|'+p.leak;}
+
+function render(){
+  const p=params(), c=calc(p);
+  $('vTxt').textContent=p.vi.toFixed(1)+' m/s';
+  $('oD50').textContent=c.dd.toFixed(1);
+  $('oDP').textContent=Math.round(c.dp);
+  $('oEta').textContent=(c.et*100).toFixed(1);
+  $('oReal').textContent=(c.real*100).toFixed(1);
+  $('dvP').className='dv'+(c.dp>2500?' bad':c.dp>1800?'':' good');
+  $('dvReal').className='dv'+(c.real<0.7?' bad':' good');
+  drawCurve(c.dd,p);
+}
+function drawCurve(dd,p){
+  const cv=$('cv'), ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=230;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=48, PR=16, PT=16, PB=32;
+  const gw=W-PL-PR, gh=H-PT-PB;
+  const xmin=Math.log(0.5), xmax=Math.log(100);
+  const X=d=>PL+(Math.log(d)-xmin)/(xmax-xmin)*gw;
+  const Y=e=>PT+(1-e)*gh;
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  [0,0.25,0.5,0.75,1].forEach(e=>{ctx.beginPath();ctx.moveTo(PL,Y(e));ctx.lineTo(PL+gw,Y(e));ctx.stroke();});
+  [0.5,1,2,5,10,20,50,100].forEach(d=>{ctx.beginPath();ctx.moveTo(X(d),PT);ctx.lineTo(X(d),PT+gh);ctx.stroke();});
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  [0,0.25,0.5,0.75,1].forEach(e=>ctx.fillText(Math.round(e*100)+'%',PL-7,Y(e)));
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  [0.5,1,2,5,10,20,50,100].forEach(d=>ctx.fillText(d<1?d.toFixed(1):d, X(d), PT+gh+7));
+  ctx.fillStyle='#475569'; ctx.fillText('粒径 d (μm，对数坐标)', PL+gw/2, PT+gh+20);
+  ctx.save(); ctx.translate(12,PT+gh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#475569';
+  ctx.fillText('分级效率 η', 0,0); ctx.restore();
+
+  const med=DUST[p.dust].med;
+  ctx.strokeStyle='rgba(56,189,248,.30)'; ctx.lineWidth=1; ctx.beginPath();
+  let started=false;
+  for(let i=0;i<=300;i++){
+    const d=Math.exp(xmin+i*(xmax-xmin)/300);
+    const w=pdf(d,med)*d;
+    const y=PT+gh-Math.min(w/0.28,1)*gh*0.55;
+    if(!started){ctx.moveTo(X(d),y);started=true;}else ctx.lineTo(X(d),y);
+  }
+  ctx.stroke();
+  ctx.fillStyle='rgba(56,189,248,.5)'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='left';
+  ctx.fillText('粉尘粒径分布（示意）', PL+6, PT+6);
+
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=2.2; ctx.beginPath();
+  for(let i=0;i<=400;i++){
+    const d=Math.exp(xmin+i*(xmax-xmin)/400);
+    const y=Y(etaOf(d,dd));
+    if(i===0)ctx.moveTo(X(d),y);else ctx.lineTo(X(d),y);
+  }
+  ctx.stroke();
+
+  ctx.strokeStyle='#fb7185'; ctx.lineWidth=1.2; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(X(dd),PT); ctx.lineTo(X(dd),PT+gh); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PL,Y(0.5)); ctx.lineTo(PL+gw,Y(0.5)); ctx.stroke();
+  ctx.setLineDash([]);
+  if(dd>=0.5&&dd<=100){
+    ctx.fillStyle='#fb7185'; ctx.beginPath(); ctx.arc(X(dd),Y(0.5),3.2,0,7); ctx.fill();
+    ctx.font='10.5px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+    const lx=Math.min(X(dd)+7, PL+gw-92);
+    ctx.fillText('d₅₀ = '+dd.toFixed(1)+' μm', lx, Y(0.5)-6);
+  }
+}
+
+function onParam(){
+  const p=params();
+  if(S.s2&&curParam&&key(p)!==curParam){
+    log('参数已改变（风速／粉尘／密封状况），此前的测量数据失效，请重新从 STEP 1 开始','bad');
+    setSts('⚠️ 参数已变，需重测','sbad');
+    warn('⚠️ 工况参数变了，之前测的数据不能用了——现场也这样：工况一变必须重测。');
+    S={s1:false,s2:false,s3:false,s4:false,s5:false};
+    ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+    measured=null; curParam=null;
+  }
+  render();
+}
+
+function step1(){
+  if(S.s1)return;
+  S.s1=true;$('p1').classList.add('on');$('p2').disabled=false;
+  setSts('🟡 工况已确认','sa');
+  log('工况稳定确认：负荷与风量波动在允许范围内',true);
+  warn('');
+}
+function step2(){
+  if(!S.s1){warn('请先完成 STEP 1 工况稳定确认');return;}
+  if(S.s2)return;
+  const p=params(), c=calc(p);
+  S.s2=true;$('p2').classList.add('on');$('p3').disabled=false;
+  measured={dd:c.dd,dp:c.dp,et:c.et,real:c.real,vi:p.vi}; curParam=key(p);
+  log('进口风速测定：vᵢ = <b>'+p.vi.toFixed(1)+' m/s</b>，据此算出分割粒径 d₅₀ = <b>'+c.dd.toFixed(1)+' μm</b>',true);
+  if(p.vi<12)warn('⚠️ 风速 '+p.vi.toFixed(1)+' m/s 低于常规设计下限 12 m/s——d₅₀ 偏大，细颗粒基本抓不住。');
+  if(p.vi>25)warn('⚠️ 风速 '+p.vi.toFixed(1)+' m/s 偏高——阻力与筒体磨损都会明显加剧，工程上不划算。');
+  setSts('🟡 风速已测','sa');
+  render();
+}
+function step3(){
+  if(!S.s2){warn('⚠️ 必须先用 STEP 2 测出进口风速——没有风速就算不出 d₅₀，效率数据也无法归一化比较');log('顺序错误：跳过风速直接测阻力，已阻断',false);return;}
+  if(S.s3)return;
+  const c=measured;
+  S.s3=true;$('p3').classList.add('on');$('p4').disabled=false;
+  log('除尘器阻力测定（进出口全压同时读取）：ΔP = <b>'+Math.round(c.dp)+' Pa</b>',true);
+  if(c.dp>2500)warn('⚠️ 阻力 '+Math.round(c.dp)+' Pa 已偏高——风机电耗会明显上升。');
+  setSts('🟡 阻力已测','sa');
+}
+function step4(){
+  if(!S.s3){warn('⚠️ 请先按顺序完成 STEP 3 阻力测定');log('顺序错误：跳过阻力直接测效率，已阻断',false);return;}
+  if(S.s4)return;
+  const c=measured, p=params();
+  S.s4=true;$('p4').classList.add('on');$('p5').disabled=false;
+  log('总效率测定（进出口同时等速采样）：理论 η = <b>'+(c.et*100).toFixed(1)+'%</b>，考虑漏风后实测 η = <b>'+(c.real*100).toFixed(1)+'%</b>',true);
+  if(p.leak>0){
+    warn('⚠️ 排灰口漏风 '+Math.round(p.leak*100)+'%，效率从 '+(c.et*100).toFixed(1)+'% 掉到 '+(c.real*100).toFixed(1)+'%（掉 '+((c.et-c.real)*100).toFixed(1)+' 个百分点）——设备本身没问题，是密封问题。');
+  }
+  setSts('🟡 总效率已测','sa');
+}
+function step5(){
+  if(!S.s4){warn('⚠️ 请先按顺序完成 STEP 4 总效率测定');log('顺序错误：跳过总效率直接测分级效率，已阻断',false);return;}
+  if(S.s5)return;
+  S.s5=true;$('p5').classList.add('on');
+  setSts('🟢 实验完成','sok');
+  log('分级效率测定完成，分级效率曲线已绘出（见上方图表）',true);
+  const c=measured;
+  log('本次结论：vᵢ='+c.vi.toFixed(1)+' m/s，d₅₀='+c.dd.toFixed(1)+' μm，ΔP='+Math.round(c.dp)+' Pa，总效率 '+(c.real*100).toFixed(1)+'%');
+  warn('');
+}
+function resetAll(){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false}; measured=null; curParam=null;
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('vIn').value=18; $('dust').value='mid'; $('leak').value='0';
+  setSts('⏳ 未开始','si'); $('log').innerHTML=''; warn('');
+  render();
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 16157-1996</td><td>固定污染源排气中颗粒物测定与气态污染物采样方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">分级效率测定中的等速采样与浓度计算</td></tr><tr><td class="sb-c">HJ 836-2017</td><td>固定污染源废气 低浓度颗粒物的测定 重量法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">低浓度颗粒物的重量法</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 GB/T 16157-1996。请注意其 <b>2018-03-01 实施的修改单</b>：颗粒物浓度 ≤20 mg/m³ 时应适用 HJ 836，&gt;20 且 ≤50 mg/m³ 时两者同时适用；用本标准测 ≤20 mg/m³ 时结果表述为「&lt;20 mg/m³」。涉及超低排放／低浓度判定的页面须按修改单处理。</li></ul></div></div></div></details>
+</body>
+</html>

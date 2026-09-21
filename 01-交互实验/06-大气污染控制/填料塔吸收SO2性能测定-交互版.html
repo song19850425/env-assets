@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>填料塔吸收 SO₂ 性能测定 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#06b6d4;--glow:#22d3ee;--abg:rgba(6,182,212,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#03252e 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(6,182,212,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(6,182,212,.13),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(6,182,212,.22);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:620px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:740px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(6,182,212,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#03252e);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#06b6d4,#22d3ee);color:#00181d}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(6,182,212,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#06b6d4;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:170px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.ft a{color:#475569}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s}
+.ft .nav a:hover{border-color:var(--accent);color:var(--glow)}
+.ft .nav a.cur{border-color:var(--accent);color:var(--glow);background:var(--abg)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:250px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#a5f3fc;line-height:1.7;margin:16px 0}
+.note b{color:#cffafe}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">填料塔吸收 SO₂<br><em>性能测定</em></h1>
+  <div class="hs">燃煤锅炉、烧结机、窑炉的脱硫塔，绝大多数是"废气往上走、碱液往下淋"的逆流填料塔。<br>它的核心矛盾是——<b style="color:#a5f3fc">效率靠液气比和塔高买，能耗却由气速决定</b>。</div>
+  <div class="hst">
+    <div><span class="n">N<sub>OG</sub></span><span class="l">传质单元数</span></div>
+    <div><span class="n">L/G</span><span class="l">液气比</span></div>
+    <div><span class="n">5</span><span class="l">测量步骤</span></div>
+    <div><span class="n">4</span><span class="l">红线</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">为什么脱硫塔长得像一座"淋浴塔"</div>
+  <div class="sd">去电厂或烧结厂看脱硫岛，最显眼的就是那座高高的圆塔：烟气从下部进、往上走，吸收液从顶部喷淋、往下流，塔里填着一层层堆得像蜂窝的填料。这个结构不是随便设计的——<b>它是为了让气液两相"充分接触又不太费电"</b>。</div>
+  <div class="sd">填料的作用是把液体打散成很薄的液膜、把气液接触面积撑到最大。SO₂ 从气相溶进液相，再和碱发生化学吸收。整个过程可以用一个数概括：<b>传质单元数 N<sub>OG</sub></b>。N<sub>OG</sub> 越大，能达到的脱硫效率越高。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🧪</div><div class="in">填料 = 接触面积</div><div class="id">填料比表面积越大，单位体积内气液接触面积越大，传质越快。但比表面大的填料通常更贵、更容易结垢堵塞。</div><span class="it">结构决定上限</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">液气比 = 效率的主要抓手</div><div class="id">提高液气比能直接提高效率，但循环泵电耗、吸收剂消耗、后续废水处理量都跟着涨。<b>现场调效率，第一个动的就是它</b>。</div><span class="it">操作变量</span></div>
+    <div class="ic"><div class="ii">🌊</div><div class="in">液泛 = 塔的物理极限</div><div class="id">气速太大，上升气流会把下降的液体"顶住"，塔内积液、压降暴涨、效率反而崩塌。这个点叫<b>泛点</b>，是设计的硬边界。</div><span class="it">核心矛盾</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个关系式，撑起整台塔</div>
+  <div class="sd">下面的式子就是模拟台的算法。理解了它们，你在模拟台里改任何参数，都能提前说出效率会往哪走。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">📐</div><div class="in">① 传质单元数 N<sub>OG</sub></div>
+      <div class="id">脱硫效率由传质单元数决定。N<sub>OG</sub> 与<b>液气比的 0.6 次方</b>成正比、与<b>气速的 0.5 次方</b>成反比，并受吸收液 pH 影响。pH 低了，吸收从"化学吸收"退化为"物理溶解"，效率断崖下跌。</div>
+      <div class="fx">N_OG = K · (L/G)^0.6 · u^(−0.5) · h(pH)<br>η = 1 − exp(−N_OG)</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🎯</div><div class="in">② 为什么效率是"指数型"逼近</div>
+      <div class="id">效率对 N<sub>OG</sub> 是<b>指数逼近 100%</b> 的。N<sub>OG</sub> 从 1 提到 2，效率能从 63% 涨到 86%；再从 2 提到 3，只从 86% 涨到 95%。<b>越往后越贵</b>——这是所有吸收塔的共同宿命。</div>
+      <div class="fx">N_OG=1 → η=63.2%<br>N_OG=2 → η=86.5%<br>N_OG=3 → η=95.0%</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🌊</div><div class="in">③ 泛点气速</div>
+      <div class="id">气速不能无限加。液量越大，气体能通过的最大速度越小。当操作气速超过泛点气速时，塔内发生液泛——<b>效率骤降、压降飙升</b>。实际设计一般取泛点气速的 50–70%。</div>
+      <div class="fx">u_f ≈ 3.2 · (L/G)^(−0.25)<br>设计气速 = (0.5～0.7) · u_f</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📊</div><div class="in">④ 填料层压降</div>
+      <div class="id">压降随气速的 <b>1.8 次方</b>上升，并随液量增加而增加。压降直接决定风机选型与运行电耗，是"效率—能耗"取舍的另一端。</div>
+      <div class="fx">ΔP = 400 · H · u^1.8 · (1 + 0.06·L/G)<br>（H = 填料层高度，m）</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把四条连起来看</b>：液气比同时出现在 N<sub>OG</sub> 里（提效率）和压降的液量修正项里（提能耗）；气速出现在 N<sub>OG</sub> 的分母里（<b>越高效率越低</b>）和压降的 1.8 次方项里（<b>越高越费电</b>）。所以工程上的套路很清楚——<b>气速往低取（省电、接触时间足），效率靠液气比和塔高去买，但液气比一高，泛点气速就下来了，两头夹着</b>。这个夹逼关系就是本实验要练的判断力。
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">采样与测点布设按固定污染源监测相关标准（GB/T 16157、HJ 57 等）执行。下面五步是标准链路，<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">系统气密性与液路检查</div><div class="rd">先查塔体、管道、法兰有没有漏气，再确认循环泵、喷淋分布器、流量计工作正常。漏气会让气速和浓度双双失真，喷淋不均会让填料"局部干区"，效率算出来偏低还找不到原因。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">标定进口气体浓度 C<sub>in</sub></div><div class="rd">用碘量法或定电位电解法测进口 SO₂ 浓度。<b>这一步必须最先做</b>——脱硫效率是进出口浓度算出来的比值，没有进口浓度，后面所有数据都无从计算。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">稳定液气比与空塔气速</div><div class="rd">调到目标液气比与气速，等待读数稳定。<b>液气比是本实验最核心的操作变量</b>，泵频率一变、喷嘴一堵，它立刻就变；气速则由风机和阀门决定。两者都稳定了才能往下走。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">测出口浓度，算脱硫效率</div><div class="rd">进出口<b>同时</b>采样，按 η=(C<sub>in</sub>−C<sub>out</sub>)/C<sub>in</sub> 计算。不同时采样，液气比或气速已经漂移，比值失去意义。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">测填料层压降，作图求最优工况</div><div class="rd">测塔顶塔底全压差，同时改变液气比做一组数据，绘出<b>效率—液气比</b>与<b>压降—液气比</b>两条曲线，找出"效率已经够高、压降还没起飞"的那个区间。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 填料塔吸收 SO₂ · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步测量（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">气密性与液路检查<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>标定进口浓度<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>稳定液气比/气速<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>测出口浓度<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>测压降并作图<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>液气比 L/G　<b id="lgTxt" style="color:#22d3ee">8.0 L/m³</b></label>
+          <input type="range" id="lgIn" min="2" max="20" step="0.5" value="8" oninput="onParam()">
+          <div class="hint">效率的主要抓手。<b>低于 3 效率明显不足，高于 15 收益已很有限</b>，而循环泵电耗与废水量继续涨。</div>
+        </div>
+        <div class="fld">
+          <label>空塔气速 u　<b id="uTxt" style="color:#22d3ee">1.00 m/s</b></label>
+          <input type="range" id="uIn" min="0.4" max="2.5" step="0.05" value="1" oninput="onParam()">
+          <div class="hint">常规设计取泛点气速的 50–70%。<b>气速越高，接触时间越短、效率越低，压降还按 1.8 次方涨</b>。</div>
+        </div>
+        <div class="fld">
+          <label>吸收液 pH</label>
+          <select id="phIn" onchange="onParam()">
+            <option value="8">8 · 碱量不足</option>
+            <option value="9">9 · 偏低</option>
+            <option value="10" selected>10 · 正常</option>
+            <option value="11">11 · 充足</option>
+            <option value="12">12 · 过量</option>
+          </select>
+          <div class="hint">pH 决定 SO₂ 是"被化学吸收"还是"只是物理溶解"。<b>pH 掉到 8 以下，效率会断崖式下跌</b>——很多现场脱硫效率不达标，根子在这里，不在塔本身。</div>
+        </div>
+        <div class="fld">
+          <label>进口 SO₂ 浓度 C<sub>in</sub></label>
+          <select id="cinIn" onchange="onParam()">
+            <option value="800">800 mg/m³ · 燃气锅炉</option>
+            <option value="2000" selected>2000 mg/m³ · 燃煤锅炉</option>
+            <option value="4000">4000 mg/m³ · 烧结机／高硫煤</option>
+          </select>
+          <div class="hint">强碱化学吸收时液相阻力可忽略，<b>效率基本与进口浓度无关</b>，但出口浓度会等比例变化——这本身就是个考点。</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数（随参数联动，未测的步骤显示理论值）</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv" id="dvEta"><div class="dl">脱硫效率 η</div><div class="dd" id="oEta">—</div><div class="du">%</div></div>
+          <div class="dv" id="dvCout"><div class="dl">出口 SO₂ 浓度</div><div class="dd" id="oCout">—</div><div class="du">mg/m³</div></div>
+          <div class="dv" id="dvDp"><div class="dl">填料层压降 ΔP</div><div class="dd" id="oDp">—</div><div class="du">Pa</div></div>
+          <div class="dv"><div class="dl">传质单元数 N<sub>OG</sub></div><div class="dd" id="oNog">—</div><div class="du">—</div></div>
+        </div>
+        <canvas id="cv" width="900" height="500"></canvas>
+        <div class="legend">
+          <span><i style="background:#22d3ee"></i>脱硫效率 η（左轴）</span>
+          <span><i style="background:#fb7185"></i>填料层压降 ΔP（右轴）</span>
+          <span><i style="background:#fbbf24;height:0;border-top:2px dashed #fbbf24"></i>泛点液气比</span>
+          <span><i style="background:#94a3b8;height:0;border-top:2px dashed #94a3b8"></i>当前工况</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">先测进口浓度，再测出口</div><div class="id">效率是进出口浓度算出的比值。跳一步，你只有一个孤立的出口浓度，既算不出效率，也无法判断是否达标——等于白测。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">液气比／气速没稳定不要测</div><div class="id">这两个参数是本实验的全部自变量。泵频一改、阀一开，塔内要几分钟才重新平衡。边调边测，拿到的是过渡态数据，没有代表性。</div><span class="it">稳定红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">气速不能越过泛点</div><div class="id">越过泛点气速，液泛会让压降暴涨、效率反而崩塌。<b>越加风量效率越低</b>——这是反直觉但必须记住的一条。阀门开大之前，先算泛点气速。</div><span class="it">液泛红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">pH 必须维持住</div><div class="id">吸收液 pH 掉下来，SO₂ 从"被碱中和"退回"只是溶在水里"，效率断崖下跌而塔体完全正常。现场排查脱硫效率问题，<b>先看 pH 计，再看塔</b>。</div><span class="it">化学红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：面对"脱硫效率不达标"，能分清是<b>化学问题</b>（pH 低／碱量不足／吸收剂品质差）、<b>流体力学问题</b>（气速偏离设计点／液气比不够／液泛）、还是<b>设备问题</b>（喷淋不均／填料堵塞结垢／除雾器带液）。这三类的整改方向完全不同，花的钱也差一个量级——这才是现场值钱的部分。
+  </div>
+  <div class="note warnbox">
+    <b>本页模型边界</b>：传质单元数采用教学用经验关联（N<sub>OG</sub> = K·(L/G)<sup>0.6</sup>·u<sup>−0.5</sup>·h(pH)），压降按填料层通用关联式简化，泛点气速用幂函数近似。取值假设：填料层高度 H = 1.5 m，塔径 φ200 mm，吸收剂为 NaOH 溶液。<b>曲线用于教学演示，不作为工程设计依据。</b>
+  </div>
+  <div class="sd" style="margin-top:18px">教材对应位置：第三部分「大气污染控制实验」中的吸收法净化气态污染物实验（填料塔／筛板塔脱硫）。</div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3
+  <div class="nav">
+    <a href="00-大气污染控制工程实验-课程对照总览.html">课程对照总览</a>
+    <a href="旋风除尘器性能测定-交互版.html">旋风除尘器</a>
+    <a class="cur" href="填料塔吸收SO2性能测定-交互版.html">填料塔吸收 SO₂</a>
+    <a href="活性炭吸附VOCs性能测定-交互版.html">活性炭吸附 VOCs</a>
+    <a href="催化净化NOx性能测定-交互版.html">催化净化 NOx</a>
+    <a href="烟气参数测定-交互版.html">烟气参数测定</a>
+  </div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+/* ---------- 模型常数（教学用经验关联）---------- */
+const H_TOWER=1.5;                       // 填料层高度 m
+const KN=0.75, EXP_LG=0.6, EXP_U=-0.5;   // N_OG 关联常数
+const DP_DESIGN_U=1.00;                  // 设计气速参考 m/s
+
+function hPH(pH){ return Math.min(1, Math.max(0.15, 0.25+0.15*(pH-7))); } // pH8→0.40 … pH12→1.00
+function nOG(lg,u,pH){ return KN*Math.pow(lg,EXP_LG)*Math.pow(u,EXP_U)*hPH(pH); }
+function etaBase(n){ return 1-Math.exp(-n); }
+function uFlood(lg){ return 3.2*Math.pow(lg,-0.25); }            // 泛点气速 m/s
+function lgFlood(u){ return Math.pow(3.2/u,4); }                 // 给定气速下的泛点液气比
+function dpOf(lg,u){ return 400*H_TOWER*Math.pow(u,1.8)*(1+0.06*lg); }
+
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let measured=null, curParam=null;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},7000);}
+
+function params(){return{lg:+$('lgIn').value, u:+$('uIn').value, pH:+$('phIn').value, cin:+$('cinIn').value};}
+
+function calc(p){
+  const n=nOG(p.lg,p.u,p.pH);
+  const uF=uFlood(p.lg);
+  const flood=p.u>uF;                       // 是否液泛
+  const eta=flood? etaBase(n)*0.55 : etaBase(n);
+  const dp=dpOf(p.lg,p.u)*(flood?2.6:1);
+  return {n,uF,flood,eta,dp,cout:p.cin*(1-eta)};
+}
+function key(p){return p.lg+'|'+p.u+'|'+p.pH+'|'+p.cin;}
+
+function render(){
+  const p=params(), c=calc(p);
+  $('lgTxt').textContent=p.lg.toFixed(1)+' L/m³';
+  $('uTxt').textContent=p.u.toFixed(2)+' m/s';
+  $('oEta').textContent=(c.eta*100).toFixed(1);
+  $('oCout').textContent=Math.round(c.cout);
+  $('oDp').textContent=Math.round(c.dp);
+  $('oNog').textContent=c.n.toFixed(2);
+  $('dvEta').className='dv'+(c.eta<0.7?' bad':c.eta>=0.95?' good':'');
+  $('dvDp').className='dv'+(c.dp>3000?' bad':c.dp<1200?' good':'');
+  draw(p,c);
+}
+
+function draw(p,c){
+  const cv=$('cv'), ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=250;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=44, PR=52, PT=18, PB=34;
+  const gw=W-PL-PR, gh=H-PT-PB;
+  const LGMIN=2, LGMAX=20;
+  const X=lg=>PL+(lg-LGMIN)/(LGMAX-LGMIN)*gw;
+  const YL=e=>PT+(1-e)*gh;
+
+  // 右轴量程：按当前气速下该区间的最大压降自适应
+  let dpMaxV=0;
+  for(let i=0;i<=60;i++){const lg=LGMIN+i*(LGMAX-LGMIN)/60;dpMaxV=Math.max(dpMaxV,dpOf(lg,p.u));}
+  const DPM=Math.max(1000,Math.ceil(dpMaxV/500)*500);
+  const YR=d=>PT+(1-d/DPM)*gh;
+
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(e=>{ctx.beginPath();ctx.moveTo(PL,YL(e));ctx.lineTo(PL+gw,YL(e));ctx.stroke();});
+  [2,5,8,11,14,17,20].forEach(lg=>{ctx.beginPath();ctx.moveTo(X(lg),PT);ctx.lineTo(X(lg),PT+gh);ctx.stroke();});
+  ctx.fillStyle='#64748b';ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  [0,.25,.5,.75,1].forEach(e=>ctx.fillText(Math.round(e*100)+'%',PL-7,YL(e)));
+  ctx.textBaseline='top';ctx.fillStyle='#475569';
+  [2,5,8,11,14,17,20].forEach(lg=>ctx.fillText(lg,X(lg),PT+gh+7));
+  ctx.fillStyle='#475569';ctx.textAlign='center';ctx.fillText('液气比 L/G (L/m³)',PL+gw/2,PT+gh+20);
+  ctx.save();ctx.translate(11,PT+gh/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillText('脱硫效率 η',0,0);ctx.restore();
+  // 右轴刻度
+  ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='#64748b';
+  [0,.25,.5,.75,1].forEach(e=>ctx.fillText(Math.round(DPM*e),PL+gw+6,YL(e)));
+  ctx.save();ctx.translate(W-6,PT+gh/2);ctx.rotate(Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#64748b';ctx.fillText('压降 ΔP (Pa)',0,0);ctx.restore();
+
+  // 区域带：泛点之后
+  const lgF=lgFlood(p.u);
+  if(lgF>LGMIN&&lgF<LGMAX){
+    ctx.fillStyle='rgba(251,113,133,.07)';
+    ctx.fillRect(X(lgF),PT,X(LGMAX)-X(lgF),gh);
+    ctx.strokeStyle='#fbbf24';ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(X(lgF),PT);ctx.lineTo(X(lgF),PT+gh);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#fbbf24';ctx.font='10px Inter,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText('泛点 L/G='+lgF.toFixed(1),Math.min(X(lgF)+5,PL+gw-80),PT+2);
+  }
+
+  // 压降曲线（右轴）
+  ctx.strokeStyle='#fb7185';ctx.lineWidth=1.8;ctx.beginPath();
+  for(let i=0;i<=200;i++){
+    const lg=LGMIN+i*(LGMAX-LGMIN)/200;
+    const y=YR(dpOf(lg,p.u));
+    if(i===0)ctx.moveTo(X(lg),y);else ctx.lineTo(X(lg),y);
+  }
+  ctx.stroke();
+
+  // 效率曲线（左轴，含液泛崩塌）
+  ctx.strokeStyle='#22d3ee';ctx.lineWidth=2.4;ctx.beginPath();
+  for(let i=0;i<=240;i++){
+    const lg=LGMIN+i*(LGMAX-LGMIN)/240;
+    const n=nOG(lg,p.u,p.pH);
+    const e=(p.u>uFlood(lg))? etaBase(n)*0.55 : etaBase(n);
+    const y=YL(e);
+    if(i===0)ctx.moveTo(X(lg),y);else ctx.lineTo(X(lg),y);
+  }
+  ctx.stroke();
+
+  // 当前工况竖线
+  ctx.strokeStyle='rgba(148,163,184,.55)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
+  ctx.beginPath();ctx.moveTo(X(p.lg),PT);ctx.lineTo(X(p.lg),PT+gh);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#22d3ee';ctx.beginPath();ctx.arc(X(p.lg),YL(c.eta),3.6,0,7);ctx.fill();
+  ctx.font='10.5px Inter,sans-serif';ctx.textAlign=X(p.lg)>PL+gw-90?'right':'left';ctx.textBaseline='bottom';
+  ctx.fillText('η='+(c.eta*100).toFixed(1)+'%',X(p.lg)+(X(p.lg)>PL+gw-90?-6:6),YL(c.eta)-5);
+}
+
+function onParam(){
+  const p=params();
+  if(S.s3&&curParam&&key(p)!==curParam){
+    log('工况参数已改变（液气比／气速／pH／进口浓度），此前的测量数据失效，请重新从 STEP 1 开始','bad');
+    setSts('⚠️ 工况已变，需重测','sbad');
+    warn('⚠️ 工况变了，之前测的数据不能用了——现场也这样：液气比或气速一动，整组数据必须重测。');
+    S={s1:false,s2:false,s3:false,s4:false,s5:false};
+    ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+    measured=null;curParam=null;
+  }
+  render();
+}
+
+function step1(){
+  if(S.s1)return;
+  S.s1=true;$('p1').classList.add('on');$('p2').disabled=false;
+  setSts('🟡 气密性已确认','sa');
+  log('塔体、管道、法兰气密性检查通过；循环泵与喷淋分布器工作正常',true);
+  warn('');
+}
+function step2(){
+  if(!S.s1){warn('请先完成 STEP 1 气密性与液路检查');return;}
+  if(S.s2)return;
+  const p=params();
+  S.s2=true;$('p2').classList.add('on');$('p3').disabled=false;
+  log('进口 SO₂ 浓度标定：C<sub>in</sub> = <b>'+p.cin+' mg/m³</b>',true);
+  setSts('🟡 进口浓度已标定','sa');
+}
+function step3(){
+  if(!S.s2){warn('⚠️ 必须先标定进口浓度——没有 C<sub>in</sub> 就算不出脱硫效率');log('顺序错误：跳过进口浓度直接稳定工况，已阻断',false);return;}
+  if(S.s3)return;
+  const p=params(), c=calc(p);
+  S.s3=true;$('p3').classList.add('on');$('p4').disabled=false;
+  measured={lg:p.lg,u:p.u,pH:p.pH,cin:p.cin,eta:c.eta,dp:c.dp,cout:c.cout,n:c.n,uF:c.uF};curParam=key(p);
+  log('工况稳定：液气比 <b>'+p.lg.toFixed(1)+' L/m³</b>，空塔气速 <b>'+p.u.toFixed(2)+' m/s</b>（泛点气速 '+c.uF.toFixed(2)+' m/s，操作比 '+(p.u/c.uF*100).toFixed(0)+'%）',true);
+  if(c.flood)warn('⚠️ 气速 '+p.u.toFixed(2)+' m/s 已超过泛点气速 '+c.uF.toFixed(2)+' m/s——塔内液泛，压降暴涨、效率反而崩塌。');
+  else if(p.u/c.uF<0.45)warn('⚠️ 操作气速仅占泛点的 '+(p.u/c.uF*100).toFixed(0)+'%，偏低——塔径利用不足，建议 50–70%。');
+  setSts('🟡 工况已稳定','sa');
+  render();
+}
+function step4(){
+  if(!S.s3){warn('⚠️ 请先按顺序完成 STEP 3 稳定液气比与气速');log('顺序错误：跳过工况稳定直接测出口浓度，已阻断',false);return;}
+  if(S.s4)return;
+  const c=measured;
+  S.s4=true;$('p4').classList.add('on');$('p5').disabled=false;
+  log('出口浓度测定（进出口同时采样）：C<sub>out</sub> = <b>'+Math.round(c.cout)+' mg/m³</b>，脱硫效率 η = <b>'+(c.eta*100).toFixed(1)+'%</b>',true);
+  if(c.pH<=8)warn('⚠️ 吸收液 pH='+c.pH+' 偏低——SO₂ 从化学吸收退化为物理溶解，效率大幅下降。现场先查 pH，再查塔。');
+  setSts('🟡 出口浓度已测','sa');
+}
+function step5(){
+  if(!S.s4){warn('⚠️ 请先按顺序完成 STEP 4 出口浓度测定');log('顺序错误：跳过出口浓度直接测压降，已阻断',false);return;}
+  if(S.s5)return;
+  const c=measured;
+  S.s5=true;$('p5').classList.add('on');
+  setSts('🟢 实验完成','sok');
+  log('填料层压降测定：ΔP = <b>'+Math.round(c.dp)+' Pa</b>；效率—液气比与压降—液气比曲线已绘出',true);
+  log('本次结论：L/G='+c.lg.toFixed(1)+' L/m³，u='+c.u.toFixed(2)+' m/s，pH='+c.pH+'，N<sub>OG</sub>='+c.n.toFixed(2)+'，η='+(c.eta*100).toFixed(1)+'%，ΔP='+Math.round(c.dp)+' Pa');
+  warn('');
+}
+function resetAll(){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false};measured=null;curParam=null;
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('lgIn').value=8;$('uIn').value=1;$('phIn').value='10';$('cinIn').value='2000';
+  setSts('⏳ 未开始','si');$('log').innerHTML='';warn('');
+  render();
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 16157-1996</td><td>固定污染源排气中颗粒物测定与气态污染物采样方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 57-2017</td><td>固定污染源废气 二氧化硫的测定 定电位电解法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 GB/T 16157-1996。请注意其 <b>2018-03-01 实施的修改单</b>：颗粒物浓度 ≤20 mg/m³ 时应适用 HJ 836，&gt;20 且 ≤50 mg/m³ 时两者同时适用；用本标准测 ≤20 mg/m³ 时结果表述为「&lt;20 mg/m³」。涉及超低排放／低浓度判定的页面须按修改单处理。</li></ul></div></div></div></details>
+</body>
+</html>

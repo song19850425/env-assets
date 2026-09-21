@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM2.5检测实验 · 从称膜到结果</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#0a1628,#1a2a4a);color:#fff;padding:20px;text-align:center}
+        .header h1{font-size:18px;font-weight:700}
+        .header .sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}
+        .header .badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(74,222,128,0.2);border-radius:10px;font-size:10px;color:#4ade80}
+        .container{max-width:680px;margin:0 auto;padding:16px}
+        .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+        .card h2 .std{font-size:11px;color:#999;font-weight:400;margin-left:8px}
+        .card p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+
+        .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:12px;overflow:hidden}
+        .progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:2px;transition:width .5s}
+
+        .step-indicator{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+        .step-dot{flex:1;text-align:center;padding:6px 4px;border-radius:6px;font-size:10px;color:#999;background:#f5f5f5;cursor:pointer;min-width:56px;border:1px solid transparent}
+        .step-dot .num{font-size:13px;font-weight:700;display:block}
+        .step-dot.active{background:#f0fdf4;border-color:#4ade80;color:#166534;font-weight:600}
+        .step-dot.done{background:#f0fdf4;border-color:#4ade80;color:#4ade80}
+
+        .lab-bench{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:10px;padding:20px;margin:12px 0;border:1px solid #e2e8f0;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .lab-bench .equip-icon{font-size:56px;margin-bottom:8px;transition:all .3s}
+        .lab-bench .desc{font-size:13px;color:#475569;line-height:1.7}
+        .lab-bench .desc strong{color:#1e293b}
+        .lab-bench .status{padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;margin-top:8px}
+        .st-wait{background:#f1f5f9;color:#64748b}
+        .st-run{background:#fef3c7;color:#ca8a04}
+        .st-ok{background:#f0fdf4;color:#166534}
+        .st-cool{background:#dbeafe;color:#1d4ed8}
+
+        .step-btn{padding:8px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:linear-gradient(135deg,#4ade80,#22c55e);margin-top:8px}
+        .step-btn:hover{box-shadow:0 4px 12px rgba(74,222,128,0.3)}
+        .step-btn:disabled{opacity:.4;cursor:default}
+        .step-btn.done-btn{background:#94a3b8}
+
+        .safety-box{padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:#92400e;border:1px solid #fde68a;margin:8px 0}
+        .info-box{padding:10px 14px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#166534;border:1px solid #bbf7d0;margin:8px 0}
+
+        .balance-display{background:linear-gradient(to bottom,#1e293b,#0f172a);border-radius:10px;padding:16px;text-align:center;margin:12px 0}
+        .balance-display .reading{font-family:monospace;font-size:36px;font-weight:700;color:#4ade80}
+        .balance-display .unit{color:#94a3b8;font-size:12px;margin-top:4px}
+        .balance-display .label{color:#94a3b8;font-size:11px;margin-top:2px}
+
+        .weight-history{display:flex;gap:8px;margin:8px 0}
+        .wh-item{flex:1;padding:10px;background:#f9fafb;border-radius:6px;text-align:center}
+        .wh-item .l{font-size:10px;color:#999}
+        .wh-item .v{font-size:14px;font-weight:700;color:#333;font-family:monospace}
+
+        .sampler-box{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:10px;padding:16px;margin:12px 0;text-align:center}
+        .sampler-box .flow{font-size:24px;font-weight:700;color:#166534}
+        .sampler-box .lbl{font-size:11px;color:#666;margin-top:2px}
+        .sampler-box .timer{font-size:36px;font-weight:700;color:#ca8a04;margin:8px 0}
+
+        .result-box{padding:20px;border-radius:10px;text-align:center;margin-top:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:none}
+        .result-box .big{font-size:40px;font-weight:800;color:#166534}
+        .result-box .lbl{font-size:13px;color:#666;margin-top:4px}
+        .result-box .detail{font-size:12px;color:#999;margin-top:10px;line-height:1.6;text-align:left}
+
+        .qc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+        .qc-item{padding:8px;background:#f9fafb;border-radius:6px}
+        .qc-item .l{font-size:10px;color:#999}
+        .qc-item .v{font-size:14px;font-weight:700;color:#333}
+        .qc-item .v.pass{color:#166534}
+
+        .formula-box{padding:16px;background:#f8fafc;border-radius:8px;margin:8px 0;text-align:center}
+        .formula-box .eq{font-size:16px;font-weight:600;color:#333;line-height:1.8}
+        .formula-box .vars{font-size:12px;color:#666;margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+        .formula-box .vars span{text-align:left}
+
+        .cond-chamber{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px;padding:16px;margin:12px 0;text-align:center}
+        .cond-chamber .val{font-size:14px;color:#1e40af}
+        .cond-chamber .timer{font-size:28px;font-weight:700;color:#1d4ed8;margin:6px 0}
+
+        @media (max-width:600px){
+            .weight-history{flex-wrap:wrap}
+            .formula-box .vars{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌫️ PM2.5 检测实验 · 重量法</h1>
+        <div class="sub">从滤膜称重到浓度计算 · HJ 618-2011 手工监测方法</div>
+        <div class="badge">🔬 场景：采样前滤膜已准备，开始称膜操作</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>📋 基本信息</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;">
+                <span><strong>样品编号：</strong>PM-2026-0622-001</span>
+                <span><strong>采样地点：</strong>河南省 · 郑州市 监测站</span>
+                <span><strong>滤膜类型：</strong>石英纤维滤膜（47mm）</span>
+                <span><strong>方法标准：</strong>HJ 618-2011</span>
+                <span><strong>采样器：</strong>中流量采样器（100L/min）</span>
+                <span><strong>采样时长：</strong>24小时</span>
+            </div>
+        </div>
+
+        <!-- 进度 + 步骤 -->
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active" data-step="0"><span class="num">①</span>取膜</div>
+            <div class="step-dot" data-step="1"><span class="num">②</span>平衡</div>
+            <div class="step-dot" data-step="2"><span class="num">③</span>称前重</div>
+            <div class="step-dot" data-step="3"><span class="num">④</span>采样</div>
+            <div class="step-dot" data-step="4"><span class="num">⑤</span>复平衡</div>
+            <div class="step-dot" data-step="5"><span class="num">⑥</span>称后重</div>
+            <div class="step-dot" data-step="6"><span class="num">⑦</span>计算</div>
+        </div>
+
+        <!-- ===== 步骤0：取膜 ===== -->
+        <div class="card step-panel active" id="step0">
+            <h2>① 取膜 · 准备空白滤膜</h2>
+            <p>从干燥器中取出经预处理的石英纤维滤膜（47mm）。</p>
+            <div class="lab-bench">
+                <div class="equip-icon" id="s0Icon">📦</div>
+                <div class="desc" id="s0Desc">
+                    <strong>取空白石英纤维滤膜 1 张</strong><br>
+                    规格：47mm直径 · 孔径0.3μm<br>
+                    用无齿扁平镊子夹取，避免触碰膜面<br>
+                    检查滤膜无破损、无孔洞、无纤维脱落
+                </div>
+                <div class="status st-wait" id="s0Status">⏳ 未操作</div>
+            </div>
+            <div class="info-box">
+                📌 <strong>操作要点：</strong>滤膜取出后立即放入恒温恒湿箱平衡，避免暴露在空气中超过5分钟。
+            </div>
+            <button class="step-btn" onclick="goStep(1)">✅ 取膜完成 → 恒温恒湿平衡</button>
+        </div>
+
+        <!-- ===== 步骤1：平衡 ===== -->
+        <div class="card step-panel" id="step1">
+            <h2>② 恒温恒湿平衡 <span class="std">24小时</span></h2>
+            <p>将滤膜放入恒温恒湿箱中，平衡24小时。</p>
+            <div class="cond-chamber">
+                <div style="display:flex;gap:24px;justify-content:center;margin-bottom:8px;">
+                    <div><span style="color:#1e40af;font-weight:600;">温度</span> 20±1℃</div>
+                    <div><span style="color:#1e40af;font-weight:600;">湿度</span> 50±5%</div>
+                    <div><span style="color:#1e40af;font-weight:600;">时间</span> ≥24h</div>
+                </div>
+                <div class="timer" id="balanceTimer1">24:00:00</div>
+                <div style="font-size:12px;color:#1e40af;" id="balanceStatus1">⏳ 平衡中…</div>
+            </div>
+            <p style="font-size:12px;color:#666;background:#f8fafc;padding:10px;border-radius:6px;">
+                📌 滤膜在采样前必须在恒温恒湿箱中平衡至少24小时。<br>
+                平衡条件：温度20±1℃，相对湿度50±5%。<br>
+                相邻两次称重差值≤0.04mg时视为恒重。
+            </p>
+            <button class="step-btn" id="balanceBtn1" onclick="startBalance1()">▶ 开始平衡（模拟加速）</button>
+        </div>
+
+        <!-- ===== 步骤2：称前重 ===== -->
+        <div class="card step-panel" id="step2">
+            <h2>③ 称量滤膜前重 <span class="std">天平精度 0.01mg</span></h2>
+            <p>平衡完成后，用万分之一分析天平称量滤膜质量。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">⚖️</div>
+                <div class="desc">
+                    <strong>万分之一分析天平</strong><br>
+                    · 称量前用标准砝码校准<br>
+                    · 用镊子将滤膜放在称量盘中央<br>
+                    · 关闭防风罩，等待示值稳定后读数
+                </div>
+                <div class="status st-wait" id="s2Status">⏳ 待称量</div>
+            </div>
+            <div class="balance-display" id="balanceDisplay1">
+                <div class="reading" id="preWeightDisplay">0.0000</div>
+                <div class="unit">mg</div>
+                <div class="label">滤膜前重 W₁</div>
+            </div>
+            <div class="weight-history" id="weighHistory1" style="display:none;">
+                <div class="wh-item"><div class="l">第1次</div><div class="v" id="w1a">75.648</div></div>
+                <div class="wh-item"><div class="l">第2次</div><div class="v" id="w1b">75.643</div></div>
+                <div class="wh-item"><div class="l">第3次</div><div class="v" id="w1c">75.646</div></div>
+                <div class="wh-item"><div class="l">平均值</div><div class="v" id="w1avg" style="color:#166534;">75.646</div></div>
+            </div>
+            <div class="info-box" id="weighNote1" style="display:none;">
+                ✅ 三次称量极差=0.005mg（≤0.04mg✅），取平均值 W₁ = 75.646 mg
+            </div>
+            <button class="step-btn" id="weighBtn1" onclick="doPreWeigh()">⚖️ 开始称量</button>
+        </div>
+
+        <!-- ===== 步骤3：采样 ===== -->
+        <div class="card step-panel" id="step3">
+            <h2>④ 现场采样 <span class="std">24小时连续采样</span></h2>
+            <p>将已称重的滤膜装入采样器，开始24小时连续采样。</p>
+            <div class="sampler-box">
+                <div>
+                    <div class="flow">100.0 L/min</div>
+                    <div class="lbl">采样流量</div>
+                </div>
+                <div class="timer" id="samplingTimer">24:00:00</div>
+                <div style="font-size:12px;color:#666;" id="samplingStatus">⏳ 采样未开始</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <span><strong>采样开始：</strong>2026-06-21 10:00</span>
+                <span><strong>采样结束：</strong>2026-06-22 10:00</span>
+                <span><strong>标况体积：</strong><span id="stdVol">0</span> m³</span>
+                <span><strong>累积流量：</strong><span id="cumVol">0</span> L</span>
+            </div>
+            <div class="safety-box">
+                ⚠️ 采样期间注意：定时检查流量是否稳定、滤膜是否破损、防止雨雪进入。
+            </div>
+            <button class="step-btn" id="samplingBtn" onclick="startSampling()">▶ 开始采样（模拟）</button>
+        </div>
+
+        <!-- ===== 步骤4：复平衡 ===== -->
+        <div class="card step-panel" id="step4">
+            <h2>⑤ 采样后复平衡 <span class="std">24小时</span></h2>
+            <p>采样后滤膜取下，再次放入恒温恒湿箱平衡24小时。</p>
+            <div class="cond-chamber">
+                <div style="display:flex;gap:24px;justify-content:center;margin-bottom:8px;">
+                    <div><span style="color:#1e40af;font-weight:600;">温度</span> 20±1℃</div>
+                    <div><span style="color:#1e40af;font-weight:600;">湿度</span> 50±5%</div>
+                    <div><span style="color:#1e40af;font-weight:600;">时间</span> ≥24h</div>
+                </div>
+                <div class="timer" id="balanceTimer2">24:00:00</div>
+                <div style="font-size:12px;color:#1e40af;" id="balanceStatus2">⏳ 平衡中…</div>
+            </div>
+            <p style="font-size:12px;color:#666;background:#f8fafc;padding:10px;border-radius:6px;">
+                📌 采样后的滤膜同样需要平衡24小时，消除湿度影响。这是PM2.5重量法最关键的质控环节之一。
+            </p>
+            <button class="step-btn" id="balanceBtn2" onclick="startBalance2()">▶ 开始平衡（模拟加速）</button>
+        </div>
+
+        <!-- ===== 步骤5：称后重 ===== -->
+        <div class="card step-panel" id="step5">
+            <h2>⑥ 称量滤膜后重</h2>
+            <p>平衡完成后，用同一天平称量采样后滤膜质量。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">⚖️</div>
+                <div class="desc">
+                    <strong>同一天平 · 同操作方法</strong><br>
+                    采样前后用同一台天平称量，减少系统误差
+                </div>
+                <div class="status st-wait" id="s5Status">⏳ 待称量</div>
+            </div>
+            <div class="balance-display">
+                <div class="reading" id="postWeightDisplay">0.0000</div>
+                <div class="unit">mg</div>
+                <div class="label">滤膜后重 W₂</div>
+            </div>
+            <div class="weight-history" id="weighHistory2" style="display:none;">
+                <div class="wh-item"><div class="l">第1次</div><div class="v" id="w2a">76.892</div></div>
+                <div class="wh-item"><div class="l">第2次</div><div class="v" id="w2b">76.889</div></div>
+                <div class="wh-item"><div class="l">第3次</div><div class="v" id="w2c">76.895</div></div>
+                <div class="wh-item"><div class="l">平均值</div><div class="v" id="w2avg" style="color:#166534;">76.892</div></div>
+            </div>
+            <div class="info-box" id="weighNote2" style="display:none;">
+                ✅ 三次称量极差=0.006mg（≤0.04mg✅），取平均值 W₂ = 76.892 mg
+            </div>
+            <button class="step-btn" id="weighBtn2" onclick="doPostWeigh()">⚖️ 开始称量</button>
+        </div>
+
+        <!-- ===== 步骤6：计算 ===== -->
+        <div class="card step-panel" id="step6">
+            <h2>⑦ 计算PM2.5浓度</h2>
+            <p>根据称量结果和采样体积计算PM2.5质量浓度。</p>
+
+            <div class="formula-box">
+                <div class="eq">PM₂.₅ = (W₂ − W₁) / Vₙ × 1000</div>
+                <div class="vars">
+                    <span>W₂ = 采样后滤膜质量 (mg)</span>
+                    <span>W₁ = 采样前滤膜质量 (mg)</span>
+                    <span>Vₙ = 标况采样体积 (m³)</span>
+                    <span>1000 = 单位换算因子 (μg/mg)</span>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;">
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">前重 W₁</div>
+                    <div style="font-size:18px;font-weight:700;color:#333;">75.646 mg</div>
+                </div>
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">后重 W₂</div>
+                    <div style="font-size:18px;font-weight:700;color:#333;">76.892 mg</div>
+                </div>
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">增重 ΔW</div>
+                    <div style="font-size:18px;font-weight:700;color:#166534;">1.246 mg</div>
+                </div>
+            </div>
+
+            <div style="padding:12px;background:#f8fafc;border-radius:8px;margin:12px 0;font-size:12px;color:#555;">
+                <strong>采样体积计算：</strong><br>
+                采样流量：100.0 L/min × 24h × 60min = 144,000 L = 144.0 m³（工况体积）<br>
+                标况体积 Vₙ = 144.0 × (273.15 / (273.15+T)) × (P / 101.325) = <strong>128.3 m³</strong><br>
+                <span style="color:#999;">（T=20°C, P=101.3kPa, 标况下体积修正系数≈0.891）</span>
+            </div>
+
+            <button class="step-btn" id="calcBtn" onclick="doCalc()">🔢 计算PM2.5浓度</button>
+
+            <div class="result-box" id="finalResult">
+                <div class="big" id="pm25Result">97</div>
+                <div class="lbl">PM₂.₅ 质量浓度 (μg/m³)</div>
+                <div style="margin-top:8px;">
+                    <span class="level-badge" id="pm25Level" style="display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#fff;background:#ff7e00;">轻度污染</span>
+                </div>
+                <div class="detail" style="margin-top:12px;">
+                    <strong>计算结果</strong><br>
+                    PM₂.₅ = (76.892 - 75.646) / 128.3 × 1000 = <strong>97 μg/m³</strong><br>
+                    依据 HJ 618-2011，保留整数位<br><br>
+                    <strong>对比 GB 3095-2026</strong><br>
+                    日均二级限值：<b>60 μg/m³</b>（过渡阶段，2026-03-01 至 2030-12-31）<br>
+                    2031-01-01 起日均二级限值：50 μg/m³<br>
+                    本次结果：<strong style="color:#dc2626;">97 μg/m³ → 超标</strong>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="step-btn" onclick="resetAll()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">🔄 重做实验</button>
+                <button class="step-btn" onclick="alert(`PM2.5 检测报告\n─────────────\n样品编号：PM-2026-0622-001\n采样地点：郑州市 监测站\n滤膜前重：75.646 mg\n滤膜后重：76.892 mg\n采样体积：128.3 m³\n检测结果：97 μg/m³\n\n结论：超出GB 3095-2026二级限值(日均60μg/m³)`)" style="background:linear-gradient(135deg,#f59e0b,#d97706);">📄 生成报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let balanceDone1 = false;
+        let balanceDone2 = false;
+        let preWeighed = false;
+        let postWeighed = false;
+        let samplingDone = false;
+        let calcDone = false;
+
+        function goStep(n) {
+            if (n > currentStep + 1 && !document.querySelector(`#step${n} .step-btn`)) return;
+            currentStep = n;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.step-dot').forEach((d,i) => {
+                d.classList.remove('active','done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            document.querySelectorAll('.step-panel').forEach((p,i) => {
+                p.style.display = i === currentStep ? 'block' : 'none';
+            });
+            document.getElementById('progressFill').style.width = (currentStep / 6 * 100) + '%';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        // ===== 平衡1：24h =====
+        function startBalance1() {
+            const btn = document.getElementById('balanceBtn1');
+            btn.disabled = true;
+            btn.textContent = '⏳ 平衡中…';
+            let sec = 12; // 加速：模拟24h
+            const timer = setInterval(() => {
+                sec--;
+                document.getElementById('balanceTimer1').textContent = `00:${String(sec).padStart(2,'0')}:00`;
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 平衡完成';
+                    document.getElementById('balanceStatus1').textContent = '✅ 平衡完成（24h）';
+                    balanceDone1 = true;
+                    document.querySelector('#step1 .step-btn').textContent = '✅ 平衡完成 → 称前重';
+                    document.querySelector('#step1 .step-btn').onclick = () => goStep(2);
+                    goStep(2);
+                }
+            }, 400);
+        }
+
+        // ===== 称前重 =====
+        function doPreWeigh() {
+            const btn = document.getElementById('weighBtn1');
+            btn.disabled = true;
+            btn.textContent = '⏳ 称量中…';
+            document.getElementById('s2Status').textContent = '⚖️ 称量中';
+            document.getElementById('s2Status').className = 'status st-run';
+
+            const readings = [75.648, 75.643, 75.646];
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i >= readings.length) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 称量完成';
+                    document.getElementById('preWeightDisplay').textContent = '75.646';
+                    document.getElementById('weighHistory1').style.display = 'flex';
+                    document.getElementById('weighNote1').style.display = 'block';
+                    document.getElementById('s2Status').textContent = '✅ 称量完成 W₁=75.646mg';
+                    document.getElementById('s2Status').className = 'status st-ok';
+                    preWeighed = true;
+                    document.querySelector('#step2 .step-btn').textContent = '✅ 称量完成 → 现场采样';
+                    document.querySelector('#step2 .step-btn').onclick = () => goStep(3);
+                    goStep(3);
+                    return;
+                }
+                document.getElementById('preWeightDisplay').textContent = readings[i].toFixed(3);
+                const act = ['第1次称量…','第2次称量…','第3次称量…'];
+                document.getElementById('s2Status').textContent = act[i];
+                i++;
+            }, 600);
+        }
+
+        // ===== 采样 =====
+        function startSampling() {
+            const btn = document.getElementById('samplingBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 采样中…';
+            document.getElementById('samplingStatus').textContent = '🌫️ 采样进行中';
+
+            let sec = 24; // 加速模拟24h
+            const timer = setInterval(() => {
+                sec--;
+                const h = String(Math.floor(sec)).padStart(2,'0');
+                const m = String(0).padStart(2,'0');
+                const s = String(0).padStart(2,'0');
+                document.getElementById('samplingTimer').textContent = `${h}:${m}:${s}`;
+
+                const volL = (24 - sec) * 6000; // 100L/min → 6000L/h
+                document.getElementById('cumVol').textContent = volL.toLocaleString();
+                const stdVol = ((volL / 1000) * 0.891).toFixed(1);
+                document.getElementById('stdVol').textContent = stdVol;
+
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 采样完成';
+                    document.getElementById('samplingStatus').textContent = '✅ 采样完成（24h）';
+                    document.getElementById('samplingTimer').textContent = '✅ 24:00:00';
+                    samplingDone = true;
+                    document.querySelector('#step3 .step-btn').textContent = '✅ 采样完成 → 复平衡';
+                    document.querySelector('#step3 .step-btn').onclick = () => goStep(4);
+                    goStep(4);
+                }
+            }, 300);
+        }
+
+        // ===== 平衡2 =====
+        function startBalance2() {
+            const btn = document.getElementById('balanceBtn2');
+            btn.disabled = true;
+            btn.textContent = '⏳ 平衡中…';
+            let sec = 10;
+            const timer = setInterval(() => {
+                sec--;
+                document.getElementById('balanceTimer2').textContent = `00:${String(sec).padStart(2,'0')}:00`;
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 平衡完成';
+                    document.getElementById('balanceStatus2').textContent = '✅ 平衡完成（24h）';
+                    balanceDone2 = true;
+                    document.querySelector('#step4 .step-btn').textContent = '✅ 平衡完成 → 称后重';
+                    document.querySelector('#step4 .step-btn').onclick = () => goStep(5);
+                    goStep(5);
+                }
+            }, 400);
+        }
+
+        // ===== 称后重 =====
+        function doPostWeigh() {
+            const btn = document.getElementById('weighBtn2');
+            btn.disabled = true;
+            btn.textContent = '⏳ 称量中…';
+            document.getElementById('s5Status').textContent = '⚖️ 称量中';
+            document.getElementById('s5Status').className = 'status st-run';
+
+            const readings = [76.892, 76.889, 76.895];
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i >= readings.length) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 称量完成';
+                    document.getElementById('postWeightDisplay').textContent = '76.892';
+                    document.getElementById('weighHistory2').style.display = 'flex';
+                    document.getElementById('weighNote2').style.display = 'block';
+                    document.getElementById('s5Status').textContent = '✅ 称量完成 W₂=76.892mg';
+                    document.getElementById('s5Status').className = 'status st-ok';
+                    postWeighed = true;
+                    document.querySelector('#step5 .step-btn').textContent = '✅ 称量完成 → 计算';
+                    document.querySelector('#step5 .step-btn').onclick = () => goStep(6);
+                    goStep(6);
+                    return;
+                }
+                document.getElementById('postWeightDisplay').textContent = readings[i].toFixed(3);
+                const act = ['第1次称量…','第2次称量…','第3次称量…'];
+                document.getElementById('s5Status').textContent = act[i];
+                i++;
+            }, 600);
+        }
+
+        // ===== 计算 =====
+        function doCalc() {
+            document.getElementById('calcBtn').disabled = true;
+            document.getElementById('calcBtn').textContent = '✅ 计算完成';
+            document.getElementById('finalResult').style.display = 'block';
+            calcDone = true;
+        }
+
+        // ===== 重置 =====
+        function resetAll() {
+            currentStep = 0;
+            balanceDone1 = balanceDone2 = preWeighed = postWeighed = samplingDone = calcDone = false;
+            
+            // 重置各个面板的按钮
+            ['balanceBtn1','weighBtn1','samplingBtn','balanceBtn2','weighBtn2','calcBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) { btn.disabled = false; btn.textContent = btn.id.includes('balance') ? '▶ 开始平衡（模拟加速）' : btn.id === 'weighBtn1' ? '⚖️ 开始称量' : btn.id === 'samplingBtn' ? '▶ 开始采样（模拟）' : btn.id === 'weighBtn2' ? '⚖️ 开始称量' : '🔢 计算PM2.5浓度'; }
+            });
+            
+            document.getElementById('preWeightDisplay').textContent = '0.0000';
+            document.getElementById('postWeightDisplay').textContent = '0.0000';
+            document.getElementById('weighHistory1').style.display = 'none';
+            document.getElementById('weighHistory2').style.display = 'none';
+            document.getElementById('weighNote1').style.display = 'none';
+            document.getElementById('weighNote2').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'none';
+            document.getElementById('samplingTimer').textContent = '24:00:00';
+            document.getElementById('samplingStatus').textContent = '⏳ 采样未开始';
+            document.getElementById('balanceTimer1').textContent = '24:00:00';
+            document.getElementById('balanceTimer2').textContent = '24:00:00';
+            document.getElementById('balanceStatus1').textContent = '⏳ 平衡中…';
+            document.getElementById('balanceStatus2').textContent = '⏳ 平衡中…';
+            document.getElementById('s2Status').textContent = '⏳ 待称量';
+            document.getElementById('s2Status').className = 'status st-wait';
+            document.getElementById('s5Status').textContent = '⏳ 待称量';
+            document.getElementById('s5Status').className = 'status st-wait';
+            document.getElementById('cumVol').textContent = '0';
+            document.getElementById('stdVol').textContent = '0';
+            
+            // 恢复初始按钮行为
+            const stepBtns = document.querySelectorAll('.step-panel .step-btn');
+            updateUI();
+        }
+
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 3095-2026</td><td>环境空气质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">PM2.5 浓度限值判定依据（现行版）</td></tr><tr><td class="sb-c">HJ 618-2011</td><td>环境空气 PM10 和 PM2.5 的测定 重量法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">手工重量法测定 PM10 和 PM2.5</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

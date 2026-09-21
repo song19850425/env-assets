@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>读懂一场雨 · 酸雨评价</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--ink-light:#555;--paper:#faf9f6;--paper-warm:#f5f0e8;--rain:#6366f1;--rain-light:#eef2ff;--rain-bg:#f0f0ff;--green:#16a34a;--green-light:#f0fdf4;--gold:#b45309;--gold-light:#fefce8;--red:#dc2626;--red-light:#fef2f2;--border:#e8e0d4;--serif:'Noto Serif SC','Source Han Serif SC','Songti SC',serif;--sans:'Inter',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+html{scroll-behavior:smooth}body{font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--rain),#818cf8);z-index:1000;transition:width .1s}
+#nv{position:fixed;right:24px;top:50%;z-index:999;display:flex;flex-direction:column;gap:14px}
+.nd{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;border:2px solid transparent;position:relative;transition:.3s}
+.nd.ac{background:var(--rain);transform:scale(1.5)}.nd:hover{border-color:var(--rain)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:11px;white-space:nowrap;color:var(--ink-light);background:#fff;padding:3px 10px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .2s}
+.nd:hover .nl{opacity:1}
+.he{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,var(--rain-bg) 0%,var(--paper) 100%)}
+.hb{display:inline-block;padding:6px 18px;border-radius:20px;background:var(--rain-light);color:var(--rain);font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:24px;border:1px solid rgba(99,102,241,.15)}
+.he h1{font-family:var(--serif);font-size:clamp(36px,6vw,72px);font-weight:900;color:var(--ink);max-width:700px}
+.he h1 em{font-style:normal;color:var(--rain)}
+.he p{margin-top:20px;font-size:clamp(14px,2vw,18px);color:var(--ink-light);max-width:560px;line-height:1.7}
+.hs{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap;justify-content:center}
+.hs div{text-align:center}.hs .n{font-family:var(--serif);font-size:36px;font-weight:900;color:var(--rain);display:block}
+.hs .l{font-size:12px;color:var(--ink-light);margin-top:4px}
+.sh{position:absolute;bottom:32px;left:50%;color:var(--ink-light);font-size:12px;animation:fl 2s infinite}@keyframes fl{0%,100%{transform:translateX(-50%)}50%{transform:translateX(-50%) translateY(8px)}}
+.sc{max-width:900px;margin:0 auto;padding:100px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}.sc.vi{opacity:1;transform:translateY(0)}
+.sn{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--rain);margin-bottom:8px}
+.st{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:700;margin-bottom:12px}
+.sd{font-size:16px;color:var(--ink-light);line-height:1.8;max-width:600px;margin-bottom:48px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px}
+.ic{background:#fff;border-radius:12px;padding:24px;border:1px solid var(--border);cursor:pointer;transition:.35s ease;position:relative;overflow:hidden}
+.ic::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--rain);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.ic:hover::before{transform:scaleX(1)}.ic:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
+.ic.rv{background:var(--rain-light);border-color:rgba(99,102,241,.2)}
+.ii{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.in{font-weight:700;font-size:15px;margin-bottom:2px}.is{font-size:12px;color:var(--ink-light)}
+.ib{font-size:13px;color:var(--ink-light);line-height:1.6;margin-top:10px;max-height:0;overflow:hidden;transition:max-height .5s ease,margin-top .5s ease}
+.ic.rv .ib{max-height:300px;margin-top:10px}
+.it{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.tl{position:relative;padding-left:36px}.tl::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tp{position:relative;margin-bottom:36px;opacity:0;transform:translateX(-16px);transition:opacity .6s ease,transform .6s ease}
+.tp.vi{opacity:1;transform:translateX(0)}
+.tp::before{content:'';position:absolute;left:-30px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid var(--border);transition:.3s}
+.tp.vi::before{background:var(--rain);border-color:var(--rain)}
+.tn{font-size:11px;font-weight:700;color:var(--rain);letter-spacing:1px;margin-bottom:4px}
+.tt{font-weight:700;font-size:15px;margin-bottom:6px}
+.td{font-size:14px;color:var(--ink-light);line-height:1.7}
+.to{display:inline-block;margin-top:6px;padding:3px 10px;background:var(--rain-light);color:var(--rain);border-radius:6px;font-size:12px}
+.ev-box{background:#fff;border-radius:16px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+.ev-tabs{display:flex;background:#fafaf8;border-bottom:1px solid var(--border)}
+.ev-tab{flex:1;text-align:center;padding:16px 8px;font-size:12px;color:#999;cursor:pointer;border-bottom:3px solid transparent;transition:.3s;font-weight:500}
+.ev-tab .en{font-weight:700;display:block;font-size:13px;margin-bottom:2px}
+.ev-tab.ac{color:var(--rain);border-bottom-color:var(--rain);background:var(--rain-light)}
+.ev-tab.done{color:var(--green);border-bottom-color:var(--green)}
+.ev-panel{display:none;padding:32px;min-height:360px}
+.ev-panel.ac{display:block}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.sg label{font-size:12px;font-weight:600;color:var(--ink-light);display:block;margin-bottom:4px}
+.sg input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;font-family:var(--sans);background:#fff;transition:.2s}
+.sg input:focus{outline:none;border-color:var(--rain);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.zb{padding:12px 28px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;font-family:var(--sans)}
+.zb1{background:linear-gradient(135deg,var(--rain),#4f46e5);color:#fff}
+.zb1:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.3)}
+.zb2{background:linear-gradient(135deg,var(--green),#15803d);color:#fff}
+.zb2:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,163,74,.3)}
+.result-box{text-align:center;padding:32px;border-radius:14px;margin-top:20px;display:none}
+.result-box .gb{font-family:var(--serif);font-size:52px;font-weight:900;line-height:1;display:block}
+.result-box .gl{font-size:18px;margin-top:4px}
+.result-box .gd{font-size:13px;color:var(--ink-light);margin-top:8px;line-height:1.8}
+/* pH meter visual */
+.ph-visual{display:flex;align-items:center;gap:24px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.ph-meter{width:120px;height:180px;border-radius:8px 8px 60px 60px;background:linear-gradient(180deg,#dc2626,#fbbf24,#16a34a,#1e40af);position:relative;overflow:hidden;border:2px solid #cbd5e1}
+.ph-cursor{position:absolute;left:0;right:0;height:4px;background:#1a1a2e;transition:top 1s ease;border-radius:2px}
+.ph-ind{width:160px;padding:16px;background:#fafaf8;border-radius:12px;border:1px solid var(--border);text-align:center}
+.ph-ind .pv{font-family:var(--serif);font-size:48px;font-weight:900;line-height:1}
+.ph-ind .pl{font-size:13px;color:var(--ink-light);margin-top:4px}
+.city-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:16px 0}
+.city-item{padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:.3s;background:#fff}
+.city-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.city-item.ac{background:var(--rain-light);border-color:var(--rain)}
+.city-item .cn{font-weight:600;font-size:13px}.city-item .cp{font-size:11px;color:var(--ink-light);margin-top:2px}
+.idetail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.idetail div{padding:10px 14px;border-radius:8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.ft{text-align:center;padding:60px 24px;color:var(--ink-light);font-size:13px;border-top:1px solid var(--border);background:var(--paper-warm)}
+@media(max-width:600px){.sg{grid-template-columns:1fr}.hs{gap:24px}#nv{right:12px}.idetail{grid-template-columns:1fr}}
+</style></head><body>
+<div id="sp"></div><div id="nv"><div class="nd ac" onclick="gs(0)"><span class="nl">开篇</span></div><div class="nd" onclick="gs(1)"><span class="nl">原理</span></div><div class="nd" onclick="gs(2)"><span class="nl">成因</span></div><div class="nd" onclick="gs(3)"><span class="nl">交互评价</span></div><div class="nd" onclick="gs(4)"><span class="nl">总结</span></div></div>
+
+<div class="he"><div class="hb">大气环境 · 交互式科普</div><h1>读懂一场<em>雨</em></h1><p>Acid Rain Assessment<br>中国约 40% 的城市受到酸雨影响——你头顶的雨，是酸的吗？</p>
+<div class="hs"><div><span class="n">pH &lt; 5.6</span><span class="l">酸雨标准</span></div><div><span class="n">4</span><span class="l">项关键离子</span></div><div><span class="n">40%</span><span class="l">城市受影响</span></div><div><span class="n">华东·西南</span><span class="l">重酸雨区</span></div></div><div class="sh">↓ 向下滚动</div></div>
+
+<div class="sc vi" id="s1">
+<div class="sn">Section 01 · 酸雨原理</div><h2 class="st">雨为什么变酸了？</h2><p class="sd">正常雨水因大气 CO₂ 溶解呈弱酸性（pH≈5.6）。当雨水 pH < 5.6 时即为酸雨。点击卡片了解关键离子。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef2f2;">🧪</div><div class="in">硫酸根 (SO₄²⁻)</div><div class="is">主要致酸离子</div><div class="ib">燃煤排放的 SO₂ 在大气中氧化为 H₂SO₄。中国酸雨属于硫酸型。西南地区（重庆、贵阳）历史上酸雨严重，与燃煤直接相关。</div><span class="it" style="background:#fef2f2;color:#991b1b;">主因</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#f0fdf4;">🧪</div><div class="in">硝酸根 (NO₃⁻)</div><div class="is">增长最快的致酸离子</div><div class="ib">机动车尾气排放的 NOx 经氧化生成 HNO₃。随着汽车保有量增加，NO₃⁻/SO₄²⁻ 比值逐年上升，酸雨类型正从硫酸型向混合型转变。</div><span class="it" style="background:#f0fdf4;color:#166534;">增长</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef3c7;">🧪</div><div class="in">铵离子 (NH₄⁺)</div><div class="is">中和离子</div><div class="ib">农业施肥和畜禽养殖排放的 NH₃ 可中和酸雨。中国华北地区 NH₃ 排放高，一定程度上减轻了当地酸雨强度。</div><span class="it" style="background:#fef3c7;color:#92400e;">中和</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#ede9fe;">🧪</div><div class="in">钙离子 (Ca²⁺)</div><div class="is">碱性中和离子</div><div class="ib">土壤粉尘中的 CaCO₃ 可中和酸雨。北方沙尘天气携带的碱性颗粒物使雨水 pH 升高，这也是北方酸雨少于南方的重要原因之一。</div><span class="it" style="background:#ede9fe;color:#6b21a8;">缓冲</span></div></div></div>
+
+<div class="sc" id="s2">
+<div class="sn">Section 02 · 酸雨成因</div><h2 class="st">谁制造了酸雨？</h2><p class="sd">酸雨的形成是排放→传输→转化的链条过程。</p>
+<div class="tl">
+<div class="tp"><div class="tn">STEP 01</div><div class="tt">排放源</div><div class="td">SO₂ 主要来自燃煤电厂和工业锅炉。NOx 主要来自机动车尾气和工业燃烧。中国年排放 SO₂ 约 300万吨，NOx 约 900万吨。</div><span class="to">🏭 燃煤+机动车</span></div>
+<div class="tp"><div class="tn">STEP 02</div><div class="tt">大气传输与化学转化</div><div class="td">SO₂ 和 NOx 在空气中氧化为硫酸和硝酸。转化速率受日照、温度、湿度影响。夏季条件更利于光化学反应。</div><span class="to">☀️ 日照促进转化</span></div>
+<div class="tp"><div class="tn">STEP 03</div><div class="tt">干湿沉降</div><div class="td">含酸物质通过降水（湿沉降）或颗粒物沉降（干沉降）到达地面。中国酸雨以湿沉降为主，pH 年均值约 4.5~6.0。</div><span class="to">🌧️ 降雨携酸降落</span></div>
+<div class="tp"><div class="tn">STEP 04</div><div class="tt">跨区域输送</div><div class="td">污染物可随气流输送数百公里。华北排放的污染物可影响华东地区。这是区域联防联控治理的科学基础。</div><span class="to">🌍 跨省输送</span></div></div></div>
+
+<div class="sc" id="s3">
+<div class="sn">Section 03 · 交互评价</div><h2 class="st">测测你那里的雨</h2><p class="sd">选择城市（系统加载该城市年均降水数据）或手动输入，自动判断酸雨等级。</p>
+<div style="margin-bottom:16px;">
+<p style="font-size:13px;color:var(--ink-light);margin-bottom:8px;">📍 选择城市查看数据：</p>
+<div class="city-grid">
+<div class="city-item ac" onclick="setCity(0)"><div class="cn">重庆</div><div class="cp">pH 4.5</div></div>
+<div class="city-item" onclick="setCity(1)"><div class="cn">上海</div><div class="cp">pH 4.9</div></div>
+<div class="city-item" onclick="setCity(2)"><div class="cn">广州</div><div class="cp">pH 5.1</div></div>
+<div class="city-item" onclick="setCity(3)"><div class="cn">北京</div><div class="cp">pH 5.8</div></div>
+<div class="city-item" onclick="setCity(4)"><div class="cn">拉萨</div><div class="cp">pH 6.5</div></div>
+<div class="city-item" onclick="setCity(5)"><div class="cn">自定义</div><div class="cp">输入</div></div></div></div>
+
+<div class="ev-box">
+<div class="ev-tabs"><div class="ev-tab ac" onclick="eg(0)"><span class="en">①</span>输入数据</div><div class="ev-tab" onclick="eg(1)"><span class="en">②</span>评价结果</div></div>
+
+<div class="ev-panel ac" id="ep0">
+<div class="sg">
+<div><label>降水 pH 值</label><input type="number" id="in-ph" value="4.5" step="0.01"></div>
+<div><label>电导率 (μS/cm)</label><input type="number" id="in-cond" value="45" step="1"></div>
+<div><label>SO₄²⁻ (mg/L)</label><input type="number" id="in-so4" value="12.5" step="0.1"></div>
+<div><label>NO₃⁻ (mg/L)</label><input type="number" id="in-no3" value="5.8" step="0.1"></div>
+<div><label>Ca²⁺ (mg/L)</label><input type="number" id="in-ca" value="3.2" step="0.1"></div>
+<div><label>NH₄⁺ (mg/L)</label><input type="number" id="in-nh4" value="4.5" step="0.1"></div></div>
+<div style="text-align:center;margin-top:16px;"><button class="zb zb1" onclick="doEval()">📐 评价酸雨</button></div></div>
+
+<div class="ev-panel" id="ep1">
+<div class="ph-visual">
+<div class="ph-meter"><div class="ph-cursor" id="phCursor" style="top:50%;"></div></div>
+<div class="ph-ind"><div class="pv" id="phDisplay">4.50</div><div class="pl" id="phLabel">点击右方按钮开始评价</div></div></div>
+
+<div class="result-box" id="resultBox">
+<span class="gb" id="rg">—</span>
+<div class="gl" id="rl">—</div>
+<div class="gd" id="rd">请点击「评价酸雨」</div></div>
+
+<div class="idetail" id="idetail"></div>
+<div style="text-align:center;margin-top:16px;">
+<button class="zb zb2" onclick="eg(0)">🔄 修改数据</button>
+<button class="zb zb1" onclick="scrollToSection(4)" style="margin-left:8px;">📖 酸雨防治 →</button></div></div></div></div>
+
+<div class="sc" id="s4">
+<div class="sn">Section 04 · 酸雨防治</div><h2 class="st">关键要点回顾</h2><p class="sd">掌握以下要点，有助于理解酸雨问题。</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">📉</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">趋势改善</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">中国酸雨面积从 2005 年约 30% 降至近年约 4%</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🏭</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">超低排放</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">燃煤电厂超低排放改造大幅减少 SO₂ 排放</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🚗</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">NOx 新挑战</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">机动车 NOx 占比上升，酸雨从硫酸型→硝酸型转变</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🔄</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">区域联防</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">跨区域协同治理是控制酸雨的关键</div></div></div></div>
+
+<div class="ft"><p>环境实验 · 环境科普交互平台</p><p style="margin-top:4px;">联系方式：【联系方式见仓库主页】</p></div>
+
+<script>
+window.addEventListener('scroll',()=>{let h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=(window.scrollY/h*100)+'%'})
+let ss=document.querySelectorAll('.sc'),dd=document.querySelectorAll('.nd')
+ss.forEach(s=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.1}).observe(s))
+document.querySelectorAll('.tp').forEach(t=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.2}).observe(t))
+window.addEventListener('scroll',()=>{let c=0;ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)c=i});dd.forEach((d,i)=>d.classList.toggle('ac',i===c))})
+function gs(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+function rc(c){if(!c.classList.contains('rv'))c.classList.add('rv')}
+
+let eCur=0,cityCur=0;
+const cityData=[
+    {ph:4.5,cond:45,so4:12.5,no3:5.8,ca:3.2,nh4:4.5},
+    {ph:4.9,cond:38,so4:9.2,no3:6.5,ca:2.8,nh4:3.8},
+    {ph:5.1,cond:32,so4:7.5,no3:5.2,ca:2.0,nh4:3.2},
+    {ph:5.8,cond:22,so4:4.5,no3:4.8,ca:6.5,nh4:5.5},
+    {ph:6.5,cond:12,so4:1.2,no3:0.8,ca:1.5,nh4:0.6}
+];
+
+function eg(n){eCur=n;
+    document.querySelectorAll('.ev-panel').forEach(p=>p.classList.remove('ac'));
+    document.querySelectorAll('.ev-tab').forEach(t=>{t.classList.remove('ac');t.classList.remove('done')});
+    document.getElementById('ep'+n).classList.add('ac');
+    document.querySelectorAll('.ev-tab')[n].classList.add('ac');
+    for(let i=0;i<n;i++)document.querySelectorAll('.ev-tab')[i].classList.add('done');
+}
+
+function setCity(idx){
+    cityCur=idx;
+    document.querySelectorAll('.city-item').forEach((c,i)=>c.classList.toggle('ac',i===idx));
+    if(idx<5){
+        const d=cityData[idx];
+        document.getElementById('in-ph').value=d.ph;
+        document.getElementById('in-cond').value=d.cond;
+        document.getElementById('in-so4').value=d.so4;
+        document.getElementById('in-no3').value=d.no3;
+        document.getElementById('in-ca').value=d.ca;
+        document.getElementById('in-nh4').value=d.nh4;
+    }
+}
+
+function doEval(){
+    const d={
+        ph:parseFloat(document.getElementById('in-ph').value)||7,
+        cond:parseFloat(document.getElementById('in-cond').value)||20,
+        so4:parseFloat(document.getElementById('in-so4').value)||0,
+        no3:parseFloat(document.getElementById('in-no3').value)||0,
+        ca:parseFloat(document.getElementById('in-ca').value)||0,
+        nh4:parseFloat(document.getElementById('in-nh4').value)||0
+    };
+    
+    // Update pH meter
+    const pct=Math.max(0,Math.min(100,(7-d.ph)/7*100));
+    document.getElementById('phCursor').style.top=(100-pct)+'%';
+    document.getElementById('phDisplay').textContent=d.ph.toFixed(2);
+    
+    // Determine pH color
+    let phColor,phDesc;
+    if(d.ph<4.5){phColor='#dc2626';phDesc='严重酸雨'}
+    else if(d.ph<5.0){phColor='#f97316';phDesc='较重酸雨'}
+    else if(d.ph<5.6){phColor='#b45309';phDesc='轻度酸雨'}
+    else if(d.ph<7.0){phColor='#16a34a';phDesc='正常'}
+    else{phColor='#1e40af';phDesc='偏碱性'}
+    document.getElementById('phDisplay').style.color=phColor;
+    document.getElementById('phLabel').textContent=phDesc;
+    document.getElementById('phLabel').style.color=phColor;
+    
+    // Acid rain type determination
+    const ratio=d.so4/d.no3;
+    let type='';
+    if(ratio>3)type='硫酸型（燃煤为主要来源）';
+    else if(ratio>1)type='混合型（燃煤+机动车综合影响）';
+    else type='硝酸型（机动车为主要来源）';
+    
+    // Neutralization factor
+    const neut=(d.ca/40+d.nh4/18)*2;
+    const acid=(d.so4/96+d.no3/62)*2;
+    const nf=Math.min(5,neut/acid);
+    let neutDesc=nf>1?'碱性离子充足，对酸雨有较强中和作用':nf>0.5?'存在一定中和能力':'中和能力弱，酸雨对环境影响大';
+    
+    // Update detail
+    document.getElementById('idetail').innerHTML=
+        `<div style="background:#fef2f2;"><span>SO₄²⁻</span><span>${d.so4} mg/L</span></div>
+        <div style="background:#f0fdf4;"><span>NO₃⁻</span><span>${d.no3} mg/L</span></div>
+        <div style="background:#fef3c7;"><span>SO₄²⁻/NO₃⁻ 比值</span><span>${ratio.toFixed(1)} · ${ratio>3?'硫酸型':ratio>1?'混合型':'硝酸型'}</span></div>
+        <div style="background:#ede9fe;"><span>中和能力</span><span>${nf.toFixed(2)} · ${neutDesc}</span></div>`;
+    
+    // Result
+    const rb=document.getElementById('resultBox');
+    rb.style.display='block';
+    let grade,color,bg;
+    if(d.ph<4.5){grade='严重酸雨';color='#dc2626';bg='#fef2f2'}
+    else if(d.ph<5.0){grade='较重酸雨';color='#f97316';bg='#fff7ed'}
+    else if(d.ph<5.6){grade='轻度酸雨';color='#b45309';bg='#fef3c7'}
+    else{grade='正常降水';color='#16a34a';bg='#f0fdf4'}
+    
+    rb.style.background=bg;
+    document.getElementById('rg').textContent=grade;
+    document.getElementById('rg').style.color=color;
+    document.getElementById('rl').textContent='pH = '+d.ph.toFixed(2);
+    document.getElementById('rl').style.color=color;
+    document.getElementById('rd').innerHTML=`<strong>酸雨类型：</strong>${type}<br><strong>中和能力：</strong>${neutDesc}<br><br>${d.ph<5.6?'历史上重庆年均 pH 约 4.2~4.5，随着燃煤削减，近年已改善至 4.8 左右。':'北京受沙尘碱性颗粒物影响，年均 pH 约 5.8，但降水离子总量仍较高。'}`;
+    
+    eg(1);
+}
+
+document.addEventListener('DOMContentLoaded',()=>setCity(0));
+</script></body></html>

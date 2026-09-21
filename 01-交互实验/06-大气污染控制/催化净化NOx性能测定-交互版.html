@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>催化净化 NOx 性能测定（SCR 脱硝） | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#d946ef;--glow:#e879f9;--abg:rgba(217,70,239,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2d0733 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(217,70,239,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(217,70,239,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(217,70,239,.22);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:620px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:740px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(217,70,239,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#2d0733);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#d946ef,#e879f9);color:#20001f}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(217,70,239,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#d946ef;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:170px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:var(--accent);color:var(--glow)}
+.ft .nav a.cur{border-color:var(--accent);color:var(--glow);background:var(--abg)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:250px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(217,70,239,.06);border:1px solid rgba(217,70,239,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#f5d0fe;line-height:1.7;margin:16px 0}
+.note b{color:#fae8ff}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">催化净化 NOx<br><em>SCR 脱硝性能测定</em></h1>
+  <div class="hs">火电厂、水泥窑的脱硝，几乎都是"喷氨 + 催化剂"这一套。<br>它有一对天生的矛盾——<b style="color:#f5d0fe">效率要往上要，氨逃逸就跟着往上要</b>。</div>
+  <div class="hst">
+    <div><span class="n">T</span><span class="l">温度窗口</span></div>
+    <div><span class="n">α</span><span class="l">NH₃/NOx 比</span></div>
+    <div><span class="n">5</span><span class="l">测量步骤</span></div>
+    <div><span class="n">4</span><span class="l">红线</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">为什么脱硝是"温度 + 喷氨"两件事</div>
+  <div class="sd">选择性催化还原（SCR，Selective Catalytic Reduction）的思路很直接：往烟气里喷氨，在催化剂表面把 NOx 还原成氮气和水。反应本身干净，产物无害，所以它成了主流技术。</div>
+  <div class="sd">但它有两个绕不开的约束。第一，<b>催化剂只在特定温度区间里管用</b>——温度低了反应速率不够，温度高了氨会自己先被氧化掉。第二，<b>喷氨量不能随便加</b>——没反应掉的氨会原样从烟囱排出去，这就是"氨逃逸"，它本身是污染物，还会在下游生成硫酸氢铵把设备堵死。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🌡️</div><div class="in">温度窗口是硬约束</div><div class="id">中温钒基催化剂的有效区间大约 <b>320–400 ℃</b>，低温锰基催化剂在 <b>200–250 ℃</b>。<b>温度没进窗口，喷再多氨也没用</b>，只是把氨原样排出去。</div><span class="it">催化剂决定</span></div>
+    <div class="ic"><div class="ii">💉</div><div class="in">喷氨量是把双刃剑</div><div class="id">把 NH₃/NOx 摩尔比从 0.9 提到 1.15，效率只涨两三个点，<b>氨逃逸却可能从个位数冲到几十 ppm</b>——一边是效率，一边是二次污染。</div><span class="it">核心矛盾</span></div>
+    <div class="ic"><div class="ii">📦</div><div class="in">空速决定要多少催化剂</div><div class="id">空速越高，同样烟气量需要的催化剂体积越小、投资越省，但接触时间短、效率低、氨逃逸高。<b>省钱和省氨，还是二选一</b>。</div><span class="it">投资取舍</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个概念，读懂温度窗口</div>
+  <div class="sd">下面的式子就是模拟台的算法。注意第一个式子是三条独立影响的乘积——理解这一点，你就能预判任何参数变化。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">🌡️</div><div class="in">① 温度因子呈"火山形"</div>
+      <div class="id">脱硝效率随温度先升后降，形成一个"火山形"曲线。<b>低温端受反应速率限制，高温端受氨氧化副反应限制</b>。曲线最高点对应的温度由催化剂类型决定。</div>
+      <div class="fx">η_T(T) = exp( −(ln(T/T_opt))² / (2s²) )<br>钒基 T_opt=360℃／锰基 T_opt=220℃</div>
+    </div>
+    <div class="ic">
+      <div class="ii">💉</div><div class="in">② 氨氮比因子趋近饱和</div>
+      <div class="id">提高 NH₃/NOx 比能提升效率，但<b>提升幅度迅速衰减</b>——因为催化剂能处理的量有上限。这就是为什么加氨不是万能的。</div>
+      <div class="fx">η_α = 1 − exp(−3.5 · α)<br>α=0.7→0.914　α=1.0→0.970　α=1.15→0.982</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📦</div><div class="in">③ 空速因子</div>
+      <div class="id">空速（GHSV，Gas Hourly Space Velocity，小时体积空速）＝烟气流量 ÷ 催化剂体积，单位 h⁻¹。空速越高，接触时间越短、效率越低，但催化剂用量越省。</div>
+      <div class="fx">η_SV = 1 / (1 + (GHSV/60000)^1.5)<br>5000 h⁻¹→0.976　20000 h⁻¹→0.839</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🚨</div><div class="in">④ 氨逃逸：只看效率必错</div>
+      <div class="id">喷进去的氨减去反应消耗的氨，剩下的就是逃逸。<b>只要"喷氨比"大于实际脱硝效率，就会有氨逃逸</b>。这是本实验最容易被忽略、后果最严重的一环。</div>
+      <div class="fx">氨逃逸 = max(0, α − η) × C_NOx × 17/46<br>（换算为 ppm：× 22.4/17）</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把四条连起来看</b>：总效率是三个因子的乘积，所以<b>任何一环拖后腿，整体就上不去</b>。而氨逃逸只取决于"喷氨比减去效率"这个差值。于是工程上的真实决策浮现出来：<b>想提效率，正确做法是把温度和空速调对，而不是加大喷氨量</b>——后者效率只涨一点点，氨逃逸却成比例上升，还会在下游生成硫酸氢铵堵塞空预器。这条判断，是本实验最有价值的部分。
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">烟气采样与 NOx 分析按固定污染源监测相关标准（HJ 692、HJ 693 等）执行；氨逃逸按 HJ 533 等执行。下面五步是标准链路，<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">催化剂装填与预处理活化</div><div class="rd">装填催化剂并记录体积（这是空速的分母）。新催化剂表面常吸附杂质与水分，需按规程预热活化，否则前几个工况的数据会明显偏低。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">标定进口 NOx 浓度与烟气流量</div><div class="rd">测进口 NOx 浓度与流量，必要时做 O₂ 折算。这一步决定了两件事：效率的分母（C<sub>in</sub>）和空速的分子（流量）。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">升温至目标温度并稳定</div><div class="rd"><b>温度是本实验的第一变量。</b>必须等反应器温度稳定在设定值再往下做——温度还在爬升时喷氨，测到的是一组无意义的过渡态数据。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">按设定氨氮比投氨，测脱硝效率</div><div class="rd">按 α = NH₃/NOx 设定喷氨量，稳定后测出口 NOx，算脱硝效率。<b>α 是本实验唯一需要"小心地调"的操作变量</b>——调高一点效率涨一点，氨逃逸却涨得多。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">同步测氨逃逸，绘制温度—效率曲线</div><div class="rd">在同一工况下同步测氨逃逸。<b>只测效率、不测逃逸，会得出完全错误的结论</b>。改变温度做一组数据，绘出温度—效率曲线，确定该催化剂的有效温度窗口。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 SCR 脱硝性能测定 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步测量（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">催化剂装填活化<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>标定进口 NOx<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>升温并稳定<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>投氨测效率<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>测氨逃逸并作图<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>反应温度 T　<b id="tTxt" style="color:#e879f9">360 ℃</b></label>
+          <input type="range" id="tIn" min="150" max="550" step="5" value="360" oninput="onParam()">
+          <div class="hint">先看图上那条火山形曲线——<b>只有落在高台上，喷氨才有意义</b>。</div>
+        </div>
+        <div class="fld">
+          <label>NH₃/NOx 摩尔比 α　<b id="aTxt" style="color:#e879f9">0.90</b></label>
+          <input type="range" id="aIn" min="0.60" max="1.15" step="0.01" value="0.90" oninput="onParam()">
+          <div class="hint"><b>超过 1 就开始大量逃逸。</b>现场调喷氨阀时，效率的边际收益在这个区间已经很小了。</div>
+        </div>
+        <div class="fld">
+          <label>空速 GHSV（Gas Hourly Space Velocity，小时体积空速）</label>
+          <select id="gIn" onchange="onParam()">
+            <option value="3000">3000 h⁻¹ · 催化剂用量大</option>
+            <option value="5000" selected>5000 h⁻¹ · 常规设计</option>
+            <option value="10000">10000 h⁻¹ · 紧凑布置</option>
+            <option value="20000">20000 h⁻¹ · 极限紧凑</option>
+          </select>
+          <div class="hint">空速越高，同样烟气量所需催化剂体积越小、投资越省，但效率越低、氨逃逸越高。</div>
+        </div>
+        <div class="fld">
+          <label>催化剂类型</label>
+          <select id="cIn" onchange="onParam()">
+            <option value="vwt" selected>中温钒基 V-W-Ti（窗口约 320–400 ℃）</option>
+            <option value="mnce">低温锰基 Mn-Ce（窗口约 200–250 ℃）</option>
+          </select>
+          <div class="hint">选错催化剂 = 温度窗口对不上。锰基催化剂在高温下会明显失活。</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数（进口 NOx 按 400 mg/m³ 计）</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv" id="dvEta"><div class="dl">脱硝效率 η</div><div class="dd" id="oEta">—</div><div class="du">%</div></div>
+          <div class="dv" id="dvSlip"><div class="dl">氨逃逸</div><div class="dd" id="oSlip">—</div><div class="du">ppm</div></div>
+          <div class="dv"><div class="dl">出口 NOx</div><div class="dd" id="oCout">—</div><div class="du">mg/m³</div></div>
+          <div class="dv"><div class="dl">催化剂体积</div><div class="dd" id="oV">—</div><div class="du">m³</div></div>
+        </div>
+        <canvas id="cv" width="900" height="500"></canvas>
+        <div class="legend">
+          <span><i style="background:#e879f9"></i>脱硝效率 η(T)（左轴）</span>
+          <span><i style="background:#fb7185"></i>氨逃逸（右轴，对数）</span>
+          <span><i style="background:#34d399;height:0;border-top:2px dashed #34d399"></i>有效温度窗口</span>
+          <span><i style="background:#fbbf24;height:0;border-top:2px dashed #fbbf24"></i>氨逃逸 3 ppm 限值</span>
+        </div>
+        <div class="hint">催化剂体积按烟气量 10000 m³/h 折算；氨逃逸限值取 3 ppm（常见超低排放要求）。</div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">温度没进窗口，不要投氨</div><div class="id">催化剂没活性时投氨，氨基本不反应，<b>直接原样排出去</b>。模拟台里把温度拉到 250 ℃ 试试——效率不到 20%，氨逃逸却超过 100 ppm。</div><span class="it">温度红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">α 不要盲目往 1 以上调</div><div class="id">把 α 从 0.9 提到 1.15，效率只涨两三个点，氨逃逸却成倍上升。过量氨还会和 SO₃ 生成<b>硫酸氢铵</b>，在空预器上结垢堵塞——这是 SCR 改造后最常见的后遗症。</div><span class="it">喷氨红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">效率与氨逃逸必须同步测</div><div class="id">只报效率不报逃逸，等于把二次污染藏起来了。<b>两个数放在一起看，才能判断这套系统到底好不好。</b>这也是环保核查现场必查的一对指标。</div><span class="it">指标红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">工况一变，数据全部作废</div><div class="id">温度、空速、进口浓度任一变化，此前测的数据都不再可比。做温度—效率曲线时，<b>每一组数据都必须重新稳定工况</b>，不能边调边测。</div><span class="it">同步红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：面对"脱硝效率不达标"，能分清是<b>温度问题</b>（烟温偏离催化剂窗口／换热布置不合理）、<b>喷氨问题</b>（氨氮比失调／喷氨格栅堵塞偏流／混合不均）、还是<b>催化剂问题</b>（失活／中毒／堵塞／吹损）。这三类的整改方向完全不同——<b>现场最常见的错判，是靠加大喷氨量去掩盖催化剂失活的事实</b>，结果效率没救回来，氨逃逸先超标了。
+  </div>
+  <div class="note warnbox">
+    <b>本页模型边界</b>：总效率按温度因子 × 氨氮比因子 × 空速因子三项乘积计算；温度因子用对数正态形函数模拟火山形曲线；氨逃逸按化学计量差计算。取值假设：进口 NOx = 400 mg/m³（以 NO₂ 计），反应器绝热、无 SO₂ 与粉尘干扰、忽略硫酸氢铵生成动力学。<b>实际工程中的催化剂失活、氨氮混合不均、烟气流场偏斜都会显著影响结果，曲线仅用于教学演示，不作为工程设计依据。</b>
+  </div>
+  <div class="sd" style="margin-top:18px">教材对应位置：第三部分「大气污染控制实验」中的催化净化气态污染物实验（SCR 脱硝／催化燃烧／光催化）。</div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3
+  <div class="nav">
+    <a href="00-大气污染控制工程实验-课程对照总览.html">课程对照总览</a>
+    <a href="旋风除尘器性能测定-交互版.html">旋风除尘器</a>
+    <a href="填料塔吸收SO2性能测定-交互版.html">填料塔吸收 SO₂</a>
+    <a href="活性炭吸附VOCs性能测定-交互版.html">活性炭吸附 VOCs</a>
+    <a class="cur" href="催化净化NOx性能测定-交互版.html">催化净化 NOx</a>
+    <a href="烟气参数测定-交互版.html">烟气参数测定</a>
+  </div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+/* ---------- 模型常数（教学用）---------- */
+const CIN=400;                     // 进口 NOx mg/m³ (以NO2计)
+const M_NH3=17, M_NO2=46, PPM=22.4/17;
+const K_A=3.5;                     // 氨氮比因子常数
+const GREF=60000, GEXP=1.5;        // 空速因子
+const Q_GAS=10000;                 // 烟气量 m³/h（催化剂体积折算用）
+const SLIP_LIMIT=3;                // 氨逃逸限值 ppm
+const CAT={vwt:{opt:360,s:0.20,name:'中温钒基 V-W-Ti'},mnce:{opt:220,s:0.22,name:'低温锰基 Mn-Ce'}};
+
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let measured=null, curParam=null;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},8000);}
+
+function params(){return{t:+$('tIn').value, a:+$('aIn').value, g:+$('gIn').value, c:$('cIn').value};}
+function key(p){return p.t+'|'+p.a+'|'+p.g+'|'+p.c;}
+
+function eT(T,c){const l=Math.log(T/CAT[c].opt);return Math.exp(-(l*l)/(2*CAT[c].s*CAT[c].s));}
+function eSV(g){return 1/(1+Math.pow(g/GREF,GEXP));}
+function fA(a){return 1-Math.exp(-K_A*a);}
+function calc(p){
+  const X=eT(p.t,p.c)*eSV(p.g);       // 该工况下可达的最高效率（氨过量时）
+  const eta=X*fA(p.a);
+  const slipMg=Math.max(0,p.a-eta)*CIN*M_NH3/M_NO2;
+  return {X,eta,slip:slipMg*PPM,cout:CIN*(1-eta),V:Q_GAS/p.g};
+}
+function windowOf(p){
+  let lo=null,hi=null;
+  for(let T=150;T<=550;T+=1){
+    const e=eT(T,p.c)*eSV(p.g)*fA(p.a);
+    if(e>=0.80){if(lo===null)lo=T;hi=T;}
+  }
+  return (lo===null)?null:{lo,hi};
+}
+
+function render(){
+  const p=params(), c=calc(p);
+  $('tTxt').textContent=p.t+' ℃';
+  $('aTxt').textContent=p.a.toFixed(2);
+  $('oEta').textContent=(c.eta*100).toFixed(1);
+  $('oSlip').textContent=c.slip<0.1?'≈0':c.slip.toFixed(1);
+  $('oCout').textContent=Math.round(c.cout);
+  $('oV').textContent=c.V.toFixed(2);
+  $('dvEta').className='dv'+(c.eta<0.7?' bad':c.eta>=0.9?' good':'');
+  $('dvSlip').className='dv'+(c.slip>SLIP_LIMIT?' bad':c.slip<0.5?' good':'');
+  draw(p,c);
+}
+
+function draw(p,c){
+  const cv=$('cv'), ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=250;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=42, PR=56, PT=18, PB=34;
+  const gw=W-PL-PR, gh=H-PT-PB;
+  const T0=150, T1=550;
+  const X=T=>PL+(T-T0)/(T1-T0)*gw;
+  const YE=e=>PT+(1-e)*gh;
+  const L0=Math.log10(0.3), L1=Math.log10(300);
+  const YS=ppm=>PT+(1-(Math.log10(Math.max(ppm,0.3))-L0)/(L1-L0))*gh;
+
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(e=>{ctx.beginPath();ctx.moveTo(PL,YE(e));ctx.lineTo(PL+gw,YE(e));ctx.stroke();});
+  [150,200,250,300,350,400,450,500,550].forEach(T=>{ctx.beginPath();ctx.moveTo(X(T),PT);ctx.lineTo(X(T),PT+gh);ctx.stroke();});
+  ctx.fillStyle='#64748b';ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  [0,.25,.5,.75,1].forEach(e=>ctx.fillText(Math.round(e*100)+'%',PL-7,YE(e)));
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='#475569';
+  [150,200,250,300,350,400,450,500,550].forEach(T=>ctx.fillText(T,X(T),PT+gh+7));
+  ctx.fillText('反应温度 T (℃)',PL+gw/2,PT+gh+20);
+  ctx.save();ctx.translate(11,PT+gh/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#475569';ctx.fillText('脱硝效率 η',0,0);ctx.restore();
+  // 右轴（对数）
+  ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='#64748b';
+  [0.3,1,3,10,30,100,300].forEach(v=>ctx.fillText(v,PL+gw+6,YS(v)));
+  ctx.save();ctx.translate(W-6,PT+gh/2);ctx.rotate(Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#475569';ctx.fillText('氨逃逸 (ppm)',0,0);ctx.restore();
+
+  // 有效温度窗口带
+  const win=windowOf(p);
+  if(win){
+    ctx.fillStyle='rgba(52,211,153,.09)';
+    ctx.fillRect(X(win.lo),PT,X(win.hi)-X(win.lo),gh);
+    ctx.strokeStyle='rgba(52,211,153,.55)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(X(win.lo),PT);ctx.lineTo(X(win.lo),PT+gh);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(X(win.hi),PT);ctx.lineTo(X(win.hi),PT+gh);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#34d399';ctx.font='10px Inter,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText('温度窗口 '+win.lo+'–'+win.hi+'℃',Math.min(X(win.lo)+5,PL+gw-96),PT+2);
+  }
+  // 80% 参考线
+  ctx.strokeStyle='rgba(148,163,184,.35)';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(PL,YE(.8));ctx.lineTo(PL+gw,YE(.8));ctx.stroke();ctx.setLineDash([]);
+  // 氨逃逸 3 ppm 限值
+  ctx.strokeStyle='rgba(251,191,36,.6)';ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(PL,YS(SLIP_LIMIT));ctx.lineTo(PL+gw,YS(SLIP_LIMIT));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#fbbf24';ctx.font='9.5px Inter,sans-serif';ctx.textAlign='right';ctx.textBaseline='bottom';
+  ctx.fillText('3 ppm 限值',PL+gw-4,YS(SLIP_LIMIT)-3);
+
+  // 氨逃逸曲线（右轴，对数）
+  ctx.strokeStyle='#fb7185';ctx.lineWidth=1.8;ctx.beginPath();
+  for(let i=0;i<=280;i++){
+    const T=T0+i*(T1-T0)/280;
+    const q={t:T,a:p.a,g:p.g,c:p.c};
+    const s=calc(q).slip;
+    const y=YS(Math.min(s,300));
+    if(i===0)ctx.moveTo(X(T),y);else ctx.lineTo(X(T),y);
+  }
+  ctx.stroke();
+
+  // 效率曲线（左轴，火山形）
+  ctx.strokeStyle='#e879f9';ctx.lineWidth=2.4;ctx.beginPath();
+  for(let i=0;i<=280;i++){
+    const T=T0+i*(T1-T0)/280;
+    const e=eT(T,p.c)*eSV(p.g)*fA(p.a);
+    const y=YE(Math.min(e,1));
+    if(i===0)ctx.moveTo(X(T),y);else ctx.lineTo(X(T),y);
+  }
+  ctx.stroke();
+
+  // 当前温度竖线 + 标记
+  ctx.strokeStyle='rgba(148,163,184,.55)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
+  ctx.beginPath();ctx.moveTo(X(p.t),PT);ctx.lineTo(X(p.t),PT+gh);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#e879f9';ctx.beginPath();ctx.arc(X(p.t),YE(c.eta),4,0,7);ctx.fill();
+  ctx.font='10.5px Inter,sans-serif';ctx.textAlign=X(p.t)>PL+gw-80?'right':'left';ctx.textBaseline='bottom';
+  ctx.fillText('η='+(c.eta*100).toFixed(1)+'%',X(p.t)+(X(p.t)>PL+gw-80?-8:8),YE(c.eta)-6);
+}
+
+function onParam(){
+  const p=params();
+  if(S.s3&&curParam&&key(p)!==curParam){
+    log('工况参数已改变（温度／氨氮比／空速／催化剂），此前的测量数据失效，请重新从 STEP 1 开始','bad');
+    setSts('⚠️ 工况已变，需重测','sbad');
+    warn('⚠️ 工况变了，之前测的数据不能用了——做温度—效率曲线时，每一组数据都必须重新稳定工况再测。');
+    S={s1:false,s2:false,s3:false,s4:false,s5:false};
+    ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+    measured=null;curParam=null;
+  }
+  render();
+}
+
+function step1(){
+  if(S.s1)return;
+  const p=params();
+  S.s1=true;$('p1').classList.add('on');$('p2').disabled=false;
+  setSts('🟡 催化剂已活化','sa');
+  log('催化剂装填完成：<b>'+CAT[p.c].name+'</b>，体积 '+calc(p).V.toFixed(2)+' m³（按 10000 m³/h 烟气量折算），已完成预热活化',true);
+  warn('');
+}
+function step2(){
+  if(!S.s1){warn('请先完成 STEP 1 催化剂装填与活化');return;}
+  if(S.s2)return;
+  S.s2=true;$('p2').classList.add('on');$('p3').disabled=false;
+  log('进口 NOx 浓度标定：C<sub>in</sub> = <b>'+CIN+' mg/m³</b>（以 NO₂ 计）；烟气流量已稳定',true);
+  setSts('🟡 进口 NOx 已标定','sa');
+}
+function step3(){
+  if(!S.s2){warn('⚠️ 必须先标定进口 NOx 浓度——没有 C<sub>in</sub> 就算不出脱硝效率');log('顺序错误：跳过进口 NOx 标定直接升温，已阻断',false);return;}
+  if(S.s3)return;
+  const p=params(), c=calc(p);
+  S.s3=true;$('p3').classList.add('on');$('p4').disabled=false;
+  measured={t:p.t,a:p.a,g:p.g,c:p.c,eta:c.eta,slip:c.slip,cout:c.cout,X:c.X};curParam=key(p);
+  log('反应器升温至 <b>'+p.t+' ℃</b> 并稳定；该工况下催化剂可达最高效率 '+((c.X)*100).toFixed(1)+'%',true);
+  if(c.X<0.5)warn('⚠️ 当前温度 ' + p.t + ' ℃ 下，催化剂活性严重不足（最高只能到 '+(c.X*100).toFixed(0)+'%）——此时投氨，氨基本不反应，会直接逃逸。');
+  setSts('🟡 温度已稳定','sa');
+  render();
+}
+function step4(){
+  if(!S.s3){warn('⚠️ 请先按顺序完成 STEP 3 升温并稳定');log('顺序错误：跳过升温直接投氨，已阻断',false);return;}
+  if(S.s4)return;
+  const c=measured;
+  S.s4=true;$('p4').classList.add('on');$('p5').disabled=false;
+  log('按 α = <b>'+c.a.toFixed(2)+'</b> 投氨并稳定；出口 NOx = <b>'+Math.round(c.cout)+' mg/m³</b>，脱硝效率 η = <b>'+(c.eta*100).toFixed(1)+'%</b>',true);
+  setSts('🟡 脱硝效率已测','sa');
+}
+function step5(){
+  if(!S.s4){warn('⚠️ 请先按顺序完成 STEP 4 投氨测效率');log('顺序错误：跳过脱硝效率直接测氨逃逸，已阻断',false);return;}
+  if(S.s5)return;
+  const c=measured;
+  S.s5=true;$('p5').classList.add('on');
+  const over=c.slip>SLIP_LIMIT;
+  setSts(over?'🟠 实验完成（氨逃逸超标）':'🟢 实验完成','sok');
+  log('同步测定氨逃逸：<b>'+(c.slip<0.1?'≈0':c.slip.toFixed(1))+' ppm</b>（限值 '+SLIP_LIMIT+' ppm）',true);
+  log('本次结论：T='+c.t+' ℃，α='+c.a.toFixed(2)+'，GHSV='+c.g+' h⁻¹，η='+(c.eta*100).toFixed(1)+'%，氨逃逸 '+(c.slip<0.1?'≈0':c.slip.toFixed(1))+' ppm');
+  if(over){
+    setSts('⛔ 氨逃逸超标','sbad');
+    warn('⛔ 氨逃逸 '+c.slip.toFixed(1)+' ppm 超过限值 '+SLIP_LIMIT+' ppm——效率虽然上去了，但把二次污染排了出去。过量氨还会在下游生成硫酸氢铵堵塞空预器。正确做法是<b>先把温度和空速调对，再微调喷氨量</b>，而不是靠加大喷氨换效率。');
+  }else{
+    warn('');
+  }
+}
+function resetAll(){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false};measured=null;curParam=null;
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('tIn').value=360;$('aIn').value=0.90;$('gIn').value='5000';$('cIn').value='vwt';
+  setSts('⏳ 未开始','si');$('log').innerHTML='';warn('');
+  render();
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 533-2009</td><td>环境空气和废气 氨的测定 纳氏试剂分光光度法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 692-2014</td><td>固定污染源废气 氮氧化物的测定 非分散红外吸收法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 693-2014</td><td>固定污染源废气 氮氧化物的测定 定电位电解法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>3</b> 项标准：<b>3</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

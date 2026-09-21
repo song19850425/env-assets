@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验分组任务单 · WDHJ20200452</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;background:#f0f2f5;color:#222;padding:16px}
+.container{max-width:1100px;margin:0 auto}
+
+/* Header */
+.header{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:18px 22px;border-radius:10px 10px 0 0}
+.header h1{font-size:18px;font-weight:800}
+.header .sub{font-size:11px;opacity:0.85;margin-top:4px}
+.header .meta{display:flex;gap:16px;margin-top:8px;font-size:10px;flex-wrap:wrap}
+
+/* Group Card */
+.gr-card{border-radius:10px;margin-bottom:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.gr-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.gr-header h2{font-size:16px}
+.gr-header .badge{font-size:10px;background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:10px}
+.gr-header .count{font-size:11px;opacity:0.9}
+.gr-body{padding:14px 16px;background:#fff}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}
+td,th{border:1px solid #e0e0e0;padding:4px 7px;text-align:center;vertical-align:middle}
+th{font-weight:700;font-size:10px}
+.label{background:#f5f5f5;font-weight:600;color:#333;text-align:center;width:90px}
+
+/* Tag */
+.tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;color:#fff;font-weight:600;margin-right:2px}
+
+/* Flow inside card */
+.flow-bar{display:flex;align-items:center;gap:4px;padding:8px 0;margin-bottom:6px;font-size:10px;flex-wrap:wrap}
+.flow-step{border-radius:4px;padding:3px 8px;text-align:center;min-width:60px;flex-shrink:0}
+.flow-step .day{font-weight:700;font-size:9px}
+.flow-step .action{font-size:9px}
+.flow-arrow{color:#bbb;font-size:12px}
+
+/* Info boxes */
+.info-box{background:#f5f5f5;border-radius:6px;padding:8px 12px;margin:6px 0;font-size:11px}
+.info-box strong{color:#1a237e}
+.warn-box{background:#fff8e1;border-left:3px solid #ff8f00;padding:8px 12px;margin:6px 0;font-size:11px;border-radius:0 4px 4px 0}
+.warn-box strong{color:#e65100}
+
+/* Checklist */
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px;padding:4px 0}
+.checklist li{list-style:none;padding:2px 0}
+.checklist li::before{content:'☐ ';color:#666}
+
+/* Print buttons */
+.btn{display:inline-block;padding:6px 14px;border-radius:5px;border:none;font-size:11px;font-weight:600;cursor:pointer;margin:2px;text-decoration:none;color:#fff}
+.btn-print{background:#0d47a1}
+.btn-print:hover{background:#1565c0}
+.btn-group{margin:10px 0;display:flex;gap:6px;flex-wrap:wrap}
+
+@media print{body{background:#fff;padding:0}.btn-group{display:none}.gr-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}.gr-card{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1>📋 检测实验分组任务单</h1>
+    <div class="sub">某某公司疑似污染地块土壤和地下水检测</div>
+    <div class="meta">
+        <span>委托编号：WDHJ20200452</span>
+        <span>总样品数：土壤~47个 + 地下水~3个 + 质控样</span>
+        <span>编制日期：2026-06-23</span>
+        <span>此任务单可撕分下发各实验组</span>
+    </div>
+</div>
+
+<div class="btn-group">
+    <button class="btn btn-print" onclick="window.print()">🖨️ 全部打印</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- 理化组 -->
+<div class="gr-card" style="border-top:4px solid #43a047">
+    <div class="gr-header" style="background:linear-gradient(135deg,#2e7d32,#43a047)">
+        <div>
+            <h2>🧪 理化组 · 任务单</h2>
+            <span class="count">土壤pH/六价铬 + 地下水常规指标 + 微生物</span>
+        </div>
+        <div>
+            <span class="badge">组长：_________</span>
+            <span class="badge">完成期限：Day 5</span>
+        </div>
+    </div>
+    <div class="gr-body">
+
+        <div class="flow-bar">
+            <div class="flow-step" style="background:#c8e6c9"><div class="day">Day 1</div><div class="action">接样核对</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#fff9c4"><div class="day">Day 2</div><div class="action">前处理</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#bbdefb"><div class="day">Day 3-4</div><div class="action">仪器分析</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#c8e6c9"><div class="day">Day 5</div><div class="action">数据提交</div></div>
+        </div>
+
+        <h3 style="font-size:12px;color:#2e7d32;margin-bottom:6px">🔬 检测指标与方法</h3>
+        <table>
+            <tr><th>#</th><th>检测指标</th><th>介质</th><th>样品数</th><th>方法标准</th><th>仪器设备</th><th>前处理</th><th>保存时限</th></tr>
+            <tr>
+                <td>E1</td><td style="text-align:left">pH</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px">土壤pH测定 NY/T 1377-2007</td>
+                <td>pH计（±0.01）</td>
+                <td style="font-size:10px">无CO₂水浸提 水土比2.5:1</td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>E2</td><td style="text-align:left">六价铬</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px">土壤和沉积物 六价铬的测定 碱消解/分光光度法<br>HJ 1082-2019</td>
+                <td>分光光度计 540nm</td>
+                <td style="font-size:10px">Na₂CO₃/NaOH碱消解 → 调pH → 显色</td>
+                <td style="color:#e53935;font-weight:700">24h⏰</td>
+            </tr>
+            <tr>
+                <td>E3</td><td style="text-align:left">地下水感官性状及一般化学指标</td><td>地下水</td><td>~3</td>
+                <td style="font-size:10px">
+                    色度 GB/T 5750.4<br>
+                    嗅和味 GB/T 5750.4<br>
+                    浑浊度 GB/T 5750.4<br>
+                    pH GB/T 5750.4<br>
+                    总硬度 GB/T 5750.4<br>
+                    溶解性总固体 GB/T 5750.4<br>
+                    硫酸盐/氯化物 GB/T 5750.5<br>
+                    挥发性酚类 GB/T 5750.4<br>
+                    阴离子合成洗涤剂 GB/T 5750.4<br>
+                    耗氧量 GB/T 5750.7<br>
+                    氨氮 GB/T 5750.5<br>
+                    硫化物 GB/T 5750.5<br>
+                    钠 GB/T 5750.6<br>
+                    亚硝酸盐/硝酸盐 GB/T 5750.5<br>
+                    氰化物 GB/T 5750.5<br>
+                    氟化物 GB/T 5750.5<br>
+                    碘化物 GB/T 5750.5<br>
+                    铝 GB/T 5750.6
+                </td>
+                <td style="font-size:10px">
+                    分光光度计<br>
+                    pH计<br>
+                    滴定装置<br>
+                    重量法<br>
+                    离子色谱<br>
+                    培养箱
+                </td>
+                <td style="font-size:10px">
+                    直接测定 / 过滤 / 消解 / 蒸馏
+                </td>
+                <td>24-48h</td>
+            </tr>
+            <tr>
+                <td>E4</td><td style="text-align:left">地下水微生物</td><td>地下水</td><td>~3</td>
+                <td style="font-size:10px">
+                    总大肠菌群 GB/T 5750.12<br>
+                    菌落总数 GB/T 5750.12
+                </td>
+                <td>恒温培养箱</td>
+                <td style="font-size:10px">直接接种 → 培养24-48h</td>
+                <td style="color:#e53935;font-weight:700">24h⏰</td>
+            </tr>
+        </table>
+
+        <h3 style="font-size:12px;color:#2e7d32;margin:10px 0 6px">📦 领样清单</h3>
+        <table>
+            <tr><th>样品类型</th><th>容器</th><th>数量</th><th>保存要求</th><th>预计用时</th></tr>
+            <tr><td>土壤（六价铬）</td><td>自封袋 500g</td><td>~47个</td><td>4℃冷藏</td><td>前处理3h + 分析4h</td></tr>
+            <tr><td>土壤（pH）</td><td>自封袋</td><td>~47个</td><td>常温</td><td>1h</td></tr>
+            <tr><td>地下水（常规指标）</td><td>500mL聚乙烯瓶</td><td>~3个</td><td>4℃冷藏</td><td>各指标2-4h</td></tr>
+            <tr><td>地下水（微生物）</td><td>灭菌瓶</td><td>~3个</td><td>4℃冷藏</td><td>培养24-48h</td></tr>
+        </table>
+
+        <div class="warn-box">
+            <strong>⏰ 时效警示：</strong>
+            ① 六价铬样品到样后须当天安排消解分析（保存期24h），不可过夜！<br>
+            ② 地下水微生物须在采样后24h内开始培养，优先安排！<br>
+            ③ 地下水常规指标中耗氧量、氨氮、挥发性酚类保存期短，优先于硫酸盐/氯化物。
+        </div>
+
+        <div class="info-box">
+            <strong>🧪 质控要求：</strong><br>
+            pH：每批次≥1个平行样（RPD≤15%），pH计三点校准+温度补偿<br>
+            六价铬：每批次≥1个全程序空白+1个平行样+1个基体加标，回收率70-130%<br>
+            地下水常规：每批次≥1个平行样+1个CRM，回收率80-120%<br>
+            微生物：每批次≥1个平行样+1个空白
+        </div>
+
+        <div class="info-box">
+            <strong>📝 提交物：</strong> 原始记录（含前处理记录/仪器条件/谱图/计算公式）→ LIMS录入 → 组内互审签名 → 交质量负责人
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;padding-top:6px;border-top:1px solid #e0e0e0">
+            <span>组长签字：_____________</span>
+            <span>质量负责人签字：_____________</span>
+            <span>日期：_____________</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 光谱组 -->
+<div class="gr-card" style="border-top:4px solid #e53935">
+    <div class="gr-header" style="background:linear-gradient(135deg,#c62828,#e53935)">
+        <div>
+            <h2>🔥 光谱组 · 任务单</h2>
+            <span class="count">土壤重金属（As/Cd/Cu/Pb/Ni/Cr/Zn/Hg）+ 地下水金属</span>
+        </div>
+        <div>
+            <span class="badge">组长：_________</span>
+            <span class="badge">完成期限：Day 5</span>
+        </div>
+    </div>
+    <div class="gr-body">
+
+        <div class="flow-bar">
+            <div class="flow-step" style="background:#c8e6c9"><div class="day">Day 1</div><div class="action">接样核对</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#fff9c4"><div class="day">Day 2</div><div class="action">四酸消解</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#bbdefb"><div class="day">Day 3-4</div><div class="action">ICP-OES / AFS</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#c8e6c9"><div class="day">Day 5</div><div class="action">数据提交</div></div>
+        </div>
+
+        <h3 style="font-size:12px;color:#c62828;margin-bottom:6px">🔬 检测指标与方法</h3>
+        <table>
+            <tr><th>#</th><th>检测指标</th><th>介质</th><th>样品数</th><th>方法标准</th><th>仪器设备</th><th>前处理</th><th>检出限(mg/kg)</th></tr>
+            <tr>
+                <td>A1</td><td>砷 As</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px;text-align:left">土壤和沉积物 汞、砷、硒、铋、锑的测定 微波消解/原子荧光法 HJ 680-2013</td>
+                <td style="font-size:10px">AFS（原子荧光光度计）</td>
+                <td style="font-size:10px">王水水浴消解 → 还原 → 上机</td>
+                <td>0.01</td>
+            </tr>
+            <tr>
+                <td>A2</td><td>汞 Hg</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px;text-align:left">同上 HJ 680-2013</td>
+                <td style="font-size:10px">AFS（原子荧光光度计）</td>
+                <td style="font-size:10px">王水水浴消解（≤100℃）→ 上机</td>
+                <td>0.002</td>
+            </tr>
+            <tr>
+                <td>A3</td><td>镉 Cd</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px;text-align:left">土壤质量 铅、镉的测定 石墨炉原子吸收分光光度法 GB/T 17141-1997</td>
+                <td style="font-size:10px">GFAAS（石墨炉原子吸收）</td>
+                <td rowspan="4" style="font-size:10px">HCl-HNO₃-HF-HClO₄ 四酸消解 → 赶酸 → 定容 → 过滤</td>
+                <td>0.01</td>
+            </tr>
+            <tr>
+                <td>A4</td><td>铜 Cu</td><td>土壤</td><td>~47</td>
+                <td rowspan="4" style="font-size:10px;text-align:left">土壤和沉积物 铜、锌、铅、镍、铬的测定 火焰原子吸收分光光度法 HJ 491-2019</td>
+                <td rowspan="4" style="font-size:10px">FAAS（火焰原子吸收）或 ICP-OES</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>A5</td><td>铅 Pb</td><td>土壤</td><td>~47</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>A6</td><td>镍 Ni</td><td>土壤</td><td>~47</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>A7</td><td>铬 Cr</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px;text-align:left">土壤和沉积物 铜、锌、铅、镍、铬的测定 HJ 491-2019</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>A8</td><td>锌 Zn</td><td>土壤</td><td>~47</td>
+                <td style="font-size:10px;text-align:left">土壤和沉积物 铜、锌、铅、镍、铬的测定 HJ 491-2019</td>
+                <td style="font-size:10px">FAAS / ICP-OES</td>
+                <td style="font-size:10px">四酸消解 同上</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>A9</td><td>地下水金属</td><td>地下水</td><td>~3</td>
+                <td style="font-size:10px;text-align:left">水质 金属指标 GB/T 5750.6</td>
+                <td style="font-size:10px">ICP-MS / ICP-OES / AFS</td>
+                <td style="font-size:10px">HNO₃消解 → 定容</td>
+                <td>—</td>
+            </tr>
+        </table>
+
+        <h3 style="font-size:12px;color:#c62828;margin:10px 0 6px">📦 领样清单</h3>
+        <table>
+            <tr><th>样品类型</th><th>容器</th><th>数量</th><th>保存要求</th><th>预计用时</th></tr>
+            <tr><td>土壤（重金属）</td><td>自封袋 500g</td><td>~47个</td><td>4℃冷藏</td><td>消解6h + 上机4h/批</td></tr>
+            <tr><td>地下水（金属）</td><td>500mL聚乙烯瓶+HNO₃</td><td>~3个</td><td>pH<2, 4℃</td><td>2h</td></tr>
+        </table>
+
+        <div class="info-box">
+            <strong>⚙️ 仪器配置：</strong><br>
+            ICP-OES（或FAAS）：测Cu/Pb/Ni/Cr/Zn — 标准曲线5点 r≥0.999，每20个样品带1个标样校核<br>
+            AFS：测As/Hg — As需还原（硫脲-抗坏血酸），Hg消解温度≤100℃防挥发<br>
+            GFAAS（如有）：测Cd — 基体改进剂（磷酸二氢铵），塞曼扣背景<br>
+            地下水金属：优先用ICP-MS，灵敏度高且可同时多元素
+        </div>
+
+        <div class="warn-box">
+            <strong>🔴 关键注意事项：</strong><br>
+            ① As和Hg必须用AFS分析，不可用ICP-OES（灵敏度不足）<br>
+            ② Cd含量通常很低，必须用石墨炉（GFAAS），不能用火焰法<br>
+            ③ Cr消解须完全，否则结果偏低。消解液中若有残渣须过滤<br>
+            ④ Hg前处理须严格控制温度≤100℃，Hg空白值高时排查试剂和酸
+        </div>
+
+        <div class="info-box">
+            <strong>🧪 质控要求：</strong><br>
+            • 全程序空白：每批次1个（消解空白必须＜MDL）<br>
+            • 平行样：每批次≥1个（RPD≤20%）<br>
+            • CRM：每批次≥1个（GSS系列，回收率80-120%）<br>
+            • 基体加标：每批次≥1个（回收率70-130%）<br>
+            • 标准曲线：每日分析前校核，中间浓度点偏差≤10%
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;padding-top:6px;border-top:1px solid #e0e0e0">
+            <span>组长签字：_____________</span>
+            <span>质量负责人签字：_____________</span>
+            <span>日期：_____________</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 色谱组（含VOCs/SVOCs/石油烃） -->
+<div class="gr-card" style="border-top:4px solid #1e88e5">
+    <div class="gr-header" style="background:linear-gradient(135deg,#1565c0,#1e88e5)">
+        <div>
+            <h2>🧪 色谱组 · 任务单</h2>
+            <span class="count">VOCs(27项) + SVOCs(11项) + 石油烃(C₁₀-C₄₀)</span>
+        </div>
+        <div>
+            <span class="badge">组长：_________</span>
+            <span class="badge">完成期限：Day 10</span>
+        </div>
+    </div>
+    <div class="gr-body">
+
+        <div class="flow-bar">
+            <div class="flow-step" style="background:#c8e6c9"><div class="day">Day 1</div><div class="action">接样核对</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#fff9c4"><div class="day">Day 2-3</div><div class="action">前处理</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#bbdefb"><div class="day">Day 4-8</div><div class="action">GC-MS/GC-FID</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#c8e6c9"><div class="day">Day 10</div><div class="action">数据提交</div></div>
+        </div>
+
+        <!-- 子组：VOCs -->
+        <h3 style="font-size:12px;color:#1565c0;margin:10px 0 4px;border-bottom:1px dashed #90caf9;padding-bottom:4px">🔵 子组B — VOCs（27项）</h3>
+        <table>
+            <tr><th>#</th><th>检测指标（27项）</th><th>方法标准</th><th>仪器</th><th>前处理</th><th>保存时限</th></tr>
+            <tr>
+                <td>B1-B27</td>
+                <td style="text-align:left;font-size:10px">
+                    四氯化碳、氯仿、氯甲烷、1,1-二氯乙烷、1,2-二氯乙烷、1,1-二氯乙烯、顺-1,2-二氯乙烯、反-1,2-二氯乙烯、二氯甲烷、1,2-二氯丙烷、1,1,1,2-四氯乙烷、1,1,2,2-四氯乙烷、四氯乙烯、1,1,1-三氯乙烷、1,1,2-三氯乙烷、三氯乙烯、1,2,3-三氯丙烷、氯乙烯、苯、氯苯、1,2-二氯苯、1,4-二氯苯、乙苯、苯乙烯、甲苯、间&对-二甲苯、邻-二甲苯
+                </td>
+                <td style="font-size:10px;text-align:left">
+                    土壤和沉积物 挥发性有机物的测定 吹扫捕集/气相色谱-质谱法 HJ 605-2011
+                </td>
+                <td style="font-size:10px">P&T-GC-MS</td>
+                <td style="font-size:10px">甲醇提取（5g土+10mL甲醇）→ 取提取液吹扫捕集</td>
+                <td style="font-weight:700">14d</td>
+            </tr>
+        </table>
+
+        <div class="info-box" style="margin-top:4px">
+            <strong>🧪 VOCs组质控要求：</strong><br>
+            • 4种替代物（甲苯-d8/4-溴氟苯/1,2-二氯苯-d4/二溴氟甲烷）每个样品加，回收率60-140%<br>
+            • 运输空白+全程序空白：目标物均＜MDL<br>
+            • 平行样RPD≤20%、基体加标MS/MSD回收率70-130%<br>
+            • 标准曲线5点 r≥0.995，每日校核<br>
+            • <strong style="color:#e53935">VOCs保存期限14d（甲醇保存），优先安排！</strong>
+        </div>
+
+        <!-- 子组：SVOCs -->
+        <h3 style="font-size:12px;color:#8e24aa;margin:10px 0 4px;border-bottom:1px dashed #ce93d8;padding-bottom:4px">🟣 子组C — SVOCs（11项）</h3>
+        <table>
+            <tr><th>#</th><th>检测指标（11项）</th><th>方法标准</th><th>仪器</th><th>前处理</th><th>保存时限</th></tr>
+            <tr>
+                <td>C1-C11</td>
+                <td style="text-align:left;font-size:10px">
+                    硝基苯、苯胺、2-氯酚、萘、苯并[a]蒽、苯并[a]芘、苯并[b]荧蒽、苯并[k]荧蒽、䓛、二苯并[a,h]蒽、茚并[1,2,3-cd]芘
+                </td>
+                <td style="font-size:10px;text-align:left">
+                    土壤和沉积物 半挥发性有机物的测定 气相色谱-质谱法 HJ 834-2017
+                </td>
+                <td style="font-size:10px">GC-MS</td>
+                <td style="font-size:10px">加压流体萃取(PLE) → 浓缩 → SPE净化(硅胶/弗罗里硅土) → 定容</td>
+                <td>10d</td>
+            </tr>
+        </table>
+        <div class="info-box" style="margin-top:4px">
+            <strong>🧪 SVOCs组质控要求：</strong><br>
+            • 3种替代物（2-氟苯酚/硝基苯-d5/三联苯-d14），回收率40-130%<br>
+            • 全程序空白：＜MDL，且无目标物干扰峰<br>
+            • 平行样RPD≤20%、基体加标回收率70-130%<br>
+            • 每个批次带1个CRM（必要时）<br>
+            • <strong style="color:#e53935">苯胺须使用碱性/中性提取，不可酸性条件下操作</strong>
+        </div>
+
+        <!-- 子组：石油烃 -->
+        <h3 style="font-size:12px;color:#fb8c00;margin:10px 0 4px;border-bottom:1px dashed #ffcc80;padding-bottom:4px">🟠 子组D — 石油烃（C₁₀-C₄₀）</h3>
+        <table>
+            <tr><th>#</th><th>检测指标</th><th>方法标准</th><th>仪器</th><th>前处理</th><th>保存时限</th></tr>
+            <tr>
+                <td>D1</td>
+                <td style="text-align:left">石油烃（C₁₀-C₄₀）</td>
+                <td style="font-size:10px;text-align:left">
+                    土壤：土壤和沉积物 石油烃（C₁₀-C₄₀）的测定 气相色谱法 HJ 1021-2019<br>
+                    地下水：水质 可萃取性石油烃（C₁₀-C₄₀）的测定 气相色谱法 HJ 894-2017
+                </td>
+                <td style="font-size:10px">GC-FID</td>
+                <td style="font-size:10px">
+                    土壤：丙酮-正己烷(1:1)提取 → 浓缩 → 硅胶净化 → 定容<br>
+                    地下水：液液萃取（正己烷）→ 浓缩 → 硅胶净化
+                </td>
+                <td>14d</td>
+            </tr>
+        </table>
+        <div class="info-box" style="margin-top:4px">
+            <strong>🧪 石油烃组质控要求：</strong><br>
+            • 全程序空白：无干扰峰（保留时间C₁₀-C₄₀范围内无＞0.5倍MDL的峰）<br>
+            • C₁₀/C₂₀/C₃₀/C₄₀正构烷烃校准保留时间<br>
+            • 平行样RPD≤20%、基体加标回收率70-130%<br>
+            • 硅胶净化后样品应无色透明<br>
+            • 每个批次带1个实验室控制样（LCS）
+        </div>
+
+        <h3 style="font-size:12px;color:#1565c0;margin:10px 0 6px">📦 领样清单</h3>
+        <table>
+            <tr><th>子组</th><th>样品类型</th><th>容器</th><th>数量</th><th>保存要求</th></tr>
+            <tr>
+                <td><span class="tag tag-voc">B组 VOCs</span></td>
+                <td>土壤（VOCs）</td>
+                <td>250mL棕色瓶+甲醇<br>40mL吹扫捕集瓶</td>
+                <td>~47个</td>
+                <td>4℃冷藏 不冷冻</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-svoc">C组 SVOCs</span></td>
+                <td>土壤（SVOCs）</td>
+                <td>250mL棕色瓶 满瓶</td>
+                <td>~47个</td>
+                <td>4℃冷藏</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-oil">D组 石油烃</span></td>
+                <td>土壤（石油烃）</td>
+                <td>250mL棕色瓶 满瓶</td>
+                <td>~47个</td>
+                <td>4℃冷藏</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-oil">D组 石油烃</span></td>
+                <td>地下水（石油烃）</td>
+                <td>1L棕色瓶+H₂SO₄</td>
+                <td>~3个</td>
+                <td>pH<2, 4℃</td>
+            </tr>
+        </table>
+
+        <div class="warn-box">
+            <strong>⏰ 色谱组排程建议：</strong><br>
+            ① <strong>VOCs优先</strong> — 保存期14d且前处理最快（甲醇提取30min），建议Day 2-3安排上机<br>
+            ② <strong>SVOCs耗时最长</strong> — PLE+浓缩+净化需1.5天，GC-MS分析约4h/12个样，建议Day 3启动前处理<br>
+            ③ <strong>石油烃适中</strong> — 可与SVOCs并行（不同仪器），GC-FID分析约3h/20个样<br>
+            ④ 如色谱仪器不足（仅有1台GC-MS），先做VOCs再做SVOCs，石油烃用GC-FID不受影响
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;padding-top:6px;border-top:1px solid #e0e0e0">
+            <span>组长签字：_____________</span>
+            <span>质量负责人签字：_____________</span>
+            <span>日期：_____________</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 综合分析组（数据汇总） -->
+<div class="gr-card" style="border-top:4px solid #6a1b9a">
+    <div class="gr-header" style="background:linear-gradient(135deg,#4a148c,#6a1b9a)">
+        <div>
+            <h2>📊 综合分析组 · 任务单</h2>
+            <span class="count">数据汇总 / 审核 / 报告编制</span>
+        </div>
+        <div>
+            <span class="badge">负责人：_________</span>
+            <span class="badge">完成期限：Day 12</span>
+        </div>
+    </div>
+    <div class="gr-body">
+
+        <div class="flow-bar">
+            <div class="flow-step" style="background:#e1bee7"><div class="day">Day 1</div><div class="action">任务分配</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#e1bee7"><div class="day">Day 5-8</div><div class="action">数据收集</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#e1bee7"><div class="day">Day 8-10</div><div class="action">汇总审核</div></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step" style="background:#e1bee7"><div class="day">Day 10-12</div><div class="action">报告签发</div></div>
+        </div>
+
+        <h3 style="font-size:12px;color:#4a148c;margin-bottom:6px">📋 各组数据接收表</h3>
+        <table>
+            <tr><th>组别</th><th>数据内容</th><th>预计提交日</th><th>接收人</th><th>审核要点</th></tr>
+            <tr>
+                <td><span class="tag tag-phy">理化组</span></td>
+                <td style="text-align:left;font-size:10px">pH、六价铬、地下水感官/常规、微生物</td>
+                <td>Day 5</td>
+                <td></td>
+                <td style="text-align:left;font-size:10px">①六价铬是否在24h完成 ②pH三点校准记录 ③微生物培养时间是否达标</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-metal">光谱组</span></td>
+                <td style="text-align:left;font-size:10px">As/Hg/Cd/Cu/Pb/Ni/Cr/Zn + 地下水金属</td>
+                <td>Day 5</td>
+                <td></td>
+                <td style="text-align:left;font-size:10px">①CRM回收率 ②As/Hg用AFS而非ICP ③Cr/Zn数据合理</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-voc">色谱B组</span></td>
+                <td style="text-align:left;font-size:10px">VOCs 27项</td>
+                <td>Day 7</td>
+                <td></td>
+                <td style="text-align:left;font-size:10px">①运输空白结果 ②替代物回收率 ③甲醇保存时间</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-svoc">色谱C组</span></td>
+                <td style="text-align:left;font-size:10px">SVOCs 11项</td>
+                <td>Day 10</td>
+                <td></td>
+                <td style="text-align:left;font-size:10px">①替代物回收率 ②净化效率 ③苯胺是否检出</td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-oil">色谱D组</span></td>
+                <td style="text-align:left;font-size:10px">石油烃(C₁₀-C₄₀)</td>
+                <td>Day 8</td>
+                <td></td>
+                <td style="text-align:left;font-size:10px">①空白无干扰峰 ②C₁₀-C₄₀积分合理</td>
+            </tr>
+        </table>
+
+        <h3 style="font-size:12px;color:#4a148c;margin:10px 0 6px">📄 报告编制检查表</h3>
+        <div class="checklist">
+            <li>□ 各点位检测项目是否齐全（无漏项）</li>
+            <li>□ 质控数据汇总表及评价结论</li>
+            <li>□ 超标数据是否复测确认</li>
+            <li>□ 数据逻辑校核（总铬≥六价铬等）</li>
+            <li>□ 检出限标注、单位统一</li>
+            <li>□ 评价标准引用正确</li>
+            <li>□ 超标因子用红色/加粗标注</li>
+            <li>□ 采样点位图、柱状图齐全</li>
+            <li>□ 三级审核签名完成</li>
+            <li>□ CMA章及相关声明</li>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;padding-top:6px;border-top:1px solid #e0e0e0">
+            <span>报告编制人：_____________</span>
+            <span>审核人（一级）：_____________</span>
+            <span>批准人（三级）：_____________</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 总进度表 -->
+<div class="gr-card" style="border-top:4px solid #37474f">
+    <div class="gr-header" style="background:linear-gradient(135deg,#37474f,#546e7a)">
+        <div>
+            <h2>📅 总进度表 — 各实验组交付节点</h2>
+            <span class="count">全程12个工作日</span>
+        </div>
+    </div>
+    <div class="gr-body">
+        <table>
+            <tr><th>组别</th><th>Day 1</th><th>Day 2</th><th>Day 3</th><th>Day 4</th><th>Day 5</th><th>Day 6</th><th>Day 7</th><th>Day 8</th><th>Day 9</th><th>Day 10</th><th>Day 11</th><th>Day 12</th></tr>
+            <tr>
+                <td><span class="tag tag-phy">理化</span></td>
+                <td style="font-size:9px;background:#e8f5e9">接样</td>
+                <td style="font-size:9px;background:#fff9c4">前处理</td>
+                <td style="font-size:9px;background:#bbdefb">分析</td>
+                <td style="font-size:9px;background:#bbdefb">分析</td>
+                <td style="font-size:9px;background:#c8e6c9">📤</td>
+                <td colspan="7" style="font-size:9px;color:#999"></td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-metal">光谱</span></td>
+                <td style="font-size:9px;background:#e8f5e9">接样</td>
+                <td style="font-size:9px;background:#fff9c4">消解</td>
+                <td style="font-size:9px;background:#bbdefb">ICP/AFS</td>
+                <td style="font-size:9px;background:#bbdefb">ICP/AFS</td>
+                <td style="font-size:9px;background:#c8e6c9">📤</td>
+                <td colspan="7" style="font-size:9px;color:#999"></td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-voc">B组VOCs</span></td>
+                <td style="font-size:9px;background:#e8f5e9">接样</td>
+                <td style="font-size:9px;background:#fff9c4">提取</td>
+                <td style="font-size:9px;background:#bbdefb">P&T-GC-MS</td>
+                <td style="font-size:9px;background:#bbdefb">P&T-GC-MS</td>
+                <td style="font-size:9px;background:#e8f5e9">处理</td>
+                <td style="font-size:9px;background:#e8f5e9">复核</td>
+                <td style="font-size:9px;background:#c8e6c9">📤</td>
+                <td colspan="5" style="font-size:9px;color:#999"></td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-svoc">C组SVOCs</span></td>
+                <td style="font-size:9px;background:#e8f5e9">接样</td>
+                <td style="font-size:9px;background:#fff9c4">PLE</td>
+                <td style="font-size:9px;background:#fff9c4">SPE</td>
+                <td style="font-size:9px;background:#bbdefb">GC-MS</td>
+                <td style="font-size:9px;background:#bbdefb">GC-MS</td>
+                <td style="font-size:9px;background:#e8f5e9">处理</td>
+                <td style="font-size:9px;background:#e8f5e9">处理</td>
+                <td style="font-size:9px;background:#e8f5e9">复核</td>
+                <td style="font-size:9px;background:#e8f5e9">复核</td>
+                <td style="font-size:9px;background:#c8e6c9">📤</td>
+                <td colspan="2" style="font-size:9px;color:#999"></td>
+            </tr>
+            <tr>
+                <td><span class="tag tag-oil">D组石油烃</span></td>
+                <td style="font-size:9px;background:#e8f5e9">接样</td>
+                <td style="font-size:9px;background:#fff9c4">提取</td>
+                <td style="font-size:9px;background:#fff9c4">净化</td>
+                <td style="font-size:9px;background:#bbdefb">GC-FID</td>
+                <td style="font-size:9px;background:#bbdefb">GC-FID</td>
+                <td style="font-size:9px;background:#e8f5e9">处理</td>
+                <td style="font-size:9px;background:#e8f5e9">复核</td>
+                <td style="font-size:9px;background:#c8e6c9">📤</td>
+                <td colspan="4" style="font-size:9px;color:#999"></td>
+            </tr>
+            <tr>
+                <td><span class="tag">综合分析</span></td>
+                <td style="font-size:9px;background:#e1bee7">任务分</td>
+                <td colspan="4" style="font-size:9px;color:#999"></td>
+                <td colspan="3" style="font-size:9px;background:#e1bee7">数据收集</td>
+                <td colspan="2" style="font-size:9px;background:#e1bee7">汇总审核</td>
+                <td colspan="2" style="font-size:9px;background:#ce93d8">报告签发</td>
+            </tr>
+        </table>
+        <div class="legend" style="margin-top:6px">
+            <span class="legend-item"><span style="background:#e8f5e9;width:12px;height:12px;border:1px solid #ccc;display:inline-block"></span> 接样/处理</span>
+            <span class="legend-item"><span style="background:#fff9c4;width:12px;height:12px;border:1px solid #ccc;display:inline-block"></span> 前处理</span>
+            <span class="legend-item"><span style="background:#bbdefb;width:12px;height:12px;border:1px solid #ccc;display:inline-block"></span> 仪器分析</span>
+            <span class="legend-item"><span style="background:#c8e6c9;width:12px;height:12px;border:1px solid #ccc;display:inline-block"></span> 提交</span>
+            <span class="legend-item"><span style="background:#e1bee7;width:12px;height:12px;border:1px solid #ccc;display:inline-block"></span> 综合</span>
+        </div>
+    </div>
+</div>
+
+<hr style="margin:16px 0;border:1px solid #ccc">
+<div style="text-align:center;font-size:10px;color:#888;line-height:1.6">
+    WDHJ20200452 实验分组任务单 ｜ 某某公司疑似污染地块土壤和地下水检测 ｜ 2026-06-23<br>
+    <strong>此文件可撕分为4份独立任务单，分别下发至理化组 / 光谱组 / 色谱组 / 综合分析组</strong>
+</div>
+</div>
+
+<script>
+function printCard(grp) {
+    // 打印单个组
+    const cards = document.querySelectorAll('.gr-card');
+    cards.forEach(c => c.style.display = 'none');
+    document.querySelectorAll('.gr-card')[grp].style.display = 'block';
+    document.querySelector('.header').style.display = 'none';
+    window.print();
+    window.location.reload();
+}
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 17141-1997</td><td>土壤质量 铅、镉的测定 石墨炉原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 5750.12-2023</td><td>生活饮用水标准检验方法 第12部分：微生物指标</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 5750.4-2023</td><td>生活饮用水标准检验方法 第4部分：感官性状和物理指标</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 5750.5-2023</td><td>生活饮用水标准检验方法 第5部分：无机非金属指标</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 5750.6-2023</td><td>生活饮用水标准检验方法 第6部分：金属和类金属指标</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 5750.7-2023</td><td>生活饮用水标准检验方法 第7部分：有机物综合指标</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1021-2019</td><td>土壤和沉积物 石油烃（C10-C40）的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1082-2019</td><td>土壤和沉积物 六价铬的测定 碱溶液提取-火焰原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 491-2019</td><td>土壤和沉积物 铜、锌、铅、镍、铬的测定 火焰原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 605-2011</td><td>土壤和沉积物 挥发性有机物的测定 吹扫捕集／气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 680-2013</td><td>土壤和沉积物 汞、砷、硒、铋、锑的测定 微波消解／原子荧光法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 834-2017</td><td>土壤和沉积物 半挥发性有机物的测定 气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 894-2017</td><td>水质 可萃取性石油烃（C10-C40）的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">NY/T 1377-2007</td><td>土壤中pH值的测定</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>14</b> 项标准：<b>14</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

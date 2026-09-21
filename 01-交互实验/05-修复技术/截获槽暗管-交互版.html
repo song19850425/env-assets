@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水力截获槽/暗管 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#059669;--accent-glow:#34d399;--accent-bg:rgba(5,150,105,.12);--green:#22c55e}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(5,150,105,.04) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(5,150,105,.2);z-index:1}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:10px}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:4px}
+.lb{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}
+.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(34,197,94,.1);color:var(--green)}
+.cv-wrap{width:100%;height:280px;background:#0a0e17;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin:12px 0;position:relative}
+.cv-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:18px;font-weight:800;margin-top:2px}
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}@media(max-width:640px){.ct{grid-template-columns:1fr}}
+.cb{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.cb .cl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:4px;text-transform:uppercase}
+.cb .cr{display:flex;align-items:center;gap:8px}
+.cb input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.cb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(5,150,105,.3)}
+.cb .cv{font-size:12px;font-weight:700;color:var(--accent-glow);min-width:32px;text-align:right}
+.cb select{width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit;cursor:pointer}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#059669,#34d399);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(5,150,105,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+<section class="hr">
+  <div class="hg"></div>
+  <div class="hb">🌱 环境实验</div>
+  <h1 class="h1">掌握 <em>水力截获槽/暗管</em></h1>
+  <div style="color:#64748b;font-size:15px;margin-top:12px;z-index:1">Hydraulic Interception Trench · 污染羽截获 · 设槽vs不设槽</div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">截获槽技术</div>
+  <div class="sd">水力截获槽/暗管通过在污染羽下游设置透水屏障，截获受污染地下水，防止污染羽进一步扩散。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🕳️</div><div class="in">截获槽</div><div class="id">开挖沟槽回填透水材料，形成地下"滤墙"，截获受污染地下水后集中抽出处理。</div></div>
+    <div class="ic"><div class="ii">📏</div><div class="in">暗管系统</div><div class="id">槽底铺设穿孔集水管，将截获的地下水导流至集水井或处理系统。</div></div>
+    <div class="ic"><div class="ii">🎯</div><div class="in">截获原理</div><div class="id">利用地下水流向拦截污染羽。截获槽下游水位下降形成水力梯度，引导污染羽向槽体迁移。</div></div>
+    <div class="ic"><div class="ii">✅</div><div class="in">适用场景</div><div class="id">浅层地下水污染（<10m）、污染羽宽度有限、不便设置抽水井群的场地。</div></div>
+  </div>
+</section>
+
+<section class="lb">
+<div class="lc"><div class="lbb">
+  <span class="sts si" id="sts">⏳ 调节参数后启动</span>
+  <div class="cv-wrap" id="cvWrap"><canvas id="cv"></canvas></div>
+  <div class="dp">
+    <div class="dv"><div class="dl">运行天数</div><div class="dd" style="color:var(--accent-glow)" id="dDays">0</div></div>
+    <div class="dv"><div class="dl">截获率</div><div class="dd" style="color:var(--accent-glow)" id="dEff">0%</div></div>
+    <div class="dv"><div class="dl">排放浓度</div><div class="dd" style="color:var(--green)" id="dConc">100</div></div>
+  </div>
+  <div class="ct">
+    <div class="cb"><div class="cl">槽深 (m)</div><div class="cr"><input type="range" id="sDepth" min="3" max="12" value="7" oninput="u()"><span class="cv" id="vDepth">7</span></div></div>
+    <div class="cb"><div class="cl">渗透系数K</div><select id="sK" onchange="u()"><option value="high" selected>高 K (砂)</option><option value="med">中 K (粉砂)</option><option value="low">低 K (粘土)</option></select></div>
+    <div class="cb"><div class="cl">地下水流速</div><div class="cr"><input type="range" id="sV" min="0.1" max="2" value="0.5" step="0.1" oninput="u()"><span class="cv" id="vV">0.5</span></div></div>
+    <div class="cb"><div class="cl" style="color:var(--accent)">⬜ 截获槽</div><select id="sTrench" onchange="u()"><option value="yes">设置截获槽</option><option value="no" selected>不设置（对比）</option></select></div>
+  </div>
+  <div class="acts">
+    <button class="btn b1" id="btnRun" onclick="run()">▶ 开始模拟</button>
+    <button class="btn b2" onclick="rst()">🔄 重置</button>
+  </div>
+  <div style="font-size:11px;color:#64748b;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px;margin-top:8px" id="info"><strong>对比模式：</strong>"不设置截获槽" vs "设置截获槽"，观察污染羽扩散差异。</div>
+</div></div>
+</section>
+
+<section class="sec">
+  <div class="sn">总结</div><div class="st">关键要点</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🎯</div><div class="in">精准布设</div><div class="id">截获槽需布设在污染羽下游，垂直于地下水流向，深度达到隔水层。</div></div>
+    <div class="ic"><div class="ii">🔄</div><div class="in">定期清理</div><div class="id">截获槽中的集水管需定期清理，防止沉淀物堵塞影响截获效率。</div></div>
+  </div>
+</section>
+<div class="ft">环境实验 · 本笔记</div>
+
+<script>
+const ss=[document.querySelector('.hr'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';});
+
+let running=false,timer=null,days=0,conc=100,inC=100;
+let c,ctx,w,h;
+function sz(){const cw=document.getElementById('cvWrap');c=document.getElementById('cv');c.width=cw.offsetWidth;c.height=cw.offsetHeight;w=c.width;h=c.height;ctx=c.getContext('2d');}
+
+let particles=[];
+function initP(){
+  particles=[];const n=60;
+  for(let i=0;i<n;i++){particles.push({x:-20+Math.random()*(w*0.3),y:h*0.25+Math.random()*h*0.5,vx:.3+Math.random()*.4,vy:(Math.random()-.5)*.2,alive:true,r:3+Math.random()*2})}
+}
+
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  // background
+  ctx.fillStyle='#0f172a';ctx.fillRect(0,0,w,h);
+  // ground surface
+  ctx.fillStyle='#2d1f0e';ctx.fillRect(0,0,w,h*0.12);
+  ctx.strokeStyle='#475569';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,h*0.12);ctx.lineTo(w,h*0.12);ctx.stroke();
+  ctx.fillStyle='#475569';ctx.font='9px sans-serif';ctx.fillText('地表',6,h*0.10);
+  // water table
+  const wt=h*0.28;
+  ctx.strokeStyle='rgba(56,189,248,.15)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(0,wt);ctx.lineTo(w,wt);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(56,189,248,.2)';ctx.font='8px sans-serif';ctx.fillText('地下水位',6,wt-3);
+  // flow direction arrow
+  ctx.fillStyle='rgba(71,85,105,.3)';ctx.font='8px sans-serif';ctx.fillText('地下水流向 →',w*0.1,wt+16);
+
+  // Trench
+  const hasTrench=document.getElementById('sTrench').value==='yes';
+  if(hasTrench){
+    const tx=w*0.58,tw=16,depth=parseInt(document.getElementById('sDepth').value)/12*h;
+    ctx.fillStyle='rgba(5,150,105,.25)';ctx.fillRect(tx,wt,tw,depth);
+    ctx.strokeStyle='rgba(5,150,105,.5)';ctx.lineWidth=2;ctx.strokeRect(tx,wt,tw,depth);
+    ctx.fillStyle='rgba(5,150,105,.4)';ctx.font='7px sans-serif';
+    ctx.fillText('截获槽',tx-8,wt+depth/2);
+    // drain pipe
+    ctx.fillStyle='rgba(251,191,36,.4)';
+    ctx.fillRect(tx-4,wt+depth-4,tw+8,4);
+    ctx.fillStyle='rgba(251,191,36,.3)';ctx.font='7px sans-serif';ctx.fillText('集水管',tx-6,wt+depth-6);
+  }
+
+  // Particles
+  const trenched=document.getElementById('sTrench').value==='yes';
+  const k=document.getElementById('sK').value;
+  const vel=parseFloat(document.getElementById('sV').value);
+  const speed={'high':1.5,'med':0.7,'low':0.2};
+  const factor=speed[k]*vel;
+  const rem=trenched?Math.min(1,days/30*0.8):0;
+
+  const rendered=particles.filter(p=>p.alive).length;  // 本帧存活颗粒数；须在 forEach 前算好（块内会读它）
+  particles.forEach(p=>{
+    if(!p.alive) return;
+    p.x+=p.vx*factor;
+    p.y+=p.vy*factor;
+    if(p.y<h*0.2||p.y>h*0.85){p.vy*=-0.5;}
+
+    // Trench interception
+    if(trenched&&p.x>w*0.56&&p.x<w*0.62&&p.y>h*0.28&&p.y<h*0.28+parseInt(document.getElementById('sDepth').value)/12*h){
+      p.alive=false;
+      if(Math.random()<0.6){
+        const np={x:w*0.6+Math.random()*10-5,y:h*0.22,vx:-0.1,vy:-0.3,alive:true,r:2,alpha:0.3};
+        particles.push(np);
+      }
+      return;
+    }
+    // removed particles
+    if(trenched&&days>5&&p.alive&&Math.random()<rem*0.03){p.alive=false;return;}
+
+    // Wrap around
+    if(p.x>w+20){p.x=-10;p.y=h*0.25+Math.random()*h*0.4;}
+
+    const alpha=p.alive?Math.max(0.1,1-(days*0.02)):0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    const hue=trenched?180:200;
+    ctx.fillStyle=`rgba(${trenched?34:100},${trenched?197:150},${trenched?94:200},${Math.max(0.05,alpha*factor*0.5)})`;
+    ctx.fill();
+
+    // concentration coloring based on trench
+    if(p.alive&&rendered>0){
+      const concFactor=trenched?1-rem:1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(251,191,36,${Math.max(0.02,0.3*concFactor)})`;
+      ctx.fill();
+    }
+  });
+
+  // Concentration display
+  if(trenched){
+    conc=100*(1-rem);
+  } else {
+    conc=100*(1-days*0.003);
+    if(conc<10)conc=10; // natural attenuation floor
+  }
+  const pct=((inC-conc)/inC)*100;
+  document.getElementById('dConc').textContent=Math.round(Math.max(0,conc));
+  document.getElementById('dEff').textContent=Math.min(100,pct).toFixed(1)+'%';
+}
+
+function run(){
+  if(running){clearInterval(timer);timer=null;running=false;document.getElementById('btnRun').textContent='▶ 继续';document.getElementById('btnRun').className='btn b1';document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='⏸ 已暂停';return;}
+  if(days===0){inC=100;initP();}
+  running=true;document.getElementById('btnRun').textContent='⏸ 暂停';document.getElementById('btnRun').className='btn b2';
+  const trenched=document.getElementById('sTrench').value==='yes';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML=trenched?'🕳️ 截获槽运行中':'🌊 无截获槽（对照）';
+
+  timer=setInterval(()=>{days+=2;document.getElementById('dDays').textContent=days;
+    const trenched=document.getElementById('sTrench').value==='yes';
+    document.getElementById('info').innerHTML=
+      `<strong>${trenched?'已设置截获槽':'未设置截获槽'}</strong> · 运行${days}天<br>
+       <span style="font-size:10px;color:${trenched?'#34d399':'#f59e0b'}">
+        ${trenched?'截获槽正在拦截污染羽，下游浓度显著降低':'污染羽向下游持续扩散中'}
+       </span>`;
+    if(pct>95){clearInterval(timer);timer=null;running=false;document.getElementById('sts').className='sts sok';document.getElementById('sts').innerHTML='✅ 修复达标！';document.getElementById('btnRun').disabled=true;}
+  },300);
+}
+
+function u(){document.getElementById('vDepth').textContent=document.getElementById('sDepth').value;
+document.getElementById('vV').textContent=document.getElementById('sV').value;}
+
+function rst(){if(timer){clearInterval(timer);timer=null;}running=false;days=0;conc=100;inC=100;particles=[];
+document.getElementById('btnRun').textContent='▶ 开始模拟';document.getElementById('btnRun').className='btn b1';document.getElementById('btnRun').disabled=false;
+document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='🔄 已重置';
+document.getElementById('dDays').textContent='0';document.getElementById('dEff').textContent='0%';document.getElementById('dConc').textContent='100';
+document.getElementById('info').innerHTML='<strong>对比模式：</strong>"不设置截获槽" vs "设置截获槽"，观察污染羽扩散差异。';initP();}
+
+let anim=null;
+function loop(){ctx.clearRect(0,0,w,h);draw();anim=requestAnimationFrame(loop);}
+
+window.addEventListener('resize',()=>{sz();});
+window.addEventListener('load',()=>{sz();initP();loop();});
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEMS 执法检查 · 教学交付包 · 环境实验</title>
+<meta name="description" content="CEMS 执法检查教学交付包索取页：配套《CEMS 造假识别与执法检查》交互页，提供学生实操手册、教师指南与 3 个现成作业（各带 100 分制评分量规），通过邮件按需获取。">
+<link rel="canonical" href="https://song19850425.github.io/env-assets">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f97316;--glow:#fb923c;--abg:rgba(249,115,22,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8;--amber:#fbbf24}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#f97316,#fb923c);z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:44px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1e1308 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(249,115,22,.07) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-18%;right:-8%;width:330px;height:330px;background:radial-gradient(circle,rgba(249,115,22,.16),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(25px,4.6vw,42px);font-weight:900;line-height:1.18;z-index:1}
+.h1 em{color:#fb923c;font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:rgba(249,115,22,.12);color:#fb923c;font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(249,115,22,.24);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#94a3b8;z-index:1;max-width:700px;line-height:1.8}
+.hst{display:flex;gap:32px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:27px;font-weight:800;color:#fb923c}
+.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:70px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}
+.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:#f97316}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:780px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}
+.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:rgba(249,115,22,.10);color:#fb923c}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:#fb923c}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:#f97316;color:#fb923c}
+.ft .nav a.cur{border-color:#f97316;color:#fb923c;background:rgba(249,115,22,.12)}
+.note{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-left:3px solid #f97316;border-radius:8px;padding:14px 16px;font-size:12.5px;color:#ffedd5;line-height:1.7;margin:16px 0}
+.note b{color:#fff7ed}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.note.amber{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.2);border-left-color:var(--amber);color:#fde68a}
+.note.amber b{color:#fffbeb}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:#fb923c;background:rgba(249,115,22,.12);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px;white-space:nowrap}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:rgba(249,115,22,.08);color:#fb923c;font-weight:700;font-size:11.5px}
+.tbl td{color:#94a3b8;line-height:1.6}
+.tbl td b{color:#e2e8f0}
+.tbl tr.sum td{background:rgba(249,115,22,.10);color:#fff7ed;font-weight:800}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:#f97316}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+.sub{font-size:12px;font-weight:700;color:#fb923c;letter-spacing:1px;margin:20px 0 8px}
+.code{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;background:rgba(2,8,20,.7);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12.5px;color:#fb923c;line-height:1.8;margin:10px 0;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+.code b{color:#fff7ed}
+.code .cm{color:#64748b}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:18px}
+.toc a{display:block;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s;color:#e2e8f0;font-size:13px;font-weight:700}
+.toc a:hover{border-color:#f97316;color:#fb923c}
+.toc a span{display:block;font-size:11px;color:#64748b;font-weight:400;margin-top:3px}
+.kvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0}
+.kv{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+.kv .k{font-size:11px;color:#64748b;margin-bottom:4px}
+.kv .v{font-size:13px;color:#e2e8f0;line-height:1.6}
+.kv .v b{color:#fb923c}
+ol.task{margin:8px 0 8px 4px;padding-left:20px}
+ol.task li{font-size:13px;color:#cbd5e1;line-height:1.85;margin-bottom:4px}
+ol.task li b{color:#e2e8f0}
+#bk{position:fixed;right:22px;bottom:22px;z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 15px;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:.02em;text-decoration:none;line-height:1;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .22s,transform .22s,visibility .22s;background:rgba(19,26,46,.92);color:#e2e8f0;border:1px solid rgba(56,189,248,.42);box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#bk.on{opacity:1;visibility:visible;transform:translateY(0)}
+#bk:hover{transform:translateY(-2px);background:rgba(23,33,58,.98);border-color:rgba(56,189,248,.75)}
+#bk:focus-visible{outline:2px solid #fbbf24;outline-offset:3px}
+#bk .bk-a{font-size:15px;line-height:1;color:#7dd3fc}
+#bk .bk-t{font-size:13.5px;color:#e2e8f0}
+@media(max-width:640px){#bk{right:14px;bottom:14px;padding:10px 15px 10px 13px}#bk .bk-t{font-size:12.5px}}
+@media(prefers-reduced-motion:reduce){#bk{transition:none;transform:none}#bk.on{transform:none}}
+@media print{#bk{display:none!important}}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 环境执法实训 · 教学交付件</div>
+  <h1 class="h1">📦 CEMS 造假识别与执法检查 · 教学交付包</h1>
+  <div class="hs">配套《CEMS 造假识别与执法检查》交互页<br>学生手册 / 教师指南 / 现成作业 / 部署说明</div>
+  <div class="hst">
+    <div><span class="n">1 份</span><span class="l">学生手册</span></div>
+    <div><span class="n">1 份</span><span class="l">教师指南</span></div>
+    <div><span class="n">3 个</span><span class="l">现成作业</span></div>
+    <div><span class="n">3 套</span><span class="l">评分量规</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s00">
+  <div class="sn">00 · 分发说明</div>
+  <div class="st">交互页免费开放，交付包按需索取</div>
+  <div class="sd">配套交互页（含四关模拟台）<b>永久免费公开</b>，打开即用、可离线、可嵌入课程，不需要任何申请。本交付包是面向<b>教师与培训机构</b>的备课材料，包含现成作业与评分量规，不再公开分发。</div>
+  <div class="note">为什么要分开：交互页解决「学生怎么练」，交付包解决「老师怎么教、怎么评」。前者越多人用越好；后者是备课成品，按需分发更合适。</div>
+  <div class="note blue">四关模拟台（站房勘察 → 拆除伪装与管线复位 → 参数与备案核对 → 标准气体盲测）无需索取，直接打开即用。<br><a href="CEMS造假识别与执法检查-交互版.html" style="color:#38bdf8;font-weight:600">→ 打开《CEMS 造假识别与执法检查》交互页</a></div>
+</section>
+
+<section class="sec" id="s01">
+  <div class="sn">01 · 交付内容</div>
+  <div class="st">6 节，从怎么用到免责声明</div>
+  <div class="sd">交付包为单文件网页，与配套交互页数值口径完全一致，可整目录下载离线使用。</div>
+  <table class="tbl">
+    <thead><tr><th style="width:56px">节</th><th>内容</th><th style="width:110px">给谁</th></tr></thead>
+    <tbody>
+      <tr><td><b>00</b></td><td>怎么用这份包<br><span style="color:#64748b">三分钟看清：这份包给谁、怎么用</span></td><td>教师</td></tr>
+      <tr><td><b>01</b></td><td>学生实操手册<br><span style="color:#64748b">操作卡 · 判据速查表 · 易错清单</span></td><td>学生</td></tr>
+      <tr><td><b>02</b></td><td>教师指南<br><span style="color:#64748b">知识点—关卡映射 · 90 分钟课堂流程 · 3 个开放讨论题</span></td><td>教师</td></tr>
+      <tr><td><b>03</b></td><td>现成作业<br><span style="color:#64748b">3 个作业，各带 100 分制评分量规</span></td><td>教师</td></tr>
+      <tr><td><b>04</b></td><td>部署与使用<br><span style="color:#64748b">零安装 · 可离线 · 可嵌入课程平台</span></td><td>教务 / 教师</td></tr>
+      <tr><td><b>05</b></td><td>红线与免责<br><span style="color:#64748b">教学设定，不指向任何真实企业</span></td><td>全体</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="sec" id="s02">
+  <div class="sn">02 · 获取方式</div>
+  <div class="st">发一封邮件，说明三件事</div>
+  <div class="sd">请在邮件里写明下面三项，方便直接给你合适的版本：</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🏫</div><div class="in">你的身份</div><div class="id">学校 / 机构名称，以及你是教师、教务还是培训机构。</div><span class="it">必填</span></div>
+    <div class="ic"><div class="ii">📅</div><div class="in">使用场景</div><div class="id">课程名称、学生层次与大致人数、计划什么时候用。</div><span class="it">必填</span></div>
+    <div class="ic"><div class="ii">📦</div><div class="in">需要哪一份</div><div class="id">本页对应的交付包，或其他配套交付包（可以都要）。</div><span class="it">必填</span></div>
+  </div>
+  <div style="margin-top:26px;text-align:center">
+    <a id="mail" href="#mail"
+       data-u="jinghao.song" data-d="gmail.com"
+       data-s="索取教学交付包：CEMS 执法检查"
+       data-b="&#10;您好，我想索取《CEMS 造假识别与执法检查》教学交付包。&#10;&#10;身份（学校 / 机构）：&#10;使用场景（课程名称、学生层次、人数、计划时间）：&#10;需要哪一份：&#10;&#10;谢谢。"
+       style="display:inline-block;padding:15px 38px;border-radius:10px;background:linear-gradient(90deg,#f97316,#fb923c);color:#0a0e17;font-size:15px;font-weight:800;text-decoration:none;letter-spacing:.5px">✉ 发送邮件索取</a>
+    <div style="margin-top:14px;font-size:12.5px;color:#64748b">收件邮箱：<span id="mailText">（正在载入…）</span></div>
+    <noscript><div class="note warnbox" style="margin-top:16px;text-align:left">本页需要开启 JavaScript 才能显示收件邮箱。也可以先<a href="CEMS造假识别与执法检查-交互版.html" style="color:#38bdf8">打开免费的交互页</a>，再从<a href="../../index.html" style="color:#38bdf8">实验集总目录</a>找到入口。</div></noscript>
+  </div>
+</section>
+
+<section class="sec" id="s03">
+  <div class="sn">03 · 使用许可</div>
+  <div class="st">可教学使用，不可再分发</div>
+  <div class="sd">交付包可用于课堂教学、岗前培训与内部考核；可打印，可上传到校内 LMS 或课程平台。<b>请勿公开转载、二次分发或用于商业售卖。</b></div>
+  <div class="note warnbox">如果所在机构需要多校区共享、或用于对外收费培训，请来信说明，可以单独授权。</div>
+  <div class="note">本交付包为教学设定，不指向任何真实企业，不构成正式执法结论。</div>
+</section>
+
+<footer class="ft">
+  <b>环境实验 环境实训</b> · CEMS 造假识别与执法检查 · 教学交付包
+  <div class="nav">
+    <a href="../../index.html">实验集总目录</a>
+    <a class="cur" href="CEMS造假识别与执法检查-交互版.html">配套交互页</a>
+  </div>
+</footer>
+
+<a id="bk" href="../../index.html" title="返回实验集总目录（Alt+Esc）"><span class="bk-a" aria-hidden="true">←</span><span class="bk-t">返回目录</span></a>
+<script>(function(){var b=document.getElementById("bk");if(!b)return;var f=function(){var y=window.pageYOffset||document.documentElement.scrollTop;if(y>260)b.classList.add("on");else b.classList.remove("on")};if(typeof window.addEventListener==='function')window.addEventListener("scroll",f,{passive:true});f();if(typeof document.addEventListener==='function')document.addEventListener("keydown",function(e){if(e.key==="Escape"&&e.altKey)location.href=b.getAttribute("href")});})();</script>
+<script>(function(){var sp=document.getElementById("sp");function f(){var h=document.documentElement.scrollHeight-window.innerHeight;var y=window.pageYOffset||document.documentElement.scrollTop;if(sp)sp.style.width=(h>0?(y/h*100):0)+"%"}if(typeof window.addEventListener==='function')window.addEventListener("scroll",f,{passive:true});f();})();</script>
+<script>(function(){try{var io=new IntersectionObserver(function(es){for(var i=0;i<es.length;i++){if(es[i].isIntersecting)es[i].target.classList.add("visible")}},{threshold:0.12});var secs=document.querySelectorAll(".sec");for(var j=0;j<secs.length;j++){io.observe(secs[j])}}catch(e){var s2=document.querySelectorAll(".sec");for(var k=0;k<s2.length;k++){s2[k].classList.add("visible")}}})();</script>
+<script>(function(){
+  var a=document.getElementById("mail"); if(!a) return;
+  var u=a.getAttribute("data-u"), d=a.getAttribute("data-d");
+  if(!u||!d) return;
+  var addr=u+"@"+d;
+  a.href="mailto:"+addr
+    +"?subject="+encodeURIComponent(a.getAttribute("data-s")||"")
+    +"&body="+encodeURIComponent(a.getAttribute("data-b")||"");
+  var t=document.getElementById("mailText"); if(t) t.textContent=addr;
+})();</script>
+</body>
+</html>

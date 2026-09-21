@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>环境空气VOCs检测 · 罐采样GC-MS全流程</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#0a1628,#1a2a4a);color:#fff;padding:20px;text-align:center}
+        .header h1{font-size:18px;font-weight:700}
+        .header .sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}
+        .header .badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(74,222,128,0.2);border-radius:10px;font-size:10px;color:#4ade80}
+
+        .container{max-width:720px;margin:0 auto;padding:16px}
+        .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+        .card h2 .std{font-size:11px;color:#999;font-weight:400;margin-left:8px}
+        .card p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+
+        .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:12px;overflow:hidden}
+        .progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:2px;transition:width .5s}
+
+        .step-indicator{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+        .step-dot{flex:1;text-align:center;padding:6px 4px;border-radius:6px;font-size:10px;color:#999;background:#f5f5f5;cursor:pointer;min-width:56px;border:1px solid transparent}
+        .step-dot .num{font-size:13px;font-weight:700;display:block}
+        .step-dot.active{background:#f0fdf4;border-color:#4ade80;color:#166534;font-weight:600}
+        .step-dot.done{background:#f0fdf4;border-color:#4ade80;color:#4ade80}
+
+        .lab-bench{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:10px;padding:20px;margin:12px 0;border:1px solid #e2e8f0;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .lab-bench .equip-icon{font-size:48px;margin-bottom:8px;transition:all .3s}
+        .lab-bench .desc{font-size:13px;color:#475569;line-height:1.7}
+        .lab-bench .status{padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;margin-top:8px}
+        .st-wait{background:#f1f5f9;color:#64748b}
+        .st-run{background:#fef3c7;color:#ca8a04}
+        .st-ok{background:#f0fdf4;color:#166534}
+        .st-cool{background:#dbeafe;color:#1d4ed8}
+
+        .step-btn{padding:8px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:linear-gradient(135deg,#4ade80,#22c55e);margin-top:8px}
+        .step-btn:hover{box-shadow:0 4px 12px rgba(74,222,128,0.3)}
+        .step-btn:disabled{opacity:.4;cursor:default}
+        .step-btn.small{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+        .step-btn.orange{background:linear-gradient(135deg,#f59e0b,#d97706)}
+
+        .info-box{padding:10px 14px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#166534;border:1px solid #bbf7d0;margin:8px 0}
+        .safety-box{padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:#92400e;border:1px solid #fde68a;margin:8px 0}
+
+        .canister-box{background:linear-gradient(135deg,#e2e8f0,#cbd5e1);border-radius:50% 50% 40% 40%/60% 60% 30% 30%;width:100px;height:140px;margin:0 auto 12px;position:relative;border:3px solid #94a3b8;overflow:hidden}
+        .canister-box .valve{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:16px;height:12px;background:#ef4444;border-radius:2px;border:1px solid #dc2626}
+        .canister-box .vacuum{position:absolute;bottom:10px;left:10px;right:10px;height:60%;background:linear-gradient(to bottom,#64748b,#1e293b);border-radius:4px;transition:height .5s}
+
+        .gc-box{background:linear-gradient(135deg,#1e293b,#334155);border-radius:10px;padding:16px;margin:12px 0}
+        .gc-box .chromatogram{width:100%;height:100px;background:#0f172a;border-radius:6px;position:relative;overflow:hidden}
+        .gc-box .peak{position:absolute;bottom:0;width:3px;background:#4ade80;border-radius:2px 2px 0 0;transition:height .3s;animation:none}
+        .gc-box .label{color:#94a3b8;font-size:10px;margin-top:4px;display:flex;justify-content:space-between}
+
+        .result-box{padding:20px;border-radius:10px;text-align:center;margin-top:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:none}
+        .result-box .big{font-size:40px;font-weight:800;color:#166534}
+        .result-box .lbl{font-size:13px;color:#666;margin-top:4px}
+        .result-box .detail{font-size:12px;color:#999;margin-top:10px;line-height:1.6;text-align:left}
+
+        .data-table{width:100%;font-size:12px;border-collapse:collapse;margin:8px 0}
+        .data-table th{background:#0a1628;color:#fff;padding:6px;text-align:left}
+        .data-table td{padding:5px 6px;border-bottom:1px solid #e0e0e0}
+
+        .timeline-box{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+        .tl-item{flex:1;padding:10px;background:#f9fafb;border-radius:6px;text-align:center;min-width:80px}
+        .tl-item .v{font-size:14px;font-weight:700;color:#166534}
+        .tl-item .l{font-size:10px;color:#999}
+
+        .trap-box{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:8px;padding:12px;margin:8px 0;display:flex;gap:12px;justify-content:center;align-items:center}
+        .trap{width:40px;height:60px;background:linear-gradient(to bottom,#f87171,#ef4444);border-radius:4px;position:relative;transition:background .5s}
+        .trap .label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:#1e40af;white-space:nowrap}
+        .trap.cold{background:linear-gradient(to bottom,#60a5fa,#3b82f6)}
+        .trap.hot{background:linear-gradient(to bottom,#fbbf24,#f59e0b)}
+
+        @media (max-width:600px){
+            .data-table{font-size:11px}
+            .timeline-box .tl-item{min-width:60px}
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 环境空气VOCs检测 · 罐采样GC-MS全流程</h1>
+        <div class="sub">HJ 759-2023 / EPA TO-15 · 从采样罐准备到组分报告</div>
+        <div class="badge">🔬 场景：园区边界VOCs监测</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>📋 项目信息</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;">
+                <span><strong>样品编号：</strong>VOC-2026-0622-001</span>
+                <span><strong>采样地点：</strong>化工园区边界 东南侧</span>
+                <span><strong>采样罐：</strong>SUMMA抛光 6L不锈钢罐</span>
+                <span><strong>方法标准：</strong>HJ 759-2023</span>
+                <span><strong>采样方式：</strong>24h限流采样</span>
+                <span><strong>分析仪器：</strong>GC-MS + 三级冷阱预浓缩</span>
+                <span><strong>目标物：</strong>65种VOCs</span>
+                <span><strong>定量方式：</strong>内标法+外标法</span>
+            </div>
+        </div>
+
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active"><span class="num">①</span>罐准备</div>
+            <div class="step-dot"><span class="num">②</span>现场采样</div>
+            <div class="step-dot"><span class="num">③</span>预浓缩</div>
+            <div class="step-dot"><span class="num">④</span>GC-MS分析</div>
+            <div class="step-dot"><span class="num">⑤</span>定性定量</div>
+            <div class="step-dot"><span class="num">⑥</span>报告</div>
+        </div>
+
+        <!-- ===== 步骤0：罐准备 ===== -->
+        <div class="card step-panel active" id="step0">
+            <h2>① 采样罐准备 <span class="std">清洗·检漏·抽真空</span></h2>
+            <p>SUMMA罐使用前需严格清洗并抽真空至<50mTorr。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">🫙</div>
+                <div class="desc">
+                    <strong>SUMMA 6L不锈钢采样罐</strong><br>
+                    经高纯氮气反复清洗→加湿旋转清洗→<br>
+                    280℃烘烤→抽真空至真空度＜50mTorr<br>
+                    检漏合格后备用
+                </div>
+                <div class="status st-wait" id="s0Status">⏳ 未清洗</div>
+            </div>
+
+            <div class="timeline-box">
+                <div class="tl-item"><div class="v" id="washStep">1/5</div><div class="l">清洗步骤</div></div>
+                <div class="tl-item"><div class="v" id="vacuumVal"><50</div><div class="l">真空度(mTorr)</div></div>
+                <div class="tl-item"><div class="v" id="leakTest">—</div><div class="l">检漏</div></div>
+            </div>
+
+            <div class="canister-box" style="width:80px;height:110px;">
+                <div class="valve"></div>
+                <div class="vacuum" id="vacuumLevel" style="height:85%"></div>
+            </div>
+
+            <button class="step-btn" id="canPrepBtn" onclick="startCanPrep()">▶ 开始罐清洗流程</button>
+        </div>
+
+        <!-- ===== 步骤1：采样 ===== -->
+        <div class="card step-panel" id="step1">
+            <h2>② 现场采样 <span class="std">24小时限流采样</span></h2>
+            <p>将清洗好的采样罐连接限流采样器，设定流量进行24h连续采样。</p>
+
+            <div style="display:flex;gap:16px;align-items:center;justify-content:center;margin:12px 0;">
+                <div style="text-align:center;">
+                    <div class="canister-box" style="width:60px;height:90px;display:inline-block;">
+                        <div class="valve" style="background:#22c55e;border-color:#16a34a;"></div>
+                        <div class="vacuum" id="samplingVacuum" style="height:85%"></div>
+                    </div>
+                    <div style="font-size:10px;color:#999;">采样罐</div>
+                </div>
+                <div style="font-size:24px;color:#94a3b8;">→</div>
+                <div style="text-align:center;padding:12px;background:#e8f5e9;border-radius:8px;">
+                    <div style="font-size:16px;font-weight:700;color:#166534;">限流采样器</div>
+                    <div style="font-size:12px;color:#666;">0.004 L/min</div>
+                </div>
+            </div>
+
+            <div class="sampler-box" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:10px;padding:16px;text-align:center;margin:8px 0;">
+                <div style="font-size:22px;font-weight:700;color:#166534;">0.004 L/min</div>
+                <div style="font-size:11px;color:#666;">采样流量 · 24h连续</div>
+                <div style="font-size:30px;font-weight:700;color:#ca8a04;margin:8px 0;" id="samplingTimer">24:00:00</div>
+                <div style="font-size:12px;color:#666;" id="samplingStatus">⏳ 待采样</div>
+                <div style="margin-top:8px;font-size:12px;color:#555;">已采集体积：<strong id="collectedVol">0.0</strong> L / 6.0 L</div>
+            </div>
+
+            <button class="step-btn" id="samplingBtn" onclick="startSampling()">▶ 开始采样（模拟）</button>
+        </div>
+
+        <!-- ===== 步骤2：预浓缩 ===== -->
+        <div class="card step-panel" id="step2">
+            <h2>③ 三级冷阱预浓缩 <span class="std">去除H₂O/CO₂/富集VOCs</span></h2>
+            <p>采样罐气体经三级冷阱（捕集→除杂→聚焦）后注入GC-MS。</p>
+
+            <div class="trap-box">
+                <div style="text-align:center;">
+                    <div class="trap cold" id="trap1">
+                        <div class="label">一级阱</div>
+                    </div>
+                    <div style="font-size:10px;color:#1e40af;">-150℃</div>
+                    <div style="font-size:9px;color:#666;">捕集VOCs</div>
+                </div>
+                <div style="font-size:24px;color:#94a3b8;">→</div>
+                <div style="text-align:center;">
+                    <div class="trap cold" id="trap2">
+                        <div class="label">二级阱</div>
+                    </div>
+                    <div style="font-size:10px;color:#1e40af;">-30℃</div>
+                    <div style="font-size:9px;color:#666;">除H₂O</div>
+                </div>
+                <div style="font-size:24px;color:#94a3b8;">→</div>
+                <div style="text-align:center;">
+                    <div class="trap" id="trap3" style="background:linear-gradient(to bottom,#60a5fa,#3b82f6);">
+                        <div class="label">三级阱</div>
+                    </div>
+                    <div style="font-size:10px;color:#1e40af;">-150→280℃</div>
+                    <div style="font-size:9px;color:#666;">聚焦→热脱附</div>
+                </div>
+            </div>
+
+            <div class="lab-bench" style="min-height:100px;">
+                <div class="equip-icon" id="trapIcon">❄️</div>
+                <div class="desc" id="trapDesc">
+                    <strong>预浓缩仪工作状态</strong><br>
+                    三级冷阱串接：除水→除CO₂→VOCs富集→快速热脱附进样
+                </div>
+                <div class="status st-wait" id="trapStatus">⏳ 待开始</div>
+            </div>
+
+            <button class="step-btn" id="trapBtn" onclick="startTrap()">▶ 开始预浓缩</button>
+        </div>
+
+        <!-- ===== 步骤3：GC-MS ===== -->
+        <div class="card step-panel" id="step3">
+            <h2>④ GC-MS分析 <span class="std">色谱分离+质谱检测</span></h2>
+            <p>热脱附后的样品进入GC-MS进行分析，色谱柱程序升温分离各组分。</p>
+
+            <div class="gc-box">
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">色谱柱：DB-624 60m×0.25mm×1.4μm</div>
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">升温程序：35℃(5min)→5℃/min→150℃→15℃/min→220℃(5min)</div>
+                <div class="chromatogram" id="chromatogram">
+                    <!-- 用JS动态生成色谱峰 -->
+                </div>
+                <div class="label"><span>1.5 min</span><span id="gcTime">0.0 min</span><span>35.0 min</span></div>
+            </div>
+
+            <div class="info-box" id="gcInfo" style="display:none;">
+                📊 总离子流图（TIC）扫描完成 · 共检出 <strong id="peakCount">28</strong> 个色谱峰
+            </div>
+
+            <button class="step-btn" id="gcBtn" onclick="startGC()">▶ 开始GC-MS分析（模拟）</button>
+        </div>
+
+        <!-- ===== 步骤4：定性定量 ===== -->
+        <div class="card step-panel" id="step4">
+            <h2>⑤ 定性定量 <span class="std">谱库检索+外标法</span></h2>
+            <p>将各色谱峰的质谱图与NIST谱库比对定性，用内标法或外标法计算含量。</p>
+
+            <table class="data-table" id="vocTable">
+                <thead><tr><th>序号</th><th>化合物</th><th>保留时间(min)</th><th>浓度(μg/m³)</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>丙烷</td><td>3.82</td><td>2.35</td></tr>
+                    <tr><td>2</td><td>异丁烷</td><td>4.15</td><td>1.82</td></tr>
+                    <tr><td>3</td><td>正丁烷</td><td>4.58</td><td>3.12</td></tr>
+                    <tr><td>4</td><td>苯</td><td>8.24</td><td>0.85</td></tr>
+                    <tr><td>5</td><td>甲苯</td><td>12.36</td><td>4.28</td></tr>
+                    <tr><td>6</td><td>乙苯</td><td>16.72</td><td>1.56</td></tr>
+                    <tr><td>7</td><td>间/对-二甲苯</td><td>17.45</td><td>2.94</td></tr>
+                    <tr><td>8</td><td>苯乙烯</td><td>18.68</td><td>0.62</td></tr>
+                    <tr><td>9</td><td>1,3,5-三甲苯</td><td>21.15</td><td>1.48</td></tr>
+                    <tr><td>10</td><td>正十一烷</td><td>24.82</td><td>0.76</td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                📊 谱库检索：NIST 2023 · 匹配度均＞85% · 定量方式：内标法（4-溴氟苯为内标）
+            </div>
+
+            <button class="step-btn" onclick="goStep(5)">✅ 定性定量完成 → 出报告</button>
+        </div>
+
+        <!-- ===== 步骤5：报告 ===== -->
+        <div class="card step-panel" id="step5">
+            <h2>⑥ 检测报告 <span class="std">VOCs组分清单与评价</span></h2>
+
+            <div class="result-box" id="finalResult" style="display:block;">
+                <div class="big">32.6</div>
+                <div class="lbl">TVOC 总挥发性有机物 (μg/m³)</div>
+                <div style="margin-top:8px;">
+                    <span style="display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#fff;background:#00e400;">达标 ✅</span>
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead><tr><th>化合物</th><th>浓度(μg/m³)</th><th>限值标准</th><th>判定</th></tr></thead>
+                <tbody>
+                    <tr><td>苯</td><td>0.85</td><td>HJ 2.2-2018 ≤110</td><td style="color:#166534;">✅</td></tr>
+                    <tr><td>甲苯</td><td>4.28</td><td>HJ 2.2-2018 ≤200</td><td style="color:#166534;">✅</td></tr>
+                    <tr><td>二甲苯</td><td>2.94</td><td>HJ 2.2-2018 ≤200</td><td style="color:#166534;">✅</td></tr>
+                    <tr><td>苯乙烯</td><td>0.62</td><td>HJ 2.2-2018 ≤70</td><td style="color:#166534;">✅</td></tr>
+                    <tr><td>TVOC</td><td>32.6</td><td>HJ 2.2-2018 ≤600</td><td style="color:#166534;">✅</td></tr>
+                </tbody>
+            </table>
+
+            <div style="padding:12px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <strong>质控数据</strong><br>
+                · 内标响应RSD：4.2%（≤30% ✅）<br>
+                · 方法空白：目标物均未检出 ✅<br>
+                · 替代物回收率：96.3%（80-120% ✅）<br>
+                · 平行样RPD：6.8%（≤25% ✅）
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="step-btn" onclick="resetAll()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">🔄 重做实验</button>
+                <button class="step-btn orange" onclick="alert(`VOCs检测报告\n─────────────\n样品编号：VOC-2026-0622-001\n采样地点：化工园区边界\nTVOC：32.6 μg/m³\n检出组分：28种\n\n结论：符合HJ 2.2-2018限值要求 ✅`)">📄 导出报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let canReady = false;
+        let samplingDone_ = false;
+        let trapDone = false;
+        let gcDone = false;
+        let gcTimer = null;
+
+        function goStep(n) { currentStep = n; updateUI(); }
+
+        function updateUI() {
+            document.querySelectorAll('.step-dot').forEach((d,i) => {
+                d.classList.remove('active','done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            document.querySelectorAll('.step-panel').forEach((p,i) => {
+                p.style.display = i === currentStep ? 'block' : 'none';
+            });
+            document.getElementById('progressFill').style.width = (currentStep / 5 * 100) + '%';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        // ===== 罐准备 =====
+        function startCanPrep() {
+            const btn = document.getElementById('canPrepBtn');
+            btn.disabled = true;
+            const steps = ['①高纯氮气加压清洗×3次','②加纯水旋转清洗','③280℃烘烤2小时','④抽真空至<50mTorr','⑤检漏：24h真空度变化<10mTorr'];
+            let i = 0;
+            const timer = setInterval(() => {
+                i++;
+                document.getElementById('washStep').textContent = `${i}/5`;
+                document.getElementById('s0Status').textContent = `⏳ ${steps[i-1]}`;
+                document.getElementById('s0Status').className = 'status st-run';
+
+                const vacHeight = Math.max(5, 85 - i * 16);
+                document.getElementById('vacuumLevel').style.height = vacHeight + '%';
+                document.getElementById('vacuumVal').textContent = `<${Math.max(2,50-i*10)}`;
+
+                if (i >= 5) {
+                    clearInterval(timer);
+                    document.getElementById('leakTest').textContent = '✅';
+                    document.getElementById('s0Status').textContent = '✅ 罐准备完成（已抽真空）';
+                    document.getElementById('s0Status').className = 'status st-ok';
+                    btn.textContent = '✅ 准备完成 → 现场采样';
+                    btn.onclick = () => goStep(1);
+                    btn.disabled = false;
+                }
+            }, 400);
+        }
+
+        // ===== 采样 =====
+        function startSampling() {
+            const btn = document.getElementById('samplingBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 采样中…';
+            document.getElementById('samplingStatus').textContent = '🌫️ 采样中';
+
+            let sec = 24;
+            const totalL = 6.0;
+            const timer = setInterval(() => {
+                sec--;
+                document.getElementById('samplingTimer').textContent = `${String(sec).padStart(2,'0')}:00:00`;
+                const vol = totalL * (1 - sec/24);
+                document.getElementById('collectedVol').textContent = vol.toFixed(1);
+                const vacH = Math.max(5, 85 - (vol/totalL)*80);
+                document.getElementById('samplingVacuum').style.height = vacH + '%';
+
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 采样完成';
+                    document.getElementById('samplingStatus').textContent = '✅ 采样完成(24h,6.0L)';
+                    document.getElementById('collectedVol').textContent = '6.0';
+                    samplingDone_ = true;
+                    const nxt = document.querySelector('#step1 .step-btn');
+                    nxt.textContent = '✅ 采样完成 → 预浓缩';
+                    nxt.onclick = () => goStep(2);
+                    goStep(2);
+                }
+            }, 300);
+        }
+
+        // ===== 预浓缩 =====
+        function startTrap() {
+            const btn = document.getElementById('trapBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 预浓缩中…';
+            document.getElementById('trapStatus').textContent = '❄️ 三级冷阱运行中';
+            document.getElementById('trapStatus').className = 'status st-run';
+
+            const phases = [
+                { icon:'❄️', desc:'一级阱-150℃捕集VOCs (含H₂O/CO₂)', trap1:'cold', trap2:'cold', trap3:'cold' },
+                { icon:'❄️', desc:'一级阱升温至-30℃，反吹除H₂O', trap1:'hot', trap2:'cold', trap3:'cold' },
+                { icon:'❄️', desc:'二级阱-30℃捕集，CO₂随载气排出', trap1:'hot', trap2:'cold', trap3:'cold' },
+                { icon:'❄️', desc:'三级阱-150℃深度聚焦', trap1:'hot', trap2:'hot', trap3:'cold' },
+                { icon:'🔥', desc:'三级阱快速升温至280℃ → 热脱附进样GC-MS', trap1:'hot', trap2:'hot', trap3:'hot' },
+            ];
+
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i >= phases.length) {
+                    clearInterval(timer);
+                    document.getElementById('trapStatus').textContent = '✅ 预浓缩完成 → 样品已注入GC-MS';
+                    document.getElementById('trapStatus').className = 'status st-ok';
+                    document.getElementById('trapIcon').textContent = '✅';
+                    btn.textContent = '✅ 预浓缩完成 → GC-MS分析';
+                    btn.onclick = () => goStep(3);
+                    btn.disabled = false;
+                    trapDone = true;
+                    return;
+                }
+                const p = phases[i];
+                document.getElementById('trapIcon').textContent = p.icon;
+                document.getElementById('trapDesc').innerHTML = `<strong>预浓缩工作状态</strong><br>${p.desc}`;
+                document.getElementById('trap1').className = `trap ${p.trap1}`;
+                document.getElementById('trap2').className = `trap ${p.trap2}`;
+                document.getElementById('trap3').className = `trap ${p.trap3}`;
+                i++;
+            }, 800);
+        }
+
+        // ===== GC-MS =====
+        function startGC() {
+            const btn = document.getElementById('gcBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ GC-MS分析中…';
+
+            const peaks = [
+                {rt:3.8,h:25},{rt:4.2,h:20},{rt:4.6,h:35},{rt:5.3,h:15},{rt:6.8,h:12},
+                {rt:8.2,h:30},{rt:10.5,h:18},{rt:12.4,h:55},{rt:14.1,h:22},{rt:15.3,h:10},
+                {rt:16.7,h:40},{rt:17.5,h:35},{rt:18.7,h:20},{rt:19.8,h:28},{rt:21.2,h:25},
+                {rt:22.6,h:15},{rt:23.8,h:18},{rt:24.8,h:22},{rt:26.1,h:12},{rt:27.5,h:8},
+                {rt:28.8,h:14},{rt:30.2,h:10},{rt:31.5,h:16},{rt:32.8,h:12},
+                {rt:33.5,h:20},{rt:34.2,h:15},{rt:34.8,h:10},{rt:35.0,h:5}
+            ];
+
+            let progress = 0;
+            const totalTime = peaks[peaks.length-1].rt;
+            
+            gcTimer = setInterval(() => {
+                progress += 0.15;
+                document.getElementById('gcTime').textContent = `${progress.toFixed(1)} min`;
+
+                // 绘制色谱图
+                const chart = document.getElementById('chromatogram');
+                const visiblePeaks = peaks.filter(p => p.rt <= progress + 0.5);
+                chart.innerHTML = '';
+                
+                // 基线
+                const baseLine = document.createElement('div');
+                baseLine.style.cssText = 'position:absolute;bottom:0;left:0;right:0;height:2px;background:#4ade80;opacity:0.3;';
+                chart.appendChild(baseLine);
+
+                visiblePeaks.forEach(p => {
+                    if (p.rt > progress + 0.2) return;
+                    const left = (p.rt / totalTime) * 100;
+                    const height = p.h * (1 + Math.random()*0.2);
+                    const peak = document.createElement('div');
+                    peak.className = 'peak';
+                    peak.style.left = left + '%';
+                    peak.style.height = height + 'px';
+                    peak.style.background = p.rt > 12 ? '#4ade80' : '#f59e0b';
+                    chart.appendChild(peak);
+                });
+
+                if (progress >= totalTime) {
+                    clearInterval(gcTimer);
+                    document.getElementById('gcBtn').textContent = '✅ GC-MS分析完成';
+                    document.getElementById('gcInfo').style.display = 'block';
+                    document.getElementById('peakCount').textContent = '28';
+                    gcDone = true;
+                    const nxt = document.querySelector('#step3 .step-btn');
+                    nxt.textContent = '✅ 分析完成 → 定性定量';
+                    nxt.onclick = () => goStep(4);
+                    goStep(4);
+                }
+            }, 80);
+        }
+
+        function resetAll() {
+            currentStep = 0;
+            canReady = false; samplingDone_ = false; trapDone = false; gcDone = false;
+            if (gcTimer) clearInterval(gcTimer);
+            document.getElementById('chromatogram').innerHTML = '';
+            document.getElementById('gcInfo').style.display = 'none';
+            document.getElementById('samplingTimer').textContent = '24:00:00';
+            document.getElementById('samplingStatus').textContent = '⏳ 待采样';
+            document.getElementById('collectedVol').textContent = '0.0';
+            document.getElementById('samplingVacuum').style.height = '85%';
+
+            // 重置按钮
+            const btns = ['canPrepBtn','samplingBtn','trapBtn','gcBtn'];
+            btns.forEach(id => {
+                const b = document.getElementById(id);
+                if (b) { b.disabled = false; b.textContent = id === 'canPrepBtn' ? '▶ 开始罐清洗流程' : id === 'samplingBtn' ? '▶ 开始采样（模拟）' : id === 'trapBtn' ? '▶ 开始预浓缩' : '▶ 开始GC-MS分析（模拟）'; }
+            });
+
+            document.getElementById('s0Status').textContent = '⏳ 未清洗';
+            document.getElementById('s0Status').className = 'status st-wait';
+            document.getElementById('washStep').textContent = '1/5';
+            document.getElementById('vacuumVal').textContent = '<50';
+            document.getElementById('leakTest').textContent = '—';
+            document.getElementById('trapStatus').textContent = '⏳ 待开始';
+            document.getElementById('trapStatus').className = 'status st-wait';
+            document.getElementById('trapIcon').textContent = '❄️';
+            document.getElementById('trapDesc').innerHTML = '<strong>预浓缩仪工作状态</strong><br>三级冷阱串接：除水→除CO₂→VOCs富集→快速热脱附进样';
+
+            goStep(0);
+        }
+
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 759-2023</td><td>环境空气 65 种挥发性有机物的测定 罐采样／气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

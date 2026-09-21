@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVE土壤气提 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#d97706;--accent-glow:#fbbf24;--accent-bg:rgba(217,119,6,.12);--green:#22c55e;--amber:#f59e0b}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000;transition:width.1s}
+#nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:12px}
+.nd{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.1);cursor:pointer;transition:.3s;border:2px solid transparent}
+.nd.active{background:var(--accent);transform:scale(1.5);box-shadow:0 0 12px rgba(217,119,6,.5)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:10px;white-space:nowrap;color:#94a3b8;background:var(--card);padding:3px 10px;border-radius:6px;opacity:0;pointer-events:none;border:1px solid var(--border)}
+.nd:hover .nl{opacity:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(217,119,6,.04) 1px,transparent 1px);background-size:24px 24px}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(217,119,6,.1),transparent 70%);border-radius:50%}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(217,119,6,.2);z-index:1}
+.hero h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;max-width:720px;z-index:1}
+.hero h1 em{color:var(--accent-glow);font-style:normal}
+.hs{margin-top:14px;font-size:15px;color:#64748b;max-width:520px;z-index:1;line-height:1.7}
+.hst{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:34px;font-weight:800;color:var(--accent-glow);display:block;line-height:1}
+.hst .l{font-size:11px;color:#64748b;margin-top:4px}
+.sh{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#64748b;font-size:11px;animation:fl 2s ease-in-out infinite;z-index:1}
+@keyframes fl{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:10px}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:32px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:.3s}
+.ic:hover{transform:translateY(-2px);border-color:rgba(217,119,6,.2)}
+.ic .ii{font-size:22px;margin-bottom:4px}
+.ic .in{font-size:14px;font-weight:700;margin-bottom:2px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:4px}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+
+.tl{position:relative;padding-left:32px;margin:16px 0 32px}
+.tl::before{content:'';position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.06)}
+.ti{position:relative;padding:8px 0 8px 16px;opacity:0;transform:translateX(-16px);transition:opacity .6s,transform .6s}
+.ti.visible{opacity:1;transform:translateX(0)}
+.ti::before{content:'';position:absolute;left:-26px;top:14px;width:10px;height:10px;border-radius:50%;background:transparent;border:2px solid rgba(255,255,255,.1)}
+.ti.visible::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(217,119,6,.4)}
+.tt{font-size:10px;color:var(--accent-glow);font-weight:700;letter-spacing:1px;margin-bottom:2px}
+.ttl{font-size:14px;font-weight:600}
+.td{font-size:12px;color:#64748b;line-height:1.5;margin-top:2px}
+.tn{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-top:4px}
+
+/* Lab */
+.lb{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}
+.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.ltb{display:flex;gap:8px}
+.ltb button{padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.ltb button:hover{border-color:var(--accent);color:var(--accent-glow)}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}
+.sa{background:var(--accent-bg);color:var(--accent-glow)}
+.sok{background:rgba(34,197,94,.1);color:var(--green)}
+
+/* Canvas area */
+.cv-wrap{position:relative;width:100%;height:280px;background:#0a0e17;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin:12px 0}
+.cv-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.cv-label{position:absolute;top:8px;left:12px;font-size:8px;color:#475569;letter-spacing:1px;z-index:5}
+.cv-legend{position:absolute;bottom:8px;right:12px;display:flex;gap:8px;font-size:8px;color:#64748b;z-index:5}
+.cv-legend span{display:flex;align-items:center;gap:4px}
+
+/* Controls */
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:640px){.ct{grid-template-columns:1fr}}
+.cb{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.cb .cl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.cb .cr{display:flex;align-items:center;gap:8px}
+.cb input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.cb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(217,119,6,.3)}
+.cb .cv{font-size:12px;font-weight:700;color:var(--accent-glow);min-width:32px;text-align:right}
+.cb select{width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit;cursor:pointer}
+
+/* Data Panel */
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.dp{grid-template-columns:1fr 1fr}}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}
+.dv .dd{font-size:18px;font-weight:800;margin-top:2px}
+
+/* Chart */
+.ch{height:160px;background:#0a0e17;border-radius:8px;border:1px solid var(--border);margin:12px 0;position:relative;overflow:hidden}
+.ch canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.ch-label{position:absolute;top:6px;left:10px;font-size:8px;color:#475569;letter-spacing:1px}
+
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.b1{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(217,119,6,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.b3{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff}
+
+/* Log */
+.dlog{margin-top:14px;background:rgba(0,0,0,.1);border-radius:8px;padding:12px;border:1px solid var(--border);display:none}
+.dlog .dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.dlog .dt{font-size:10px;font-weight:700;color:#94a3b8}
+.dlog table{width:100%;border-collapse:collapse;font-size:10px}
+.dlog th{padding:4px 6px;text-align:left;color:#64748b;font-weight:600;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase}
+.dlog td{padding:3px 6px;border-bottom:1px solid rgba(255,255,255,.03);color:#94a3b8}
+
+/* Summary */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:16px 0}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.sc .sci{font-size:20px;margin-bottom:4px}
+.sc .sct{font-size:12px;font-weight:700;margin-bottom:2px}
+.sc .scd{font-size:11px;color:#64748b;line-height:1.5}
+
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);margin-top:0}
+</style>
+</head>
+<body>
+
+<div id="sp"></div>
+<div id="nav">
+  <div class="nd active" onclick="sc(0)"><span class="nl">开篇</span></div>
+  <div class="nd" onclick="sc(1)"><span class="nl">系统组成</span></div>
+  <div class="nd" onclick="sc(2)"><span class="nl">适用条件</span></div>
+  <div class="nd" onclick="sc(3)"><span class="nl">流程</span></div>
+  <div class="nd" onclick="sc(4)"><span class="nl">实验</span></div>
+  <div class="nd" onclick="sc(5)"><span class="nl">总结</span></div>
+</div>
+
+<section class="hero">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">🌱 环境实验 · 交互式教学</div>
+  <h1>掌握 <em>SVE</em> 土壤气提技术</h1>
+  <div class="hs">Soil Vapor Extraction · 粒子动画 · 多参数自由探索</div>
+  <div class="hst">
+    <div><span class="n">5</span><span class="l">系统组件</span></div>
+    <div><span class="n">4</span><span class="l">可调参数</span></div>
+    <div><span class="n">6</span><span class="l">步流程</span></div>
+    <div><span class="n">实时</span><span class="l">粒子模拟</span></div>
+  </div>
+  <div class="sh"><span>向下滚动</span><span>↓</span></div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">Section 01 · 系统组成</div>
+  <div class="st">SVE 系统核心组件</div>
+  <div class="sd">土壤气相抽提（SVE）通过抽取包气带中的气体，去除土壤中挥发性和半挥发性有机物。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🕳️</div><div class="in">抽提井</div><div class="id">带筛管的垂直/水平井，深入污染区，连接真空泵抽取土壤气。</div><span class="it">核心</span></div>
+    <div class="ic"><div class="ii">🌀</div><div class="in">真空泵</div><div class="id">产生负压驱动气流，使土壤中的 VOCs 向抽提井迁移。</div><span class="it">动力源</span></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">气液分离器</div><div class="id">将抽取的土壤气中的液态水和 VOCs 分离，保护后续设备。</div><span class="it">预处理</span></div>
+    <div class="ic"><div class="ii">🧹</div><div class="in">尾气处理</div><div class="id">活性炭吸附 / 催化氧化 / 生物过滤，确保排放达标。</div><span class="it">环保</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">Section 02 · 适用条件</div>
+  <div class="st">什么情况下适合用 SVE？</div>
+  <div class="sd">SVE 对污染物类型、土壤渗透性和水文地质条件有明确要求。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🧪</div><div class="in">污染物条件</div><div class="id">适用于挥发性有机物（VOCs）和部分半挥发性有机物（SVOCs）。亨利常数 H > 0.01 为佳。</div><span class="it">VOCs 专长</span></div>
+    <div class="ic"><div class="ii">🏜️</div><div class="in">土壤条件</div><div class="id">渗透系数 K > 10⁻⁴ cm/s。砂土/粉砂效果较好，粘土渗透性差，SVE 效率低。</div><span class="it">渗透性关键</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">水文地质</div><div class="id">包气带厚度 > 3m，地下水位较低。高含水率会降低气体流动通道。</div><span class="it">水位影响</span></div>
+    <div class="ic"><div class="ii">⚠️</div><div class="in">拖尾效应</div><div class="id">修复后期浓度下降缓慢，吸附态 VOCs 缓慢解吸。需调整策略或联合修复。</div><span class="it">关键挑战</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">Section 03 · 工艺流程</div>
+  <div class="st">标准六步流程</div>
+  <div class="sd">从场地评估到停运拆除，SVE 的完整生命周期。</div>
+  <div class="tl">
+    <div class="ti"><div class="tt">STEP 01</div><div class="ttl">场地评估</div><div class="td">调查污染范围、深度、浓度分布，评估土壤渗透性和含水率。</div><span class="tn" style="background:var(--accent-bg);color:var(--accent-glow)">📋 勘测</span></div>
+    <div class="ti"><div class="tt">STEP 02</div><div class="ttl">井群设计</div><div class="td">确定抽提井数量、位置、深度和筛管长度，设计监测井网络。</div><span class="tn" style="background:rgba(245,158,11,.1);color:#f59e0b">📐 设计</span></div>
+    <div class="ti"><div class="tt">STEP 03</div><div class="ttl">安装调试</div><div class="td">钻井、下管、填砾、密封。安装真空泵、气液分离器、尾气处理装置。</div><span class="tn" style="background:var(--accent-bg);color:var(--accent-glow)">🔧 安装</span></div>
+    <div class="ti"><div class="tt">STEP 04</div><div class="ttl">试运行</div><div class="td">调整真空度和抽气量，监测出口浓度，确认系统运行正常。</div><span class="tn" style="background:rgba(34,197,94,.1);color:var(--green)">▶ 调试</span></div>
+    <div class="ti"><div class="tt">STEP 05</div><div class="ttl">长期运行</div><div class="td">持续运行并定期监测出口浓度、地下水位变化，根据数据调整参数。</div><span class="tn" style="background:rgba(245,158,11,.1);color:#f59e0b">🔄 运维</span></div>
+    <div class="ti"><div class="tt">STEP 06</div><div class="ttl">停运拆除</div><div class="td">当去除率达标且拖尾阶段确认后，逐步停机、拆除设备、场地恢复。</div><span class="tn" style="background:var(--accent-bg);color:var(--accent-glow)">✅ 验收</span></div>
+  </div>
+</section>
+
+<!-- S04: 交互实验 -->
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🌬️ Section 04 · SVE 自由模拟</div>
+    <div class="ltb">
+      <button onclick="rst()">🔄 重置</button>
+      <button onclick="tgL()" id="ltb">📋 日志</button>
+    </div>
+  </div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+      <span class="sts si" id="sts">⏳ 调节参数后启动</span>
+      <span style="font-size:10px;color:#475569">自由探索 · 粒子实时模拟</span>
+    </div>
+
+    <!-- Canvas: soil cross-section + particles -->
+    <div class="cv-wrap" id="cvWrap">
+      <div class="cv-label">SVE 系统横剖面 · 土壤气相抽提</div>
+      <canvas id="cvSoil"></canvas>
+      <div class="cv-legend">
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fbbf24"></span> VOCs</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#34d399"></span> 已去除</span>
+        <span><span style="display:inline-block;width:10px;height:2px;background:#475569"></span> 气流</span>
+      </div>
+    </div>
+
+    <!-- Data Panel -->
+    <div class="dp">
+      <div class="dv"><div class="dl">运行天数</div><div class="dd" style="color:var(--accent-glow)" id="dDays">0</div></div>
+      <div class="dv"><div class="dl">初始浓度</div><div class="dd" style="color:#94a3b8" id="dIn">350</div></div>
+      <div class="dv"><div class="dl">出口浓度</div><div class="dd" style="color:var(--green)" id="dOut">350</div></div>
+      <div class="dv"><div class="dl">去除率</div><div class="dd" style="color:var(--accent-glow)" id="dEff">0%</div></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="ct">
+      <div class="cb">
+        <div class="cl">真空度 (kPa)</div>
+        <div class="cr">
+          <input type="range" id="sVac" min="5" max="50" value="25" oninput="updP()">
+          <span class="cv" id="vVac">25</span>
+        </div>
+      </div>
+      <div class="cb">
+        <div class="cl">抽气流量 (m³/h)</div>
+        <div class="cr">
+          <input type="range" id="sFlow" min="10" max="200" value="80" oninput="updP()">
+          <span class="cv" id="vFlow">80</span>
+        </div>
+      </div>
+      <div class="cb">
+        <div class="cl">土壤类型</div>
+        <select id="sSoil" onchange="updP()">
+          <option value="sand">砂土 (K=10⁻³)</option>
+          <option value="silt" selected>粉砂 (K=10⁻⁴)</option>
+          <option value="clay">粘土 (K=10⁻⁶)</option>
+        </select>
+      </div>
+      <div class="cb">
+        <div class="cl">含水率 (%)</div>
+        <div class="cr">
+          <input type="range" id="sWater" min="10" max="60" value="25" oninput="updP()">
+          <span class="cv" id="vWater">25</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="ch" id="ch">
+      <div class="ch-label">浓度-时间曲线</div>
+      <canvas id="cvChart"></canvas>
+    </div>
+
+    <!-- Actions -->
+    <div class="acts">
+      <button class="btn b1" id="btnRun" onclick="runSVE()">▶ 启动 SVE</button>
+      <button class="btn b2" onclick="rst()">🔄 重置</button>
+      <button class="btn b2" id="btnLog" onclick="addLog()" disabled>📝 记录结果</button>
+    </div>
+
+    <!-- Info -->
+    <div style="font-size:11px;color:#64748b;line-height:1.5;margin:8px 0 0;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px" id="sveInfo">
+      <strong>提示：</strong>调节参数后点击启动，观察粒子运动和浓度变化。
+    </div>
+
+    <!-- Log -->
+    <div class="dlog" id="dlog">
+      <div class="dh"><div class="dt">📋 运行记录</div><div class="dlc" id="logC">共 0 条</div></div>
+      <table>
+        <thead><tr><th>#</th><th>土壤</th><th>真空</th><th>流量</th><th>含水率</th><th>天数</th><th>去除率</th></tr></thead>
+        <tbody id="logB"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S05: Summary -->
+<section class="sec" id="s5">
+  <div class="sn">Section 05 · 总结</div>
+  <div class="st">关键要点回顾</div>
+  <div class="sd">掌握这些要点，SVE 技术不再难。</div>
+  <div class="sg">
+    <div class="sc"><div class="sci">🧪</div><div class="sct">VOCs 专长</div><div class="scd">SVE 最适合挥发性和半挥发性有机物，亨利常数越高效果越好</div></div>
+    <div class="sc"><div class="sci">🏜️</div><div class="sct">渗透性关键</div><div class="scd">砂土 > 粉砂 > 粘土。渗透系数 K > 10⁻⁴ cm/s 才适合 SVE</div></div>
+    <div class="sc"><div class="sci">🐢</div><div class="sct">拖尾效应</div><div class="scd">修复后期浓度下降极慢，需联合修复（生物强化/化学氧化）</div></div>
+    <div class="sc"><div class="sci">🌀</div><div class="sct">尾气必处理</div><div class="scd">抽提气体必须经活性炭/催化氧化处理，不得直接排放</div></div>
+    <div class="sc"><div class="sci">📊</div><div class="sct">持续监测</div><div class="scd">出口浓度、真空度、流量需全天候监测，动态调整运行参数</div></div>
+  </div>
+</section>
+
+<div class="ft">
+  <p>环境实验 · 环境修复交互式教学实验平台</p>
+  <p style="margin-top:4px;font-size:11px;">本笔记 · 【联系方式见仓库主页】</p>
+</div>
+
+<script>
+// ═══ SCROLL ═══
+const ss=[document.querySelector('.hero'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const dd=document.querySelectorAll('.nd');
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+document.querySelectorAll('.ti').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';
+  let cur=0;ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)cur=i});
+  dd.forEach((d,i)=>d.classList.toggle('active',i===cur));
+});
+function sc(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+
+// ═══ SVE SIM ═══
+// Params
+let running=false,timer=null,days=0,conc=350,inConc=350;
+let logEntries=[],logVis=false,chartData=[];
+let particleCount=0,particles=[];
+
+// Soils
+const soilData={sand:{k:.035,name:'砂土'},silt:{k:.018,name:'粉砂'},clay:{k:.006,name:'粘土'}};
+
+function updP(){
+  document.getElementById('vVac').textContent=document.getElementById('sVac').value;
+  document.getElementById('vFlow').textContent=document.getElementById('sFlow').value;
+  document.getElementById('vWater').textContent=document.getElementById('sWater').value;
+}
+
+// ═══ CANVAS: Soil Profile ═══
+let cSoil,ctxSoil,wSoil,hSoil;
+let cChart,ctxChart,wChart,hChart;
+let soilType='silt';
+
+function resizeCanvases(){
+  const cw=document.getElementById('cvWrap');
+  cSoil=document.getElementById('cvSoil');
+  cSoil.width=cw.offsetWidth;cSoil.height=cw.offsetHeight;
+  wSoil=cSoil.width;hSoil=cSoil.height;
+  ctxSoil=cSoil.getContext('2d');
+
+  const ch=document.getElementById('ch');
+  cChart=document.getElementById('cvChart');
+  cChart.width=ch.offsetWidth;cChart.height=ch.offsetHeight;
+  wChart=cChart.width;hChart=cChart.height;
+  ctxChart=cChart.getContext('2d');
+}
+
+// Draw static soil + wells (background)
+function drawSoilBG(){
+  const c=ctxSoil;
+  // Ground surface
+  const groundY=hSoil*0.25;
+
+  // Soil layers
+  c.fillStyle='#1a1a2e';c.fillRect(0,0,wSoil,groundY); // air
+  // unsaturated zone
+  const grad=c.createLinearGradient(0,groundY,0,hSoil*0.7);
+  grad.addColorStop(0,'#2d1f0e');
+  grad.addColorStop(0.5,'#3d2a14');
+  grad.addColorStop(1,'#2a1f14');
+  c.fillStyle=grad;c.fillRect(0,groundY,wSoil,hSoil*0.75);
+
+  // water table
+  const wt=hSoil*0.7;
+  c.fillStyle='rgba(8,145,178,.15)';c.fillRect(0,wt,wSoil,hSoil-wt);
+
+  // ground line
+  c.strokeStyle='#475569';c.lineWidth=2;
+  c.beginPath();c.moveTo(0,groundY);c.lineTo(wSoil,groundY);c.stroke();
+
+  // water table line (dashed)
+  c.setLineDash([4,4]);c.strokeStyle='rgba(8,145,178,.3)';c.lineWidth=1;
+  c.beginPath();c.moveTo(0,wt);c.lineTo(wSoil,wt);c.stroke();
+  c.setLineDash([]);
+
+  // Labels
+  c.fillStyle='#475569';c.font='9px sans-serif';
+  c.fillText('地表',6,groundY-4);
+  c.fillStyle='rgba(8,145,178,.4)';
+  c.fillText('地下水位',6,wt-4);
+  c.fillStyle='#475569';
+  c.fillText('包气带 (不饱和)',6,groundY+16);
+  c.fillStyle='rgba(8,145,178,.3)';
+  c.fillText('饱和带',6,wt+14);
+
+  // Wells
+  const wx=[wSoil*0.3,wSoil*0.7];
+  wx.forEach(x=>{
+    // Well casing
+    c.fillStyle='#475569';
+    c.fillRect(x-4,groundY,8,hSoil-groundY);
+    // Well screen
+    c.fillStyle='#64748b';
+    const scrTop=groundY+30,scrHt=80;
+    for(let i=0;i<scrHt;i+=6){
+      c.fillRect(x-3,scrTop+i,6,3);
+    }
+    // Well cap
+    c.fillStyle='#334155';c.fillRect(x-7,groundY-8,14,10);
+    // Arrow up (extraction)
+    c.fillStyle='rgba(217,119,6,.3)';
+    c.beginPath();c.moveTo(x,groundY-20);c.lineTo(x-6,groundY-14);c.lineTo(x+6,groundY-14);c.closePath();c.fill();
+    c.fillText('抽提井',x-16,groundY-24);
+  });
+
+  // Contamination zone
+  const cx=wSoil*0.45,cy=groundY+50,cw2=wSoil*0.25,ch2=50;
+  const cGrad=c.createRadialGradient(cx,cy,0,cx,cy,cw2*0.6);
+  cGrad.addColorStop(0,'rgba(217,119,6,.35)');
+  cGrad.addColorStop(0.5,'rgba(217,119,6,.15)');
+  cGrad.addColorStop(1,'rgba(217,119,6,0)');
+  c.fillStyle=cGrad;
+  c.beginPath();c.ellipse(cx,cy,cw2*0.6,ch2*0.6,0,0,Math.PI*2);c.fill();
+
+  c.fillStyle='rgba(217,119,6,.4)';c.font='8px sans-serif';
+  c.fillText('VOCs 污染区',cx-22,cy+3);
+}
+
+// ═══ PARTICLES ═══
+function initParticles(){
+  particles=[];
+  const cx=wSoil*0.45,cy=wSoil*0.25+50;
+  const spreadX=wSoil*0.2,spreadY=35;
+  const cnt=Math.floor(spreadX*spreadY/400);
+  for(let i=0;i<cnt;i++){
+    particles.push({
+      x:cx+(Math.random()-0.5)*spreadX,
+      y:cy+(Math.random()-0.5)*spreadY,
+      vx:(Math.random()-0.5)*.3,
+      vy:(Math.random()-0.5)*.3,
+      r:2+Math.random()*3,
+      active:Math.random()>.3,
+      alpha:.5+Math.random()*.4
+    });
+    particleCount++;
+  }
+}
+
+function drawParticles(){
+  const c=ctxSoil;
+  particles.forEach(p=>{
+    if(!p.active) return;
+    c.beginPath();
+    const removalPct=1-conc/inConc;
+    const alpha=p.alpha*(1-removalPct*0.7);
+    c.arc(p.x,p.y,p.r,0,Math.PI*2);
+    c.fillStyle=`rgba(251,191,36,${Math.max(0.05,alpha)})`;
+    c.fill();
+    // glow
+    if(alpha>.3){
+      c.shadowColor='rgba(251,191,36,.3)';c.shadowBlur=6;
+      c.fill();
+      c.shadowBlur=0;
+    }
+  });
+
+  // Draw airflow arrows
+  if(running && days>0){
+    const eff=1-conc/inConc;
+    const density=Math.min(8,2+Math.floor(eff*8));
+    c.strokeStyle='rgba(71,85,105,.25)';c.lineWidth=1;
+    for(let i=0;i<density;i++){
+      const sx=wSoil*0.35+Math.random()*wSoil*0.3;
+      const sy=wSoil*0.28+Math.random()*50;
+      // toward nearest well
+      const wx=sx<wSoil*0.5?wSoil*0.3:wSoil*0.7;
+      c.beginPath();c.moveTo(sx,sy);
+      const len=Math.abs(wx-sx)*0.3;
+      c.lineTo(sx+(wx-sx)*0.15,sy-(sy-wSoil*0.25)*0.15);
+      c.stroke();
+    }
+  }
+}
+
+// ═══ ANIMATION LOOP ═══
+function animSoil(){
+  ctxSoil.clearRect(0,0,wSoil,hSoil);
+  drawSoilBG();
+  drawParticles();
+  requestAnimationFrame(animSoil);
+}
+
+// ═══ CHART ═══
+function drawChart(){
+  const c=ctxChart;
+  c.clearRect(0,0,wChart,hChart);
+
+  // grid
+  c.strokeStyle='rgba(255,255,255,.04)';c.lineWidth=1;
+  for(let i=0;i<5;i++){
+    const y=hChart/5*i;
+    c.beginPath();c.moveTo(0,y);c.lineTo(wChart,y);c.stroke();
+  }
+
+  if(chartData.length<2) return;
+
+  // axes
+  const padL=40,padR=10,padT=10,padB=20;
+  const cw=wChart-padL-padR,ch2=hChart-padT-padB;
+
+  // Y scale
+  const maxVal=Math.max(...chartData,350);
+  const yScale=v=>padT+ch2-(v/maxVal)*ch2;
+
+  // X scale
+  const xScale=i=>padL+(i/(chartData.length-1))*cw;
+
+  // Fill
+  c.beginPath();c.moveTo(xScale(0),hChart-padB);
+  chartData.forEach((v,i)=>c.lineTo(xScale(i),yScale(v)));
+  c.lineTo(xScale(chartData.length-1),hChart-padB);c.closePath();
+  c.fillStyle='rgba(217,119,6,.08)';c.fill();
+
+  // Line
+  c.beginPath();c.strokeStyle='#fbbf24';c.lineWidth=2;c.shadowColor='rgba(251,191,36,.3)';c.shadowBlur=4;
+  chartData.forEach((v,i)=>{if(i===0)c.moveTo(xScale(0),yScale(v));else c.lineTo(xScale(i),yScale(v));});
+  c.stroke();c.shadowBlur=0;
+
+  // Current value dot
+  const last=chartData.length-1;
+  c.beginPath();c.arc(xScale(last),yScale(chartData[last]),4,0,Math.PI*2);
+  c.fillStyle='#fbbf24';c.fill();
+  c.shadowColor='rgba(251,191,36,.5)';c.shadowBlur=12;c.fill();c.shadowBlur=0;
+
+  // Labels
+  c.fillStyle='#475569';c.font='8px sans-serif';
+  c.fillText('0',padL-8,hChart-padB+2);
+  c.fillText(maxVal.toFixed(0),padL-20,padT+4);
+  c.fillText('天数',wChart-20,hChart-2);
+
+  // Remove threshold line
+  if(running||chartData.length>5){
+    const thresh=inConc*0.1;
+    if(thresh<maxVal){
+      c.strokeStyle='rgba(239,68,68,.15)';c.setLineDash([3,3]);c.lineWidth=1;
+      c.beginPath();c.moveTo(padL,yScale(thresh));c.lineTo(wChart-padR,yScale(thresh));c.stroke();
+      c.setLineDash([]);
+      c.fillStyle='rgba(239,68,68,.3)';c.font='7px sans-serif';
+      c.fillText('90%去除线',padL+2,yScale(thresh)-2);
+    }
+  }
+}
+
+// ═══ RUN SVE ═══
+function runSVE(){
+  if(running){stopSVE();return;}
+  if(days===0){
+    const soil=document.getElementById('sSoil').value;
+    soilType=soilData[soil].name;
+    inConc=parseInt(document.getElementById('dIn').textContent);
+    conc=inConc;
+    chartData=[conc];
+    initParticles();
+  }
+  running=true;
+  document.getElementById('btnRun').textContent='⏸ 暂停';
+  document.getElementById('btnRun').className='btn b2';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='🌬️ SVE 运行中...';
+
+  const vac=parseInt(document.getElementById('sVac').value);
+  const flow=parseInt(document.getElementById('sFlow').value);
+  const water=parseInt(document.getElementById('sWater').value);
+  const soilSel=document.getElementById('sSoil').value;
+  const k=soilData[soilSel].k;
+
+  timer=setInterval(()=>{
+    days+=2;
+    const vacEff=vac/50,flowEff=flow/200,waterEff=1-water/100;
+    const eff=vacEff*0.5+flowEff*0.3+waterEff*0.2;
+    const totalEff=eff*k*10;
+
+    const decay=Math.exp(-totalEff*days);
+    const tail=days>20?0.3*Math.exp(-totalEff*0.3*(days-20)):1;
+    conc=inConc*(decay*0.7+tail*0.3);
+
+    // particle animation: move toward wells
+    particles.forEach(p=>{
+      if(!p.active||Math.random()>0.1) return;
+      const wx=p.x<wSoil*0.5?wSoil*0.3:wSoil*0.7;
+      p.vx+=(wx-p.x)*0.0001*(vac/50);
+      p.vy-=0.005*(flow/200);
+      p.x+=p.vx;p.y+=p.vy;
+      // remove if reaches well
+      const dist=Math.abs(p.x-wx);
+      if(dist<8||p.y<wSoil*0.22){
+        const r=Math.random();
+        if(r<0.3&&p.active){p.active=false;particles.push({
+          x:wx+3,y:wSoil*0.22-5,vx:0,vy:-1,r:2,active:true,alpha:.6
+        });}
+        else{p.x=wSoil*0.35+Math.random()*wSoil*0.3;
+          p.y=wSoil*0.28+10+Math.random()*30;
+          p.vx=(Math.random()-0.5)*.3;
+          p.vy=(Math.random()-0.5)*.3;
+        }
+      }
+    });
+
+    const pct=((inConc-Math.max(0,conc))/inConc)*100;
+    document.getElementById('dDays').textContent=days;
+    document.getElementById('dOut').textContent=Math.max(0,Math.round(conc));
+    document.getElementById('dEff').textContent=Math.min(100,pct).toFixed(1)+'%';
+    chartData.push(Math.max(0,conc));
+    drawChart();
+
+    let tip='';
+    if(days<10)tip='🚀 初始阶段：高浓度 VOCs 快速抽提，去除率急速攀升';
+    else if(days<25)tip='⚡ 主体去除阶段：游离态 VOCs 已大部去除';
+    else tip='🐢 拖尾阶段：吸附态 VOCs 缓慢解吸，去除速率显著下降';
+
+    document.getElementById('sveInfo').innerHTML=
+      `<strong>${soilType}</strong> | 真空 ${vac}kPa | 流量 ${flow}m³/h | 含水 ${water}%<br>
+       <span style="font-size:10px;">${tip}</span>`;
+
+    if(pct>95||conc<5){
+      stopSVE('complete');
+    }
+  },500);
+}
+
+function stopSVE(reason){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false;
+  document.getElementById('btnRun').textContent='▶ 继续';
+  document.getElementById('btnRun').className='btn b1';
+  document.getElementById('btnLog').disabled=false;
+
+  if(reason==='complete'){
+    document.getElementById('sts').className='sts sok';
+    document.getElementById('sts').innerHTML='✅ 修复完成！去除率 > 95%';
+    document.getElementById('sveInfo').innerHTML+='<br><strong style="color:#22c55e">✅ 修复达标</strong>';
+    document.getElementById('btnRun').disabled=true;
+  } else {
+    document.getElementById('sts').className='sts si';
+    document.getElementById('sts').innerHTML='⏸ 已暂停';
+  }
+}
+
+// Log
+function addLog(){
+  const vac=document.getElementById('sVac').value;
+  const flow=document.getElementById('sFlow').value;
+  const water=document.getElementById('sWater').value;
+  const pct=document.getElementById('dEff').textContent;
+  logEntries.push({soil:soilType,vac,flow,water,days,pct});
+  renderLog();
+  document.getElementById('btnLog').disabled=true;
+}
+function renderLog(){
+  const tb=document.getElementById('logB');
+  document.getElementById('logC').textContent=`共 ${logEntries.length} 条`;
+  if(logEntries.length===0){tb.innerHTML='';return;}
+  tb.innerHTML=logEntries.map((x,i)=>`<tr>
+    <td>${i+1}</td><td>${x.soil}</td><td>${x.vac}</td><td>${x.flow}</td>
+    <td>${x.water}%</td><td>${x.days}</td><td style="color:var(--accent-glow)">${x.pct}</td>
+  </tr>`).join('');
+}
+function tgL(){
+  const el=document.getElementById('dlog');
+  logVis=!logVis;el.style.display=logVis?'block':'none';
+  document.getElementById('ltb').classList.toggle('active',logVis);
+}
+
+// Reset
+function rst(){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false;days=0;conc=350;inConc=350;particles=[];
+  document.getElementById('btnRun').textContent='▶ 启动 SVE';
+  document.getElementById('btnRun').className='btn b1';
+  document.getElementById('btnRun').disabled=false;
+  document.getElementById('btnLog').disabled=true;
+  document.getElementById('sts').className='sts si';
+  document.getElementById('sts').innerHTML='🔄 已重置';
+  document.getElementById('dDays').textContent='0';
+  document.getElementById('dIn').textContent='350';
+  document.getElementById('dOut').textContent='350';
+  document.getElementById('dEff').textContent='0%';
+  chartData=[];logEntries=[];renderLog();
+  document.getElementById('sveInfo').innerHTML='<strong>提示：</strong>调节参数后点击启动，观察粒子运动和浓度变化。';
+  drawChart();
+}
+
+// Init
+window.addEventListener('resize',()=>{resizeCanvases();drawSoilBG();drawChart();});
+window.addEventListener('load',()=>{
+  resizeCanvases();
+  drawSoilBG();
+  initParticles();
+  drawChart();
+});
+</script>
+</body>
+</html>

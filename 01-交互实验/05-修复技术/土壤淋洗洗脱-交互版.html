@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>土壤淋洗/洗脱 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#0284c7;--accent-glow:#38bdf8;--accent-bg:rgba(2,132,199,.12);--green:#22c55e;--amber:#f59e0b}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+#nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:12px}
+.nd{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.1);cursor:pointer;transition:.3s;border:2px solid transparent}
+.nd.active{background:var(--accent);transform:scale(1.5);box-shadow:0 0 12px rgba(2,132,199,.5)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:10px;white-space:nowrap;color:#94a3b8;background:var(--card);padding:3px 10px;border-radius:6px;opacity:0;pointer-events:none;border:1px solid var(--border)}
+.nd:hover .nl{opacity:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(2,132,199,.04) 1px,transparent 1px);background-size:24px 24px}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(2,132,199,.1),transparent 70%);border-radius:50%}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(2,132,199,.2);z-index:1}
+.hero h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;max-width:720px;z-index:1}
+.hero h1 em{color:var(--accent-glow);font-style:normal}
+.hs{margin-top:14px;font-size:15px;color:#64748b;max-width:520px;z-index:1;line-height:1.7}
+.hst{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:34px;font-weight:800;color:var(--accent-glow);display:block;line-height:1}
+.hst .l{font-size:11px;color:#64748b;margin-top:4px}
+.sh{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#64748b;font-size:11px;animation:fl 2s ease-in-out infinite;z-index:1}
+@keyframes fl{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:10px}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:32px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:.3s}
+.ic:hover{transform:translateY(-2px);border-color:rgba(2,132,199,.2)}
+.ic .ii{font-size:22px;margin-bottom:4px}
+.ic .in{font-size:14px;font-weight:700;margin-bottom:2px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:4px}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}
+.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}
+.sa{background:var(--accent-bg);color:var(--accent-glow)}
+.sok{background:rgba(34,197,94,.1);color:var(--green)}
+.cv-wrap{width:100%;height:260px;background:#0a0e17;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin:12px 0;position:relative}
+.cv-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.cv-label{position:absolute;top:8px;left:12px;font-size:8px;color:#475569;letter-spacing:1px;z-index:5}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.dp{grid-template-columns:1fr 1fr}}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}
+.dv .dd{font-size:18px;font-weight:800;margin-top:2px}
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:640px){.ct{grid-template-columns:1fr}}
+.cb{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.cb .cl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.cb .cr{display:flex;align-items:center;gap:8px}
+.cb input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.cb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(2,132,199,.3)}
+.cb .cv{font-size:12px;font-weight:700;color:var(--accent-glow);min-width:32px;text-align:right}
+.cb select{width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit;cursor:pointer}
+.ch{height:140px;background:#0a0e17;border-radius:8px;border:1px solid var(--border);margin:12px 0;position:relative;overflow:hidden}
+.ch canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.b1{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(2,132,199,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:16px 0}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.sc .sci{font-size:20px;margin-bottom:4px}
+.sc .sct{font-size:12px;font-weight:700;margin-bottom:2px}
+.sc .scd{font-size:11px;color:#64748b;line-height:1.5}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+<div id="nav"><div class="nd active" onclick="sc(0)"><span class="nl">开篇</span></div><div class="nd" onclick="sc(1)"><span class="nl">适用</span></div><div class="nd" onclick="sc(2)"><span class="nl">流程</span></div><div class="nd" onclick="sc(3)"><span class="nl">实验</span></div><div class="nd" onclick="sc(4)"><span class="nl">总结</span></div></div>
+
+<section class="hero">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">🌱 环境实验 · 交互模拟</div>
+  <h1>掌握 <em>土壤淋洗/洗脱</em> 技术</h1>
+  <div class="hs">Soil Washing/Flushing · 3种淋洗剂 · 多参数自由探索</div>
+  <div class="hst"><div><span class="n">3</span><span class="l">淋洗剂</span></div><div><span class="n">3</span><span class="l">土壤类型</span></div><div><span class="n">6</span><span class="l">步流程</span></div><div><span class="n">实时</span><span class="l">浓度曲线</span></div></div>
+  <div class="sh"><span>↓</span></div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">适用场景</div>
+  <div class="st">什么情况下适合淋洗？</div>
+  <div class="sd">土壤淋洗/洗脱技术适用于重金属和有机物污染土壤。通过注入淋洗剂溶解、洗脱污染物，再抽取处理。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🧪</div><div class="in">污染物类型</div><div class="id">适用于重金属（Pb/Cd/Cr/As）、挥发性有机物、半挥发性有机物、石油烃等。</div><span class="it">广谱</span></div>
+    <div class="ic"><div class="ii">🏜️</div><div class="in">土壤条件</div><div class="id">砂土/砂质壤土淋洗效果好，粘土因渗透性差淋洗效率低。土壤有机质含量高会吸附污染物降低效率。</div><span class="it">砂土最优</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">淋洗剂类型</div><div class="id">水（物理冲洗）、表面活性剂（增溶）、螯合剂（EDTA等络合重金属），酸/碱液调节pH增强溶解。</div><span class="it">选型关键</span></div>
+    <div class="ic"><div class="ii">♻️</div><div class="in">处理工艺</div><div class="id">异位淋洗（挖掘后处理）效率高但成本大；原位淋洗（原地注入）成本低但周期长。</div><span class="it">原位/异位</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">工艺流程</div>
+  <div class="st">标准六步流程</div>
+  <div class="sd">土壤淋洗完整流程：从注入到处理的闭环。</div>
+  <div class="tl">
+    <div class="ti"><div class="tt">STEP 01</div><div class="ttl">场地评估</div><div class="td">调查污染类型、浓度分布、土壤粒径分布和渗透性。</div></div>
+    <div class="ti"><div class="tt">STEP 02</div><div class="ttl">淋洗剂选型</div><div class="td">根据污染物性质选择淋洗剂。重金属用螯合剂，有机物用表面活性剂。</div></div>
+    <div class="ti"><div class="tt">STEP 03</div><div class="ttl">注入系统布设</div><div class="td">布设注入井和抽提井，确定注入压力、流量和间距。</div></div>
+    <div class="ti"><div class="tt">STEP 04</div><div class="ttl">淋洗运行</div><div class="td">持续注入淋洗剂，监测抽出液中污染物浓度变化。</div></div>
+    <div class="ti"><div class="tt">STEP 05</div><div class="ttl">抽出液处理</div><div class="td">含污染物的抽出液经沉淀/过滤/吸附处理后回用或排放。</div></div>
+    <div class="ti"><div class="tt">STEP 06</div><div class="ttl">验收</div><div class="td">达到修复目标后停止运行，取样验证修复效果。</div></div>
+  </div>
+</section>
+
+<section class="lb" id="s3">
+<div class="lc">
+  <div class="lh"><div class="lt">💧 Section 03 · 淋洗自由模拟</div></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+      <span class="sts si" id="sts">⏳ 选择参数后启动</span>
+      <span style="font-size:10px;color:#475569">3种淋洗剂 · 实时浓度曲线</span>
+    </div>
+    <div class="cv-wrap" id="cvWrap">
+      <div class="cv-label">土壤柱 · 淋洗过程</div>
+      <canvas id="cvSoil"></canvas>
+    </div>
+    <div class="dp">
+      <div class="dv"><div class="dl">注入时间</div><div class="dd" style="color:var(--accent-glow)" id="dTime">0 min</div></div>
+      <div class="dv"><div class="dl">初始浓度</div><div class="dd" id="dIn">500</div></div>
+      <div class="dv"><div class="dl">当前浓度</div><div class="dd" style="color:var(--green)" id="dOut">500</div></div>
+      <div class="dv"><div class="dl">去除率</div><div class="dd" style="color:var(--accent-glow)" id="dEff">0%</div></div>
+    </div>
+    <div class="ct">
+      <div class="cb"><div class="cl">淋洗剂</div><select id="sAgent" onchange="updP()">
+        <option value="water">水 (物理冲洗)</option>
+        <option value="surf" selected>表面活性剂 (增溶)</option>
+        <option value="edta">螯合剂 EDTA (重金属)</option>
+      </select></div>
+      <div class="cb"><div class="cl">土壤类型</div><select id="sSoil" onchange="updP()">
+        <option value="sand" selected>砂土 (高渗透)</option>
+        <option value="silt">粉砂 (中渗透)</option>
+        <option value="clay">粘土 (低渗透)</option>
+      </select></div>
+      <div class="cb"><div class="cl">注入流速 (L/h)</div>
+        <div class="cr"><input type="range" id="sFlow" min="10" max="100" value="50" oninput="updP()"><span class="cv" id="vFlow">50</span></div>
+      </div>
+      <div class="cb"><div class="cl">淋洗剂浓度 (%)</div>
+        <div class="cr"><input type="range" id="sConc" min="1" max="10" value="5" oninput="updP()"><span class="cv" id="vConc">5</span></div>
+      </div>
+    </div>
+    <div class="ch" id="ch"><canvas id="cvChart"></canvas></div>
+    <div class="acts">
+      <button class="btn b1" id="btnRun" onclick="runWash()">💧 开始淋洗</button>
+      <button class="btn b2" onclick="rst()">🔄 重置</button>
+    </div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5;margin:8px 0 0;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px" id="washInfo">
+      <strong>提示：</strong>选择淋洗剂和土壤类型，调节参数后启动。
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s4">
+  <div class="sn">总结</div>
+  <div class="st">关键要点回顾</div>
+  <div class="sd">掌握这些要点，土壤淋洗技术不再难。</div>
+  <div class="sg">
+    <div class="sc"><div class="sci">🧪</div><div class="sct">淋洗剂选型</div><div class="scd">重金属用螯合剂，有机物用表面活性剂，轻度污染可用水</div></div>
+    <div class="sc"><div class="sci">🏜️</div><div class="sct">土壤渗透性</div><div class="scd">砂土 > 粉砂 > 粘土，渗透系数直接影响淋洗效率</div></div>
+    <div class="sc"><div class="sci">💧</div><div class="sct">尾液处理</div><div class="scd">抽出液必须经处理才能排放或回用，不可直排</div></div>
+    <div class="sc"><div class="sci">📊</div><div class="sct">浓度监测</div><div class="scd">持续监测抽出液浓度，达到修复目标后停止运行</div></div>
+  </div>
+</section>
+<div class="ft">环境实验 · 本笔记</div>
+
+<script>
+const ss=[document.querySelector('.hero'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const dd=document.querySelectorAll('.nd');
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+document.querySelectorAll('.ti').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';let cur=0;ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)cur=i});dd.forEach((d,i)=>d.classList.toggle('active',i===cur));});
+function sc(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+
+const agentData={water:{name:'水',k:0.8,color:'#38bdf8'},surf:{name:'表面活性剂',k:1.5,color:'#fbbf24'},edta:{name:'EDTA',k:1.2,color:'#a78bfa'}};
+const soilData={sand:{name:'砂土',k:1.0},silt:{name:'粉砂',k:0.5},clay:{name:'粘土',k:0.15}};
+let running=false,timer=null,time=0,conc=500,inConc=500,chartData=[];
+
+let cSoil,ctx,w,h,cChart,ctxCh,wC,hC;
+function resizeC(){const cw=document.getElementById('cvWrap');cSoil=document.getElementById('cvSoil');cSoil.width=cw.offsetWidth;cSoil.height=cw.offsetHeight;w=cSoil.width;h=cSoil.height;ctx=cSoil.getContext('2d');const ch=document.getElementById('ch');cChart=document.getElementById('cvChart');cChart.width=ch.offsetWidth;cChart.height=ch.offsetHeight;wC=cChart.width;hC=cChart.height;ctxCh=cChart.getContext('2d');}
+
+function drawBG(){
+  const c=ctx;
+  // Soil column background
+  const colX=w*0.25,colW=w*0.5,colY=h*0.12,colH=h*0.7;
+  // Graduated soil
+  const grad=c.createLinearGradient(0,colY,0,colY+colH);
+  grad.addColorStop(0,'#3d2a14');grad.addColorStop(0.3,'#4a3520');grad.addColorStop(0.6,'#5a4530');grad.addColorStop(1,'#3d2a14');
+  c.fillStyle=grad;c.fillRect(colX,colY,colW,colH);
+  c.strokeStyle='#475569';c.lineWidth=2;c.strokeRect(colX,colY,colW,colH);
+
+  // grid lines (soil texture)
+  c.strokeStyle='rgba(255,255,255,.03)';c.lineWidth=1;
+  for(let i=0;i<8;i++){const y=colY+colH/8*i;c.beginPath();c.moveTo(colX,y);c.lineTo(colX+colW,y);c.stroke();}
+
+  // Top injection zone
+  c.fillStyle='rgba(56,189,248,.06)';c.fillRect(colX-5,colY-5,colW+10,20);
+  c.fillStyle='#475569';c.font='8px sans-serif';c.fillText('淋洗液注入',colX+colW/2-20,colY-8);
+
+  // Bottom collection
+  c.fillStyle='rgba(255,255,255,.03)';c.fillRect(colX-5,colY+colH-5,colW+10,15);
+  c.fillStyle='#475569';c.fillText('抽出液收集',colX+colW/2-20,colY+colH+10);
+
+  // Labels
+  c.fillStyle='#475569';c.font='9px sans-serif';
+  c.fillText('土壤柱剖面',8,16);
+
+  // Injected fluid color
+  const agent=document.getElementById('sAgent').value;
+  const aColor=agentData[agent].color;
+  c.fillStyle=aColor+'15';
+  c.fillRect(colX+4,colY+10,colW-8,20);
+}
+
+function drawFluid(){
+  const c=ctx;
+  if(!running&&time===0) return;
+  const colX=w*0.25+4,colW=w*0.5-8,colY=h*0.12+10,colH=h*0.7-20;
+  const agent=document.getElementById('sAgent').value;
+  const aColor=agentData[agent].color;
+  const removal=1-conc/inConc;
+  // fluid penetration
+  const penetration=Math.min(colH,time*2);
+  const grad=c.createLinearGradient(0,colY,0,colY+colH);
+  grad.addColorStop(0,aColor+'40');
+  grad.addColorStop(Math.min(1,penetration/colH),aColor+'20');
+  c.fillStyle=grad;
+  c.fillRect(colX,colY,colW,penetration);
+
+  // concentration color in soil
+  if(removal>0){
+    for(let i=0;i<10;i++){
+      const y=colY+penetration*(i/10);
+      const concF=1-removal*(1-i/10);
+      const r=Math.floor(180*concF+80*(1-concF));
+      const g=Math.floor(120*concF+160*(1-concF));
+      const b=Math.floor(60*concF+180*(1-concF));
+      c.fillStyle=`rgba(${r},${g},${b},.3)`;
+      c.fillRect(colX+2,y+2,colW-4,penetration/10-2);
+    }
+  }
+}
+
+function drawChart(){
+  const c=ctxCh;c.clearRect(0,0,wC,hC);
+  if(chartData.length<2)return;
+  const padL=35,padR=10,padT=10,padB=18,cw=wC-padL-padR,ch2=hC-padT-padB;
+  const maxV=Math.max(...chartData,500);
+  const xs=i=>padL+(i/(chartData.length-1||1))*cw;
+  const ys=v=>padT+ch2-(v/maxV)*ch2;
+  // grid
+  c.strokeStyle='rgba(255,255,255,.04)';for(let i=0;i<5;i++){c.beginPath();c.moveTo(0,ch2/5*i+padT);c.lineTo(wC,ch2/5*i+padT);c.stroke();}
+  // fill
+  c.beginPath();c.moveTo(xs(0),hC-padB);
+  chartData.forEach((v,i)=>c.lineTo(xs(i),ys(v)));
+  c.lineTo(xs(chartData.length-1),hC-padB);c.closePath();
+  c.fillStyle='rgba(56,189,248,.08)';c.fill();
+  // line
+  c.beginPath();c.strokeStyle='#38bdf8';c.lineWidth=2;c.shadowColor='rgba(56,189,248,.3)';c.shadowBlur=4;
+  chartData.forEach((v,i)=>{if(i===0)c.moveTo(xs(0),ys(v));else c.lineTo(xs(i),ys(v));});
+  c.stroke();c.shadowBlur=0;
+  // dot
+  const last=chartData.length-1;
+  c.beginPath();c.arc(xs(last),ys(chartData[last]),4,0,Math.PI*2);c.fillStyle='#38bdf8';c.fill();c.shadowColor='rgba(56,189,248,.5)';c.shadowBlur=12;c.fill();c.shadowBlur=0;
+  c.fillStyle='#475569';c.font='8px sans-serif';c.fillText('0',padL-6,hC-padB+2);c.fillText(maxV.toFixed(0),padL-24,padT+4);
+}
+
+let animId=null;
+function animLoop(){
+  ctx.clearRect(0,0,w,h);drawBG();drawFluid();
+  animId=requestAnimationFrame(animLoop);
+}
+
+function runWash(){
+  if(running){stopWash();return;}
+  if(time===0){inConc=500;conc=inConc;chartData=[conc];}
+  running=true;
+  document.getElementById('btnRun').textContent='⏸ 暂停';
+  document.getElementById('btnRun').className='btn b2';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='💧 淋洗中...';
+
+  const soil=document.getElementById('sSoil').value;
+  const agent=document.getElementById('sAgent').value;
+  const flow=parseInt(document.getElementById('sFlow').value)/100;
+  const concP=parseInt(document.getElementById('sConc').value)/10;
+
+  const k=soilData[soil].k*agentData[agent].k*flow*concP;
+
+  timer=setInterval(()=>{
+    time+=5;
+    const decay=Math.exp(-k*time/50);
+    conc=inConc*decay;
+    const pct=((inConc-conc)/inConc)*100;
+    document.getElementById('dTime').textContent=time+' min';
+    document.getElementById('dOut').textContent=Math.round(conc);
+    document.getElementById('dEff').textContent=pct.toFixed(1)+'%';
+    chartData.push(Math.max(0,conc));
+    drawChart();
+
+    let tip='';
+    if(pct<30)tip='🚀 初始阶段：淋洗液正在渗透，污染物开始溶解';
+    else if(pct<70)tip='⚡ 主体洗脱阶段：大量污染物被淋洗出来';
+    else tip='🐢 洗脱后期：残留污染物被土壤吸附，去除速率下降';
+
+    document.getElementById('washInfo').innerHTML=
+      `<strong>${soilData[soil].name}</strong> · ${agentData[agent].name} · 流速${Math.round(flow*100)} L/h · 浓度${Math.round(concP*10)}%<br>
+       <span style="font-size:10px;">${tip}</span>`;
+
+    if(pct>95){
+      stopWash('complete');
+    }
+  },400);
+}
+
+function stopWash(reason){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false;
+  document.getElementById('btnRun').textContent='▶ 继续';
+  document.getElementById('btnRun').className='btn b1';
+  if(reason==='complete'){
+    document.getElementById('sts').className='sts sok';
+    document.getElementById('sts').innerHTML='✅ 淋洗完成！去除率 > 95%';
+    document.getElementById('btnRun').disabled=true;
+  } else {
+    document.getElementById('sts').className='sts si';
+    document.getElementById('sts').innerHTML='⏸ 已暂停';
+  }
+}
+
+function updP(){
+  document.getElementById('vFlow').textContent=document.getElementById('sFlow').value;
+  document.getElementById('vConc').textContent=document.getElementById('sConc').value;
+}
+
+function rst(){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false;time=0;conc=500;inConc=500;chartData=[];
+  document.getElementById('btnRun').textContent='💧 开始淋洗';
+  document.getElementById('btnRun').className='btn b1';
+  document.getElementById('btnRun').disabled=false;
+  document.getElementById('sts').className='sts si';
+  document.getElementById('sts').innerHTML='🔄 已重置';
+  document.getElementById('dTime').textContent='0 min';
+  document.getElementById('dOut').textContent='500';
+  document.getElementById('dEff').textContent='0%';
+  document.getElementById('washInfo').innerHTML='<strong>提示：</strong>选择淋洗剂和土壤类型，调节参数后启动。';
+  drawChart();
+}
+
+window.addEventListener('resize',()=>{resizeC();drawBG();drawChart();});
+window.addEventListener('load',()=>{resizeC();drawBG();drawChart();animLoop();});
+</script>
+</body>
+</html>

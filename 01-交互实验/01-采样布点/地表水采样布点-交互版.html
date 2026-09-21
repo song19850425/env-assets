@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地表水采样布点 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#0284c7;--accent-glow:#38bdf8;--accent-bg:rgba(2,132,199,.12);--green:#22c55e;--amber:#f59e0b;--red:#ef4444}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+#nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:12px}
+.nd{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.1);cursor:pointer;transition:.3s;border:2px solid transparent}
+.nd.active{background:var(--accent);transform:scale(1.5);box-shadow:0 0 12px rgba(2,132,199,.5)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:10px;white-space:nowrap;color:#94a3b8;background:var(--card);padding:3px 10px;border-radius:6px;opacity:0;pointer-events:none;border:1px solid var(--border)}
+.nd:hover .nl{opacity:1}
+.hr{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,#0a0e17 0%,#131a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(2,132,199,.04) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(2,132,199,.1),transparent 70%);border-radius:50%}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(2,132,199,.2);z-index:1}
+.h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;max-width:720px;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hs{margin-top:14px;font-size:15px;color:#64748b;max-width:520px;z-index:1;line-height:1.7;margin-bottom:20px}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:34px;font-weight:800;color:var(--accent-glow);display:block;line-height:1}.hst .l{font-size:11px;color:#64748b;margin-top:4px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:10px}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:.3s}
+.ic:hover{transform:translateY(-2px);border-color:rgba(2,132,199,.2)}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:4px}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.tl{position:relative;padding-left:32px;margin:16px 0 32px}
+.tl::before{content:'';position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.06)}
+.ti{position:relative;padding:8px 0 8px 16px;opacity:0;transform:translateX(-16px);transition:opacity .6s,transform .6s}
+.ti.visible{opacity:1;transform:translateX(0)}
+.ti::before{content:'';position:absolute;left:-26px;top:14px;width:10px;height:10px;border-radius:50%;background:transparent;border:2px solid rgba(255,255,255,.1)}
+.ti.visible::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(2,132,199,.4)}
+.tt{font-size:10px;color:var(--accent-glow);font-weight:700;letter-spacing:1px;margin-bottom:2px}
+.ttl{font-size:14px;font-weight:600}.td{font-size:12px;color:#64748b;line-height:1.5;margin-top:2px}
+.lb{background:linear-gradient(180deg,#0a0e17,#131a2e);padding:60px 0}
+.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(34,197,94,.1);color:var(--green)}
+.cv-wrap{position:relative;width:100%;background:#0a0e17;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin:12px 0}
+.cv-wrap svg{display:block;width:100%;height:auto}
+
+/* River SVG styles */
+.river-svg{width:100%;height:auto}.river-svg .river{fill:rgba(56,189,248,.12);stroke:rgba(56,189,248,.3);stroke-width:1}
+.river-svg .river-flow{fill:rgba(56,189,248,.05)}
+.river-svg .section-point{cursor:pointer;transition:r .3s,opacity .3s}
+.river-svg .section-point:hover{opacity:.8}.river-svg .section-point.active{opacity:1}
+.river-svg .section-label{font-size:10px;fill:#64748b;text-anchor:middle;pointer-events:none}
+.river-svg .section-label.active{fill:var(--accent-glow);font-weight:700}
+.river-svg .landmark-text{font-size:8px;fill:#475569}
+
+/* Workflow */
+.wf{display:flex;gap:0;margin:0 0 14px;background:rgba(255,255,255,.02);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.ws{flex:1;padding:7px 5px;text-align:center;font-size:9px;color:#475569;font-weight:500;border-right:1px solid var(--border);transition:.3s}
+.ws:last-child{border-right:none}.ws .wi{display:block;font-size:14px;margin-bottom:2px}
+.ws.active{background:var(--accent-bg);color:var(--accent-glow)}
+.ws.done{background:rgba(34,197,94,.08);color:var(--green)}
+
+/* Sampling interface */
+.samp-area{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}@media(max-width:640px){.samp-area{grid-template-columns:1fr}}
+.samp-panel{background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);padding:14px}
+.samp-panel .spl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.opt-group{display:flex;gap:6px;flex-wrap:wrap}
+.opt-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:#94a3b8;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.opt-btn:hover{border-color:var(--accent);color:var(--accent-glow)}
+.opt-btn.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-glow)}
+.opt-btn:disabled{opacity:.3;cursor:not-allowed}
+
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:480px){.dp{grid-template-columns:1fr 1fr}}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:18px;font-weight:800;margin-top:2px}
+
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.b1{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(2,132,199,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+
+.dlog{margin-top:14px;background:rgba(0,0,0,.1);border-radius:8px;padding:12px;border:1px solid var(--border);display:none}
+.dlog .dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.dlog .dt{font-size:10px;font-weight:700;color:#94a3b8}
+.dlog table{width:100%;border-collapse:collapse;font-size:10px}
+.dlog th{padding:4px 6px;text-align:left;color:#64748b;font-weight:600;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase}
+.dlog td{padding:3px 6px;border-bottom:1px solid rgba(255,255,255,.03);color:#94a3b8}
+.dlog .le{text-align:center;padding:12px;color:#475569;font-size:11px}
+
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:16px 0}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.sc .sci{font-size:20px;margin-bottom:4px}.sc .sct{font-size:12px;font-weight:700;margin-bottom:2px}.sc .scd{font-size:11px;color:#64748b;line-height:1.5}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+<div id="nav"><div class="nd active" onclick="sc(0)"><span class="nl">开篇</span></div><div class="nd" onclick="sc(1)"><span class="nl">断面布设</span></div><div class="nd" onclick="sc(2)"><span class="nl">设备</span></div><div class="nd" onclick="sc(3)"><span class="nl">流程</span></div><div class="nd" onclick="sc(4)"><span class="nl">实验</span></div><div class="nd" onclick="sc(5)"><span class="nl">总结</span></div></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">🌊 环境实验 · 现场采样系列</div>
+  <h1 class="h1">掌握 <em>地表水采样</em> 布点</h1>
+  <div class="hs">HJ 91.2-2022 · 断面布设 · 采样器选择 · 样品保存</div>
+  <div class="hst">
+    <div><span class="n">5</span><span class="l">采样断面</span></div>
+    <div><span class="n">3</span><span class="l">采样深度</span></div>
+    <div><span class="n">3</span><span class="l">采样器类型</span></div>
+    <div><span class="n">6</span><span class="l">步流程</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">Section 01 · 断面布设原则</div>
+  <div class="st">采样断面分类与布设</div>
+  <div class="sd">依据 HJ 91.2-2022，地表水采样断面分为四种类型，布设在河流的不同位置以反映水质变化。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🟢</div><div class="in">背景断面</div><div class="id">布设在污染源上游未受人类活动影响的水域，反映河流本底水质状况，作为评价对照基准。</div><span class="it">反映本底</span></div>
+    <div class="ic"><div class="ii">🔵</div><div class="in">对照断面</div><div class="id">布设在排污口上游 500m 左右，用于了解河流在纳污前的水质，与下游数据对比。</div><span class="it">排污前对照</span></div>
+    <div class="ic"><div class="ii">🟡</div><div class="in">控制断面</div><div class="id">布设在排污口下游 500-1000m，反映污水对水质的影响，是评价排污影响的关键断面。</div><span class="it">反映污染影响</span></div>
+    <div class="ic"><div class="ii">🔴</div><div class="in">削减断面</div><div class="id">布设在排污口下游水质基本恢复处，反映河流的稀释自净能力，距离因河流而异。</div><span class="it">反映自净能力</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">Section 02 · 采样设备与保存</div>
+  <div class="st">采样器、样品瓶与保存条件</div>
+  <div class="sd">根据检测项目选择合适的采样器和样品瓶，样品采集后需按要求保存。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🧪</div><div class="in">有机玻璃采水器</div><div class="id">桶式结构，下沉时进水，上提时封闭。适用于表层和< 5m 水深采样，是最常用的地表水采样器。</div><span class="it">表层采样</span></div>
+    <div class="ic"><div class="ii">🔄</div><div class="in">颠倒采水器（Van Dorn）</div><div class="id">两端开口的筒体，到达预定深度后触发关闭。适用于中层和深层采水，可多点布设。</div><span class="it">深层采样</span></div>
+    <div class="ic"><div class="ii">⚡</div><div class="in">自动/泵吸采样</div><div class="id">利用潜水泵将水样抽至地面后分装。适用于连续监测和大体积采样，可采集混合样。</div><span class="it">大体积/连续</span></div>
+    <div class="ic"><div class="ii">🧫</div><div class="in">样品瓶与保存</div><div class="id">pH/重金属用塑料瓶，有机物用棕色玻璃瓶。4℃冷藏可保存24h，加酸保存重金属可达14天。</div><span class="it">按项目选瓶</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">Section 03 · 采样流程</div>
+  <div class="st">标准采样六步法</div>
+  <div class="sd">地表水采样应遵循 HJ 91.2-2022 规定的操作流程。</div>
+  <div class="tl">
+    <div class="ti"><div class="tt">STEP 01</div><div class="ttl">方案制定</div><div class="td">明确监测目的，确定断面位置、采样频率、检测项目。</div></div>
+    <div class="ti"><div class="tt">STEP 02</div><div class="ttl">现场准备</div><div class="td">准备采样器、样品瓶、保存剂、冷藏箱、现场记录表。</div></div>
+    <div class="ti"><div class="tt">STEP 03</div><div class="ttl">采样操作</div><div class="td">到达断面 → 测量水深 → 选择深度 → 采样器操作 → 分装样品。</div></div>
+    <div class="ti"><div class="tt">STEP 04</div><div class="ttl">样品保存</div><div class="td">立即加保存剂（如适用），4℃冷藏避光，填写样品标签。</div></div>
+    <div class="ti"><div class="tt">STEP 05</div><div class="ttl">运输交接</div><div class="td">样品在 24h 内送达实验室，冷链运输，填写交接记录。</div></div>
+    <div class="ti"><div class="tt">STEP 06</div><div class="ttl">现场记录</div><div class="td">记录断面信息、采样时间、气象条件、感官描述、采样人。</div></div>
+  </div>
+</section>
+
+<!-- ═══ S04: 交互实验 ═══ -->
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🌊 Section 04 · 地表水采样模拟</div>
+  </div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+      <span class="sts si" id="sts">⏳ 选择断面开始采样</span>
+      <span style="font-size:10px;color:#475569">模拟采样全流程</span>
+    </div>
+
+    <!-- Workflow -->
+    <div class="wf" id="wf">
+      <div class="ws active" data-s="0"><span class="wi">📍</span>选断面</div>
+      <div class="ws" data-s="1"><span class="wi">📏</span>定深度</div>
+      <div class="ws" data-s="2"><span class="wi">🧪</span>选采样器</div>
+      <div class="ws" data-s="3"><span class="wi">💧</span>采集</div>
+      <div class="ws" data-s="4"><span class="wi">🏷️</span>贴标签</div>
+      <div class="ws" data-s="5"><span class="wi">📋</span>保存</div>
+    </div>
+
+    <!-- ═══ River SVG ═══ -->
+    <div class="cv-wrap">
+      <svg class="river-svg" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" id="riverSVG">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="rgba(56,189,248,.2)"/></marker>
+          <radialGradient id="sg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(56,189,248,.3)"/><stop offset="100%" stop-color="rgba(56,189,248,0)"/></radialGradient>
+        </defs>
+        <!-- Background -->
+        <rect width="700" height="250" fill="#0f172a"/>
+        <!-- River body -->
+        <path d="M60,180 Q150,150 200,140 Q300,120 400,110 Q500,95 550,85 Q620,75 680,80" fill="none" stroke="rgba(56,189,248,.15)" stroke-width="38" stroke-linecap="round"/>
+        <path d="M60,180 Q150,150 200,140 Q300,120 400,110 Q500,95 550,85 Q620,75 680,80" fill="none" stroke="rgba(56,189,248,.25)" stroke-width="6" stroke-linecap="round"/>
+        <!-- Flow markers -->
+        <path d="M120,170 Q160,158 200,148" fill="none" stroke="rgba(56,189,248,.15)" stroke-width="2" marker-end="url(#arrow)"/>
+        <path d="M320,118 Q360,112 400,108" fill="none" stroke="rgba(56,189,248,.12)" stroke-width="2" marker-end="url(#arrow)"/>
+        <path d="M520,92 Q560,84 600,80" fill="none" stroke="rgba(56,189,248,.12)" stroke-width="2" marker-end="url(#arrow)"/>
+        <!-- Labels -->
+        <text x="12" y="14" fill="#475569" font-size="8" font-family="sans-serif">河流流向 →</text>
+        <!-- Landmarks -->
+        <rect x="420" y="18" width="80" height="22" rx="3" fill="rgba(239,68,68,.08)" stroke="rgba(239,68,68,.15)" stroke-width=".5"/>
+        <text x="430" y="32" fill="rgba(239,68,68,.3)" font-size="8">🏭 工业园区</text>
+        <rect x="290" y="18" width="60" height="22" rx="3" fill="rgba(56,189,248,.08)" stroke="rgba(56,189,248,.15)" stroke-width=".5"/>
+        <text x="298" y="32" fill="rgba(56,189,248,.3)" font-size="8">🏘️ 城区</text>
+        <rect x="510" y="18" width="50" height="22" rx="3" fill="rgba(74,222,128,.08)" stroke="rgba(74,222,128,.15)" stroke-width=".5"/>
+        <text x="516" y="32" fill="rgba(74,222,128,.3)" font-size="8">🌾 农田</text>
+      </svg>
+    </div>
+
+    <!-- Data Panel -->
+    <div class="dp">
+      <div class="dv"><div class="dl">当前断面</div><div class="dd" style="color:var(--accent-glow);font-size:14px" id="dSection">—</div></div>
+      <div class="dv"><div class="dl">采样深度</div><div class="dd" style="font-size:14px" id="dDepth">—</div></div>
+      <div class="dv"><div class="dl">采样器</div><div class="dd" style="font-size:14px" id="dSampler">—</div></div>
+      <div class="dv"><div class="dl">样品编号</div><div class="dd" style="color:var(--green);font-size:14px" id="dSID">—</div></div>
+    </div>
+
+    <!-- Options area -->
+    <div class="samp-area">
+      <div class="samp-panel">
+        <div class="spl">选择断面</div>
+        <div class="opt-group" id="sectionOpts"></div>
+        <div style="font-size:9px;color:#475569;margin-top:6px">点击河流或断面按钮选择</div>
+      </div>
+      <div class="samp-panel">
+        <div class="spl">采样深度</div>
+        <div class="opt-group" id="depthOpts">
+          <button class="opt-btn" onclick="pickDepth(0)" disabled>表层 (0.5m)</button>
+          <button class="opt-btn" onclick="pickDepth(1)" disabled>中层</button>
+          <button class="opt-btn" onclick="pickDepth(2)" disabled>底层 (距底0.5m)</button>
+        </div>
+        <div style="font-size:9px;color:#475569;margin-top:6px" id="depthHint">先选择断面</div>
+      </div>
+      <div class="samp-panel">
+        <div class="spl">采样器</div>
+        <div class="opt-group" id="samplerOpts">
+          <button class="opt-btn" onclick="pickSampler(0)" disabled>🧪 有机玻璃采水器</button>
+          <button class="opt-btn" onclick="pickSampler(1)" disabled>🔄 颠倒采水器</button>
+          <button class="opt-btn" onclick="pickSampler(2)" disabled>⚡ 泵吸采样</button>
+        </div>
+      </div>
+      <div class="samp-panel">
+        <div class="spl">样品瓶</div>
+        <div class="opt-group" id="bottleOpts">
+          <button class="opt-btn" onclick="pickBottle(0)" disabled>🧫 聚乙烯瓶（重金属）</button>
+          <button class="opt-btn" onclick="pickBottle(1)" disabled>🧪 棕色玻璃瓶（有机物）</button>
+          <button class="opt-btn" onclick="pickBottle(2)" disabled>💧 白色玻璃瓶（常规）</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="acts">
+      <button class="btn b1" id="btnCollect" onclick="doCollect()" disabled>💧 采集样品</button>
+      <button class="btn b2" id="btnLabel" onclick="doLabel()" disabled>🏷️ 生成标签</button>
+      <button class="btn b2" id="btnSave" onclick="doSave()" disabled>📋 保存记录</button>
+      <button class="btn b2" onclick="resetLab()">🔄 重置</button>
+    </div>
+
+    <!-- Info -->
+    <div style="font-size:11px;color:#64748b;line-height:1.5;margin:8px 0 0;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px" id="labInfo">
+      <strong>流程：</strong>选断面 → 定深度 → 选采样器 → 选样品瓶 → 采集 → 贴标签 → 保存
+    </div>
+
+    <!-- Log -->
+    <div class="dlog" id="dlog">
+      <div class="dh"><div class="dt">📋 采样记录表</div><div class="dlc" id="logC">共 0 条</div></div>
+      <table>
+        <thead><tr><th>#</th><th>断面</th><th>深度</th><th>采样器</th><th>样品瓶</th><th>样品编号</th></tr></thead>
+        <tbody id="logB"></tbody>
+      </table>
+      <div class="le" id="logE">尚无采样记录</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">总结</div><div class="st">关键要点回顾</div>
+  <div class="sg">
+    <div class="sc"><div class="sci">📍</div><div class="sct">断面分类</div><div class="scd">背景/对照/控制/削减断面，各司其职反映不同水质信息</div></div>
+    <div class="sc"><div class="sci">📏</div><div class="sct">采样深度</div><div class="scd">水深 < 5m 采表层；5-10m 采表层+中层；> 10m 采表层+中层+底层</div></div>
+    <div class="sc"><div class="sci">🧪</div><div class="sct">采样器选择</div><div class="scd">有机玻璃采水器最常用，深层用颠倒采水器，大体积用泵吸</div></div>
+    <div class="sc"><div class="sci">🧫</div><div class="sct">样品瓶选择</div><div class="scd">重金属用聚乙烯瓶，有机物用棕色玻璃瓶，常规项可混采</div></div>
+    <div class="sc"><div class="sci">❄️</div><div class="sct">保存条件</div><div class="scd">4℃冷藏 + 加酸/加碱保存，24h 内送达实验室</div></div>
+  </div>
+</section>
+<div class="ft">环境实验 · 地表水采样 · 依据 HJ 91.2-2022</div>
+
+<script>
+// ═══ SCROLL ═══
+const sects=[document.querySelector('.hr'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const dots=document.querySelectorAll('.nd');
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+document.querySelectorAll('.ti').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';
+  let cur=0;sects.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)cur=i});
+  dots.forEach((d,i)=>d.classList.toggle('active',i===cur));
+});
+function sc(i){if(sects[i])sects[i].scrollIntoView({behavior:'smooth'})}
+
+// ═══ SAMPLING DATA ═══
+const sections=[
+  {id:'S1',name:'背景断面',cx:120,cy:176,type:'🟢 背景',color:'#22c55e',desc:'污染源上游，本底水质'},
+  {id:'S2',name:'对照断面',cx:210,cy:150,type:'🔵 对照',color:'#38bdf8',desc:'排污口上游500m'},
+  {id:'S3',name:'控制断面',cx:340,cy:118,type:'🟡 控制',color:'#fbbf24',desc:'排污口下游800m'},
+  {id:'S4',name:'削减断面',cx:480,cy:98,type:'🔴 削减',color:'#fb7185',desc:'自净恢复段'},
+  {id:'S5',name:'出界断面',cx:600,cy:82,type:'🟢 出界',color:'#a78bfa',desc:'河流出境处'},
+];
+const depths=['表层 (0.5m)','中层','底层 (距底0.5m)'];
+const samplers=['🧪 有机玻璃采水器','🔄 颠倒采水器','⚡ 泵吸采样'];
+const bottles=['🧫 聚乙烯瓶（重金属）','🧪 棕色玻璃瓶（有机物）','💧 白色玻璃瓶（常规）'];
+
+let curSection=-1,curDepth=-1,curSampler=-1,curBottle=-1;
+let sampleCount=0,records=[];
+let currentSID='';
+
+// Init SVG
+(function(){
+  const svg=document.getElementById('riverSVG');
+  sections.forEach((s,i)=>{
+    // Point
+    const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',s.cx);circle.setAttribute('cy',s.cy);
+    circle.setAttribute('r','14');circle.setAttribute('class','section-point');
+    circle.setAttribute('fill',s.color+'20');
+    circle.setAttribute('stroke',s.color+'60');
+    circle.setAttribute('stroke-width','2');
+    circle.style.cursor='pointer';
+    circle.addEventListener('click',()=>pickSection(i));
+    svg.appendChild(circle);
+
+    // Active glow
+    const glow=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    glow.setAttribute('cx',s.cx);glow.setAttribute('cy',s.cy);
+    glow.setAttribute('r','20');glow.setAttribute('fill','url(#sg)');
+    glow.setAttribute('id','glow-'+i);
+    glow.style.display='none';
+    svg.appendChild(glow);
+
+    // Label
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',s.cx);txt.setAttribute('y',s.cy+3.5);
+    txt.setAttribute('class','section-label');
+    txt.setAttribute('id','lbl-'+i);
+    txt.textContent=s.id;
+    svg.appendChild(txt);
+
+    // Name label
+    const name=document.createElementNS('http://www.w3.org/2000/svg','text');
+    name.setAttribute('x',s.cx);name.setAttribute('y',s.cy+22);
+    name.setAttribute('class','section-label');
+    name.setAttribute('font-size','8');
+    name.setAttribute('id','lbln-'+i);
+    name.textContent=s.name;
+    svg.appendChild(name);
+
+    // Icon
+    const icon=document.createElementNS('http://www.w3.org/2000/svg','text');
+    icon.setAttribute('x',s.cx-6);icon.setAttribute('y',s.cy-16);
+    icon.setAttribute('font-size','10');
+    icon.textContent=s.type.split(' ')[0];
+    svg.appendChild(icon);
+  });
+
+  // Init section option buttons
+  const secEl=document.getElementById('sectionOpts');
+  sections.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=s.type+' '+s.name;
+    btn.onclick=()=>pickSection(i);
+    secEl.appendChild(btn);
+  });
+})();
+
+function setStep(n){
+  document.querySelectorAll('.ws').forEach((s,i)=>{
+    s.classList.toggle('active',i===n);
+    s.classList.toggle('done',i<n);
+  });
+}
+
+function pickSection(i){
+  curSection=i;
+  document.querySelectorAll('#sectionOpts .opt-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  document.querySelectorAll('#riverSVG circle').forEach((c,j)=>{
+    if(j===i){c.setAttribute('r','16');c.style.opacity='1';}
+    else{c.setAttribute('r','12');c.style.opacity='.6';}
+  });
+  document.querySelectorAll('.section-label').forEach((l,j)=>l.classList.toggle('active',j===i));
+  document.querySelectorAll('[id^="glow-"]').forEach(g=>g.style.display=g.id===('glow-'+i)?'block':'none');
+
+  document.getElementById('dSection').textContent=sections[i].type+' '+sections[i].name;
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML=`📍 已选 ${sections[i].name}`;
+
+  // Enable depth buttons
+  document.querySelectorAll('#depthOpts .opt-btn').forEach(b=>b.disabled=false);
+  document.getElementById('depthHint').textContent='选择采样深度';
+  curDepth=-1;curSampler=-1;curBottle=-1;curDepth=-1;
+  document.querySelectorAll('#depthOpts .opt-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#samplerOpts .opt-btn').forEach(b=>{b.disabled=true;b.classList.remove('active');});
+  document.querySelectorAll('#bottleOpts .opt-btn').forEach(b=>{b.disabled=true;b.classList.remove('active');});
+  document.getElementById('btnCollect').disabled=true;
+  document.getElementById('btnLabel').disabled=true;
+  document.getElementById('btnSave').disabled=true;
+  document.getElementById('dDepth').textContent='—';
+  document.getElementById('dSampler').textContent='—';
+  document.getElementById('dSID').textContent='—';
+  setStep(0);
+}
+
+function pickDepth(d){
+  curDepth=d;
+  document.querySelectorAll('#depthOpts .opt-btn').forEach((b,j)=>b.classList.toggle('active',j===d));
+  document.getElementById('dDepth').textContent=depths[d];
+  // Enable sampler
+  document.querySelectorAll('#samplerOpts .opt-btn').forEach(b=>b.disabled=false);
+  document.querySelectorAll('#samplerOpts .opt-btn').forEach(b=>b.classList.remove('active'));
+  curSampler=-1;
+  setStep(1);
+  document.getElementById('sts').innerHTML=`📍 ${sections[curSection].name} · ${depths[d]}`;
+}
+
+function pickSampler(s){
+  curSampler=s;
+  document.querySelectorAll('#samplerOpts .opt-btn').forEach((b,j)=>b.classList.toggle('active',j===s));
+  document.getElementById('dSampler').textContent=samplers[s];
+  // Enable bottle
+  document.querySelectorAll('#bottleOpts .opt-btn').forEach(b=>b.disabled=false);
+  document.querySelectorAll('#bottleOpts .opt-btn').forEach(b=>b.classList.remove('active'));
+  curBottle=-1;
+  setStep(2);
+  document.getElementById('sts').innerHTML=`📍 ${sections[curSection].name} · ${depths[d]} · ${samplers[s].slice(2)}`;
+}
+
+function pickBottle(b){
+  curBottle=b;
+  document.querySelectorAll('#bottleOpts .opt-btn').forEach((bb,j)=>bb.classList.toggle('active',j===b));
+  document.getElementById('btnCollect').disabled=false;
+  setStep(3);
+  document.getElementById('sts').innerHTML=`✅ 准备就绪，点击采集`;
+}
+
+// Collect
+function doCollect(){
+  if(curSection<0||curDepth<0||curSampler<0||curBottle<0) return;
+  const btn=document.getElementById('btnCollect');
+  btn.disabled=true;
+  btn.textContent='💧 采集...';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='💧 正在采集样品...';
+
+  const start=performance.now();
+  const dur=2000;
+  function anim(now){
+    const p=Math.min((now-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    if(p<1)requestAnimationFrame(anim);
+    else{
+      sampleCount++;
+      currentSID=`SW-${String(sampleCount).padStart(3,'0')}-${sections[curSection].id}`;
+      document.getElementById('dSID').textContent=currentSID;
+      document.getElementById('btnLabel').disabled=false;
+      document.getElementById('sts').className='sts sok';
+      document.getElementById('sts').innerHTML=`✅ 采集完成！样品编号：${currentSID}`;
+      btn.textContent='✅ 已采集';
+      btn.style.background='linear-gradient(135deg,#16a34a,#22c55e)';
+      setStep(4);
+      document.getElementById('labInfo').innerHTML=`<strong>当前样品：</strong>${currentSID} | ${sections[curSection].name} | ${depths[curDepth]} | ${samplers[curSampler].slice(2)} | ${bottles[curBottle].slice(2)}`;
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+// Label
+function doLabel(){
+  document.getElementById('btnLabel').disabled=true;
+  document.getElementById('btnSave').disabled=false;
+  document.getElementById('sts').className='sts sok';
+  document.getElementById('sts').innerHTML=`🏷️ 标签已生成：${currentSID}`;
+  setStep(5);
+  document.getElementById('labInfo').innerHTML=`<strong>标签：</strong>${currentSID}<br>
+    <span style="font-size:10px;color:#64748b">断面：${sections[curSection].name} | 深度：${depths[curDepth]} | 采样器：${samplers[curSampler].slice(2)} | 样品瓶：${bottles[curBottle].slice(2)} | 日期：${new Date().toLocaleDateString()}</span>`;
+}
+
+// Save record
+function doSave(){
+  records.push({
+    sid:currentSID,
+    site:sections[curSection].name,
+    depth:depths[curDepth],
+    sampler:samplers[curSampler].slice(2),
+    bottle:bottles[curBottle].slice(2)
+  });
+  renderLog();
+  document.getElementById('sts').className='sts sok';
+  document.getElementById('sts').innerHTML=`📝 已保存：${currentSID}`;
+  document.getElementById('btnSave').disabled=true;
+  // Reset for next sample
+  document.getElementById('btnCollect').textContent='💧 采集样品';
+  document.getElementById('btnCollect').style.background='';
+  document.getElementById('btnCollect').disabled=false;
+  document.getElementById('btnLabel').disabled=true;
+
+  // Keep current selections, re-enable collect
+  document.getElementById('labInfo').innerHTML=
+    `<strong>采样记录已保存！共 ${records.length} 条</strong><br>
+     <span style="font-size:10px;color:#64748b">点击「采集样品」继续本断面采样，或选择新断面</span>`;
+}
+
+// Log
+function renderLog(){
+  const tb=document.getElementById('logB'),le=document.getElementById('logE');
+  document.getElementById('logC').textContent=`共 ${records.length} 条`;
+  if(records.length===0){tb.innerHTML='';le.style.display='block';return;}
+  le.style.display='none';
+  tb.innerHTML=records.map((r,i)=>`<tr>
+    <td>${i+1}</td><td>${r.site}</td><td>${r.depth}</td><td>${r.sampler}</td><td>${r.bottle}</td>
+    <td style="color:var(--accent-glow);font-weight:600">${r.sid}</td>
+  </tr>`).join('');
+  document.getElementById('dlog').style.display='block';
+}
+
+// Reset
+function resetLab(){
+  curSection=-1;curDepth=-1;curSampler=-1;curBottle=-1;currentSID='';
+  document.querySelectorAll('.opt-btn').forEach(b=>{b.classList.remove('active');b.disabled=false;});
+  document.querySelectorAll('#depthOpts .opt-btn').forEach(b=>b.disabled=true);
+  document.querySelectorAll('#samplerOpts .opt-btn').forEach(b=>{b.disabled=true;b.classList.remove('active');});
+  document.querySelectorAll('#bottleOpts .opt-btn').forEach(b=>{b.disabled=true;b.classList.remove('active');});
+  document.querySelectorAll('#sectionOpts .opt-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#riverSVG circle').forEach(c=>c.setAttribute('r','14'));
+  document.querySelectorAll('.section-label').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('[id^="glow-"]').forEach(g=>g.style.display='none');
+  document.getElementById('btnCollect').disabled=true;document.getElementById('btnCollect').textContent='💧 采集样品';document.getElementById('btnCollect').style.background='';
+  document.getElementById('btnLabel').disabled=true;document.getElementById('btnSave').disabled=true;
+  document.getElementById('dSection').textContent='—';document.getElementById('dDepth').textContent='—';
+  document.getElementById('dSampler').textContent='—';document.getElementById('dSID').textContent='—';
+  document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='🔄 已重置';
+  document.getElementById('labInfo').innerHTML='<strong>流程：</strong>选断面 → 定深度 → 选采样器 → 选样品瓶 → 采集 → 贴标签 → 保存';
+  setStep(0);
+}
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 91.2-2022</td><td>地表水环境质量监测技术规范</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

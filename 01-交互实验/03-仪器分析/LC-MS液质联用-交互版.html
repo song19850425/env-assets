@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LC-MS 液质联用 · 交互模拟 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#d946ef;--accent-glow:#e879f9;--accent-bg:rgba(217,70,239,.12);--green:#22c55e}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1a0a20 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(217,70,239,.04) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(217,70,239,.1),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(217,70,239,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:34px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:560px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#1a0a20);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(34,197,94,.1);color:var(--green)}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.dp{grid-template-columns:1fr 1fr}}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px}
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}@media(max-width:640px){.ct{grid-template-columns:1fr}}
+.cb{padding:12px 14px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)}
+.cb .cl{font-size:9px;color:#64748b;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.cb .cr{display:flex;align-items:center;gap:8px}
+.cb input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#334155;border-radius:2px;outline:none}
+.cb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(217,70,239,.3)}
+.cb .cv{font-size:12px;font-weight:700;color:var(--accent-glow);min-width:32px;text-align:right}
+.cb select{width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:#e2e8f0;font-size:12px;font-family:inherit;cursor:pointer}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.b1{background:linear-gradient(135deg,#d946ef,#e879f9);color:#fff}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(217,70,239,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.chrom{height:150px;background:#0a0e17;border-radius:8px;border:1px solid var(--border);margin:10px 0;position:relative;overflow:hidden}
+.chrom canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.ms2{height:140px;background:#0a0e17;border-radius:8px;border:1px solid var(--border);margin:10px 0;position:relative;overflow:hidden}
+.ms2 canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.cv-label{position:absolute;top:4px;left:8px;font-size:7px;color:#475569;z-index:5}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">🔬 环境实验 · 仪器分析</div>
+  <h1 class="h1"><em>LC-MS/MS</em> 液质联用</h1>
+  <div class="hs">液相色谱-串联质谱 · ESI/APCI · MRM多反应监测</div>
+  <div class="hst">
+    <div><span class="n">2种</span><span class="l">离子源</span></div>
+    <div><span class="n">MRM</span><span class="l">多反应监测</span></div>
+    <div><span class="n">母离子→</span><span class="l">子离子</span></div>
+    <div><span class="n">高灵敏</span><span class="l">高选择</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">LC-MS/MS 系统</div>
+  <div class="sd">LC-MS/MS 将 HPLC 的分离能力与串联质谱（MS/MS）的结构鉴定能力结合，是复杂基质中痕量物质分析的首选技术。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">💧</div><div class="in">HPLC分离</div><div class="id">复用HPLC色谱分离逻辑，C18反相柱，梯度洗脱。</div><span class="it">与HPLC相同</span></div>
+    <div class="ic"><div class="ii">💦</div><div class="in">ESI/APCI离子源</div><div class="id">ESI(电喷雾)适合极性化合物/生物大分子；APCI(大气压化学电离)适合中等极性/热稳定化合物。</div><span class="it">软电离技术</span></div>
+    <div class="ic"><div class="ii">⚡</div><div class="in">串联质谱 MS/MS</div><div class="id">Q1选母离子→碰撞室碎裂(CID)→Q3测子离子。MRM模式：一对母离子→子离子=一个化合物。</div><span class="it">MRM定量金标准</span></div>
+    <div class="ic"><div class="ii">🎯</div><div class="in">多残留筛查</div><div class="id">一次进样可同时监测数百对MRM离子对，实现几百种农药/兽药同时筛查定量。</div><span class="it">高通量</span></div>
+  </div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">🔬 LC-MS/MS 交互模拟</div></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+      <span class="sts si" id="sts">⏳ 准备进样</span>
+      <span style="font-size:10px;color:#475569">点击TIC峰查看MS/MS质谱</span>
+    </div>
+
+    <div class="dp">
+      <div class="dv"><div class="dl">保留时间</div><div class="dd" style="color:var(--accent-glow);font-size:15px" id="dRT">— min</div></div>
+      <div class="dv"><div class="dl">母离子</div><div class="dd" style="font-size:15px" id="dParent">—</div></div>
+      <div class="dv"><div class="dl">子离子</div><div class="dd" style="color:var(--green);font-size:15px" id="dChild">—</div></div>
+      <div class="dv"><div class="dl">匹配度</div><div class="dd" style="font-size:15px" id="dMatch">—%</div></div>
+    </div>
+
+    <!-- TIC -->
+    <div style="font-size:9px;color:#475569;margin-bottom:2px">TIC 总离子流图</div>
+    <div class="chrom" id="chromDiv"><canvas id="cvChrom"></canvas></div>
+
+    <!-- MS/MS -->
+    <div style="font-size:9px;color:#475569;margin-bottom:2px;margin-top:6px">MS/MS 子离子质谱</div>
+    <div class="ms2" id="msDiv"><div class="cv-label">m/z · 点击色谱峰查看</div><canvas id="cvMS2"></canvas></div>
+
+    <div class="ct">
+      <div class="cb"><div class="cl">离子源</div>
+        <select id="sSrc"><option value="esi">ESI 电喷雾</option><option value="apci">APCI 大气压化学电离</option></select>
+      </div>
+      <div class="cb"><div class="cl">扫描模式</div>
+        <select id="sScan"><option value="full">全扫描 Full Scan</option><option value="mrm" selected>MRM 多反应监测</option></select>
+      </div>
+      <div class="cb"><div class="cl">碰撞能 (eV)</div>
+        <div class="cr"><input type="range" id="sCE" min="10" max="50" value="25" oninput="upd()"><span class="cv" id="vCE">25</span></div>
+      </div>
+      <div class="cb"><div class="cl">样品类型</div>
+        <select id="sType"><option value="pest">农药残留</option><option value="drug">兽药残留</option></select>
+      </div>
+    </div>
+
+    <div class="acts">
+      <button class="btn b1" id="btnRun" onclick="runLCMS()">💧 进样分析</button>
+      <button class="btn b2" onclick="rst()">🔄 重置</button>
+    </div>
+
+    <div style="font-size:11px;color:#64748b;line-height:1.5;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:6px" id="info">
+      <strong>操作：</strong>选离子源/扫描模式 → 进样 → 点击TIC峰查看MS/MS质谱
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">总结</div><div class="st">LC-MS 关键要点</div>
+  <div class="sg">
+    <div class="sc"><div class="sci">💦</div><div class="sct">ESI vs APCI</div><div class="scd">ESI适合极性/大分子，APCI适合中等极性/热稳定</div></div>
+    <div class="sc"><div class="sci">⚡</div><div class="sct">MRM模式</div><div class="scd">母离子→子离子一对一定性定量，特异性极高</div></div>
+    <div class="sc"><div class="sci">⚡</div><div class="sct">碰撞能优化</div><div class="scd">碰撞能影响碎裂效率，需针对每个化合物优化</div></div>
+    <div class="sc"><div class="sci">🎯</div><div class="sct">多残留筛查</div><div class="scd">一次分析可同时监测数百种目标化合物</div></div>
+  </div>
+</section>
+<div class="ft">环境实验 · LC-MS/MS · 依据 GB 23200系列 / 农业农村部公告</div>
+
+<script>
+const ss=[document.querySelector('.hr'),...document.querySelectorAll('.sec'),document.querySelector('.lb')].filter(Boolean);
+const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:.08});
+document.querySelectorAll('.sec').forEach(s=>ob.observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=((window.scrollY/h)*100)+'%';});
+
+// LC-MS Compounds
+const pestLib=[
+  {name:'毒死蜱',rt:4.8,parent:350,child:[{mz:97,ab:100},{mz:198,ab:65},{mz:125,ab:30}],match:99},
+  {name:'吡虫啉',rt:2.5,parent:256,child:[{mz:175,ab:100},{mz:209,ab:80},{mz:128,ab:25}],match:98},
+  {name:'阿特拉津',rt:5.5,parent:216,child:[{mz:174,ab:100},{mz:132,ab:45},{mz:104,ab:20}],match:97},
+  {name:'甲胺磷',rt:1.8,parent:142,child:[{mz:94,ab:100},{mz:125,ab:55},{mz:79,ab:15}],match:96},
+  {name:'多菌灵',rt:3.5,parent:192,child:[{mz:160,ab:100},{mz:132,ab:70},{mz:105,ab:20}],match:98},
+];
+const drugLib=[
+  {name:'磺胺嘧啶',rt:2.8,parent:251,child:[{mz:156,ab:100},{mz:108,ab:30},{mz:185,ab:20}],match:99},
+  {name:'恩诺沙星',rt:4.2,parent:360,child:[{mz:342,ab:100},{mz:316,ab:70},{mz:245,ab:25}],match:98},
+  {name:'克伦特罗',rt:3.0,parent:277,child:[{mz:203,ab:100},{mz:259,ab:20},{mz:132,ab:15}],match:97},
+  {name:'氯霉素',rt:5.0,parent:321,child:[{mz:152,ab:100},{mz:257,ab:50},{mz:194,ab:20}],match:96},
+];
+
+let cCh,ctxCh,wCh,hCh,cMS2,ctxMS2,wMS2,hMS2;
+let running=false,timer=null,time=0,chromData=[],peaks=[];
+let selectedPeak=null;
+
+function sz(){
+  const cd=document.getElementById('chromDiv');
+  cCh=document.getElementById('cvChrom');cCh.width=cd.offsetWidth;cCh.height=cd.offsetHeight;wCh=cCh.width;hCh=cCh.height;ctxCh=cCh.getContext('2d');
+  const m2=document.getElementById('msDiv');
+  cMS2=document.getElementById('cvMS2');cMS2.width=m2.offsetWidth;cMS2.height=m2.offsetHeight;wMS2=cMS2.width;hMS2=cMS2.height;ctxMS2=cMS2.getContext('2d');
+}
+
+function drawChrom(){
+  const c=ctxCh;c.clearRect(0,0,wCh,hCh);
+  c.strokeStyle='rgba(255,255,255,.04)';for(let i=0;i<6;i++){c.beginPath();c.moveTo(0,hCh/6*i);c.lineTo(wCh,hCh/6*i);c.stroke();}
+  if(chromData.length<2)return;
+  const maxV=Math.max(...chromData,5);
+  const xs=i=>(i/chromData.length)*wCh,ys=v=>hCh*0.85-(v/maxV)*hCh*0.75;
+  c.beginPath();c.moveTo(0,hCh*0.85);
+  chromData.forEach((v,i)=>c.lineTo(xs(i),ys(v)));c.lineTo(wCh,hCh*0.85);c.closePath();
+  c.fillStyle='rgba(217,70,239,.08)';c.fill();
+  c.beginPath();c.strokeStyle='#e879f9';c.lineWidth=1.5;c.shadowColor='rgba(217,70,239,.3)';c.shadowBlur=3;
+  chromData.forEach((v,i)=>{if(i===0)c.moveTo(xs(0),ys(v));else c.lineTo(xs(i),ys(v));});
+  c.stroke();c.shadowBlur=0;
+  // Peak labels
+  peaks.forEach(p=>{
+    const px=xs(p.pos);c.fillStyle='rgba(251,191,36,.25)';c.font='6px sans-serif';
+    c.fillText(p.name,px-10,ys(p.height)-2);
+    if(selectedPeak&&selectedPeak.name===p.name){
+      c.strokeStyle='rgba(217,70,239,.5)';c.lineWidth=2;
+      c.beginPath();c.arc(px,ys(p.height),5,0,Math.PI*2);c.stroke();
+    }
+  });
+}
+
+function drawMS2(comp,ce){
+  const c=ctxMS2;c.clearRect(0,0,wMS2,hMS2);
+  if(!comp)return;
+  c.strokeStyle='rgba(255,255,255,.04)';for(let i=0;i<5;i++){c.beginPath();c.moveTo(0,hMS2/5*i);c.lineTo(wMS2,hMS2/5*i);c.stroke();}
+  // Parent ion
+  c.fillStyle='rgba(217,70,239,.12)';c.font='7px sans-serif';
+  c.fillText('母离子 ['+comp.parent+'] → CID →',6,10);
+  // Product ions
+  const ceFactor=1-Math.abs(ce-25)/50;
+  const child=comp.child;
+  child.forEach((ch,i)=>{
+    const x=80+(ch.mz/400)*(wMS2-100);
+    const h=(ch.ab/100)*ceFactor*60;
+    c.fillStyle='rgba(217,70,239,.5)';c.fillRect(x-hMS2*0.3,hMS2*0.7-h,8,h);
+    c.fillStyle='#64748b';c.font='6px sans-serif';c.fillText(ch.mz,x-4,hMS2*0.7-h-4);
+    c.fillStyle='rgba(100,116,139,.08)';c.beginPath();c.moveTo(x,hMS2*0.7-h);c.lineTo(x,hMS2*0.7);c.stroke();
+  });
+  // MRM transition label
+  c.fillStyle='rgba(251,191,36,.2)';c.font='6px sans-serif';
+  c.fillText(`MRM: ${comp.parent} → ${comp.child[0].mz}`,6,hMS2-4);
+}
+
+function runLCMS(){
+  if(running)return;
+  running=true;time=0;chromData=[];peaks=[];selectedPeak=null;
+  document.getElementById('btnRun').disabled=true;
+  document.getElementById('btnRun').textContent='⏳ 分析中...';
+  document.getElementById('sts').className='sts sa';
+  document.getElementById('sts').innerHTML='💧 LC-MS进样分析...';
+
+  const lib=document.getElementById('sType').value==='pest'?pestLib:drugLib;
+  const src=document.getElementById('sSrc').value;
+  const srcFactor=src==='esi'?1.0:0.7;
+
+  let tick=0;
+  timer=setInterval(()=>{
+    tick++;time=tick/12;
+    let val=Math.random()*1;
+    lib.forEach(c=>{const dist=Math.abs(time-c.rt);if(dist<2)val+=(30+Math.random()*10)*srcFactor*Math.exp(-dist*dist/0.5);});
+    chromData.push(val);
+    if(chromData.length>2){
+      const last=chromData[chromData.length-1],prev=chromData[chromData.length-2],prev2=chromData[chromData.length-3];
+      if(prev>last&&prev>prev2&&prev>6){
+        lib.forEach(c=>{if(Math.abs(time-c.rt-0.08)<0.3&&!peaks.find(p=>p.name===c.name)){peaks.push({name:c.name,pos:chromData.length-2,height:prev,rt:time-0.08,comp:c});}});
+      }
+    }
+    drawChrom();
+    if(time>12){
+      clearInterval(timer);running=false;
+      document.getElementById('btnRun').disabled=false;document.getElementById('btnRun').textContent='▶ 重新进样';
+      document.getElementById('sts').className='sts sok';
+      document.getElementById('sts').innerHTML=`✅ 分析完成，${peaks.length} 化合物检出`;
+      makeClickable();
+    }
+  },80);
+}
+
+function makeClickable(){
+  cCh.onclick=function(e){
+    const rect=cCh.getBoundingClientRect();
+    const mx=(e.clientX-rect.left)*wCh/rect.width;
+    let nearest=null,min=Infinity;
+    peaks.forEach(p=>{const d=Math.abs((p.pos/chromData.length)*wCh-mx);if(d<min){min=d;nearest=p;}});
+    if(nearest&&min<30){selectedPeak=nearest;
+      document.getElementById('dRT').textContent=nearest.rt.toFixed(2)+' min';
+      document.getElementById('dParent').textContent='[M+H]+ '+nearest.comp.parent;
+      document.getElementById('dChild').textContent=nearest.comp.child[0].mz;
+      document.getElementById('dMatch').textContent=nearest.comp.match+'%';
+      drawChrom();drawMS2(nearest.comp,parseInt(document.getElementById('sCE').value));
+      document.getElementById('info').innerHTML=
+        `<strong>${nearest.name}</strong> | RT ${nearest.rt.toFixed(2)}min | 母离子 ${nearest.comp.parent} → 子离子 ${nearest.comp.child[0].mz}<br>
+         <span style="font-size:10px;color:#64748b">MRM ${nearest.comp.parent}>${nearest.comp.child[0].mz} | 碰撞能 ${document.getElementById('sCE').value}eV | 匹配度 ${nearest.comp.match}%</span>`;
+    }
+  };
+}
+
+function upd(){document.getElementById('vCE').textContent=document.getElementById('sCE').value;}
+
+function rst(){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false;time=0;chromData=[];peaks=[];selectedPeak=null;
+  document.getElementById('btnRun').disabled=false;document.getElementById('btnRun').textContent='💧 进样分析';
+  document.getElementById('dRT').textContent='— min';document.getElementById('dParent').textContent='—';
+  document.getElementById('dChild').textContent='—';document.getElementById('dMatch').textContent='—%';
+  document.getElementById('sts').className='sts si';document.getElementById('sts').innerHTML='🔄 已重置';
+  document.getElementById('info').innerHTML='<strong>操作：</strong>选离子源/扫描模式 → 进样 → 点击TIC峰查看MS/MS';
+  ctxCh.clearRect(0,0,wCh,hCh);ctxMS2.clearRect(0,0,wMS2,hMS2);
+}
+
+window.addEventListener('resize',sz);
+window.addEventListener('load',sz);
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 23200</td><td>食品安全国家标准 农药残留检测方法系列（多部分，强制性）</td><td class="sb-s" style="color:#94a3b8">待核</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>0</b> 项已回官方源核验（截至 2026-09-11），1 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

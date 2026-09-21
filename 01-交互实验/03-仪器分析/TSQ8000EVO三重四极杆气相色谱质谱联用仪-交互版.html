@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三重四极杆气相色谱质谱联用仪(GC-MS) | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#111827;--border:rgba(255,255,255,.06);--accent:#2563eb;--accent-glow:#60a5fa;--accent-bg:rgba(37,99,235,.14);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#0a1730 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(37,99,235,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(37,99,235,.18),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(37,99,235,.25);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent-glow)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#0a1730)}.lb{padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.35)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}@media(max-width:640px){.pwr5{grid-template-columns:1fr 1fr}}
+.bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));transition:width .3s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:15px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+.cond{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}@media(max-width:560px){.cond{grid-template-columns:1fr}}
+.cd{padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.02)}
+.cd .cl{font-size:9.5px;color:#64748b}.cd .cv{font-size:13px;font-weight:800;margin-top:2px;color:#64748b}
+.cd.pass .cv{color:var(--green)}.cd.pass{border-color:rgba(52,211,153,.3)}
+.cd.fail .cv{color:var(--rose)}.cd.fail{border-color:rgba(251,113,133,.3)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:170px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">三重四极杆气相色谱质谱联用仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">TSQ8000EVO</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">GC-MS/MS · 气路 + 真空顺序仪器 · 有机污染物定性定量的主力</div>
+  <div class="hst">
+    <div><span class="n">先气后电</span><span class="l">开机铁律</span></div>
+    <div><span class="n">≈80mTorr</span><span class="l">真空度门槛</span></div>
+    <div><span class="n">3-5min</span><span class="l">溶剂延迟护灯丝</span></div>
+    <div><span class="n">≤100℃</span><span class="l">关机降温门槛</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">气相分离 + 三重四极杆定性定量</div>
+  <div class="sd">GC-MS 是环境与食品有机污染物检测的主力仪器——农药残留、多环芳烃、多氯联苯、半挥发性有机物……先由气相色谱把复杂混合物按沸点/极性<b>逐个分离</b>，再由三重四极杆质谱按质荷比<b>定性定量</b>。它同时是"气路 + 真空"两条命脉叠加的仪器：载气顺序、真空度、检漏、灯丝保护，每一步都有硬红线。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">💨</div><div class="in">载气先行</div><div class="id">氦气(99.999%, 0.4~0.6MPa)作载气推动样品过柱，氩气(0.4MPa)作碰撞气。<b>必须先通载气、再开电源抽真空</b>——无载气开机加热会损坏色谱柱与灯丝。</div><span class="it">开机铁律</span></div>
+    <div class="ic"><div class="ii">🌀</div><div class="in">高真空质谱</div><div class="id">离子在高真空四极杆中飞行才不被残余气体散射。Foreline pressure 需降到约 80mTorr 才达标，通常开机抽真空要 10~20 小时。</div><span class="it">真空是前提</span></div>
+    <div class="ic"><div class="ii">🔥</div><div class="in">灯丝(Filament)</div><div class="id">灯丝加热发射电子轰击分子产生离子。大量溶剂涌入会瞬间烧断灯丝——所以方法里必须设 3~5min <b>溶剂延迟</b>，等溶剂过完灯丝才开。</div><span class="it">灯丝命门</span></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">SRM/MS-MS 定量</div><div class="id">通过 AutoSRM 找母/子离子、优化碰撞能(CE)，用 SRM 模式做高选择性定量；先全扫定性，再 SRM 定量，配标准曲线出结果。</div><span class="it">检测核心</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。GC-MS 的红线集中在"顺序"上——<b>没通载气就上电、真空没到 80mTorr 就分析、检漏水峰超标还硬做、不设溶剂延迟、关机不降温直接断电，系统都会拦住你</b>。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ TSQ8000EVO GC-MS 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">TSQ8000EVO 三重四极杆气相色谱质谱联用仪</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 通载气（<b style="color:var(--rose)">开机第一步：先气后电</b>。氦气 0.4~0.6MPa，氩气 0.4MPa）</div>
+    <div class="cols">
+      <div class="fld"><label>氦气(载气)压力 (MPa，需 0.4~0.6)</label><input type="number" id="iHe" value="0.5" step="0.05"></div>
+      <div class="fld"><label>氩气(碰撞气)压力 (MPa，需 ≈0.4)</label><input type="number" id="iAr" value="0.4" step="0.05"></div>
+    </div>
+    <div class="acts" style="margin-top:0">
+      <button class="btn b2" id="btnHe" onclick="gas('he')">💨 开氦气(载气)</button>
+      <button class="btn b2" id="btnAr" onclick="gas('ar')">🟦 开氩气(碰撞气)</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 开电源（GC / MS / 自动进样器 → 自检 → 自动启动真空泵）</div>
+    <div class="pwr">
+      <div class="pb" id="pw1" onclick="power(1)">开 GC 电源<span class="po">step 1</span></div>
+      <div class="pb" id="pw2" onclick="power(2)">开 MS 电源<span class="po">step 2</span></div>
+      <div class="pb" id="pw3" onclick="power(3)">开自动进样器<span class="po">step 3</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">③ 抽真空（Foreline pressure 降到 ≈80mTorr 才达标，真实需 10~20h）</div>
+    <div class="acts"><button class="btn b2" id="btnVac" onclick="startVac()" disabled>🌀 抽真空 / 查 Foreline</button></div>
+    <div class="bar"><i id="barVac"></i></div>
+    <div class="cond">
+      <div class="cd" id="cFore"><div class="cl">Foreline pressure</div><div class="cv" id="vFore">— mTorr</div></div>
+      <div class="cd" id="cLED"><div class="cl">指示灯</div><div class="cv" id="vLED">红/黄</div></div>
+      <div class="cd" id="cReady"><div class="cl">真空状态</div><div class="cv" id="vReady">未达标</div></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">④ 升温 + 检漏（传输线 280℃ / 离子源 300℃ → 检漏，<b style="color:var(--rose)">水峰 m/z 18.1 强度须 &lt;10⁸</b>）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnHeat" onclick="heat()" disabled>🌡️ 升温(280/300℃)</button>
+      <button class="btn b2" id="btnLeak" onclick="leak()" disabled>🔍 检漏(测水峰18.1)</button>
+      <button class="btn b2" id="btnTune" onclick="tune()" disabled>📈 调谐检查(7特征峰)</button>
+    </div>
+    <div class="cond">
+      <div class="cd" id="cWater"><div class="cl">水峰 m/z 18.1</div><div class="cv" id="vWater">—</div></div>
+      <div class="cd" id="cPeak"><div class="cl">69.1 特征峰</div><div class="cv" id="vPeak">—</div></div>
+      <div class="cd" id="cTuneS"><div class="cl">调谐状态</div><div class="cv" id="vTuneS">未检查</div></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑤ 建方法 + 分析（<b style="color:var(--rose)">Scans Time 溶剂延迟须 ≥3min，护灯丝</b>）</div>
+    <div class="cols">
+      <div class="fld"><label>溶剂延迟 Scans Time (min，需 3~5)</label><input type="number" id="iDelay" value="4" step="0.5"></div>
+      <div class="fld"><label>&nbsp;</label>
+        <div class="acts" style="margin:0;justify-content:flex-start">
+          <button class="btn b2" id="btnMethod" onclick="makeMethod()" disabled>🧪 建方法(设溶剂延迟)</button>
+          <button class="btn b1" id="btnMeasure" onclick="measure()" disabled>▶ 进样分析</button>
+        </div>
+      </div>
+    </div>
+    <div class="dp">
+      <div class="dv"><div class="dl">灯丝状态</div><div class="dd" id="dFil" style="font-size:13px">关闭</div></div>
+      <div class="dv"><div class="dl">目标物结果</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">采集状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 关机反序（<b style="color:var(--rose)">质谱→气相→进样器→载气；降温≤100℃才断电</b>）</div>
+    <div class="pwr5">
+      <div class="pb" id="sh1" onclick="shut(1)">质谱降温≤100℃<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">ShutDown 涡轮泵→0%<span class="po">step 2</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">气相降温≤100℃<span class="po">step 3</span></div>
+      <div class="pb" id="sh4" onclick="shut(4)">进样器 Park→Home<span class="po">step 4</span></div>
+      <div class="pb" id="sh5" onclick="shut(5)">关载气/工作站/电脑<span class="po">step 5</span></div>
+    </div>
+    <div class="bar"><i id="barTurbo"></i></div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">💨</div><div class="in">先通载气，再上电抽真空</div><div class="id">开机第一步必须先打开氦气(0.4~0.6MPa)、氩气(0.4MPa)钢瓶与分压，再开 GC/MS/进样器电源。无载气就上电加热 → 色谱柱氧化、灯丝受损。这是 GC-MS 的开机铁律。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">🌀</div><div class="in">真空 ≈80mTorr 才能工作</div><div class="id">开机后自动抽真空，Foreline pressure 要降到约 80mTorr、指示灯全绿才达标，通常需 10~20 小时。真空不到位就升温/分析，离子无法飞行、数据全废。</div><span class="it">真空门槛</span></div>
+    <div class="ic"><div class="ii">🔍</div><div class="in">检漏：水峰 18.1 &lt;10⁸</div><div class="id">Manual Tune 检漏时，水峰(m/z 18.1)强度须小于 10⁸ 且氮氧峰正常，才算不漏气。漏气会持续引入空气、无法建立真空与稳定信号，必须先排漏再工作。调谐检查应见 69.1/100/131/219/264/414/502 等 7 个特征峰。</div><span class="it">密封红线</span></div>
+    <div class="ic"><div class="ii">🔥</div><div class="in">溶剂延迟 3~5min 护灯丝</div><div class="id">方法里 Scans Time 必须设 3~5min 溶剂延迟——等大量溶剂通过灯丝之后再开灯丝，否则溶剂涌入瞬间烧断灯丝。关机则严格反序：质谱降温≤100℃→ShutDown→涡轮泵0%→气相降温≤100℃→进样器归位→最后关载气。</div><span class="it">灯丝+关机</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把载气顺序、真空度、检漏、灯丝保护和关机反序走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={he:false,ar:false,power:0,vac:false,heat:false,leak:false,tune:false,method:false,measuring:false,shut:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4200);}
+
+function gas(k){
+  if(S.power>0){warn('已上电，请勿再改动载气（应在开机前通气）');return;}
+  if(k==='he'){
+    const he=+$('iHe').value;
+    if(he<0.4||he>0.6){warn('⚠️ 氦气(载气)压力须 0.4~0.6MPa！当前 '+he+' MPa');log('氦气压力不合格('+he+'MPa)，已阻断',false);return;}
+    S.he=true;$('btnHe').classList.add('on');$('btnHe').textContent='✅ 氦气已通';log('通氦气(载气)：'+he+' MPa（0.4~0.6，合格）',true);
+  }
+  if(k==='ar'){
+    const ar=+$('iAr').value;
+    if(ar<0.35||ar>0.45){warn('⚠️ 氩气(碰撞气)压力须 ≈0.4MPa！当前 '+ar+' MPa');log('氩气压力不合格('+ar+'MPa)，已阻断',false);return;}
+    S.ar=true;$('btnAr').classList.add('on');$('btnAr').textContent='✅ 氩气已通';log('通氩气(碰撞气)：'+ar+' MPa（≈0.4，合格）',true);
+  }
+  if(S.he&&S.ar){setSts('🟡 载气已通，可上电','sa');log('载气全部就绪，现在才可以开电源',true);}
+}
+function power(n){
+  if(!S.he||!S.ar){warn('⚠️ 必须先通氦气+氩气再上电！无载气上电抽真空/加热会损坏色谱柱与灯丝');log('未通载气就上电，已阻断（开机铁律：先气后电）',false);return;}
+  if(n!==S.power+1){warn('顺序：先开 GC → 再开 MS → 再开自动进样器');log('上电顺序错误，已阻断',false);return;}
+  S.power=n;$('pw'+n).classList.add('on');
+  log('开启：'+['GC 电源（自检）','MS 电源（自检 + 自动启动真空泵抽真空）','自动进样器电源'][n-1]);
+  if(n===3){setSts('🟡 已上电，待抽真空','sa');$('btnVac').disabled=false;}
+}
+function startVac(){
+  if(S.vac){warn('真空已达标');return;}
+  if(S.power<3){warn('请先完成 GC/MS/进样器上电');return;}
+  setSts('🌀 抽真空中…','sa');log('真空泵抽真空中，Foreline pressure 下降中（真实需 10~20h）…');
+  $('btnVac').disabled=true;let p=0;
+  const iv=setInterval(()=>{p+=8;if(p>100)p=100;$('barVac').style.width=p+'%';
+    const fore=Math.round(760-(760-80)*p/100);$('vFore').textContent=fore+' mTorr';
+    if(p>=100){clearInterval(iv);
+      $('vFore').textContent='≈80 mTorr';$('cFore').classList.add('pass');
+      $('vLED').textContent='全绿';$('cLED').classList.add('pass');
+      $('vReady').textContent='达标';$('cReady').classList.add('pass');
+      S.vac=true;setSts('🟢 真空达标','sok');
+      log('真空达标：Foreline ≈80mTorr，指示灯全绿',true);
+      $('btnHeat').disabled=false;
+    }
+  },120);
+}
+function heat(){
+  if(!S.vac){warn('真空未达标，禁止升温');return;}
+  if(S.heat){warn('已升温');return;}
+  S.heat=true;$('btnHeat').classList.add('on');$('btnHeat').textContent='✅ 已升温';
+  log('设 MS transfer line 280℃ / Ion source 300℃，升温中…',true);
+  $('btnLeak').disabled=false;
+}
+function leak(){
+  if(!S.heat){warn('请先升温');return;}
+  // 模拟：真空达标+密封良好，水峰约 3×10^6（合格，<10^8）
+  const w=(Math.random()*4+2).toFixed(1); // 2~6 ×10^6
+  $('vWater').textContent=w+'×10⁶';$('cWater').classList.add('pass');
+  S.leak=true;$('btnLeak').classList.add('on');$('btnLeak').textContent='✅ 检漏通过';
+  log('检漏：水峰 m/z 18.1 强度 '+w+'×10⁶（<10⁸，不漏气），氮氧峰正常',true);
+  $('btnTune').disabled=false;
+}
+function tune(){
+  if(!S.leak){warn('请先检漏通过');return;}
+  if(S.tune){warn('已调谐检查');return;}
+  $('vPeak').textContent='>10⁷';$('cPeak').classList.add('pass');
+  $('vTuneS').textContent='正常';$('cTuneS').classList.add('pass');
+  S.tune=true;$('btnTune').classList.add('on');$('btnTune').textContent='✅ 调谐正常';
+  log('调谐检查：见 69.1/100/131/219/264/414/502 等 7 特征峰，69.1 峰强 >10⁷，仪器状态正常，可进入测试',true);
+  $('btnMethod').disabled=false;
+}
+function makeMethod(){
+  if(!S.tune){warn('请先完成调谐检查');return;}
+  const d=+$('iDelay').value;
+  if(d<3){warn('⚠️ 溶剂延迟须 ≥3min！溶剂过灯丝前开灯丝会瞬间烧断灯丝');log('溶剂延迟仅 '+d+'min（<3），已阻断（灯丝保护红线）',false);return;}
+  S.method=true;$('btnMethod').classList.add('on');$('btnMethod').textContent='✅ 方法已建';
+  log('建方法：Scans Time(溶剂延迟) '+d+'min，全扫定性 → AutoSRM 建 SRM 定量方法 + 标准曲线',true);
+  $('btnMeasure').disabled=false;
+}
+function measure(){
+  if(!S.method){warn('请先建立方法');return;}
+  if(S.measuring)return;
+  S.measuring=true;setSts('📡 进样分析中…','sa');$('dState').textContent='采集中';$('dFil').textContent='延迟中';
+  log('进样，色谱分离中，溶剂延迟窗口内灯丝关闭保护…');
+  let p=0;const iv=setInterval(()=>{p++;
+    if(p===3){$('dFil').textContent='已开启';log('溶剂已过灯丝，灯丝开启，开始采集离子',true);}
+    if(p>=8){clearInterval(iv);
+      const c=(Math.random()*40+5).toFixed(2);
+      $('dC').textContent=c+' μg/L';$('dState').textContent='完成';setSts('✅ 分析完成','sok');S.measuring=false;
+      log('分析完成：目标物 '+c+' μg/L（SRM 定量，示例值）',true);
+      [1,2,3,4,5].forEach(n=>$('sh'+n).disabled=false);
+    }},150);
+}
+function shut(n){
+  const order=['质谱降温≤100℃','ShutDown 涡轮泵→0%','气相降温≤100℃','自动进样器 Park→Home','关载气/工作站/电脑'];
+  if(n!==S.shut+1){
+    warn('关机反序：质谱降温 → ShutDown涡轮泵 → 气相降温 → 进样器归位 → 最后关载气');
+    log('关机顺序错误，已阻断',false);return;}
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){setSts('🌙 质谱降温中','sa');log('质谱：离子源/传输线设 ≤100℃，降温后准备 Shut Down',true);}
+  if(n===2){
+    log('执行 Shut Down，涡轮泵转速由 100% 下降…');
+    let p=100;const iv=setInterval(()=>{p-=10;if(p<0)p=0;$('barTurbo').style.width=p+'%';
+      if(p<=0){clearInterval(iv);log('✔ 涡轮泵 100%→0%，可关质谱电源',true);}
+    },120);
+  }
+  if(n===3)log('✔ 气相：去掉温度/流量勾选，Send Method to GC，待汽化室 ≤100℃ 关电源',true);
+  if(n===4)log('✔ 自动进样器：Park Tool 放下进样针 → Move To Home 归位 → 关电源',true);
+  if(n===5){setSts('🔒 已完全关机','si');log('关机完成：关载气、工作站与电脑。填写《仪器设备使用记录表》',true);}
+}
+function resetAll(){
+  S={he:false,ar:false,power:0,vac:false,heat:false,leak:false,tune:false,method:false,measuring:false,shut:0};
+  [1,2,3].forEach(n=>$('pw'+n).classList.remove('on'));
+  [1,2,3,4,5].forEach(n=>{$('sh'+n).classList.remove('on');$('sh'+n).disabled=true;});
+  ['btnVac','btnHeat','btnLeak','btnTune','btnMethod','btnMeasure'].forEach(id=>{$(id).disabled=true;$(id).classList.remove('on');});
+  ['btnHe','btnAr'].forEach(id=>$(id).classList.remove('on'));
+  $('btnHe').textContent='💨 开氦气(载气)';$('btnAr').textContent='🟦 开氩气(碰撞气)';
+  $('btnVac').textContent='🌀 抽真空 / 查 Foreline';$('btnHeat').textContent='🌡️ 升温(280/300℃)';
+  $('btnLeak').textContent='🔍 检漏(测水峰18.1)';$('btnTune').textContent='📈 调谐检查(7特征峰)';
+  $('btnMethod').textContent='🧪 建方法(设溶剂延迟)';
+  ['cFore','cLED','cReady','cWater','cPeak','cTuneS'].forEach(id=>$(id).className='cd');
+  $('vFore').textContent='— mTorr';$('vLED').textContent='红/黄';$('vReady').textContent='未达标';
+  $('vWater').textContent='—';$('vPeak').textContent='—';$('vTuneS').textContent='未检查';
+  $('barVac').style.width='0%';$('barTurbo').style.width='0%';
+  $('dFil').textContent='关闭';$('dC').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

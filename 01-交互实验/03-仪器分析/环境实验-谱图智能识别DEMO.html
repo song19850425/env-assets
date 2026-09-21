@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>环境实验 · 谱图智能识别 —— 黑灯实验室的"眼睛"</title>
+<style>
+  :root{
+    --bg:#0a0e1a; --panel:#121a2e; --line:rgba(255,255,255,.08);
+    --ink:#e8edff; --sub:#8b97b8; --blue:#3b82f6; --cyan:#22d3ee;
+    --rose:#ff2d6f; --green:#2ee6a6; --amber:#ffb020; --grid:rgba(120,150,220,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:radial-gradient(1200px 600px at 70% -10%,#16213f 0%,var(--bg) 60%);
+    color:var(--ink);line-height:1.6;padding:28px 20px 60px;min-height:100vh}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px}
+  .tag{font-size:12px;letter-spacing:3px;color:var(--rose);font-weight:700}
+  h1{font-size:27px;font-weight:800;margin:6px 0 2px;
+    background:linear-gradient(90deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--sub);font-size:14px}
+  .layout{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:18px}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:linear-gradient(180deg,rgba(30,42,72,.55),rgba(18,26,46,.55));
+    border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;backdrop-filter:blur(4px)}
+  .card h3{font-size:14px;color:var(--cyan);letter-spacing:1px;margin-bottom:10px;font-weight:700}
+  canvas{width:100%;height:auto;display:block;border-radius:8px;background:#070b16}
+  .btns{display:flex;gap:10px;margin-top:12px}
+  button{cursor:pointer;border:none;border-radius:9px;padding:11px 16px;font-size:14px;font-weight:700;letter-spacing:.5px;transition:.18s}
+  .run{background:linear-gradient(90deg,var(--rose),#ff5b8a);color:#fff;flex:1}
+  .run:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .run:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .reset{background:rgba(255,255,255,.06);color:var(--sub);border:1px solid var(--line)}
+  .reset:hover{color:#fff}
+  .log{height:230px;overflow:auto;font-size:13px;font-family:"SFMono-Regular",Consolas,monospace;
+    background:#070b16;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:12px}
+  .log .l{padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.05);color:var(--sub)}
+  .log .l b{color:var(--cyan)}
+  .log .l.ok b{color:var(--green)} .log .l.warn b{color:var(--amber)} .log .l.bad b{color:var(--rose)}
+  /* contrast panel */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .vs .col{background:#070b16;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  .vs .col h4{font-size:12px;margin-bottom:6px;letter-spacing:1px}
+  .vs .junior h4{color:var(--amber)} .vs .ai h4{color:var(--green)}
+  .vs .row{font-size:12.5px;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.05);color:#c7d0ec}
+  .vs .row .bad{color:var(--rose);font-weight:700}
+  .vs .row .good{color:var(--green);font-weight:700}
+  /* result table */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:rgba(34,211,238,.08);color:var(--cyan);font-weight:700}
+  td .pass{color:var(--green);font-weight:700} td .fail{color:var(--rose);font-weight:700}
+  td .flag{color:var(--amber);font-weight:700}
+  .verdict{margin-top:12px;background:linear-gradient(90deg,rgba(46,230,166,.14),rgba(34,211,238,.10));
+    border:1px solid rgba(46,230,166,.4);border-radius:10px;padding:12px 14px;font-size:13.5px}
+  .verdict b{color:var(--green)}
+  .hint{font-size:12px;color:var(--sub);margin-top:10px;line-height:1.5}
+  .foot{text-align:center;color:var(--sub);font-size:11.5px;margin-top:26px}
+  .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--rose);
+    box-shadow:0 0 0 0 rgba(255,45,111,.6);animation:p 1.4s infinite;vertical-align:middle;margin-right:6px}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(255,45,111,.6)}70%{box-shadow:0 0 0 9px rgba(255,45,111,0)}100%{box-shadow:0 0 0 0 rgba(255,45,111,0)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="tag">环境实验 · AI PERCEPTION LAYER</div>
+      <h1>谱图智能识别</h1>
+      <div class="sub">黑灯实验室的"眼睛" —— 机器读谱,无人干预,识别人眼与初级技术员漏掉的信号</div>
+    </div>
+    <div style="font-size:12px;color:var(--sub);text-align:right">
+      演示场景:某化工园区地下水 · GC-MS 吹扫捕集<br>目标物:卤代烃 + 苯系物(依据 HJ 639)
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- 左:谱图 -->
+    <div class="card">
+      <h3><span class="pulse"></span>GC-MS 总离子流图(TIC)</h3>
+      <canvas id="cv" width="600" height="380"></canvas>
+      <div class="btns">
+        <button class="run" id="runBtn">▶ 运行 AI 分析</button>
+        <button class="reset" id="resetBtn">重置</button>
+      </div>
+      <div class="hint">点"运行 AI 分析",观察机器如何分步完成<b style="color:var(--cyan)">基线校正 → 峰检测 → 重叠解叠 → 干扰识别 → 非目标物预警 → 定量合规</b>。这正是黑灯实验室里"没有人用肉眼读谱"时,AI 替人做的判断。</div>
+    </div>
+
+    <!-- 右:日志 + 对比 + 结果 -->
+    <div class="card">
+      <h3>分析过程(实时)</h3>
+      <div class="log" id="log"><div class="l">待机 —— 点击左侧按钮开始。</div></div>
+
+      <h3 style="margin-top:14px">初级技术员 vs 环境实验 AI</h3>
+      <div class="vs">
+        <div class="col junior">
+          <h4>👁 初级技术员</h4>
+          <div class="row">三氯甲烷:<span class="bad">0.051(误高)</span></div>
+          <div class="row">7.5min 峰:<span class="bad">报单峰 0.027</span></div>
+          <div class="row">9.3min 峰:<span class="bad">漏检</span></div>
+        </div>
+        <div class="col ai">
+          <h4>🤖 环境实验 AI</h4>
+          <div class="row">三氯甲烷:<span class="good">0.042(校正)</span></div>
+          <div class="row">重叠峰:<span class="good">拆 TCE+PCE</span></div>
+          <div class="row">9.3min 峰:<span class="good">检出并预警</span></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:14px">定量与合规判定(CMA)</h3>
+      <table id="res">
+        <tr><th>目标物</th><th>结果 mg/L</th><th>限值</th><th>判定</th></tr>
+        <tr><td>三氯甲烷</td><td id="r1">—</td><td>0.06</td><td id="d1">—</td></tr>
+        <tr><td>四氯乙烯</td><td id="r2">—</td><td>0.04</td><td id="d2">—</td></tr>
+        <tr><td>苯</td><td id="r3">—</td><td>0.01</td><td id="d3">—</td></tr>
+        <tr><td>非目标物(9.3min)</td><td id="r4">—</td><td>—</td><td id="d4">—</td></tr>
+      </table>
+      <div class="verdict" id="verdict" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="foot">演示数据用于说明 AI 感知能力 · 环境实验 谱图智能识别 Demo · 2026</div>
+</div>
+
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const W=600,H=380,padL=46,padR=14,padT=18,padB=34;
+const dpr=window.devicePixelRatio||1;
+cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+const rtMin=2,rtMax=16,N=720;
+const x=v=>padL+(v-rtMin)/(rtMax-rtMin)*(W-padL-padR);
+const g=(xx,mu,s,a)=>a*Math.exp(-((xx-mu)**2)/(2*s*s));
+
+// --- 谱图数据生成 ---
+const PEAKS=[
+  {name:'二氯甲烷',rt:4.5,amp:54,w:.16},
+  {name:'三氯甲烷',rt:5.8,amp:82,w:.15,matrix:true},
+  {name:'四氯化碳',rt:6.5,amp:42,w:.14},
+  {name:'三氯乙烯',rt:7.25,amp:62,w:.13,dbl:true},
+  {name:'四氯乙烯',rt:7.85,amp:58,w:.13,dbl:true},
+  {name:'苯',rt:8.6,amp:98,w:.14},
+  {name:'非目标物',rt:9.3,amp:34,w:.12,nontarget:true},
+  {name:'甲苯',rt:10.6,amp:72,w:.15},
+  {name:'乙苯',rt:12.4,amp:50,w:.15},
+  {name:'间/对二甲苯',rt:13.1,amp:46,w:.13},
+  {name:'邻二甲苯',rt:13.9,amp:31,w:.13},
+];
+const raw=new Array(N),base=new Array(N),corr=new Array(N);
+let vMax=0;
+for(let i=0;i<N;i++){
+  const rt=rtMin+(i/(N-1))*(rtMax-rtMin);
+  let b=6+0.5*Math.sin(rt*0.9)+0.3*rt; // 基线漂移
+  let v=b;
+  for(const p of PEAKS){ v+=g(rt,p.rt,p.w,p.amp); }
+  v+=g(rt,5.8,0.55,22); // 基质干扰(宽低包在三氯甲烷下)
+  v+= (Math.random()*2-1)*6; // 噪声
+  base[i]=b; raw[i]=v; corr[i]=v-b; vMax=Math.max(vMax,v);
+}
+vMax*=1.08;
+const y=v=>padT+(1-(v)/(vMax))*(H-padT-padB);
+
+const S={base:false,peaks:false,dbl:false,inter:false,non:false,quant:false};
+
+function clear(){ctx.clearRect(0,0,W,H);}
+function grid(){
+  ctx.strokeStyle='rgba(120,150,220,.10)';ctx.lineWidth=1;
+  for(let k=0;k<=7;k++){const xx=padL+k/7*(W-padL-padR);ctx.beginPath();ctx.moveTo(xx,padT);ctx.lineTo(xx,H-padB);ctx.stroke();}
+  for(let k=0;k<=4;k++){const yy=padT+k/4*(H-padT-padB);ctx.beginPath();ctx.moveTo(padL,yy);ctx.lineTo(W-padR,yy);ctx.stroke();}
+  ctx.fillStyle='#8b97b8';ctx.font='11px sans-serif';ctx.textAlign='center';
+  for(let k=2;k<=16;k+=2){ctx.fillText(k+'′',x(k),H-padB+16);}
+  ctx.save();ctx.translate(13,padT+(H-padT-padB)/2);ctx.rotate(-Math.PI/2);
+  ctx.fillText('响应值(相对丰度)',0,0);ctx.restore();
+  ctx.textAlign='right';ctx.fillText('保留时间(min)',W-padR,H-padB+16);
+}
+function trace(arr,color,w,alpha){
+  ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=w;ctx.beginPath();
+  for(let i=0;i<N;i++){const rt=rtMin+(i/(N-1))*(rtMax-rtMin);const px=x(rt),py=y(arr[i]);i?ctx.lineTo(px,py):ctx.moveTo(px,py);}
+  ctx.stroke();ctx.globalAlpha=1;
+}
+function baselineLine(){ctx.strokeStyle='rgba(255,176,32,.55)';ctx.setLineDash([5,4]);ctx.lineWidth=1.2;ctx.beginPath();
+  for(let i=0;i<N;i++){const rt=rtMin+(i/(N-1))*(rtMax-rtMin);const px=x(rt),py=y(base[i]);i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.stroke();ctx.setLineDash([]);}
+
+function draw(){
+  clear();grid();
+  // 原始谱(淡)
+  trace(raw,'rgba(120,150,220,.45)',1.3,1);
+  if(S.base){ baselineLine();
+    // 校正后谱(亮)
+    trace(corr,'#22d3ee',1.8,1);
+  }
+  if(S.peaks){
+    ctx.font='10px sans-serif';ctx.textAlign='center';
+    PEAKS.forEach((p,idx)=>{
+      const px=x(p.rt);
+      let pk=0;for(let i=0;i<N;i++){const rt=rtMin+(i/(N-1))*(rtMax-rtMin);if(Math.abs(rt-p.rt)<0.02)pk=corr[i];}
+      ctx.strokeStyle= p.nontarget?'#ff2d6f':'rgba(59,130,246,.9)';
+      ctx.lineWidth= p.nontarget?1.6:1.2;ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(px,y(0));ctx.lineTo(px,y(pk));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle= p.nontarget?'#ff2d6f':'#7fb0ff';
+      ctx.fillText((idx+1)+'.'+p.name,px,y(pk)-6);
+    });
+  }
+  if(S.dbl){
+    // 解叠:画两个组分高斯
+    const TCE=PEAKS.find(p=>p.name==='三氯乙烯'),PCE=PEAKS.find(p=>p.name==='四氯乙烯');
+    [TCE,PCE].forEach(p=>{
+      ctx.strokeStyle='rgba(46,230,166,.85)';ctx.lineWidth=1.4;ctx.beginPath();
+      for(let i=0;i<N;i++){const rt=rtMin+(i/(N-1))*(rtMax-rtMin);const v=base[i]+g(rt,p.rt,p.w,p.amp);const px=x(rt),py=y(v);i?ctx.lineTo(px,py):ctx.moveTo(px,py);}
+      ctx.stroke();
+    });
+    const mx=x(7.55);
+    ctx.fillStyle='#2ee6a6';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText('TCE + PCE 共流出 · 已解叠',mx,y(40));
+  }
+  if(S.inter){
+    // 基质干扰区
+    const x1=x(5.0),x2=x(6.7);
+    ctx.fillStyle='rgba(255,176,32,.14)';ctx.fillRect(x1,padT,x2-x1,(H-padT-padB));
+    // 干扰高斯(虚线)
+    ctx.strokeStyle='rgba(255,176,32,.9)';ctx.setLineDash([4,3]);ctx.lineWidth=1.3;ctx.beginPath();
+    for(let i=0;i<N;i++){const rt=rtMin+(i/(N-1))*(rtMax-rtMin);const v=base[i]+g(rt,5.8,0.55,22);const px=x(rt),py=y(v);i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#ffb020';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText('⚠ 基质干扰 +21.3%,已校正',x(5.85),y(120));
+  }
+  if(S.non){
+    const p=PEAKS.find(p=>p.nontarget);
+    ctx.strokeStyle='#ff2d6f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x(p.rt),padT+6);ctx.lineTo(x(p.rt),H-padB);ctx.stroke();
+    ctx.fillStyle='#ff2d6f';ctx.font='11px sans-serif';ctx.textAlign='left';
+    ctx.fillText('⚠ 非目标物检出(库无对应标准)',x(p.rt)+6,y(60));
+  }
+  if(S.quant){
+    ctx.fillStyle='rgba(46,230,166,.9)';ctx.font='bold 12px sans-serif';ctx.textAlign='left';
+    ctx.fillText('✓ AI 定量完成 · CMA 合规判定已生成',padL+8,padT+14);
+  }
+}
+
+// --- 日志 ---
+const logEl=document.getElementById('log');
+function log(txt,cls=''){const d=document.createElement('div');d.className='l '+cls;d.innerHTML=txt;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function setRes(){
+  document.getElementById('r1').textContent='0.042';
+  document.getElementById('d1').innerHTML='<span class="pass">合格</span>';
+  document.getElementById('r2').textContent='0.015';
+  document.getElementById('d2').innerHTML='<span class="pass">合格</span>';
+  document.getElementById('r3').textContent='0.008';
+  document.getElementById('d3').innerHTML='<span class="pass">合格(临界)</span>';
+  document.getElementById('r4').textContent='0.003';
+  document.getElementById('d4').innerHTML='<span class="flag">预警·需核查</span>';
+  const v=document.getElementById('verdict');v.style.display='block';
+  v.innerHTML='<b>判定:</b> 三氯甲烷、四氯乙烯、苯均达标;9.3min 非目标物在数据库无对应标准,AI 触发预警并建议人工核查——<b>这正是初级技术员会直接漏报、导致合规风险的关键项。</b>';
+}
+
+let running=false;
+document.getElementById('runBtn').onclick=async function(){
+  if(running)return;running=true;this.disabled=true;logEl.innerHTML='';
+  Object.keys(S).forEach(k=>S[k]=false);draw();
+  log('▶ AI 分析启动 · 载入原始 TIC('+N+'点/谱)','');
+  await sleep(450);
+  S.base=true;draw();log('<b>① 基线校正</b> · 估计并扣除基线漂移,噪声滤波','ok');
+  await sleep(700);
+  S.peaks=true;draw();log('<b>② 峰检测</b> · 检出 11 个峰,匹配 HJ 639 目标物库','ok');
+  await sleep(800);
+  S.dbl=true;draw();log('<b>③ 重叠解叠</b> · 7.5min 处 TCE/PCE 共流出,拆分为两个定量峰','warn');
+  await sleep(900);
+  S.inter=true;draw();log('<b>④ 干扰识别</b> · 三氯甲烷下检出宽峰基质干扰 +21.3%,校正真实浓度','bad');
+  await sleep(900);
+  S.non=true;draw();log('<b>⑤ 非目标物预警</b> · 9.3min 未知峰,库无标准,触发核查预警','bad');
+  await sleep(800);
+  S.quant=true;draw();setRes();log('<b>⑥ 定量 + CMA 合规</b> · 生成报告级结果','ok');
+  await sleep(300);
+  log('✓ 全流程无人干预完成。若有人在岗,上述 ④⑤ 两项极可能被忽略。','');
+  running=false;this.disabled=false;
+};
+document.getElementById('resetBtn').onclick=function(){
+  Object.keys(S).forEach(k=>S[k]=false);draw();
+  logEl.innerHTML='<div class="l">已重置 —— 点击"运行 AI 分析"重新开始。</div>';
+  ['r1','r2','r3','r4'].forEach(id=>document.getElementById(id).textContent='—');
+  ['d1','d2','d3','d4'].forEach(id=>document.getElementById(id).textContent='—');
+  document.getElementById('verdict').style.display='none';
+};
+draw();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 639-2012</td><td>水质 挥发性有机物的测定 吹扫捕集／气相色谱-质谱法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>绿色大账本 · 钢铁企业碳排放核查与履约 · 环境实验 交互实验</title>
+<meta name="description" content="钢铁企业碳排放核查与履约交互实训：以第三方碳核查员视角，完成核算边界与源项识别、入厂煤低位发热量复核、台账三方凭证核对与配额清缴决策，落定企业层级核查排放量。">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#14b8a6;--glow:#5eead4;--abg:rgba(20,184,166,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8;--amber:#fbbf24}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#14b8a6,#5eead4);z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:44px 24px;background:linear-gradient(180deg,#0a0e17 0%,#06201d 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(20,184,166,.07) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-18%;right:-8%;width:330px;height:330px;background:radial-gradient(circle,rgba(20,184,166,.16),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(25px,4.6vw,42px);font-weight:900;line-height:1.18;z-index:1}
+.h1 em{color:#5eead4;font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:rgba(20,184,166,.12);color:#5eead4;font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(20,184,166,.24);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#94a3b8;z-index:1;max-width:700px;line-height:1.8}
+.hst{display:flex;gap:32px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:27px;font-weight:800;color:#5eead4}
+.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:70px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}
+.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:#14b8a6}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:780px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}
+.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:rgba(20,184,166,.10);color:#5eead4}
+.lb{background:linear-gradient(180deg,#0a0e17,#06201d);padding:58px 0}
+.lc{max-width:1000px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:#5eead4;letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}
+.sa{background:rgba(20,184,166,.12);color:#5eead4}
+.sok{background:rgba(52,211,153,.1);color:#34d399}
+.sbad{background:rgba(251,113,133,.12);color:#fb7185}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#14b8a6,#5eead4);color:#04211d}
+.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(20,184,166,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}
+.b2:hover:not(:disabled){border-color:#14b8a6;color:#5eead4}
+.b3{background:linear-gradient(135deg,#ef4444,#fb7185);color:#1a0308}
+.b3:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.3)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:#14b8a6}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:rgba(20,184,166,.12);color:#5eead4;border-color:#14b8a6}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}
+.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld input[type=number],.fld input[type=text]{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#14b8a6;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}
+.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:#5eead4}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}
+.dv.good .dd{color:var(--green)}
+.hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:200px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:#5eead4}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:#14b8a6;color:#5eead4}
+.ft .nav a.cur{border-color:#14b8a6;color:#5eead4;background:rgba(20,184,166,.12)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv,#cv2{width:100%;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+#cv{height:330px}
+#cv2{height:240px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.18);border-left:3px solid #14b8a6;border-radius:8px;padding:14px 16px;font-size:12.5px;color:#ccfbf1;line-height:1.7;margin:16px 0}
+.note b{color:#f0fdfa}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.note.amber{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.2);border-left-color:var(--amber);color:#fde68a}
+.note.amber b{color:#fffbeb}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:#5eead4;background:rgba(20,184,166,.12);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:rgba(20,184,166,.08);color:#5eead4;font-weight:700;font-size:11.5px}
+.tbl td{color:#94a3b8;line-height:1.6}
+.tbl td b{color:#e2e8f0}
+.tbl tr.sum td{background:rgba(20,184,166,.10);color:#f0fdfa;font-weight:800}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:#14b8a6}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+@media(max-width:700px){.ledger{grid-template-columns:1fr}}
+.chk{display:flex;align-items:flex-start;gap:8px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:#94a3b8;cursor:pointer;line-height:1.45}
+.chk input{margin-top:2px;accent-color:#14b8a6;flex-shrink:0}
+.chk .tg{font-size:9px;color:#64748b;display:block;margin-top:2px}
+.zone{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:#94a3b8;cursor:pointer;line-height:1.45;transition:.2s;position:relative}
+.zone:hover{border-color:#14b8a6}
+.zone.found{border-color:var(--rose);background:rgba(251,113,133,.08)}
+.zone.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.zone.sel{border-color:#14b8a6;background:rgba(20,184,166,.10);color:#ccfbf1}
+.zone .zb{font-size:9px;font-weight:700;position:absolute;top:8px;right:10px}
+.zone.found .zb{color:#fb7185}
+.zone.ok .zb{color:#34d399}
+.zone .tg{font-size:9px;color:#64748b;display:block;margin-top:2px}
+.sub{font-size:12px;font-weight:700;color:#5eead4;letter-spacing:1px;margin:20px 0 8px}
+.vcard{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.2s}
+.vcard:hover{border-color:#14b8a6}
+.vcard .vt{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:4px}
+.vcard .vv{font-size:18px;font-weight:800;color:#5eead4}
+.vcard .vd{font-size:10.5px;color:#64748b;margin-top:4px;line-height:1.55}
+.vcard.open{border-color:#14b8a6;background:rgba(20,184,166,.08)}
+#bk{position:fixed;right:22px;bottom:22px;z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 15px;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:.02em;text-decoration:none;line-height:1;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .22s,transform .22s,visibility .22s;background:rgba(19,26,46,.92);color:#e2e8f0;border:1px solid rgba(56,189,248,.42);box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#bk.on{opacity:1;visibility:visible;transform:translateY(0)}
+#bk:hover{transform:translateY(-2px);background:rgba(23,33,58,.98);border-color:rgba(56,189,248,.75)}
+#bk:focus-visible{outline:2px solid #fbbf24;outline-offset:3px}
+#bk .bk-a{font-size:15px;line-height:1;color:#7dd3fc}
+#bk .bk-t{font-size:13.5px;color:#e2e8f0}
+@media(max-width:640px){#bk{right:14px;bottom:14px;padding:10px 15px 10px 13px}#bk .bk-t{font-size:12.5px}}
+@media(prefers-reduced-motion:reduce){#bk{transition:none;transform:none}#bk.on{transform:none}}
+@media print{#bk{display:none!important}}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 碳核查实训 · 剧本九（钢铁碳排放）</div>
+  <h1 class="h1">🌱 绿色大账本<br><em>钢铁企业碳排放核查与履约</em> · 交互模拟台</h1>
+  <div class="hs">全国碳排放权交易体系（ETS，Emissions Trading System）合规 · 你站在<b style="color:#99f6e4">国家第三方核查机构碳核查员</b>的位置<br>从划边界、勾源项开始，一路做到配额清缴决策</div>
+  <div class="hst">
+    <div><span class="n">3 类</span><span class="l">企业层级排放源</span></div>
+    <div><span class="n">8 步</span><span class="l">官方核查程序</span></div>
+    <div><span class="n">4 关</span><span class="l">顺序解锁实训</span></div>
+    <div><span class="n">9 项</span><span class="l">依据文件</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">数据看不见摸不着，它只活在台账里</div>
+  <div class="sd">一家年产 300 万吨粗钢的企业，年度排放报告交上来：边界画得整整齐齐，燃煤量、发热量都写得明明白白。可核查员的经验会先问一句——<b>这 160 万吨煤，磅单、发票、库存账对得上吗？这份发热量，是全年批次加权测出来的，还是挑了一个批次报的？</b></div>
+  <div class="sd">本实训让你站在<b>碳核查员</b>的位置：先把核算边界画清楚、把该计的源项勾对，再对入厂煤的低位发热量做独立复核，然后拿磅单、发票、库存账三份凭证互相印证，最后算出核查确认排放量，并回答企业最关心的那个问题——<b>这点配额，够不够履约？</b></div>
+  <div class="note">碳排放数据不像烟气那样能被在线仪表连续读到，它只活在<b>台账、凭证、计量记录</b>里。本页所有企业、地点、参数均为<b>脱敏教学设定</b>。</div>
+  <div class="note warnbox">⚠️ 红线声明：本页是<b>教学演示与核查流程实训</b>，所有企业、地点、数据为脱敏设定，不指向任何真实企业。不承诺任何核查结论必然成立，也不替代正式的核查、检测与主管部门核定程序。</div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 核查原理</div>
+  <div class="st">三个问题，决定你算出来的账是不是真的</div>
+  <div class="sd">把下面三个问题想清楚，交互台里每一条判据你都能提前说出它会怎么拦你。</div>
+
+  <div class="sub">问题一：边界画在哪？</div>
+  <div class="sd" style="margin-bottom:8px">企业层级只核算 <b>3 类</b>排放源，一个不多、一个不少：</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🔥</div><div class="in">① 消耗化石燃料排放</div><div class="id">原文：「<b>外购燃料</b>在各种类型的生产设备（如焦炉、高炉等）中用作原料或燃料用途产生的二氧化碳排放，<b>不包括点火助燃、运输设施和附属生产系统使用的化石燃料排放</b>。」</div><span class="it">只认"外购"</span></div>
+    <div class="ic"><div class="ii">⚗️</div><div class="in">② 过程排放</div><div class="id">生产过程中碳酸盐分解、电极、<b>外购含碳原料</b>（如生铁、直接还原铁、铁合金、废钢等）的消耗所产生的二氧化碳排放。</div><span class="it">加项</span></div>
+    <div class="ic"><div class="ii">➖</div><div class="in">③ 含碳产品隐含排放</div><div class="id">原文：「本指南中的含碳产品为<b>粗钢产品及外销的生铁、粗苯和焦油</b>」，这部分碳固化在产品中，予以<b>扣减</b>；不扣减外销冶金渣。</div><span class="it">扣减项</span></div>
+  </div>
+  <div class="note amber">⚠️ <b>两条最容易画错的边界</b>：<br>
+  ① <b>净购入电力、热力的间接排放——不进企业层级。</b>《配额方案》原文：「聚焦于生产过程中的直接排放，即化石燃料燃烧、工业过程反应等产生的温室气体，<b>不覆盖因外购电力、热力导致的间接排放</b>。」这一项属于已被替代的 2013 年"试行"版框架。<br>
+  ② <b>自产二次能源——不进企业层级。</b>指南脚注原文：「本指南<b>自产二次能源指企业自产的焦炭和煤气</b>」。自产环节的碳已经由<b>外购煤（焦）</b>的输入承担了，企业层级再计一次就是重复计算。自产二次能源只出现在<b>工序层级</b>与掺烧发电设施的核算里。</div>
+
+  <div class="sub">问题二：数据从哪来？</div>
+  <div class="sd">2025 版企业层级采用<b>物料平衡法</b>——不看生产系统内具体发生了什么反应，只算"输入了多少碳、输出去了多少碳"：<br>
+  <b style="color:#99f6e4">E企业 = Σ(FC外购燃料,i × NCVar,i × CCi × 44/12) + Σ(P碳酸盐 × EF) + P电极 × EF电极 + Σ(M外购含碳原料 × EF) − Σ(AD含碳产品 × EF含碳产品)</b></div>
+  <div class="note blue">公式里 CCi 指<b>单位热值含碳量（CC，Carbon Content，tC/GJ）</b>；NCVar,i 指<b>收到基低位发热量（Qnet,ar，固体/液体 GJ/t，气体 GJ/万 Nm³）</b>。<br>注意：<b>企业层级公式里没有碳氧化率</b>。碳氧化率只在工序层级的<b>掺烧发电设施</b>核算里出现。这一点经常被沿袭旧口径的人算错。</div>
+  <div class="sd" style="margin-bottom:8px">固体燃料低位发热量到底怎么取值（这是第二关的判据）：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🧱</div><div class="in">焦炭：只能用缺省值</div><div class="id">指南原文：「<b>焦炭采用本指南附录 A 附表 A.1 中焦炭的低位发热量缺省值。</b>」——焦炭不允许实测，一律取 28.435 GJ/t。</div><span class="it">强制缺省</span></div>
+    <div class="ic"><div class="ii">⚖️</div><div class="in">其他外购固体燃料：二选一</div><div class="id">a) <b>每批次实测值</b>——检测报告须明示采样、制样和检测依据，并由通过 <b>CMA</b>（检验检测机构资质认定）认定或 <b>CNAS</b>（中国合格评定国家认可委员会）认可、具备该检测能力的机构出具，<b>且须盖 CMA 资质认定标志或 CNAS 认可标识章</b>；b) 附录 A 缺省值。<b>取值方式当年确定后不应更改，且选了实测的不可改为缺省值。</b></div><span class="it">取了就不能改</span></div>
+  </div>
+  <div class="note">📐 加权算法原文：检测应遵循 <b>GB/T 213</b>；「<b>月度平均低位发热量由每批次固体化石燃料的低位发热量加权计算得到，权重为每批次进厂量；年度平均低位发热量由月度平均低位发热量加权计算得到，权重为月度消耗量。</b>」<br>
+  👉 所以"<b>拿一个批次的检测值代表全年</b>"是不成立的；反过来，<b>直接取附录 A 缺省值本身并不违规</b>——真正的违规是<b>声明采用实测值，却拿不出合格的批次检测报告</b>。</div>
+
+  <div class="sub">问题三：缺口怎么履约？</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">📅</div><div class="in">清缴时限</div><div class="id">重点排放单位应于<b>每年 12 月 31 日前</b>，按照履约通知书向省级生态环境主管部门清缴与其<b>经核查排放量等量</b>的配额，完成上一年度清缴。</div><span class="it">等量清缴</span></div>
+    <div class="ic"><div class="ii">🎫</div><div class="in">缺口的两种补法</div><div class="id">到全国碳市场买入配额（<b>CEA</b>，Chinese Emission Allowances，全国碳排放权交易市场配额）；或用 <b>CCER</b>（Chinese Certified Emission Reduction，国家核证自愿减排量）抵销，<b>抵销比例不得超过应清缴配额量的 5%</b>。</div><span class="it">市场补足</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 核查操作规程</div>
+  <div class="st">八步走完，顺序就是证据链</div>
+  <div class="sd">依据《企业温室气体排放报告核查指南（试行）》，核查程序是<b>法定八步</b>。<b>顺序错了，证据可能不被采信</b>——交互台里会直接拦你。</div>
+  <div id="stepList"></div>
+  <div class="note warnbox">顺序红线：<b>没做文件评审就进现场 = 不知道该查什么</b>；<b>没拿到原始凭证就下结论 = 结论站不住</b>。每一步都必须在上一步完成之后。</div>
+  <div class="sub">三条必须记住的实操规则</div>
+  <div class="rule"><span class="rn">不符合项</span><span><span class="rt">四档勾选</span><span class="rd">《核查结论》里对每个核查发现的记录只有四档：<b>符合要求</b> / <b>不符合项已整改且满足要求</b> / <b>不符合项整改但不满足要求</b> / <b>不符合项未整改</b>。</span></span></div>
+  <div class="rule"><span class="rn">保守原则</span><span><span class="rt">不配合的代价是被往高里算</span><span class="rd">原文：若企业未在规定时间内完成整改、或整改措施不符合要求，「技术工作组应根据核算指南与生态环境部公布的<b>缺省值</b>，按照<b>保守原则</b>测算排放量及相关数据」。也就是说，拒不整改并不会让排放量变小。</span></span></div>
+  <div class="rule"><span class="rn">抽样</span><span><span class="rt">没有固定比例，只有代表性要求</span><span class="rd">指南<b>不规定</b>固定抽样比例或数量，只要求"考虑抽样方法、抽样数量以及样本的代表性"。另外，<b>连续 2 年无不符合项</b>且当年文件评审无疑问的，经省级生态环境主管部门同意可免于现场核查。</span></span></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 钢铁企业碳排放核查 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div class="sub">第一关 · 边界划分与源项识别</div>
+    <div class="hint">下方流程图里布了 <b>13 个可点热区</b>（点击图形或下方卡片都可选中）。请选入<b>企业层级应核算的源项</b>：应付 <b>7 项</b>（6 类排放源 + 1 项扣减），另有 <b>6 个陷阱项</b>不得勾选。选齐且不误勾才过关。</div>
+    <canvas id="cv" width="900" height="330" onclick="canvasHit(event)"></canvas>
+    <div class="legend">
+      <span><i style="background:#5eead4"></i>已选入</span>
+      <span><i style="background:#fb7185"></i>选错（陷阱项）</span>
+      <span><i style="background:#34d399"></i>判对</span>
+      <span><i style="background:#334155"></i>未选</span>
+    </div>
+    <div class="hud">
+      <div class="dv"><div class="dl">已选入</div><div class="dd" id="hudPick">0</div><div class="du">/ 7 项</div></div>
+      <div class="dv"><div class="dl">误勾陷阱</div><div class="dd" id="hudTrap">0</div><div class="du">/ 6 项</div></div>
+      <div class="dv"><div class="dl">第一关</div><div class="dd" id="hudS1" style="font-size:13px">未完成</div><div class="du">状态</div></div>
+      <div class="dv"><div class="dl">当前进度</div><div class="dd" id="hudStage" style="font-size:13px">未开始</div><div class="du">共 4 关</div></div>
+    </div>
+    <div class="ledger" id="zoneBox"></div>
+    <div class="acts">
+      <button class="btn b1" id="btnS1" onclick="submitStage1()">提交边界与源项判定</button>
+      <button class="btn b2" onclick="clearStage1()">清空选择</button>
+    </div>
+    <div id="s1Out"></div>
+
+    <div class="sub">第二关 · 入厂煤低位发热量复核（氧弹量热计）</div>
+    <div class="hint">把下面六步按<b>正确操作顺序</b>依次点击。顺序错会被立即拦截并给出原因。六步排对后，自动算出 <b>Qnet,ar</b> 并给出与申报值的对比。</div>
+    <canvas id="cv2" width="900" height="240"></canvas>
+    <div class="seq" id="seqBox"></div>
+    <div class="dp">
+      <div class="dv"><div class="dl">弹筒发热量 Qb,ad</div><div class="dd" id="hudQb">—</div><div class="du">MJ/kg</div></div>
+      <div class="dv"><div class="dl">高位发热量 Qgr,ad</div><div class="dd" id="hudQg">—</div><div class="du">MJ/kg</div></div>
+      <div class="dv"><div class="dl">收到基低位 Qnet,ar</div><div class="dd" id="hudQn">—</div><div class="du">GJ/t</div></div>
+      <div class="dv"><div class="dl">企业申报值</div><div class="dd" id="hudDecl">21.00</div><div class="du">GJ/t</div></div>
+      <div class="dv"><div class="dl">偏差</div><div class="dd" id="hudDev">—</div><div class="du">%</div></div>
+    </div>
+    <div id="s2Out"></div>
+
+    <div class="sub">第三关 · 台账交叉凭证核对</div>
+    <div class="hint">点击三张凭证卡片翻开数值，然后填出差异、选定正确口径，并就凭证缺失项开不符合项。</div>
+    <div class="g3" id="cardBox"></div>
+    <div class="fld"><label>① 你认定的申报量与计量数据差异（万吨，保留两位小数）</label><input type="number" id="diffIn" step="0.01" placeholder="例如 0.00"></div>
+    <div class="sd" style="font-size:12px;margin-bottom:4px"><b>② 选定活动数据取值口径</b></div>
+    <div class="ledger" id="conclBox"></div>
+    <label class="chk" id="ncWrap" style="margin:6px 0"><input type="checkbox" id="ncBox"><span>③ 就"6.00 万吨未取得发票、暂估入库未及时取得凭证"开具不符合项<span class="tg">凭证缺失不等于消耗不存在，但凭证链断裂必须记录。</span></span></label>
+    <div class="acts">
+      <button class="btn b1" onclick="submitStage3()">提交台账核对</button>
+    </div>
+    <div id="s3Out"></div>
+
+    <div class="sub">第四关 · 配额清缴与交易决策</div>
+    <div class="hint">前三关完成后解锁。本关按你的判定结果重算<b>企业层级核查确认排放量</b>，并给出两条路径的后果推演。</div>
+    <div id="ledgerOut"></div>
+    <div class="fld">
+      <label>CEA 价格（元/吨，仅用于成本试算，价格随行就市）</label>
+      <input type="range" id="priceSlider" min="60" max="130" step="0.01" value="94.84" oninput="onParam()">
+      <div class="hint">当前取值：<b id="priceTxt">94.84</b> 元/吨（教学取值）</div>
+    </div>
+    <div class="acts">
+      <button class="btn b3" id="btnA" onclick="choosePlan('A')" disabled>A · 不予理睬，等待处罚</button>
+      <button class="btn b1" id="btnB" onclick="choosePlan('B')" disabled>B · 买入配额清缴 + 启动富氢冶炼改造</button>
+    </div>
+    <div id="results"></div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b1" onclick="exportCSV()">📥 导出实验记录（CSV）</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置实训</button>
+    </div>
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条黄金法则，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">边界先定，源项后勾</div><div class="id">企业层级<b>只认外购燃料</b>；净购入电力热力、自产焦炭与自产煤气都不进企业层级。勾错一个源项，整本账都偏。</div><span class="it">边界红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">要的是批次加权，不是某一个批次</div><div class="id">声称为实测，就得拿得出 <b>CMA/CNAS 盖章</b>的批次检测报告。取缺省值本身不违规，<b>拿不出证据的"实测"才违规</b>。</div><span class="it">证据红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">三方对账盯的是"差"</div><div class="id">磅单、发票、库存账对不上时，差的每一吨都要说清来路。发票缺失不等于消耗不存在，以<b>计量数据</b>为准。</div><span class="it">凭证红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">缺口要用数字决策</div><div class="id">清缴成本与拒缴罚款根本不是一个量级——履约是<b>理性选择</b>，不是道德选择。同时，数据不实还另有罚则。</div><span class="it">履约红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实训真正要练的能力</b>：面对一份排放报告，能先把<b>边界与源项</b>画对（第一关），再对关键参数做<b>独立复核</b>并判断企业声称的证据是否成立（第二关），用<b>三方凭证</b>把活动数据坐实（第三关），最后算出核查确认排放量并给出<b>可决策的履约结论</b>（第四关）。缺任何一环，结论都站不住。
+  </div>
+  <div class="sub">核查证据链清单（建议随报告归档）</div>
+  <table class="tbl">
+    <tr><th style="width:24%">证据类别</th><th>内容</th></tr>
+    <tr><td><b>边界与源项</b></td><td>组织机构图、厂区平面图、标记排放源输入输出的工艺流程图、固定资产台账、主要用能设备清单</td></tr>
+    <tr><td><b>活动数据</b></td><td>入厂磅单（电子汽车衡）、采购合同与结算凭证、财务库存账、生产日志、计量器具台账与检定/校准证书</td></tr>
+    <tr><td><b>排放因子</b></td><td>批次检测报告（须 CMA/CNAS 标识章、遵循 GB/T 213）、月度与年度加权计算过程</td></tr>
+    <tr><td><b>质量控制</b></td><td>数据质量控制方案（监测计划）及其执行记录、数据缺失处理说明</td></tr>
+    <tr><td><b>结论</b></td><td>《核查结论》、不符合项清单及整改证据、核查确认排放量</td></tr>
+  </table>
+  <div class="note warnbox" style="margin-top:12px">
+    <b>模型边界声明</b>：本页企业规模、燃煤量、发热量、排放因子取值、配额与价格均为<b>教学设定值</b>，用于演示"划边界—复核参数—三方对账—履约决策"的逻辑链路，不作为任何核查结论、检测报告、工程设计或配额核定的依据。真实核查请以现行指南与正式程序为准。
+  </div>
+  <div class="fw">
+    <a href="钢铁碳排放核查-教学交付包.html"><div class="t">📦 教学交付包 · 按需索取（学生手册 / 教师指南 / 3 个现成作业）</div><div class="d">给老师用的那一层：90 分钟课堂流程、知识点映射、带评分量规的现成作业、LMS 嵌入代码。交付包不再公开分发，点此按需索取。</div></a>
+    <a href="../index.html"><div class="t">→ 返回实验集总目录</div><div class="d">回到 环境实验 交互实验集，查看其他交互页。</div></a>
+  </div>
+</section>
+
+<footer class="ft">
+  <b>环境实验 碳核查实训</b> · 剧本九（钢铁企业碳排放核查与履约）
+  <div class="nav">
+    <a href="../index.html">实验集总目录</a>
+    <a class="cur" href="钢铁企业碳排放核查与履约-交互版.html">钢铁企业碳排放核查与履约</a>
+    <a href="钢铁碳排放核查-教学交付包.html">教学交付包</a>
+  </div>
+</footer>
+
+<script>
+const $=function(id){ return document.getElementById(id); };
+const K44=44/12;
+
+/* ================= 教学参数（MODEL） ================= */
+const MODEL={
+  /* 第三关 · 台账三方对账（单位：万 t） */
+  coalDeclared:160.00,
+  coalWeighbridge:166.00,
+  coalInvoice:160.00,
+  coalERP:166.00,
+  /* 第二关 · 氧弹量热计（教学设定） */
+  bombHeatCapacity:10460,
+  bombSampleMass:1.0000,
+  bombDeltaT:2.35,
+  bombSulfur:0.50,
+  nitricFactor:0.001,
+  hydrogenAd:4.00,
+  totalMoisture:8.0,
+  airDryMoisture:2.0,
+  qNetArDeclared:21.00,
+  /* 第四关 · 履约 */
+  crudeSteel:300.00,
+  quotaFree:600.00,
+  ceaPrice:94.84
+};
+
+/* ================= 判据（LIM） ================= */
+const LIM={
+  qNetAr:22.05,
+  totalEmission:620.00,
+  declaredEmission:591.18,
+  gap:20.00,
+  coalGap:6.00,
+  stage1Pick:7,
+  stage1Trap:6,
+  fineLowWan:100, fineHighWan:500,
+  fraudLowWan:50, fraudHighWan:200,
+  ratioLow:5, ratioHigh:10
+};
+
+/* ================= 状态 ================= */
+const S={
+  stage:0, unlocked:0, finished:false,
+  picked:{}, seq:[], cardsOpen:{}, conclusion:null, plan:null,
+  s1:false, s2:false, s3:false, s4:false
+};
+
+const STEPS=[
+  '核查安排',
+  '建立核查技术工作组（至少 2 名成员，其中 1 名为负责人）',
+  '文件评审（排放报告、核算数据、原始凭证、计量器具台账、数据质量控制方案）',
+  '建立现场核查组（至少 2 人，原则上为技术工作组成员；现场核查前 2 个工作日通知企业）',
+  '实施现场核查（查、问、看、验四法）',
+  '出具《核查结论》',
+  '告知核查结果',
+  '保存核查记录'
+];
+
+const ZONES=[
+  {id:'coal',      t:'外购烟煤燃烧',                       k:'must', d:'入厂煤 / 高炉喷吹 / 烧结用煤的实际消耗量',             r:'外购燃料，计入企业层级消耗化石燃料排放。'},
+  {id:'coke',      t:'外购焦炭燃烧',                       k:'must', d:'补充自产焦炭缺口的外购部分',                         r:'外购燃料，计入；发热量强制取附录 A 缺省值 28.435 GJ/t。'},
+  {id:'gas',       t:'外购天然气燃烧',                     k:'must', d:'轧钢加热炉 / 自备电厂用气',                           r:'外购燃料，计入企业层级消耗化石燃料排放。'},
+  {id:'carbonate', t:'外购碳酸盐分解（石灰石 / 白云石）',   k:'must', d:'石灰工序熔剂分解产生的过程排放',                     r:'计入过程排放：Σ(P碳酸盐 × EF)。'},
+  {id:'electrode', t:'外购电极消耗',                       k:'must', d:'炼钢工序电极消耗产生的过程排放',                     r:'计入过程排放：P电极 × EF电极。'},
+  {id:'rawmat',    t:'外购含碳原料（外购生铁、废钢）',      k:'must', d:'外购含碳原料消耗产生的过程排放',                     r:'计入过程排放：Σ(M外购含碳原料 × EF)。'},
+  {id:'deduct',    t:'含碳产品隐含排放的扣减',             k:'must', d:'粗钢产品及外销的生铁、粗苯、焦油',                   r:'扣减项，公式中是减号。漏勾会高估排放量。'},
+  {id:'power',     t:'净购入电力的间接排放',               k:'trap', d:'外购电力对应的间接排放',                           r:'2025 版企业层级不核算净购入电力/热力。该项属 2013 年"试行"版框架，勾选即边界错误。'},
+  {id:'selfcoke',  t:'自产焦炭',                           k:'trap', d:'厂内焦炉自产、供高炉使用的焦炭',                     r:'自产二次能源。企业层级只计外购燃料，自产焦炭的碳已由外购煤输入承担，再计即重复计算。'},
+  {id:'selfgas',   t:'自产高炉 / 转炉 / 焦炉煤气',         k:'trap', d:'厂内自产并在工序间流转的煤气',                     r:'自产二次能源，同上。自产煤气只出现在工序层级与掺烧发电设施核算中。'},
+  {id:'truck',     t:'厂内运输车辆柴油',                   k:'trap', d:'厂内搬运与运输设施消耗的柴油',                     r:'5.2.1 a) 明确：不包括运输设施使用的化石燃料排放。'},
+  {id:'ignite',    t:'点火助燃用燃料',                     k:'trap', d:'点火、助燃环节消耗的燃料',                         r:'5.2.1 a) 明确：不包括点火助燃使用的化石燃料排放。'},
+  {id:'aux',       t:'附属生产系统用能（职工食堂、班车等）', k:'trap', d:'车间浴室、保健站、办公场所、职工食堂、公务车辆及班车', r:'5.2.1 a) 明确：不包括附属生产系统使用的化石燃料排放。'}
+];
+
+const SEQSTEPS=[
+  {id:'q1', t:'称取空气干燥煤样',   o:'0.9–1.1 g，本页取 1.0000 g，精度 0.0002 g'},
+  {id:'q2', t:'装坩埚、接点火丝',   o:'弹内加 10 mL 蒸馏水吸收燃烧酸气'},
+  {id:'q3', t:'缓慢充高纯氧',       o:'2.8–3.0 MPa，时间 ≥15 s 置换弹内空气'},
+  {id:'q4', t:'氧弹放入内筒',       o:'内筒约 3000 g 水，与外筒温差 ±1 ℃ 内'},
+  {id:'q5', t:'点火并记录主期温升', o:'读到温度不再上升为终点'},
+  {id:'q6', t:'按公式逐级换算',     o:'Qb,ad → Qgr,ad → Qnet,ar'}
+];
+
+const CONCLS=[
+  {id:'c1', t:'以入厂磅单与 ERP 库存账一致的 166.00 万吨为准，缺票部分另行核实', ok:true,  d:'计量数据优先：磅单与库存账相互印证。'},
+  {id:'c2', t:'以采购发票合计的 160.00 万吨为准（发票才是合法凭证）',           ok:false, d:'发票缺失不等于消耗不存在，不能以票据代替计量。'},
+  {id:'c3', t:'取三方平均 162.00 万吨作为消耗量',                              ok:false, d:'三类凭证性质不同，不能简单平均。'}
+];
+
+const CARDS=[
+  {id:'wb',  t:'入厂磅单（电子汽车衡）', v:'166.00 万吨', d:'计量数据。用于贸易结算的计量器具应强制检定，校准周期不超过 12 个月。'},
+  {id:'inv', t:'采购发票合计',           v:'160.00 万吨', d:'其中 6.00 万吨未取得发票，会计上暂估入库。'},
+  {id:'erp', t:'财务 ERP 煤炭库存账',    v:'166.00 万吨', d:'按"期初库存 + 购入 − 期末库存"倒推的消耗量。'}
+];
+
+/* ================= 数值计算 ================= */
+function qBombAd(){ return MODEL.bombHeatCapacity*MODEL.bombDeltaT/MODEL.bombSampleMass; }
+function qGrAd(){ return qBombAd()-94.1*MODEL.bombSulfur-MODEL.nitricFactor*qBombAd(); }
+function qNetAr(){
+  const j=(qGrAd()-206*MODEL.hydrogenAd)*(100-MODEL.totalMoisture)/(100-MODEL.airDryMoisture)-23*MODEL.totalMoisture;
+  return j/1000;
+}
+function round2(x){ return Math.round(x*100)/100; }
+
+function inventoryRows(){
+  return [
+    {n:'消耗化石燃料 · 外购烟煤',     a:'166.00 万 t × 22.05 GJ/t × CC 0.02618',        v:166.00*22.05*0.02618*K44},
+    {n:'消耗化石燃料 · 外购焦炭',     a:'81.00 万 t × 28.435 GJ/t（缺省）× CC 0.02942', v:81.00*28.435*0.02942*K44},
+    {n:'消耗化石燃料 · 外购天然气',   a:'5000 万 Nm³ × 389.310 GJ/万 Nm³ × CC 0.01532', v:5000*389.310*0.01532*K44/1e4},
+    {n:'过程排放 · 石灰石',           a:'21.33 万 t × 0.440 tCO₂/t',                    v:21.33*0.440},
+    {n:'过程排放 · 白云石',           a:'6.00 万 t × 0.476 tCO₂/t',                     v:6.00*0.476},
+    {n:'过程排放 · 外购电极',         a:'1.00 万 t × 3.663 tCO₂/t',                     v:1.00*3.663},
+    {n:'过程排放 · 外购生铁',         a:'20.00 万 t × 0.172 tCO₂/t',                    v:20.00*0.172},
+    {n:'过程排放 · 废钢',             a:'80.00 万 t × 0.037 tCO₂/t',                    v:80.00*0.037},
+    {n:'扣减 · 含碳产品（粗钢）',     a:'−300.00 万 t × 0.037 tCO₂/t（减项）',          v:-300.00*0.037},
+    {n:'扣减 · 含碳产品（外销粗苯）', a:'−0.50 万 t × 3.382 tCO₂/t（减项）',             v:-0.50*3.382},
+    {n:'扣减 · 含碳产品（外销焦油）', a:'−0.10 万 t × 2.699 tCO₂/t（减项）',             v:-0.10*2.699}
+  ];
+}
+function calcInventory(){
+  return inventoryRows().map(function(r){ return {n:r.n,a:r.a,v:round2(r.v)}; });
+}
+function inventoryTotal(){
+  return round2(calcInventory().reduce(function(s,r){ return s+r.v; },0));
+}
+function coalRowDeclared(){ return round2(MODEL.coalDeclared*MODEL.qNetArDeclared*0.02618*K44); }
+function coalRowVerified(){ return round2(166.00*22.05*0.02618*K44); }
+function declaredTotal(){ return round2(inventoryTotal()-coalRowVerified()+coalRowDeclared()); }
+function priceNow(){
+  const el=$('priceSlider');
+  const v=el?parseFloat(el.value):NaN;
+  return isFinite(v)?v:MODEL.ceaPrice;
+}
+
+/* ================= 输出 ================= */
+function log(msg){
+  const el=$('log'); if(!el) return;
+  el.innerHTML=el.innerHTML+'<div>· '+msg+'</div>';
+  if(el.scrollTop!==undefined) el.scrollTop=el.scrollHeight;
+}
+function warn(msg){ const el=$('warn'); if(el) el.textContent=msg; }
+function setTxt(id,v){ const el=$(id); if(el) el.textContent=String(v); }
+function setOut(id,html){ const el=$(id); if(el) el.innerHTML=html; }
+function setSts(txt,cls){ const el=$('sts'); if(el){ el.textContent=txt; el.className='sts '+cls; } }
+
+/* ================= 渲染 ================= */
+function render(){ updateHud(); drawStage(); }
+function updateHud(){
+  let pick=0,trap=0;
+  for(let i=0;i<ZONES.length;i++){
+    const z=ZONES[i];
+    if(!S.picked[z.id]) continue;
+    if(z.k==='must') pick++; else trap++;
+  }
+  setTxt('hudPick',pick);
+  setTxt('hudTrap',trap);
+  setTxt('hudS1',S.s1?'✅ 已过关':((pick||trap)?'⏳ 判定中':'未完成'));
+  setTxt('hudStage',S.stage?('第 '+S.stage+' 关'):'未开始');
+  setTxt('hudQb',(qBombAd()/1000).toFixed(2));
+  setTxt('hudQg',(qGrAd()/1000).toFixed(2));
+  setTxt('hudQn',qNetAr().toFixed(2));
+  setTxt('hudDecl',MODEL.qNetArDeclared.toFixed(2));
+  const dev=(qNetAr()-MODEL.qNetArDeclared)/MODEL.qNetArDeclared*100;
+  setTxt('hudDev',(dev>0?'+':'')+dev.toFixed(2));
+  setTxt('priceTxt',priceNow().toFixed(2));
+}
+
+/* ================= Canvas ================= */
+let ctx=null, ctx2=null, CW=900, CH=330, CW2=900, CH2=240, hits=[];
+function fitCanvas(){
+  const cv=$('cv');
+  if(cv){
+    const dpr=(typeof window!=='undefined'&&window.devicePixelRatio)?window.devicePixelRatio:1;
+    const W=Math.max(320,(cv.clientWidth||900)), H=(cv.clientHeight||330);
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+    CW=W; CH=H;
+    if(typeof cv.getContext==='function'){ ctx=cv.getContext('2d'); }
+    if(ctx&&typeof ctx.setTransform==='function'){ ctx.setTransform(dpr,0,0,dpr,0,0); }
+  }
+  const cv2=$('cv2');
+  if(cv2){
+    const dpr=(typeof window!=='undefined'&&window.devicePixelRatio)?window.devicePixelRatio:1;
+    const W=Math.max(320,(cv2.clientWidth||900)), H=(cv2.clientHeight||240);
+    cv2.width=Math.round(W*dpr); cv2.height=Math.round(H*dpr);
+    CW2=W; CH2=H;
+    if(typeof cv2.getContext==='function'){ ctx2=cv2.getContext('2d'); }
+    if(ctx2&&typeof ctx2.setTransform==='function'){ ctx2.setTransform(dpr,0,0,dpr,0,0); }
+  }
+}
+function clearC(c,w,h){
+  if(!c) return;
+  c.clearRect(0,0,w,h);
+  c.fillStyle='#0d1424'; c.fillRect(0,0,w,h);
+}
+function box(c,x,y,w,h,fill,stroke){
+  if(!c) return;
+  const r=8;
+  c.beginPath();
+  c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y);
+  c.closePath();
+  if(fill){ c.fillStyle=fill; c.fill(); }
+  if(stroke){ c.strokeStyle=stroke; c.lineWidth=1.2; c.stroke(); }
+}
+function label(c,txt,x,y,color,size,align){
+  if(!c||txt===undefined||txt===null) return;
+  c.font=(size||11)+'px Inter, PingFang SC, Microsoft YaHei, sans-serif';
+  c.fillStyle=color||'#94a3b8';
+  c.textAlign=align||'left';
+  c.fillText(String(txt),x,y);
+}
+function arrowTo(c,x1,y1,x2,y2,color){
+  if(!c) return;
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2);
+  c.lineWidth=1.4; c.strokeStyle=color||'#475569'; c.stroke();
+  const ang=Math.atan2(y2-y1,x2-x1);
+  c.beginPath();
+  c.moveTo(x2,y2);
+  c.lineTo(x2-8*Math.cos(ang-0.4),y2-8*Math.sin(ang-0.4));
+  c.lineTo(x2-8*Math.cos(ang+0.4),y2-8*Math.sin(ang+0.4));
+  c.closePath(); c.fillStyle=color||'#475569'; c.fill();
+}
+function drawStage(){
+  if(S.stage<=1) drawFlow();
+  else if(S.stage===2) drawCalorimeter();
+  else if(S.stage===3) drawDesk();
+  else if(S.stage===4) drawSettle();
+}
+function drawFlow(){
+  const c=ctx; if(!c) return;
+  clearC(c,CW,CH);
+  label(c,'钢铁企业工艺流程 · 企业层级核算边界（13 个可点热区）',14,20,'#5eead4',12);
+  const nodes=[
+    {n:'焦化工序',   x:0.06,y:0.26,w:0.15,h:0.19},
+    {n:'烧结/球团',  x:0.25,y:0.26,w:0.15,h:0.19},
+    {n:'高炉炼铁',   x:0.44,y:0.26,w:0.15,h:0.19},
+    {n:'转炉炼钢',   x:0.63,y:0.26,w:0.15,h:0.19},
+    {n:'钢压延加工', x:0.82,y:0.26,w:0.14,h:0.19},
+    {n:'石灰工序',   x:0.25,y:0.62,w:0.15,h:0.17},
+    {n:'自备电厂（掺烧自产二次能源）', x:0.56,y:0.62,w:0.30,h:0.17}
+  ];
+  hits=[];
+  for(let i=0;i<nodes.length;i++){
+    const nd=nodes[i];
+    const x=nd.x*CW, y=nd.y*CH, w=nd.w*CW, h=nd.h*CH;
+    box(c,x,y,w,h,'rgba(20,184,166,.10)','rgba(20,184,166,.42)');
+    label(c,nd.n,x+w/2,y+h/2+4,'#ccfbf1',11,'center');
+    if(i<4){
+      const nx=nodes[i+1];
+      arrowTo(c,x+w+3,y+h/2,nx.x*CW-4,y+h/2,'#0f766e');
+    }
+  }
+  arrowTo(c,0.325*CW,0.62*CH,0.325*CW,0.46*CH,'#0f766e');
+  arrowTo(c,0.71*CW,0.62*CH,0.71*CW,0.46*CH,'#0f766e');
+
+  const slots=[
+    {id:'coal',      x:0.03,y:0.03,w:0.19,h:0.14},
+    {id:'coke',      x:0.24,y:0.03,w:0.17,h:0.14},
+    {id:'gas',       x:0.43,y:0.03,w:0.17,h:0.14},
+    {id:'carbonate', x:0.62,y:0.03,w:0.17,h:0.14},
+    {id:'electrode', x:0.81,y:0.03,w:0.16,h:0.14},
+    {id:'rawmat',    x:0.03,y:0.82,w:0.22,h:0.15},
+    {id:'deduct',    x:0.28,y:0.82,w:0.23,h:0.15},
+    {id:'selfcoke',  x:0.54,y:0.82,w:0.20,h:0.15},
+    {id:'selfgas',   x:0.77,y:0.82,w:0.20,h:0.15},
+    {id:'power',     x:0.03,y:0.48,w:0.21,h:0.13},
+    {id:'truck',     x:0.03,y:0.64,w:0.18,h:0.12},
+    {id:'ignite',    x:0.25,y:0.48,w:0.16,h:0.12},
+    {id:'aux',       x:0.62,y:0.48,w:0.35,h:0.12}
+  ];
+  for(let i=0;i<slots.length;i++){
+    const sl=slots[i];
+    let z=null;
+    for(let j=0;j<ZONES.length;j++){ if(ZONES[j].id===sl.id){ z=ZONES[j]; } }
+    if(!z) continue;
+    const x=sl.x*CW, y=sl.y*CH, w=sl.w*CW, h=sl.h*CH;
+    let fill='rgba(255,255,255,.035)', stroke='#334155';
+    if(S.s1){ if(z.k==='must'){ fill='rgba(52,211,153,.18)'; stroke='#34d399'; } }
+    else if(S.picked[z.id]){ if(z.k==='must'){ fill='rgba(20,184,166,.22)'; stroke='#5eead4'; } else { fill='rgba(251,113,133,.20)'; stroke='#fb7185'; } }
+    box(c,x,y,w,h,fill,stroke);
+    label(c,z.t,x+7,y+16,'#e2e8f0',10);
+    label(c,z.k==='must'?'应纳入':'陷阱项',x+7,y+h-7,z.k==='must'?'#5eead4':'#fb7185',9);
+    hits.push({id:z.id,x:x,y:y,w:w,h:h});
+  }
+  label(c,'提示：点击图块或下方卡片均可选中；绿色为"应纳入"，粉色为"陷阱项"。',14,CH-6,'#475569',10);
+}
+function drawCalorimeter(){
+  const c=ctx2; if(!c) return;
+  clearC(c,CW2,CH2);
+  label(c,'氧弹量热计 · 立式剖面（等轴测示意）',14,20,'#5eead4',12);
+  const bx=CW2*0.08, by=CH2*0.16, bw=CW2*0.26, bh=CH2*0.70;
+  box(c,bx,by,bw,bh,'rgba(20,184,166,.06)','rgba(20,184,166,.38)');
+  label(c,'外筒',bx+8,by+16,'#5eead4',10);
+  const ix=bx+bw*0.16, iy=by+bh*0.22, iw=bw*0.68, ih=bh*0.60;
+  box(c,ix,iy,iw,ih,'rgba(56,189,248,.14)','rgba(56,189,248,.5)');
+  label(c,'内筒 约 3000 g 水',ix+6,iy+16,'#bae6fd',10);
+  const bbx=ix+iw*0.22, bby=iy+ih*0.32, bbw=iw*0.56, bbh=ih*0.44;
+  box(c,bbx,bby,bbw,bbh,'rgba(251,113,133,.16)','rgba(251,113,133,.55)');
+  label(c,'氧弹',bbx+6,bby+15,'#fecdd3',10);
+  label(c,'坩埚 + 点火丝',bbx+6,bby+28,'#fb7185',9);
+  const tx=CW2*0.44, ty=CH2*0.18;
+  box(c,tx,ty,CW2*0.52,CH2*0.30,'rgba(20,184,166,.06)','rgba(20,184,166,.32)');
+  label(c,'温度测定',tx+8,ty+18,'#5eead4',10);
+  label(c,'校正后温升 ΔT = 2.35 K',tx+8,ty+38,'#e2e8f0',11);
+  label(c,'热容量 E = 10460 J/K ｜ 试样 1.0000 g',tx+8,ty+56,'#94a3b8',10);
+  box(c,tx,ty+CH2*0.36,CW2*0.52,CH2*0.28,'rgba(255,255,255,.03)','rgba(255,255,255,.14)');
+  label(c,'充氧',tx+8,ty+CH2*0.36+18,'#5eead4',10);
+  label(c,'高纯氧 2.8–3.0 MPa，充氧时间 ≥15 s（置换弹内空气）',tx+8,ty+CH2*0.36+38,'#e2e8f0',10);
+  label(c,'弹内加 10 mL 蒸馏水吸收燃烧酸气',tx+8,ty+CH2*0.36+56,'#94a3b8',10);
+  for(let i=0;i<5;i++){
+    const px=bx+bw+16+i*12;
+    const py=by+bh-(((S.seq.length*14)+(i*26))%Math.max(40,bh-10));
+    if(c.beginPath){ c.beginPath(); c.arc(px,py,2.6,0,6.2832); c.fillStyle='rgba(94,234,212,.55)'; c.fill(); }
+  }
+  label(c,'操作顺序：称样 → 装弹 → 充氧 → 入水 → 点火 → 换算',14,CH2-8,'#475569',10);
+}
+function drawDesk(){
+  const c=ctx; if(!c) return;
+  clearC(c,CW,CH);
+  label(c,'台账交叉核对台 · 申报量 vs 三份凭证',14,20,'#5eead4',12);
+  const items=[
+    {n:'企业申报量',v:MODEL.coalDeclared,c:'#fbbf24'},
+    {n:'入厂磅单（汽车衡）',v:MODEL.coalWeighbridge,c:'#34d399'},
+    {n:'采购发票合计',v:MODEL.coalInvoice,c:'#fb7185'},
+    {n:'ERP 煤炭库存账',v:MODEL.coalERP,c:'#38bdf8'}
+  ];
+  const y0=CH*0.26, gapY=CH*0.15, maxW=CW-330;
+  for(let i=0;i<items.length;i++){
+    const it=items[i], y=y0+i*gapY;
+    label(c,it.n,16,y+13,'#e2e8f0',11);
+    const w=Math.max(4,maxW*(it.v/180));
+    if(c.beginPath){ c.beginPath(); c.rect(160,y,Math.max(4,w),14); c.fillStyle=it.c; c.globalAlpha=0.6; c.fill(); c.globalAlpha=1; }
+    label(c,it.v.toFixed(2)+' 万 t',168+Math.max(4,w),y+12,it.c,11);
+  }
+  const yd=y0+3.62*gapY;
+  label(c,'差异（磅单 / 库存账 − 申报）= '+LIM.coalGap.toFixed(2)+' 万 t',16,yd+6,'#fbbf24',12);
+  label(c,'条形以 180 万 t 为满量程（教学示意）',16,CH-8,'#475569',10);
+}
+function drawSettle(){
+  const c=ctx; if(!c) return;
+  clearC(c,CW,CH);
+  label(c,'配额清缴与交易决策 · 两条路径的成本对比（万元示意）',14,20,'#5eead4',12);
+  const total=inventoryTotal();
+  const gap=round2(total-MODEL.quotaFree);
+  const price=priceNow();
+  const costBuy=gap*price;
+  const fineLow=gap*price*LIM.ratioLow;
+  const fineHigh=gap*price*LIM.ratioHigh;
+  const bars=[
+    {n:'B 方案 · 买入配额清缴',v:costBuy,c:'#34d399'},
+    {n:'A 方案 · 罚款（5 倍均价）',v:fineLow,c:'#fb7185'},
+    {n:'A 方案 · 罚款（10 倍均价）',v:fineHigh,c:'#ef4444'}
+  ];
+  const maxV=Math.max(fineHigh,0.01);
+  const y0=CH*0.30, gapY=CH*0.19, maxW=CW-330;
+  for(let i=0;i<bars.length;i++){
+    const b=bars[i], y=y0+i*gapY;
+    label(c,b.n,16,y+13,'#e2e8f0',11);
+    const w=Math.max(4,maxW*(b.v/maxV));
+    if(c.beginPath){ c.beginPath(); c.rect(200,y,Math.max(4,w),15); c.fillStyle=b.c; c.globalAlpha=0.62; c.fill(); c.globalAlpha=1; }
+    label(c,b.v.toFixed(0)+' 万元',208+Math.max(4,w),y+13,b.c,11);
+  }
+  label(c,'核查确认排放量 '+total.toFixed(2)+' 万 t ｜ 免费配额 '+MODEL.quotaFree.toFixed(2)+' 万 t ｜ 缺口 '+gap.toFixed(2)+' 万 t',16,CH-10,'#fbbf24',11);
+}
+function canvasHit(ev){
+  const cv=$('cv'); if(!cv) return;
+  const rect=(typeof cv.getBoundingClientRect==='function')?cv.getBoundingClientRect():{left:0,top:0,width:CW,height:CH};
+  const rx=(rect.width?CW/rect.width:1), ry=(rect.height?CH/rect.height:1);
+  const mx=(((ev&&ev.clientX)?ev.clientX:0)-(rect.left||0))*rx;
+  const my=(((ev&&ev.clientY)?ev.clientY:0)-(rect.top||0))*ry;
+  for(let i=0;i<hits.length;i++){
+    const hh=hits[i];
+    if(mx>=hh.x&&mx<=hh.x+hh.w&&my>=hh.y&&my<=hh.y+hh.h){ toggleZone(hh.id); return; }
+  }
+}
+
+/* ================= 第一关 ================= */
+function buildZones(){
+  const holder=$('zoneBox'); if(!holder) return;
+  let h='';
+  for(let i=0;i<ZONES.length;i++){
+    const z=ZONES[i];
+    h+='<div class="zone" id="z_'+z.id+'" onclick="toggleZone(\''+z.id+'\')"><span class="zb" id="zb_'+z.id+'"></span><div><b>'+z.t+'</b><span class="tg">'+z.d+'</span></div></div>';
+  }
+  holder.innerHTML=h;
+}
+function findZone(id){ for(let i=0;i<ZONES.length;i++){ if(ZONES[i].id===id) return ZONES[i]; } return null; }
+function toggleZone(id){
+  if(S.s1) return;
+  S.picked[id]=!S.picked[id];
+  refreshZones();
+  const z=findZone(id);
+  if(z) log((S.picked[id]?'选入':'取消')+'：<b>'+z.t+'</b>');
+  render();
+}
+function refreshZones(){
+  for(let i=0;i<ZONES.length;i++){
+    const z=ZONES[i];
+    const el=$('z_'+z.id), badge=$('zb_'+z.id);
+    if(el) el.className='zone'+(S.picked[z.id]?(z.k==='must'?' ok':' found'):'');
+    if(badge) badge.textContent=S.picked[z.id]?(z.k==='must'?'应纳入 ✓':'陷阱 ×'):'';
+  }
+}
+function submitStage1(){
+  let pick=0,trapPick=0,badReason='',miss='';
+  for(let i=0;i<ZONES.length;i++){
+    const z=ZONES[i];
+    if(z.k==='must'){
+      if(S.picked[z.id]) pick++; else if(!miss) miss=z.t;
+    }else if(S.picked[z.id]){
+      trapPick++;
+      if(!badReason) badReason=z.t+' —— '+z.r;
+    }
+  }
+  if(pick===LIM.stage1Pick&&trapPick===0){
+    S.s1=true; warn('');
+    log('✅ 第一关过关：应纳入 7 项全部选齐，无误勾。');
+    setOut('s1Out','<div class="note">✅ <b>第一关过关</b>。企业层级 = 消耗化石燃料（<b>仅外购</b>）+ 过程排放（碳酸盐 / 电极 / 外购含碳原料）− 含碳产品隐含排放扣减。<br>净购入电力热力、自产焦炭与自产煤气都不进企业层级。</div>');
+    unlockTo(2);
+  }else{
+    if(trapPick>0) log('❌ 误勾陷阱项：'+badReason);
+    else if(miss) log('❌ 漏勾应纳入项：<b>'+miss+'</b>');
+    setOut('s1Out','<div class="note warnbox">❌ 尚未过关。'+(trapPick>0?('<b>误勾：</b>'+badReason):('漏勾应纳入项：<b>'+miss+'</b>'))+'</div>');
+  }
+  refreshZones(); render();
+}
+function clearStage1(){
+  if(S.s1) return;
+  S.picked={}; S.picked=Object.create(null);
+  refreshZones(); setOut('s1Out',''); warn(''); render();
+}
+
+/* ================= 第二关 ================= */
+function buildSeq(){
+  const holder=$('seqBox'); if(!holder) return;
+  let h='';
+  for(let i=0;i<SEQSTEPS.length;i++){
+    const s=SEQSTEPS[i];
+    h+='<button class="pb" id="q_'+s.id+'" onclick="pickStep(\''+s.id+'\')">'+s.t+'<span class="po">'+s.o+'</span></button>';
+  }
+  holder.innerHTML=h;
+}
+function pickStep(id){
+  if(S.s2) return;
+  let want=-1;
+  for(let i=0;i<SEQSTEPS.length;i++){ if(SEQSTEPS[i].id===id) want=i; }
+  if(want<0) return;
+  if(S.seq.indexOf(id)>=0){ warn('这一步已经做过了。'); return; }
+  if(want===S.seq.length){
+    S.seq.push(id);
+    const el=$('q_'+id); if(el) el.className='pb on';
+    log('第 '+S.seq.length+' 步：'+SEQSTEPS[want].t);
+    warn('');
+    if(S.seq.length===SEQSTEPS.length){
+      S.s2=true;
+      const qn=qNetAr();
+      const dev=(qn-MODEL.qNetArDeclared)/MODEL.qNetArDeclared*100;
+      log('✅ 第二关过关：Qnet,ar = '+qn.toFixed(2)+' GJ/t；申报 '+MODEL.qNetArDeclared.toFixed(2)+' GJ/t，偏差 '+dev.toFixed(2)+'%。');
+      setOut('s2Out','<div class="note">✅ <b>第二关过关</b>。批次加权复核得 <b>Qnet,ar = '+qn.toFixed(2)+' GJ/t</b>。<br>企业申报 '+MODEL.qNetArDeclared.toFixed(2)+' GJ/t，偏差 <b>'+dev.toFixed(2)+'%</b>，且只能提供覆盖单一批次的检测报告——<b>开具不符合项</b>（依据 6.2.2.3 加权要求、6.2.2.2「取值方式当年确定后不应更改」）。<br>再次强调：直接取附录 A 缺省值<b>本身是合规的</b>；<b>声称为实测却拿不出 CMA/CNAS 批次报告</b>才构成不符合项。</div>');
+      unlockTo(3);
+    }
+  }else{
+    const expect=(S.seq.length<SEQSTEPS.length)?SEQSTEPS[S.seq.length].t:'（已完成）';
+    log('❌ 顺序错误：这一步应在「'+expect+'」之后。');
+    warn('顺序错：当前应先做「'+expect+'」。');
+  }
+  render();
+}
+
+/* ================= 第三关 ================= */
+function buildCards(){
+  const holder=$('cardBox'); if(!holder) return;
+  let h='';
+  for(let i=0;i<CARDS.length;i++){
+    const cd=CARDS[i];
+    h+='<div class="vcard" id="c_'+cd.id+'" onclick="flipCard(\''+cd.id+'\')"><div class="vt">'+cd.t+'</div><div class="vv" id="cv_'+cd.id+'">点击翻开</div><div class="vd">凭证要点：'+cd.d+'</div></div>';
+  }
+  holder.innerHTML=h;
+}
+function findCard(id){ for(let i=0;i<CARDS.length;i++){ if(CARDS[i].id===id) return CARDS[i]; } return null; }
+function flipCard(id){
+  S.cardsOpen[id]=true;
+  const cd=findCard(id); if(!cd) return;
+  setTxt('cv_'+id,cd.v);
+  const el=$('c_'+id); if(el) el.className='vcard open';
+  log('翻开凭证：'+cd.t+' = <b>'+cd.v+'</b>');
+}
+function buildConcl(){
+  const holder=$('conclBox'); if(!holder) return;
+  let h='';
+  for(let i=0;i<CONCLS.length;i++){
+    const cc=CONCLS[i];
+    h+='<div class="zone" id="k_'+cc.id+'" onclick="pickConcl(\''+cc.id+'\')"><div><b>'+cc.t+'</b><span class="tg">'+cc.d+'</span></div></div>';
+  }
+  holder.innerHTML=h;
+}
+function pickConcl(id){
+  S.conclusion=id;
+  for(let i=0;i<CONCLS.length;i++){
+    const el=$('k_'+CONCLS[i].id);
+    if(el) el.className='zone'+(CONCLS[i].id===id?' sel':'');
+  }
+  log('选定口径：'+id.toUpperCase());
+}
+function submitStage3(){
+  const el=$('diffIn');
+  const diffRaw=el?parseFloat(el.value):NaN;
+  const diffOk=isFinite(diffRaw)&&Math.abs(diffRaw-LIM.coalGap)<0.005;
+  const cOk=(S.conclusion==='c1');
+  const ncEl=$('ncBox');
+  const ncOk=!!(ncEl&&ncEl.checked);
+  const parts=[];
+  if(!diffOk) parts.push('差异应认定为 <b>'+LIM.coalGap.toFixed(2)+' 万吨</b>（磅单/库存账 166.00 − 申报 160.00）');
+  if(!cOk) parts.push('口径应选 <b>以磅单与 ERP 库存账一致的 166.00 万吨为准</b>');
+  if(!ncOk) parts.push('须就"未取得发票、暂估入库未及时取得凭证"<b>开具不符合项</b>');
+  if(parts.length===0){
+    S.s3=true;
+    const rate=round2(LIM.coalGap/MODEL.coalWeighbridge*100);
+    log('✅ 第三关过关：差异 6.00 万吨，以计量数据 166.00 万吨为准，并开具不符合项。');
+    setOut('s3Out','<div class="note">✅ <b>第三关过关</b>。活动数据少报率 = 6.00 / 166.00 ≈ <b>'+rate.toFixed(1)+'%</b>。<br>发票缺失<b>不等于</b>消耗不存在——以计量数据（磅单）与库存账相互印证的 <b>166.00 万吨</b>为准，缺票部分另行核实。</div>');
+    unlockTo(4);
+  }else{
+    log('❌ 第三关未过关：'+parts.join('；'));
+    setOut('s3Out','<div class="note warnbox">❌ 尚未过关：<br>· '+parts.join('<br>· ')+'</div>');
+  }
+  render();
+}
+
+/* ================= 第四关 ================= */
+function buildLedger(){
+  const holder=$('ledgerOut'); if(!holder) return;
+  const rows=calcInventory();
+  let h='<div class="hint">企业层级 · 物料平衡法（<b>不含碳氧化率</b>）。逐行四舍五入后合计应与核查确认排放量一致。</div>';
+  h+='<table class="tbl"><tr><th style="width:34%">源项</th><th style="width:42%">活动数据 × 因子</th><th>排放（万 tCO₂）</th></tr>';
+  for(let i=0;i<rows.length;i++){
+    h+='<tr><td>'+rows[i].n+'</td><td>'+rows[i].a+'</td><td><b>'+rows[i].v.toFixed(2)+'</b></td></tr>';
+  }
+  h+='<tr class="sum"><td>核查确认排放量合计</td><td>逐行舍入后求和</td><td>'+inventoryTotal().toFixed(2)+'</td></tr></table>';
+  h+='<div class="note blue">企业申报口径 <b>'+declaredTotal().toFixed(2)+'</b> 万 tCO₂（燃煤 160.00 万 t × 申报发热量 21.00 GJ/t，其余各行与核查一致）。<br>企业自认为对 '+MODEL.quotaFree.toFixed(2)+' 万 t 配额<b>尚有盈余</b>，核查确认后实为 <b>缺口</b>。</div>';
+  holder.innerHTML=h;
+}
+function onParam(){
+  setTxt('priceTxt',priceNow().toFixed(2));
+  if(S.stage===4) drawSettle();
+}
+function choosePlan(p){
+  S.plan=p; S.s4=true; S.finished=true;
+  const total=inventoryTotal();
+  const gap=round2(total-MODEL.quotaFree);
+  const price=priceNow();
+  const cost=round2(gap*price);
+  const low=round2(gap*price*LIM.ratioLow/1e4);
+  const high=round2(gap*price*LIM.ratioHigh/1e4);
+  let h='';
+  if(p==='B'){
+    h+='<div class="note">✅ <b>正确决策</b>。核查确认排放量 <b>'+total.toFixed(2)+'</b> 万 tCO₂，免费配额 <b>'+MODEL.quotaFree.toFixed(2)+'</b> 万 tCO₂，缺口 <b>'+gap.toFixed(2)+'</b> 万 tCO₂。<br>清缴成本 ≈ '+gap.toFixed(2)+' 万 t × '+price.toFixed(2)+' 元/t ≈ <b>'+cost.toFixed(0)+' 万元</b>，远低于拒缴的罚款区间与停产整治风险。</div>';
+    h+='<div class="note amber">🏅 解锁「绿色低碳企业徽章」：下一年度启动高炉富氢冶炼低碳改造，从源头降低排放强度。</div>';
+    setSts('✅ 已完成履约决策','sok');
+  }else{
+    h+='<div class="note warnbox">❌ <b>高风险路径</b>。拒不履约并不会让排放量变小，反而会同时触发两层责任。<br>本可只花约 <b>'+cost.toFixed(0)+' 万元</b>完成清缴；走这条路预计罚款 <b>'+low.toFixed(2)+' 亿 ~ '+high.toFixed(2)+' 亿元</b>，并可被责令停产整治。</div>';
+    setSts('❌ 已触发处罚推演','sbad');
+  }
+  h+='<div class="sub">后果推演（企业侧）</div>';
+  h+='<table class="tbl"><tr><th style="width:22%">条款</th><th>现行规定</th></tr>';
+  h+='<tr><td><b>第二十二条</b><br>数据不实</td><td>重点排放单位篡改、伪造数据资料，使用虚假的数据资料或者实施其他弄虚作假行为的：责令改正、没收违法所得，并处违法所得 5–10 倍罚款；没有违法所得或者违法所得不足 50 万元的，处 <b>50 万–200 万元</b>罚款；对其直接负责的主管人员和其他直接责任人员处 <b>5 万–20 万元</b>罚款；拒不改正的，<b>按照 50% 以上 100% 以下的比例核减其下一年度碳排放配额</b>，可以责令停产整治。</td></tr>';
+  h+='<tr><td><b>第二十四条</b><br>未按期足额清缴</td><td>责令限期改正，处 <b>100 万元以上 500 万元以下</b>罚款；限期内未完成清缴的，处未清缴的碳排放配额清缴时限前 1 个月市场交易平均成交价格 <b>5 倍以上 10 倍以下</b>的罚款，<b>可以责令停产整治</b>。<br><span style="color:#fbbf24">本页试算：'+gap.toFixed(2)+' 万 t × '+price.toFixed(2)+' 元/t × (5~10) ≈ <b>'+low.toFixed(2)+' 亿 ~ '+high.toFixed(2)+' 亿元</b>（教学取值，价格随行就市）</span></td></tr>';
+  h+='<tr><td><b>第二十七条</b><br>信用后果</td><td>建立信用记录制度，将受到行政处罚等信息<b>纳入国家有关信用信息系统，并依法向社会公布</b>。</td></tr></table>';
+  h+='<div class="sub">后果推演（核查机构侧 · 你自己的职业风险）</div>';
+  h+='<div class="note warnbox"><b>第二十三条（技术服务机构）</b>：出具不实或者虚假的检验检测报告的，责令改正、没收违法所得，并处违法所得 5–10 倍罚款；没有违法所得或者违法所得不足 2 万元的，处 2 万–10 万元罚款；情节严重的，<b>取消其检验检测资质</b>。年度排放报告或者技术审核意见存在重大缺陷或者遗漏、篡改伪造数据资料的，处违法所得 5–10 倍罚款，没有违法所得或者违法所得不足 20 万元的处 <b>20 万–100 万元</b>罚款；情节严重的，<b>禁止其从事年度排放报告编制和技术审核业务</b>；对直接负责的主管人员和其他直接责任人员处 2 万–20 万元罚款，<b>5 年内禁止从事前述业务，情节严重的终身禁止</b>。</div>';
+  h+='<div class="sub">实训结算</div>';
+  h+='<div class="dp">';
+  h+='<div class="dv '+(S.s1?'good':'bad')+'"><div class="dl">第一关</div><div class="dd">'+(S.s1?'通过':'未通过')+'</div><div class="du">边界与源项</div></div>';
+  h+='<div class="dv '+(S.s2?'good':'bad')+'"><div class="dl">第二关</div><div class="dd">'+(S.s2?'通过':'未通过')+'</div><div class="du">发热量复核</div></div>';
+  h+='<div class="dv '+(S.s3?'good':'bad')+'"><div class="dl">第三关</div><div class="dd">'+(S.s3?'通过':'未通过')+'</div><div class="du">台账核对</div></div>';
+  h+='<div class="dv '+(p==='B'?'good':'bad')+'"><div class="dl">第四关</div><div class="dd">'+(p==='B'?'正确':'错误')+'</div><div class="du">履约决策</div></div>';
+  h+='<div class="dv"><div class="dl">核查确认排放量</div><div class="dd">'+total.toFixed(2)+'</div><div class="du">万 tCO₂</div></div>';
+  h+='</div>';
+  h+='<div class="note">发现的异常：<b>① 燃煤量少报 6.00 万吨</b>（磅单/库存账 166.00 vs 申报 160.00）；<b>② 低位发热量按单批次低值申报、无全年批次报告</b>（申报 21.00 vs 复核 22.05 GJ/t）。两项均指向<b>数据不实</b>。</div>';
+  setOut('results',h);
+  log(p==='B'?'选择 B：买入配额清缴并启动低碳改造（正确）。':'选择 A：不予理睬（错误）。');
+  drawStage();
+}
+
+/* ================= 导出实验记录（CSV，纯前端） ================= */
+function csvCell(v){
+  const s=(v===undefined||v===null)?'':String(v);
+  if(s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0||s.indexOf('\r')>=0){
+    return '"'+s.split('"').join('""')+'"';
+  }
+  return s;
+}
+function csvRow(){
+  let out='';
+  for(let i=0;i<arguments.length;i++){ if(i) out+=','; out+=csvCell(arguments[i]); }
+  return out;
+}
+function buildCSV(){
+  const qn=qNetAr();
+  const dev=(qn-MODEL.qNetArDeclared)/MODEL.qNetArDeclared*100;
+  const total=inventoryTotal();
+  const decl=declaredTotal();
+  const gap=round2(total-MODEL.quotaFree);
+  const price=priceNow();
+  const rows=calcInventory();
+  const L=[];
+  L.push(csvRow('钢铁企业碳排放核查与履约 · 实验记录'));
+  L.push(csvRow('说明','本页数据为脱敏教学设定，不指向任何真实企业；不作为核查结论、检测报告或配额核定依据'));
+  L.push(csvRow('导出时间',new Date().toLocaleString()));
+  L.push('');
+  L.push(csvRow('一、四关结果',''));
+  L.push(csvRow('第一关 边界划分与源项识别',S.s1?'通过':'未通过'));
+  L.push(csvRow('第二关 入厂煤低位发热量复核',S.s2?'通过':'未通过'));
+  L.push(csvRow('第三关 台账交叉凭证核对',S.s3?'通过':'未通过'));
+  L.push(csvRow('第四关 配额清缴与交易决策',(S.plan==='B')?'正确（B 买入配额清缴）':((S.plan==='A')?'错误（A 不予理睬）':'未作答')));
+  L.push('');
+  L.push(csvRow('二、发热量复核','数值','单位'));
+  L.push(csvRow('弹筒发热量 Qb,ad',round2(qBombAd()/1000).toFixed(2),'MJ/kg'));
+  L.push(csvRow('高位发热量 Qgr,ad',round2(qGrAd()/1000).toFixed(2),'MJ/kg'));
+  L.push(csvRow('收到基低位发热量 Qnet,ar',qn.toFixed(2),'GJ/t'));
+  L.push(csvRow('企业申报发热量',MODEL.qNetArDeclared.toFixed(2),'GJ/t'));
+  L.push(csvRow('偏差',(dev>0?'+':'')+dev.toFixed(2),'%'));
+  L.push('');
+  L.push(csvRow('三、台账交叉核对','数值','单位'));
+  L.push(csvRow('企业申报燃煤量',MODEL.coalDeclared.toFixed(2),'万 t'));
+  L.push(csvRow('入厂磅单（电子汽车衡）',MODEL.coalWeighbridge.toFixed(2),'万 t'));
+  L.push(csvRow('采购发票合计',MODEL.coalInvoice.toFixed(2),'万 t'));
+  L.push(csvRow('ERP 煤炭库存账',MODEL.coalERP.toFixed(2),'万 t'));
+  L.push(csvRow('申报量与计量数据差异',LIM.coalGap.toFixed(2),'万 t'));
+  L.push('');
+  L.push(csvRow('四、企业层级排放量明细（物料平衡法，不含碳氧化率）','活动数据 × 因子','排放（万 tCO2）'));
+  for(let i=0;i<rows.length;i++){ L.push(csvRow(rows[i].n,rows[i].a,rows[i].v.toFixed(2))); }
+  L.push(csvRow('核查确认排放量合计','逐行舍入后求和',total.toFixed(2)));
+  L.push(csvRow('企业申报排放量','燃煤 160.00 万 t × 21.00 GJ/t',decl.toFixed(2)));
+  L.push('');
+  L.push(csvRow('五、履约结论','数值','单位'));
+  L.push(csvRow('免费配额',MODEL.quotaFree.toFixed(2),'万 tCO2'));
+  L.push(csvRow('缺口',gap.toFixed(2),'万 tCO2'));
+  L.push(csvRow('CEA 价格（教学取值，随行就市）',price.toFixed(2),'元/t'));
+  L.push(csvRow('清缴成本',round2(gap*price).toFixed(0),'万元'));
+  L.push(csvRow('拒缴罚款（未清缴配额 × 均价 × 5~10 倍）',round2(gap*price*LIM.ratioLow/1e4).toFixed(2)+' ~ '+round2(gap*price*LIM.ratioHigh/1e4).toFixed(2),'亿元'));
+  return L.join('\r\n');
+}
+function exportCSV(){
+  const name='钢铁碳排放核查-实验记录.csv';
+  try{
+    const csv=buildCSV();
+    if(typeof Blob!=='function'||typeof URL==='undefined'||typeof URL.createObjectURL!=='function'){
+      csvFallback(csv,name); return;
+    }
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=name;
+    if(document.body&&typeof document.body.appendChild==='function') document.body.appendChild(a);
+    if(typeof a.click==='function') a.click();
+    if(document.body&&typeof document.body.removeChild==='function') document.body.removeChild(a);
+    setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} },1500);
+    log('已导出实验记录：<b>'+name+'</b>（可用 Excel 直接打开，含四关结果、发热量复核、台账核对与排放量明细）');
+  }catch(e){
+    warn('导出失败：'+(e&&e.message?e.message:String(e)));
+  }
+}
+function csvFallback(csv,name){
+  const w=(typeof window!=='undefined'&&typeof window.open==='function')?window.open('','_blank'):null;
+  if(w&&w.document){
+    w.document.write('<pre>'+csv.split('&').join('&amp;').split('<').join('&lt;')+'</pre>');
+    log('当前环境不支持直接下载，已在新窗口打开 CSV 内容：<b>'+name+'</b>');
+  }else{
+    warn('当前环境不支持导出，请更换现代浏览器后重试。');
+  }
+}
+
+/* ================= 关卡调度 ================= */
+function unlockTo(n){
+  if(n>S.unlocked) S.unlocked=n;
+  if(n>=4){
+    const a=$('btnA'), b=$('btnB');
+    if(a) a.disabled=false;
+    if(b) b.disabled=false;
+  }
+  setSts('▶ 进行中：第 '+n+' 关','sa');
+}
+function step1(){ gotoStage(1); }
+function step2(){ gotoStage(2); }
+function step3(){ gotoStage(3); }
+function step4(){ gotoStage(4); }
+function gotoStage(n){
+  if(n>S.unlocked){
+    warn('关卡顺序解锁：第 '+(S.unlocked+1)+' 关尚未完成，第 '+n+' 关暂不响应。');
+    return;
+  }
+  S.stage=n;
+  setTxt('hudStage','第 '+n+' 关');
+  buildLedger();
+  fitCanvas();
+  render();
+}
+function resetAll(){
+  S.stage=0; S.unlocked=0; S.finished=false;
+  S.picked=Object.create(null); S.seq=[]; S.cardsOpen={}; S.conclusion=null; S.plan=null;
+  S.s1=false; S.s2=false; S.s3=false; S.s4=false;
+  setOut('s1Out',''); setOut('s2Out',''); setOut('s3Out',''); setOut('results',''); setOut('ledgerOut','');
+  const lg=$('log'); if(lg) lg.innerHTML='';
+  warn('');
+  const a=$('btnA'), b=$('btnB');
+  if(a) a.disabled=true;
+  if(b) b.disabled=true;
+  const di=$('diffIn'); if(di) di.value='';
+  const nc=$('ncBox'); if(nc) nc.checked=false;
+  for(let i=0;i<SEQSTEPS.length;i++){ const e=$('q_'+SEQSTEPS[i].id); if(e) e.className='pb'; }
+  for(let i=0;i<CONCLS.length;i++){ const e=$('k_'+CONCLS[i].id); if(e) e.className='zone'; }
+  for(let i=0;i<CARDS.length;i++){
+    const e=$('c_'+CARDS[i].id); if(e) e.className='vcard';
+    setTxt('cv_'+CARDS[i].id,'点击翻开');
+  }
+  refreshZones();
+  setSts('⏳ 未开始','si');
+  fitCanvas();
+  render();
+  log('实训已重置。可直接重做四关。');
+}
+
+/* ================= 初始化 ================= */
+function buildSteps(){
+  const holder=$('stepList'); if(!holder) return;
+  let h='';
+  for(let i=0;i<STEPS.length;i++){
+    h+='<div class="rule"><span class="rn">STEP '+(i+1)+'</span><span><span class="rt">'+STEPS[i]+'</span></span></div>';
+  }
+  holder.innerHTML=h;
+}
+function init(){
+  buildSteps(); buildZones(); buildSeq(); buildCards(); buildConcl(); buildLedger();
+  fitCanvas();
+  setSts('⏳ 未开始','si');
+  render();
+  log('欢迎。请先完成第一关：在企业层级核算边界中选出应纳入的排放源（共 7 项）。');
+}
+if(document&&typeof document.addEventListener==='function'){
+  document.addEventListener('DOMContentLoaded',function(){
+    try{ init(); }
+    catch(e){ const l=$('log'); if(l) l.innerHTML='<div>初始化异常：'+(e&&e.message?e.message:String(e))+'</div>'; }
+  });
+}else{
+  try{ init(); }catch(e){}
+}
+</script>
+
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:40px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:13px 18px;border:1px solid rgba(56,189,248,.38);border-left:4px solid #38bdf8;border-radius:12px;background:linear-gradient(90deg,rgba(56,189,248,.13),rgba(56,189,248,.03));transition:background .18s,border-color .18s}.stdbasis .sb-hd:hover{background:rgba(56,189,248,.20)}.stdbasis .sb-hd:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}.stdbasis .sb-ic{font-size:16px;line-height:1;flex:none}.stdbasis .sb-tt{font-size:14px;font-weight:700;color:#f1f5f9;letter-spacing:.02em}.stdbasis .sb-sub{font-size:11.5px;color:#a8b6c8;letter-spacing:.02em}.stdbasis .sb-bgs{display:flex;gap:6px;flex-wrap:wrap;margin-left:4px}.stdbasis .sb-bg{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.5;white-space:nowrap}.stdbasis .sb-bg b{font-weight:800;font-size:12px}.stdbasis .sb-bg.ok{background:rgba(52,211,153,.15);color:#6ee7b7;border:1px solid rgba(52,211,153,.42)}.stdbasis .sb-bg.dep{background:rgba(251,113,133,.16);color:#fda4af;border:1px solid rgba(251,113,133,.45)}.stdbasis .sb-bg.pend{background:rgba(251,191,36,.16);color:#fcd34d;border:1px solid rgba(251,191,36,.45)}.stdbasis .sb-ar{margin-left:auto;flex:none;font-size:11px;color:#a8b6c8;transition:transform .2s;display:inline-block}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.14);border-top:none;border-radius:0 0 12px 12px;padding:16px 20px;margin-top:-1px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:700;color:#e2e8f0}.stdbasis .sb-s{width:14%;white-space:nowrap;font-weight:700}.stdbasis .sb-u{width:28%;color:#94a3b8}.stdbasis .sb-ft{margin-top:12px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:12px;padding:11px 14px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.04);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis .sb-hd{padding:12px 14px;gap:8px}.stdbasis .sb-tt{font-size:13px}.stdbasis .sb-sub{display:none}.stdbasis .sb-ar{margin-left:0;order:9}.stdbasis .sb-cd{padding:14px}.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style>
+<summary class="sb-hd"><span class="sb-ic">&#128220;</span><span class="sb-tt">本页依据标准与现行状态</span><span class="sb-sub">9 项依据 &middot; 已回官方源核验</span><span class="sb-bgs"><span class="sb-bg ok"><b>8</b> 项现行</span><span class="sb-bg dep"><b>1</b> 项已废止</span></span><span class="sb-ar">&#9654;</span></summary>
+<div class="sb-cd">
+<table class="sb-tb">
+<tr><th>标准号 / 文号</th><th>名称</th><th>状态</th><th>本页用途</th></tr>
+<tr><td class="sb-c">CETS—AG—03.01—V01—2024</td><td>《企业温室气体排放核算与报告指南 钢铁行业》（环办气候函〔2025〕27号）</td><td class="sb-s">现行</td><td class="sb-u">企业层级核算边界与排放源、物料平衡法公式、附录 A 缺省值</td></tr>
+<tr><td class="sb-c">CETS—VG—03.01—V01—2024</td><td>《企业温室气体排放核查技术指南 钢铁行业》（环办气候函〔2025〕27号）</td><td class="sb-s">现行</td><td class="sb-u">行业核查要点与数据质量控制要求</td></tr>
+<tr><td class="sb-c">国环规气候〔2025〕2号</td><td>《2024、2025 年度全国碳排放权交易市场钢铁、水泥、铝冶炼行业配额总量和分配方案》</td><td class="sb-s">现行</td><td class="sb-u">配额分配规则、盈缺率 ±3%、清缴时限、CCER 抵销 5%</td></tr>
+<tr><td class="sb-c">生态环境部（经国务院批准）</td><td>《全国碳排放权交易市场覆盖钢铁、水泥、铝冶炼行业工作方案》（2025-03-26）</td><td class="sb-s">现行</td><td class="sb-u">行业纳入时间线、首个管控年度与覆盖范围</td></tr>
+<tr><td class="sb-c">国务院令第 775 号</td><td>《碳排放权交易管理暂行条例》（第二十四条经国务院令第 843 号修改，2026-08-15 施行）</td><td class="sb-s">现行</td><td class="sb-u">第二十二、二十三、二十四、二十七条罚则与信用记录</td></tr>
+<tr><td class="sb-c">环办气候函〔2021〕130号</td><td>《企业温室气体排放报告核查指南（试行）》</td><td class="sb-s">现行</td><td class="sb-u">核查程序八步、不符合项四档、保守原则、抽样要求</td></tr>
+<tr><td class="sb-c">GB/T 213-2008</td><td>《煤的发热量测定方法》</td><td class="sb-s">现行</td><td class="sb-u">低位发热量测定与批次加权</td></tr>
+<tr><td class="sb-c">GB/T 32151.5-2015</td><td>《温室气体排放核算与报告要求 第5部分：钢铁生产企业》</td><td class="sb-s">现行（2026-10-01 起被替代）</td><td class="sb-u">行业核算与报告要求对照</td></tr>
+<tr><td class="sb-c">发改办气候〔2013〕2526号</td><td>《中国钢铁生产企业温室气体排放核算方法与报告指南（试行）》</td><td class="sb-s">已废止（被 2025 版替代）</td><td class="sb-u">第一关陷阱项"净购入电力"的旧口径来源对照</td></tr>
+</table>
+<div class="sb-ft">本页共依据 <b>9</b> 项文件：<b>9</b> 项已回官方源核验，0 项待核。核验来源为生态环境部、中国政府网、全国标准信息公共服务平台等官方渠道原文。本页数值与图示用于教学演示，不作为工程设计、核查结论或检测报告的依据。</div>
+<div class="sb-fx"><b>时效提示</b>：<ul><li>GB/T 32151.5-2015 将于 <b>2026-10-01</b> 被 GB/T 32151.5-2026 全部代替。</li><li>《碳排放权交易管理暂行条例》第二十四条已由<b>国务院令第 843 号</b>修改（2026-08-15 施行），本页引用修改后的现行文本；原第二十四条中关于按未清缴配额核减下一年度配额的表述已删除。该类核减现仅见于<b>第二十二条</b>（按 50%–100% 的比例核减），与本页第四关展示的第二十四条口径不同，请勿混用。</li><li>碳价随行就市，本页 CEA 价格仅为教学取值。</li></ul></div>
+</div>
+</details>
+
+<a id="bk" href="../index.html" title="返回实验集总目录（Alt+Esc）"><span class="bk-a" aria-hidden="true">&#8592;</span><span class="bk-t">返回目录</span></a>
+<script>(function(){var b=document.getElementById("bk");if(!b)return;var f=function(){var y=window.pageYOffset||document.documentElement.scrollTop;if(y>260)b.classList.add("on");else b.classList.remove("on")};if(typeof window.addEventListener==='function')window.addEventListener("scroll",f,{passive:true});f();if(typeof document.addEventListener==='function')document.addEventListener("keydown",function(e){if(e.key==="Escape"&&e.altKey)location.href=b.getAttribute("href")});})();</script>
+<script>(function(){var sp=document.getElementById("sp");function f(){var h=document.documentElement.scrollHeight-window.innerHeight;var y=window.pageYOffset||document.documentElement.scrollTop;if(sp)sp.style.width=(h>0?(y/h*100):0)+"%"}if(typeof window.addEventListener==='function')window.addEventListener("scroll",f,{passive:true});f();try{var io=new IntersectionObserver(function(es){for(var i=0;i<es.length;i++){if(es[i].isIntersecting)es[i].target.classList.add("visible")}},{threshold:0.12});var secs=document.querySelectorAll(".sec");for(var j=0;j<secs.length;j++){io.observe(secs[j])}}catch(e){var s2=document.querySelectorAll(".sec");for(var k=0;k<s2.length;k++){s2[k].classList.add("visible")}}})();</script>
+</body>
+</html>

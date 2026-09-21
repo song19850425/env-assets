@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>读懂一条河 · 水质综合评价</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+        * { margin:0; padding:0; box-sizing: border-box; }
+        :root {
+            --ink: #1a1a2e; --ink-light: #555; --paper: #faf9f6; --paper-warm: #f5f0e8;
+            --water: #0ea5e9; --water-light: #e0f2fe; --water-dark: #0c4a6e;
+            --accent: #0ea5e9; --accent-light: #e0f2fe;
+            --green: #16a34a; --green-light: #f0fdf4;
+            --gold: #b45309; --gold-light: #fefce8;
+            --red: #dc2626; --red-light: #fef2f2;
+            --blue: #1d4ed8; --blue-light: #eff6ff;
+            --border: #e8e0d4;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', serif;
+            --sans: 'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--sans); color: var(--ink); background: var(--paper); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: linear-gradient(90deg, var(--water), var(--green)); z-index: 1000; transition: width 0.1s linear; }
+
+        #section-nav { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; gap: 14px; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: 0.3s; border: 2px solid transparent; position: relative; }
+        .nav-dot.active { background: var(--water); transform: scale(1.5); }
+        .nav-dot:hover { border-color: var(--water); }
+        .nav-dot .nav-label { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 11px; white-space: nowrap; color: var(--ink-light); background: #fff; padding: 3px 10px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .nav-dot:hover .nav-label { opacity: 1; }
+
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px 24px; position: relative; background: linear-gradient(180deg, #e0f2fe 0%, var(--paper) 100%); }
+        .hero-badge { display: inline-block; padding: 6px 18px; border-radius: 20px; background: var(--water-light); color: var(--water-dark); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 24px; border: 1px solid rgba(14,165,233,0.15); }
+        .hero h1 { font-family: var(--serif); font-size: clamp(40px, 7vw, 80px); font-weight: 900; line-height: 1.1; color: var(--ink); max-width: 700px; }
+        .hero h1 em { font-style: normal; color: var(--water); }
+        .hero h1 .river-emoji { display: inline-block; }
+        .hero-sub { margin-top: 20px; font-size: clamp(14px, 2vw, 18px); color: var(--ink-light); max-width: 520px; line-height: 1.7; }
+        .hero-stats { display: flex; gap: 32px; margin-top: 48px; flex-wrap: wrap; justify-content: center; }
+        .hero-stat { text-align: center; }
+        .hero-stat .num { font-family: var(--serif); font-size: 36px; font-weight: 900; color: var(--water-dark); display: block; line-height: 1; }
+        .hero-stat .lbl { font-size: 12px; color: var(--ink-light); margin-top: 4px; }
+        .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--ink-light); font-size: 12px; letter-spacing: 1px; animation: float 2s ease-in-out infinite; }
+        .scroll-hint .arrow { font-size: 18px; }
+        @keyframes float { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+        .section { max-width: 900px; margin: 0 auto; padding: 100px 24px; opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .section.visible { opacity: 1; transform: translateY(0); }
+        .section-num { font-size: 11px; font-weight: 600; letter-spacing: 3px; color: var(--water); text-transform: uppercase; margin-bottom: 8px; }
+        .section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 700; line-height: 1.2; color: var(--ink); margin-bottom: 12px; }
+        .section-desc { font-size: 16px; color: var(--ink-light); line-height: 1.8; max-width: 600px; margin-bottom: 48px; }
+
+        /* ── River Map SVG ── */
+        .river-map-wrap {
+            background: #fff; border-radius: 20px; padding: 32px;
+            border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+            margin-bottom: 32px; overflow: hidden;
+        }
+        .river-map-wrap svg { width: 100%; height: auto; max-width: 800px; display: block; margin: 0 auto; }
+        .section-dot { cursor: pointer; transition: all 0.3s; }
+        .section-dot:hover { filter: brightness(1.2); }
+        .section-dot.active-dot { }
+        .river-label { font-size: 11px; fill: var(--ink-light); font-family: var(--sans); }
+
+        /* ── Site Cards ── */
+        .site-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+        .site-card { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.35s ease; position: relative; }
+        .site-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--water); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+        .site-card:hover::before { transform: scaleX(1); }
+        .site-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        .site-card.selected { background: var(--water-light); border-color: rgba(14,165,233,0.3); }
+        .site-card.selected::before { transform: scaleX(1); }
+        .site-icon { font-size: 32px; margin-bottom: 8px; }
+        .site-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .site-pos { font-size: 12px; color: var(--ink-light); margin-bottom: 6px; }
+        .site-grade { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+
+        /* ── Indicator Cards ── */
+        .indicator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .indicator-card { background: #fff; border-radius: 12px; padding: 24px; border: 1px solid var(--border); cursor: pointer; transition: 0.35s ease; position: relative; overflow: hidden; }
+        .indicator-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--water); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+        .indicator-card:hover::before { transform: scaleX(1); }
+        .indicator-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        .indicator-card.revealed { background: var(--water-light); border-color: rgba(14,165,233,0.2); }
+        .indicator-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; }
+        .indicator-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .indicator-abbr { font-size: 12px; color: var(--ink-light); }
+        .indicator-role { font-size: 13px; color: var(--ink-light); line-height: 1.6; margin-top: 10px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease, margin-top 0.5s ease; }
+        .indicator-card.revealed .indicator-role { max-height: 200px; margin-top: 10px; }
+        .indicator-standard { display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+
+        /* ── Procedure ── */
+        .procedure-timeline { position: relative; padding-left: 40px; }
+        .procedure-timeline::before { content: ''; position: absolute; left: 15px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+        .proc-step { position: relative; margin-bottom: 40px; opacity: 0; transform: translateX(-20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .proc-step.visible { opacity: 1; transform: translateX(0); }
+        .proc-step::before { content: ''; position: absolute; left: -33px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--border); transition: 0.3s; }
+        .proc-step.visible::before { background: var(--water); border-color: var(--water); }
+        .proc-step-num { font-size: 11px; font-weight: 700; color: var(--water); letter-spacing: 1px; margin-bottom: 4px; }
+        .proc-step-title { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+        .proc-step-desc { font-size: 14px; color: var(--ink-light); line-height: 1.7; }
+        .proc-step-note { display: inline-block; margin-top: 8px; padding: 4px 12px; background: var(--gold-light); color: var(--gold); border-radius: 6px; font-size: 12px; }
+
+        /* ── Interactive Evaluation ── */
+        .experiment-section { background: linear-gradient(180deg, #f0fcff 0%, var(--paper) 100%); padding: 80px 24px 100px; }
+        .experiment-section .section { padding-top: 0; }
+        .eval-container { background: #fff; border-radius: 20px; box-shadow: 0 4px 32px rgba(0,0,0,0.06); border: 1px solid var(--border); overflow: hidden; }
+        .eval-steps { display: flex; gap: 0; background: #fafaf8; border-bottom: 1px solid var(--border); }
+        .eval-step-tab { flex: 1; text-align: center; padding: 16px 8px; font-size: 12px; color: #999; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; font-weight: 500; }
+        .eval-step-tab .step-num { font-weight: 700; display: block; font-size: 14px; margin-bottom: 2px; }
+        .eval-step-tab.active { color: var(--water); border-bottom-color: var(--water); background: var(--water-light); }
+        .eval-step-tab.done { color: var(--green); border-bottom-color: var(--green); }
+        .eval-panel { display: none; padding: 40px; min-height: 400px; }
+        .eval-panel.active { display: block; }
+        .eval-card { background: #fafaf8; border-radius: 14px; padding: 28px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .eval-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; font-family: var(--serif); }
+        .eval-card p { font-size: 14px; color: var(--ink-light); line-height: 1.8; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+        .input-grid label { font-size: 12px; font-weight: 600; color: var(--ink-light); display: block; margin-bottom: 4px; }
+        .input-grid input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 500; font-family: var(--sans); background: #fff; transition: 0.2s; }
+        .input-grid input:focus { outline: none; border-color: var(--water); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+
+        .eval-result-box { text-align: center; padding: 32px; background: var(--green-light); border-radius: 14px; margin-top: 20px; display: none; }
+        .eval-result-box .grade-badge { font-size: 48px; font-weight: 900; font-family: var(--serif); line-height: 1; display: block; }
+        .eval-result-box .grade-label { font-size: 20px; margin-top: 4px; }
+        .eval-result-box .grade-desc { font-size: 14px; color: var(--ink-light); margin-top: 8px; line-height: 1.8; }
+
+        .indicator-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
+        .indicator-detail div { padding: 10px 14px; border-radius: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+
+        .btn { padding: 12px 32px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s ease; font-family: var(--sans); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+        .btn-primary { background: linear-gradient(135deg, var(--water), #0284c7); color: #fff; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,165,233,0.3); }
+        .btn-outline { background: transparent; color: var(--ink-light); border: 1.5px solid var(--border); }
+        .btn-outline:hover:not(:disabled) { border-color: var(--water); color: var(--water); }
+
+        .sample-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; background: #f0fcff; border-radius: 10px; font-size: 13px; color: var(--ink-light); margin: 12px 0; }
+        .sample-grid span { font-weight: 600; color: var(--ink); }
+
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .status-badge.waiting { background: var(--paper-warm); color: var(--ink-light); }
+        .status-badge.active { background: var(--gold-light); color: var(--gold); }
+        .status-badge.done { background: var(--green-light); color: var(--green); }
+
+        .footer { text-align: center; padding: 60px 24px; color: var(--ink-light); font-size: 13px; border-top: 1px solid var(--border); background: var(--paper-warm); }
+
+        @media (max-width: 600px) {
+            .hero-stats { gap: 24px; }
+            .input-grid, .indicator-detail { grid-template-columns: 1fr; }
+            .eval-steps { flex-wrap: wrap; }
+            .eval-step-tab { min-width: 50%; }
+            #section-nav { right: 12px; }
+            .procedure-timeline { padding-left: 32px; }
+            .eval-panel { padding: 24px; }
+            .sample-grid { grid-template-columns: 1fr; }
+            .site-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<div id="section-nav">
+    <div class="nav-dot active" onclick="scrollToSection(0)"><span class="nav-label">开篇</span></div>
+    <div class="nav-dot" onclick="scrollToSection(1)"><span class="nav-label">监测断面</span></div>
+    <div class="nav-dot" onclick="scrollToSection(2)"><span class="nav-label">指标体系</span></div>
+    <div class="nav-dot" onclick="scrollToSection(3)"><span class="nav-label">评价方法</span></div>
+    <div class="nav-dot" onclick="scrollToSection(4)"><span class="nav-label">交互评价</span></div>
+    <div class="nav-dot" onclick="scrollToSection(5)"><span class="nav-label">报告</span></div>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+    <div class="hero-badge">环境检测 · 交互式教学</div>
+    <h1>读懂一条<em>河</em></h1>
+    <p class="hero-sub">从监测断面到综合评价。<br>将分散的水质指标串联为完整的水环境质量评价工作流。</p>
+    <div class="hero-stats">
+        <div class="hero-stat"><span class="num">5</span><span class="lbl">个监测断面</span></div>
+        <div class="hero-stat"><span class="num">6</span><span class="lbl">项核心指标</span></div>
+        <div class="hero-stat"><span class="num">Ⅴ</span><span class="lbl">级水质分类</span></div>
+        <div class="hero-stat"><span class="num">3</span><span class="lbl">种评价方法</span></div>
+    </div>
+    <div class="scroll-hint"><span>向下滚动开始</span><span class="arrow">↓</span></div>
+</section>
+
+<!-- ═══════════════ SEC 01 · 监测断面 ═══════════════ -->
+<section class="section" id="sec-01">
+    <div class="section-num">Section 01 · 监测断面</div>
+    <h2 class="section-title">认识一条河</h2>
+    <p class="section-desc">水质评价的第一步是合理布设监测断面。以某流域为例，从上游到下游共设 5 个断面，覆盖不同功能区划。点击断面查看详情。</p>
+
+    <!-- River Map SVG -->
+    <div class="river-map-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" id="riverSvg">
+            <!-- River body -->
+            <path d="M 80 260 Q 120 200 150 180 Q 200 150 230 160 Q 300 180 350 140 Q 400 100 450 110 Q 520 120 560 90 Q 620 60 660 50" fill="none" stroke="#93c5fd" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+            <path d="M 80 260 Q 120 200 150 180 Q 200 150 230 160 Q 300 180 350 140 Q 400 100 450 110 Q 520 120 560 90 Q 620 60 660 50" fill="none" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+            <!-- Flow arrow -->
+            <polygon points="640,40 660,50 640,60" fill="#93c5fd" opacity="0.6"/>
+            <!-- Labels -->
+            <text x="50" y="140" font-size="11" fill="#888" font-family="Inter">上游 ↓</text>
+            <text x="610" y="30" font-size="11" fill="#888" font-family="Inter">↓ 下游</text>
+
+            <!-- Section 1 - Headwaters -->
+            <circle cx="120" cy="195" r="14" fill="#fff" stroke="#0ea5e9" stroke-width="3" class="section-dot" data-idx="0" onclick="selectSite(0)"/>
+            <text x="106" y="225" font-size="10" fill="#555" font-family="Inter">S1 源头</text>
+
+            <!-- Section 2 - Upper reach -->
+            <circle cx="210" cy="162" r="14" fill="#fff" stroke="#0ea5e9" stroke-width="3" class="section-dot" data-idx="1" onclick="selectSite(1)"/>
+            <text x="196" y="192" font-size="10" fill="#555" font-family="Inter">S2 上游</text>
+
+            <!-- Section 3 - Mid reach -->
+            <circle cx="320" cy="152" r="14" fill="#fff" stroke="#0ea5e9" stroke-width="3" class="section-dot" data-idx="2" onclick="selectSite(2)"/>
+            <text x="306" y="182" font-size="10" fill="#555" font-family="Inter">S3 中游</text>
+
+            <!-- Section 4 - Urban area -->
+            <circle cx="430" cy="105" r="14" fill="#fff" stroke="#0ea5e9" stroke-width="3" class="section-dot" data-idx="3" onclick="selectSite(3)"/>
+            <text x="412" y="135" font-size="10" fill="#555" font-family="Inter">S4 城区</text>
+
+            <!-- Section 5 - Outlet -->
+            <circle cx="560" cy="85" r="14" fill="#fff" stroke="#0ea5e9" stroke-width="3" class="section-dot" data-idx="4" onclick="selectSite(4)"/>
+            <text x="544" y="115" font-size="10" fill="#555" font-family="Inter">S5 河口</text>
+
+            <!-- Landmarks -->
+            <rect x="380" y="170" width="80" height="25" rx="4" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+            <text x="390" y="187" font-size="10" fill="#92400e" font-family="Inter">🏭 工业园区</text>
+            <rect x="440" y="175" width="60" height="25" rx="4" fill="#e0f2fe" stroke="#bae6fd" stroke-width="1"/>
+            <text x="446" y="192" font-size="10" fill="#0c4a6e" font-family="Inter">🏘️ 城区</text>
+            <rect x="550" y="140" width="80" height="25" rx="4" fill="#f0fdf4" stroke="#dcfce7" stroke-width="1"/>
+            <text x="562" y="157" font-size="10" fill="#166534" font-family="Inter">🌾 农田</text>
+        </svg>
+    </div>
+
+    <div class="site-grid" id="siteGrid">
+        <div class="site-card selected" data-idx="0" onclick="selectSite(0)">
+            <div class="site-icon">🏔️</div>
+            <div class="site-name">S1 源头段</div>
+            <div class="site-pos">上游 · 保护区内</div>
+            <span class="site-grade" style="background:#dcfce7;color:#166534;">Ⅰ类</span>
+        </div>
+        <div class="site-card" data-idx="1" onclick="selectSite(1)">
+            <div class="site-icon">🌲</div>
+            <div class="site-name">S2 上游段</div>
+            <div class="site-pos">上游 · 农业区</div>
+            <span class="site-grade" style="background:#dcfce7;color:#166534;">Ⅱ类</span>
+        </div>
+        <div class="site-card" data-idx="2" onclick="selectSite(2)">
+            <div class="site-icon">🌊</div>
+            <div class="site-name">S3 中游段</div>
+            <div class="site-pos">中游 · 过渡区</div>
+            <span class="site-grade" style="background:#fef3c7;color:#92400e;">Ⅲ类</span>
+        </div>
+        <div class="site-card" data-idx="3" onclick="selectSite(3)">
+            <div class="site-icon">🏭</div>
+            <div class="site-name">S4 城区段</div>
+            <div class="site-pos">下游 · 城区汇入</div>
+            <span class="site-grade" style="background:#fef2f2;color:#991b1b;">Ⅳ类</span>
+        </div>
+        <div class="site-card" data-idx="4" onclick="selectSite(4)">
+            <div class="site-icon">🌾</div>
+            <div class="site-name">S5 河口段</div>
+            <div class="site-pos">下游 · 入河口</div>
+            <span class="site-grade" style="background:#fef3c7;color:#92400e;">Ⅲ类</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ SEC 02 · 指标体系 ═══════════════ -->
+<section class="section" id="sec-02">
+    <div class="section-num">Section 02 · 指标体系</div>
+    <h2 class="section-title">六项核心水质指标</h2>
+    <p class="section-desc">水质评价以地表水环境质量标准（GB 3838-2002）为基础，涵盖物理、化学、生物三方面指标。点击卡片查看每项指标的详细信息。</p>
+    <div class="indicator-grid">
+        <div class="indicator-card" onclick="revealCard(this)">
+            <div class="indicator-icon" style="background:#e0f2fe;">💧</div>
+            <div class="indicator-name">pH <span class="indicator-abbr">酸碱度</span></div>
+            <div class="indicator-role">评价水体酸碱状态的基础指标。天然水体 pH 一般在 6.5~8.5 之间。工业废水排放、酸雨等可能导致 pH 异常，影响水生生物生存。</div>
+            <span class="indicator-standard" style="background:#e0f2fe;color:#0c4a6e;">Ⅰ~Ⅲ类：6~9</span>
+        </div>
+        <div class="indicator-card" onclick="revealCard(this)">
+            <div class="indicator-icon" style="background:#f0fdf4;">🫧</div>
+            <div class="indicator-name">DO <span class="indicator-abbr">溶解氧</span></div>
+            <div class="indicator-role">衡量水体自净能力的关键指标。DO 越低，表示有机污染越严重。鱼类生存需 DO ≥ 5 mg/L。溶解氧受水温、盐度、气压等因素影响。</div>
+            <span class="indicator-standard" style="background:#f0fdf4;color:#166534;">Ⅰ类：≥ 7.5</span>
+        </div>
+        <div class="indicator-card" onclick="revealCard(this)">
+            <div class="indicator-icon" style="background:#fef2f2;">🧪</div>
+            <div class="indicator-name">COD <span class="indicator-abbr">化学需氧量</span></div>
+            <div class="indicator-role">反映水体受有机物污染的程度。采用重铬酸盐法测定。COD 越高说明有机物污染越严重，是工业废水排放监管的核心指标之一。</div>
+            <span class="indicator-standard" style="background:#fef2f2;color:#991b1b;">Ⅰ类：≤ 15</span>
+        </div>
+        <div class="indicator-card" onclick="revealCard(this)">
+            <div class="indicator-icon" style="background:#fef2f2;">🧫</div>
+            <div class="indicator-name">BOD₅ <span class="indicator-abbr">五日生化需氧量</span></div>
+            <div class="indicator-role">20℃ 条件下培养 5 天，微生物分解有机物消耗的溶解氧量。BOD₅/COD 比值可判断废水的可生化性，对污水处理工艺选择有指导意义。</div>
+            <span class="indicator-standard" style="background:#fef2f2;color:#991b1b;">Ⅰ类：≤ 3</span>
+        </div>
+        <div class="indicator-card" onclick="revealCard(this)">
+            <div class="indicator-icon" style="background:#fefce8;">🧂</div>
+            <div class="indicator-name">TN <span class="indicator-abbr">总氮</span></div>
+            <div class="indicator-role">衡量水体富营养化风险的关键指标。包括有机氮、氨氮、亚硝酸盐氮和硝酸盐氮的总和。TN 超标可能导致藻类大量繁殖、水体缺氧。</div>
+            <span class="indicator-standard" style="background:#fefce8;color:#92400e;">Ⅰ类：≤ 0.2</span>
+        </div>
+        <div class="indicator-card" onclick="revealCard(this)">
+            <div class="indicator-icon" style="background:#f3e8ff;">🌫️</div>
+            <div class="indicator-name">浊度 <span class="indicator-abbr">Turbidity</span></div>
+            <div class="indicator-role">反映水体中悬浮颗粒物含量的物理指标。浊度升高可能来自水土流失、工业悬浮物排放、藻类爆发等。浊度影响水中光照穿透和水生植物光合作用。</div>
+            <span class="indicator-standard" style="background:#f3e8ff;color:#6b21a8;">参考值：≤ 3 NTU</span>
+        </div>
+    </div>
+    <p style="font-size:13px;color:var(--ink-light);text-align:center;">💡 点击任意卡片查看详细信息 · 已查看 <span id="reveal-count">0</span>/6 项</p>
+</section>
+
+<!-- ═══════════════ SEC 03 · 评价方法 ═══════════════ -->
+<section class="section" id="sec-03">
+    <div class="section-num">Section 03 · 评价方法</div>
+    <h2 class="section-title">从数据到结论</h2>
+    <p class="section-desc">以 GB 3838-2002《地表水环境质量标准》为准。水质评价遵循由单因子到综合的递进逻辑。滚动查看各步骤，然后进入交互评价环节。</p>
+    <div class="procedure-timeline">
+        <div class="proc-step">
+            <div class="proc-step-num">STEP 01</div>
+            <div class="proc-step-title">现场监测与采样</div>
+            <div class="proc-step-desc">在各监测断面开展现场监测（pH、DO、水温等原位指标），同时采集水样带回实验室分析（COD、BOD₅、TN、TP、浊度等）。</div>
+            <span class="proc-step-note">📋 现场监测与采样同步进行</span>
+        </div>
+        <div class="proc-step">
+            <div class="proc-step-num">STEP 02</div>
+            <div class="proc-step-title">单因子评价</div>
+            <div class="proc-step-desc">将各项指标的实测值与 GB 3838-2002 标准限值逐项对比，确定每项指标的水质类别。以最差指标的类别作为断面水质类别。</div>
+            <span class="proc-step-note">📐 最差指标决定断面类别（一票否决）</span>
+        </div>
+        <div class="proc-step">
+            <div class="proc-step-num">STEP 03</div>
+            <div class="proc-step-title">综合水质标识指数</div>
+            <div class="proc-step-desc">在单因子评价基础上，采用综合水质标识指数法，综合考虑超标因子数量和超标程度，对水质进行更精细的分级。</div>
+            <span class="proc-step-note">🔢 WQI = 综合水质指数</span>
+        </div>
+        <div class="proc-step">
+            <div class="proc-step-num">STEP 04</div>
+            <div class="proc-step-title">富营养化评价</div>
+            <div class="proc-step-desc">对于湖库型水体，采用综合营养状态指数法（TLI），以 Chl-a、TP、TN、SD、COD 等指标评价富营养化程度。</div>
+            <span class="proc-step-note">🌿 TLI 综合营养状态指数</span>
+        </div>
+        <div class="proc-step">
+            <div class="proc-step-num">STEP 05</div>
+            <div class="proc-step-title">报告编制与汇总</div>
+            <div class="proc-step-desc">汇总各断面评价结果，编制水质评价报告，给出各断面水质类别、主要超标因子及建议措施。</div>
+            <span class="proc-step-note">📊 报告需包含断面评价汇总表</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════ SEC 04 · 交互评价 ═══════════════ -->
+<section class="experiment-section" id="sec-04">
+    <div class="section" style="padding-bottom:0;">
+        <div class="section-num">Section 04 · 交互评价</div>
+        <h2 class="section-title">水质综合评价 · 实验操作</h2>
+        <p class="section-desc">选择监测断面，输入各指标监测数据，系统自动完成单因子评价并计算综合水质标识指数。</p>
+    </div>
+
+    <div style="max-width:920px;margin:0 auto;padding:0 24px 100px;">
+    <div class="eval-container">
+        <div class="eval-steps">
+            <div class="eval-step-tab active" onclick="evalGoStep(0)"><span class="step-num">①</span>选择断面</div>
+            <div class="eval-step-tab" onclick="evalGoStep(1)"><span class="step-num">②</span>录入数据</div>
+            <div class="eval-step-tab" onclick="evalGoStep(2)"><span class="step-num">③</span>评价结果</div>
+        </div>
+
+        <!-- Step 0: Select Site -->
+        <div class="eval-panel active" id="eval-panel-0">
+            <div class="eval-card"><h3>🌊 选择监测断面</h3><p>选择待评价的监测断面，系统将加载该断面的预设监测数据。你也可以在下一步自行修改数据。</p></div>
+            <div class="site-grid" style="margin-bottom:20px;">
+                <div class="site-card selected eval-site" data-idx="0" onclick="evalSelectSite(0)" style="cursor:pointer;">
+                    <div class="site-icon">🏔️</div>
+                    <div class="site-name">S1 源头段</div>
+                    <div class="site-pos">上游 · 保护区内</div>
+                </div>
+                <div class="site-card eval-site" data-idx="1" onclick="evalSelectSite(1)" style="cursor:pointer;">
+                    <div class="site-icon">🌲</div>
+                    <div class="site-name">S2 上游段</div>
+                    <div class="site-pos">上游 · 农业区</div>
+                </div>
+                <div class="site-card eval-site" data-idx="2" onclick="evalSelectSite(2)" style="cursor:pointer;">
+                    <div class="site-icon">🌊</div>
+                    <div class="site-name">S3 中游段</div>
+                    <div class="site-pos">中游 · 过渡区</div>
+                </div>
+                <div class="site-card eval-site" data-idx="3" onclick="evalSelectSite(3)" style="cursor:pointer;">
+                    <div class="site-icon">🏭</div>
+                    <div class="site-name">S4 城区段</div>
+                    <div class="site-pos">下游 · 城区汇入</div>
+                </div>
+                <div class="site-card eval-site" data-idx="4" onclick="evalSelectSite(4)" style="cursor:pointer;">
+                    <div class="site-icon">🌾</div>
+                    <div class="site-name">S5 河口段</div>
+                    <div class="site-pos">下游 · 入河口</div>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <button class="btn btn-primary" onclick="evalGoStep(1)">📋 进入数据录入</button>
+            </div>
+        </div>
+
+        <!-- Step 1: Input Data -->
+        <div class="eval-panel" id="eval-panel-1">
+            <div class="eval-card"><h3>📊 录入监测数据</h3><p>输入该断面的各指标监测数据，系统将依据 GB 3838-2002 进行评价。</p></div>
+            <div class="input-grid">
+                <div>
+                    <label>pH</label>
+                    <input type="number" id="input-ph" value="7.82" step="0.01">
+                </div>
+                <div>
+                    <label>DO 溶解氧 (mg/L)</label>
+                    <input type="number" id="input-do" value="6.15" step="0.01">
+                </div>
+                <div>
+                    <label>COD 化学需氧量 (mg/L)</label>
+                    <input type="number" id="input-cod" value="18.5" step="0.1">
+                </div>
+                <div>
+                    <label>BOD₅ 五日生化需氧量 (mg/L)</label>
+                    <input type="number" id="input-bod" value="4.2" step="0.1">
+                </div>
+                <div>
+                    <label>TN 总氮 (mg/L)</label>
+                    <input type="number" id="input-tn" value="1.85" step="0.01">
+                </div>
+                <div>
+                    <label>NH₃-N 氨氮 (mg/L)</label>
+                    <input type="number" id="input-nh3" value="0.65" step="0.01">
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:20px;">
+                <button class="btn btn-primary" onclick="doEvaluation()">📐 开始评价</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Results -->
+        <div class="eval-panel" id="eval-panel-2">
+            <div class="eval-card"><h3>📊 水质评价结果</h3><p>以下为基于 GB 3838-2002 的综合评价结果。</p></div>
+            <div class="sample-grid" style="margin-top:16px;">
+                <div><span>断面：</span><span id="evalSiteName">S1 源头段</span></div>
+                <div><span>评价标准：</span><span>GB 3838-2002</span></div>
+                <div><span>评价方法：</span><span>单因子评价 + 综合水质标识指数</span></div>
+                <div><span>评价日期：</span><span>2026-06-28</span></div>
+            </div>
+
+            <div class="indicator-detail" id="indicatorResults">
+                <div style="background:#dcfce7;"><span>pH</span><span>7.82 ✅ Ⅰ类</span></div>
+                <div style="background:#dcfce7;"><span>DO</span><span>6.15 ✅ Ⅱ类</span></div>
+                <div style="background:#fef3c7;"><span>COD</span><span>18.5 ⚠️ Ⅲ类</span></div>
+                <div style="background:#fef3c7;"><span>BOD₅</span><span>4.2 ⚠️ Ⅲ类</span></div>
+                <div style="background:#fef2f2;"><span>TN</span><span>1.85 ❌ Ⅳ类</span></div>
+                <div style="background:#fef3c7;"><span>NH₃-N</span><span>0.65 ⚠️ Ⅲ类</span></div>
+            </div>
+
+            <div class="eval-result-box" id="evalResult" style="display:block;">
+                <span class="grade-badge" id="evalGradeBadge" style="color:#92400e;">Ⅳ类</span>
+                <div class="grade-label" id="evalGradeLabel" style="color:#92400e;">轻度污染</div>
+                <div class="grade-desc" id="evalGradeDesc">
+                    主要超标因子：<strong>TN（总氮）</strong>，超标倍数 0.85。<br>
+                    建议：加强流域面源污染控制，重点削减氮素输入。
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <button class="btn btn-outline" onclick="evalGoStep(0)">🔄 重新选择断面</button>
+                <button class="btn btn-primary" onclick="evalGoStep(1)">📝 修改监测数据</button>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<!-- ═══════════════ SEC 05 · 报告 ═══════════════ -->
+<section class="section" id="sec-05">
+    <div class="section-num">Section 05 · 报告输出</div>
+    <h2 class="section-title">水质评价报告</h2>
+    <p class="section-desc">以下为各断面水质综合评价结果汇总表。点击「生成 PDF 报告」可导出完整报告。</p>
+
+    <div style="overflow-x:auto;margin-bottom:32px;border-radius:12px;border:1px solid var(--border);">
+        <table style="width:100%;border-collapse:collapse;background:#fff;font-size:13px;">
+            <thead>
+                <tr style="background:var(--water);color:#fff;">
+                    <th style="padding:12px 16px;text-align:left;">断面</th>
+                    <th style="padding:12px 16px;text-align:center;">pH</th>
+                    <th style="padding:12px 16px;text-align:center;">DO</th>
+                    <th style="padding:12px 16px;text-align:center;">COD</th>
+                    <th style="padding:12px 16px;text-align:center;">BOD₅</th>
+                    <th style="padding:12px 16px;text-align:center;">TN</th>
+                    <th style="padding:12px 16px;text-align:center;">NH₃-N</th>
+                    <th style="padding:12px 16px;text-align:center;">综合类别</th>
+                </tr>
+            </thead>
+            <tbody id="reportTable">
+                <tr style="border-top:1px solid var(--border);"><td style="padding:10px 16px;font-weight:600;">S1 源头段</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">8.12</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">8.35</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">9.2</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">2.1</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">0.15</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">0.08</td><td style="padding:10px 16px;text-align:center;"><span style="display:inline-block;padding:3px 12px;border-radius:6px;background:#dcfce7;color:#166534;font-weight:700;">Ⅰ类</span></td></tr>
+                <tr style="border-top:1px solid var(--border);"><td style="padding:10px 16px;font-weight:600;">S2 上游段</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">7.95</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">7.12</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">12.6</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">2.8</td><td style="padding:10px 16px;text-align:center;color:#92400e;">0.52</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">0.12</td><td style="padding:10px 16px;text-align:center;"><span style="display:inline-block;padding:3px 12px;border-radius:6px;background:#dcfce7;color:#166534;font-weight:700;">Ⅱ类</span></td></tr>
+                <tr style="border-top:1px solid var(--border);"><td style="padding:10px 16px;font-weight:600;">S3 中游段</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">7.68</td><td style="padding:10px 16px;text-align:center;color:#92400e;">5.85</td><td style="padding:10px 16px;text-align:center;color:#92400e;">16.8</td><td style="padding:10px 16px;text-align:center;color:#92400e;">3.9</td><td style="padding:10px 16px;text-align:center;color:#991b1b;">1.12</td><td style="padding:10px 16px;text-align:center;color:#92400e;">0.48</td><td style="padding:10px 16px;text-align:center;"><span style="display:inline-block;padding:3px 12px;border-radius:6px;background:#fef3c7;color:#92400e;font-weight:700;">Ⅲ类</span></td></tr>
+                <tr style="border-top:1px solid var(--border);background:#fafafa;"><td style="padding:10px 16px;font-weight:700;">S4 城区段</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">7.82</td><td style="padding:10px 16px;text-align:center;color:#92400e;">6.15</td><td style="padding:10px 16px;text-align:center;color:#92400e;">18.5</td><td style="padding:10px 16px;text-align:center;color:#92400e;">4.2</td><td style="padding:10px 16px;text-align:center;color:#991b1b;">1.85</td><td style="padding:10px 16px;text-align:center;color:#92400e;">0.65</td><td style="padding:10px 16px;text-align:center;"><span style="display:inline-block;padding:3px 12px;border-radius:6px;background:#fef2f2;color:#991b1b;font-weight:700;">Ⅳ类</span></td></tr>
+                <tr style="border-top:1px solid var(--border);"><td style="padding:10px 16px;font-weight:600;">S5 河口段</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">7.55</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">6.82</td><td style="padding:10px 16px;text-align:center;color:#92400e;">14.2</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">3.1</td><td style="padding:10px 16px;text-align:center;color:#92400e;">0.85</td><td style="padding:10px 16px;text-align:center;color:#16a34a;">0.22</td><td style="padding:10px 16px;text-align:center;"><span style="display:inline-block;padding:3px 12px;border-radius:6px;background:#fef3c7;color:#92400e;font-weight:700;">Ⅲ类</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="text-align:center;">
+        <button class="btn btn-primary" onclick="alert('报告导出功能开发中。\\n\\n正式版本将支持：\\n1. PDF 格式导出\\n2. Word 格式导出\\n3. 历史数据趋势图\\n4. 超标因子自动汇总')">
+            📥 生成 PDF 报告
+        </button>
+    </div>
+</section>
+
+<div class="footer">
+    <p>环境实验 · 环境检测交互式教学实验平台</p>
+    <p style="margin-top:4px;">联系方式：【联系方式见仓库主页】</p>
+</div>
+
+<script>
+// ═══════════════ SCROLL PROGRESS & SECTION OBSERVER ═══════════════
+window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / h) * 100;
+    document.getElementById('scroll-progress').style.width = pct + '%';
+});
+
+const sections = document.querySelectorAll('.section, .experiment-section');
+const dots = document.querySelectorAll('.nav-dot');
+
+const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+sections.forEach(s => sectionObserver.observe(s));
+
+const procObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.proc-step').forEach(s => procObserver.observe(s));
+
+window.addEventListener('scroll', () => {
+    let current = 0;
+    sections.forEach((s, i) => { if (window.scrollY >= s.offsetTop - 300) current = i; });
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+});
+
+function scrollToSection(i) { if (sections[i]) sections[i].scrollIntoView({ behavior: 'smooth' }); }
+
+// ═══════════════ SITE SELECTION ═══════════════
+const siteData = [
+    { name: 'S1 源头段', icon: '🏔️', pos: '保护区内', grade: 'Ⅰ类', gradeColor: '#166534', gradeBg: '#dcfce7',
+      pH: 8.12, DO: 8.35, COD: 9.2, BOD: 2.1, TN: 0.15, NH3: 0.08 },
+    { name: 'S2 上游段', icon: '🌲', pos: '农业区', grade: 'Ⅱ类', gradeColor: '#166534', gradeBg: '#dcfce7',
+      pH: 7.95, DO: 7.12, COD: 12.6, BOD: 2.8, TN: 0.52, NH3: 0.12 },
+    { name: 'S3 中游段', icon: '🌊', pos: '过渡区', grade: 'Ⅲ类', gradeColor: '#92400e', gradeBg: '#fef3c7',
+      pH: 7.68, DO: 5.85, COD: 16.8, BOD: 3.9, TN: 1.12, NH3: 0.48 },
+    { name: 'S4 城区段', icon: '🏭', pos: '城区汇入', grade: 'Ⅳ类', gradeColor: '#991b1b', gradeBg: '#fef2f2',
+      pH: 7.82, DO: 6.15, COD: 18.5, BOD: 4.2, TN: 1.85, NH3: 0.65 },
+    { name: 'S5 河口段', icon: '🌾', pos: '入河口', grade: 'Ⅲ类', gradeColor: '#92400e', gradeBg: '#fef3c7',
+      pH: 7.55, DO: 6.82, COD: 14.2, BOD: 3.1, TN: 0.85, NH3: 0.22 }
+];
+
+function selectSite(idx) {
+    document.querySelectorAll('.site-card').forEach((c, i) => c.classList.toggle('selected', i === parseInt(idx)));
+    document.querySelectorAll('.section-dot').forEach((d, i) => {
+        d.setAttribute('fill', i === parseInt(idx) ? '#0ea5e9' : '#fff');
+        d.setAttribute('stroke-width', i === parseInt(idx) ? '4' : '3');
+    });
+}
+
+function revealCard(card) {
+    if (!card.classList.contains('revealed')) {
+        card.classList.add('revealed');
+        let c = parseInt(document.getElementById('reveal-count').textContent);
+        document.getElementById('reveal-count').textContent = c + 1;
+    }
+}
+
+// ═══════════════ EVALUATION ═══════════════
+let evalCurrentStep = 0;
+let evalSelectedSite = 0;
+
+function evalGoStep(n) {
+    if (n < 0 || n > 2) return;
+    evalCurrentStep = n;
+    document.querySelectorAll('.eval-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.eval-step-tab').forEach(t => { t.classList.remove('active'); t.classList.remove('done'); });
+    document.getElementById('eval-panel-' + n).classList.add('active');
+    document.querySelectorAll('.eval-step-tab')[n].classList.add('active');
+    for (let i = 0; i < n; i++) document.querySelectorAll('.eval-step-tab')[i].classList.add('done');
+}
+
+function evalSelectSite(idx) {
+    evalSelectedSite = idx;
+    document.querySelectorAll('.eval-site').forEach((c, i) => c.classList.toggle('selected', i === idx));
+    const site = siteData[idx];
+    document.getElementById('input-ph').value = site.pH;
+    document.getElementById('input-do').value = site.DO;
+    document.getElementById('input-cod').value = site.COD;
+    document.getElementById('input-bod').value = site.BOD;
+    document.getElementById('input-tn').value = site.TN;
+    document.getElementById('input-nh3').value = site.NH3;
+    document.getElementById('evalSiteName').textContent = site.name;
+}
+
+// GB 3838-2002 standard limits for each class (I, II, III, IV, V)
+const stdLimits = {
+    pH: [
+        { class: 'Ⅰ类', min: 6, max: 9 },
+        { class: 'Ⅱ类', min: 6, max: 9 },
+        { class: 'Ⅲ类', min: 6, max: 9 },
+        { class: 'Ⅳ类', min: 6, max: 9 },
+        { class: 'Ⅴ类', min: 6, max: 9 }
+    ],
+    DO: [7.5, 6, 5, 3, 2],        // ≥ value
+    COD: [15, 15, 20, 30, 40],    // ≤ value
+    BOD: [3, 3, 4, 6, 10],        // ≤ value
+    TN: [0.2, 0.5, 1.0, 1.5, 2.0], // ≤ value
+    NH3: [0.15, 0.5, 1.0, 1.5, 2.0] // ≤ value
+};
+
+function evalClass(val, limits, isHigherBetter) {
+    if (isHigherBetter) {
+        if (val >= limits[0]) return { cls: 'Ⅰ类', color: '#16a34a', bg: '#dcfce7' };
+        if (val >= limits[1]) return { cls: 'Ⅱ类', color: '#166534', bg: '#dcfce7' };
+        if (val >= limits[2]) return { cls: 'Ⅲ类', color: '#92400e', bg: '#fef3c7' };
+        if (val >= limits[3]) return { cls: 'Ⅳ类', color: '#991b1b', bg: '#fef2f2' };
+        return { cls: 'Ⅴ类', color: '#dc2626', bg: '#fef2f2' };
+    } else {
+        if (val <= limits[0]) return { cls: 'Ⅰ类', color: '#16a34a', bg: '#dcfce7' };
+        if (val <= limits[1]) return { cls: 'Ⅱ类', color: '#166534', bg: '#dcfce7' };
+        if (val <= limits[2]) return { cls: 'Ⅲ类', color: '#92400e', bg: '#fef3c7' };
+        if (val <= limits[3]) return { cls: 'Ⅳ类', color: '#991b1b', bg: '#fef2f2' };
+        return { cls: 'Ⅴ类', color: '#dc2626', bg: '#fef2f2' };
+    }
+}
+
+function doEvaluation() {
+    const data = {
+        pH: parseFloat(document.getElementById('input-ph').value) || 7,
+        DO: parseFloat(document.getElementById('input-do').value) || 6,
+        COD: parseFloat(document.getElementById('input-cod').value) || 15,
+        BOD: parseFloat(document.getElementById('input-bod').value) || 3,
+        TN: parseFloat(document.getElementById('input-tn').value) || 0.5,
+        NH3: parseFloat(document.getElementById('input-nh3').value) || 0.3
+    };
+
+    // pH
+    let pHclass = 'Ⅰ类', pHbg = '#dcfce7', pHcol = '#16a34a';
+    if (data.pH < 6 || data.pH > 9) { pHclass = 'Ⅴ类'; pHbg = '#fef2f2'; pHcol = '#dc2626'; }
+
+    // Other indicators
+    const doEval = evalClass(data.DO, stdLimits.DO, true);
+    const codEval = evalClass(data.COD, stdLimits.COD, false);
+    const bodEval = evalClass(data.BOD, stdLimits.BOD, false);
+    const tnEval = evalClass(data.TN, stdLimits.TN, false);
+    const nh3Eval = evalClass(data.NH3, stdLimits.NH3, false);
+
+    // Find worst class
+    const classOrder = ['Ⅰ类', 'Ⅱ类', 'Ⅲ类', 'Ⅳ类', 'Ⅴ类'];
+    const allClasses = [pHclass, doEval.cls, codEval.cls, bodEval.cls, tnEval.cls, nh3Eval.cls];
+    let worstIdx = 0;
+    allClasses.forEach(c => {
+        const idx = classOrder.indexOf(c);
+        if (idx > worstIdx) worstIdx = idx;
+    });
+    const worstClass = classOrder[worstIdx];
+
+    // Update indicator detail
+    const detail = document.getElementById('indicatorResults');
+    detail.innerHTML = `
+        <div style="background:${data.pH >= 6 && data.pH <= 9 ? '#dcfce7' : '#fef2f2'};">
+            <span>pH</span><span>${data.pH} ${data.pH >= 6 && data.pH <= 9 ? '✅' : '❌'} ${pHclass}</span>
+        </div>
+        <div style="background:${doEval.bg};"><span>DO</span><span>${data.DO} ${doEval.cls === 'Ⅰ类' || doEval.cls === 'Ⅱ类' ? '✅' : '⚠️'} ${doEval.cls}</span></div>
+        <div style="background:${codEval.bg};"><span>COD</span><span>${data.COD} ${codEval.cls === 'Ⅰ类' || codEval.cls === 'Ⅱ类' ? '✅' : codEval.cls === 'Ⅲ类' ? '⚠️' : '❌'} ${codEval.cls}</span></div>
+        <div style="background:${bodEval.bg};"><span>BOD₅</span><span>${data.BOD} ${bodEval.cls === 'Ⅰ类' || bodEval.cls === 'Ⅱ类' ? '✅' : '⚠️'} ${bodEval.cls}</span></div>
+        <div style="background:${tnEval.bg};"><span>TN</span><span>${data.TN} ${tnEval.cls === 'Ⅰ类' || tnEval.cls === 'Ⅱ类' ? '✅' : tnEval.cls === 'Ⅳ类' || tnEval.cls === 'Ⅴ类' ? '❌' : '⚠️'} ${tnEval.cls}</span></div>
+        <div style="background:${nh3Eval.bg};"><span>NH₃-N</span><span>${data.NH3} ${nh3Eval.cls === 'Ⅰ类' || nh3Eval.cls === 'Ⅱ类' ? '✅' : '⚠️'} ${nh3Eval.cls}</span></div>
+    `;
+
+    // Calculate color for result
+    const gradeColors = ['#16a34a', '#166534', '#92400e', '#991b1b', '#dc2626'];
+    const gradeBgColors = ['#dcfce7', '#dcfce7', '#fef3c7', '#fef2f2', '#fef2f2'];
+    const gradeLabels = ['优', '良好', '轻度污染', '中度污染', '重度污染'];
+    const gradeDescs = [
+        '各项指标均达到Ⅰ类标准，水质优良，适用于源头水、国家自然保护区。',
+        '主要指标达到Ⅱ类标准，水质良好，适用于集中式生活饮用水地表水源地一级保护区。',
+        '部分指标达Ⅲ类标准，水质尚可，适用于集中式生活饮用水地表水源地二级保护区。',
+        '存在多项超标因子，水质中度污染，适用于一般工业用水及人体非直接接触的娱乐用水。',
+        '多项指标严重超标，水质重度污染，仅适用于农业用水及一般景观要求水域。'
+    ];
+
+    const idx = worstIdx;
+    const badge = document.getElementById('evalGradeBadge');
+    badge.textContent = worstClass;
+    badge.style.color = gradeColors[idx];
+    document.getElementById('evalGradeLabel').textContent = gradeLabels[idx];
+    document.getElementById('evalGradeLabel').style.color = gradeColors[idx];
+    document.getElementById('evalGradeDesc').innerHTML = gradeDescs[idx];
+    const resultBox = document.getElementById('evalResult');
+    resultBox.style.display = 'block';
+    resultBox.style.background = gradeBgColors[idx];
+
+    evalGoStep(2);
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    selectSite(0);
+    evalSelectSite(0);
+});
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 3838-2002</td><td>地表水环境质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

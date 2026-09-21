@@ -1,0 +1,1004 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>环境质量 · 综合体检中心</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--ink-light:#555;--paper:#faf9f6;--paper-warm:#f5f0e8;--border:#e8e0d4;--serif:'Noto Serif SC','Source Han Serif SC','Songti SC',serif;--sans:'Inter',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+/* 5 theme colors */
+.c0{--theme:#0d9488;--theme-light:#ccfbf1;--theme-bg:#f0fdfa}
+.c1{--theme:#0d9488;--theme-light:#ccfbf1;--theme-bg:#f0fdfa}
+.c2{--theme:#92400e;--theme-light:#fef3c7;--theme-bg:#fdf6e3}
+.c3{--theme:#6366f1;--theme-light:#eef2ff;--theme-bg:#f0f0ff}
+.c4{--theme:#0284c7;--theme-light:#e0f2fe;--theme-bg:#f0f9ff}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--paper)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+/* === HEADER === */
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#0d9488,#92400e,#6366f1,#0284c7);z-index:1000;transition:width .1s}
+header{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;background:linear-gradient(180deg,#f0fdfa 0%,var(--paper) 100%)}
+header .hb{padding:6px 18px;border-radius:20px;background:#ccfbf1;color:#0d9488;font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:20px;border:1px solid rgba(13,148,136,.15)}
+header h1{font-family:var(--serif);font-size:clamp(32px,5vw,60px);font-weight:900;line-height:1.2}
+header h1 em{font-style:normal;color:#0d9488}
+header p{font-size:clamp(14px,2vw,18px);color:var(--ink-light);max-width:600px;line-height:1.7;margin-top:16px}
+/* === MEDIA SELECTOR === */
+.ms{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:800px;margin:32px auto 0}
+.ms-btn{padding:16px 24px;border-radius:14px;border:1.5px solid var(--border);background:#fff;cursor:pointer;transition:.4s;text-align:center;min-width:120px;flex:1}
+.ms-btn:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.ms-btn.ac{transform:translateY(-4px)}
+.ms-btn .mi{font-size:32px;display:block;margin-bottom:4px}
+.ms-btn .mn{font-weight:700;font-size:14px;display:block}
+.ms-btn .msub{font-size:11px;color:var(--ink-light)}
+.ms-btn.ac.c0{background:var(--theme-bg);border-color:var(--theme);box-shadow:0 8px 24px rgba(13,148,136,.15)}
+.ms-btn.ac.c1{background:var(--theme-bg);border-color:var(--theme);box-shadow:0 8px 24px rgba(13,148,136,.15)}
+.ms-btn.ac.c2{background:var(--theme-bg);border-color:var(--theme);box-shadow:0 8px 24px rgba(146,64,14,.15)}
+.ms-btn.ac.c3{background:var(--theme-bg);border-color:var(--theme);box-shadow:0 8px 24px rgba(99,102,241,.15)}
+.ms-btn.ac.c4{background:var(--theme-bg);border-color:var(--theme);box-shadow:0 8px 24px rgba(2,132,199,.15)}
+/* === NAV DOTS === */
+#nv{position:fixed;right:16px;top:50%;z-index:999;display:flex;flex-direction:column;gap:12px;transform:translateY(-50%)}
+.nd{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;border:2px solid transparent;position:relative;transition:.3s}
+.nd.ac{transform:scale(1.5)}.nd:hover{border-color:#0d9488}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:11px;white-space:nowrap;color:var(--ink-light);background:#fff;padding:3px 10px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .2s;z-index:1000}
+.nd:hover .nl{opacity:1}
+/* === MEDIA PANEL === */
+.mp{display:none;max-width:960px;margin:0 auto;padding:60px 24px}
+.mp.ac{display:block}
+/* Override theme per panel */
+.mp.c0,.mp.c1{--cm:#0d9488;--cml:#ccfbf1;--cmb:#f0fdfa}
+.mp.c2{--cm:#92400e;--cml:#fef3c7;--cmb:#fdf6e3}
+.mp.c3{--cm:#6366f1;--cml:#eef2ff;--cmb:#f0f0ff}
+.mp.c4{--cm:#0284c7;--cml:#e0f2fe;--cmb:#f0f9ff}
+/* === SECTION === */
+.sc{margin-bottom:60px;opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.sc.vi{opacity:1;transform:translateY(0)}
+.sn{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--cm);margin-bottom:8px}
+.st{font-family:var(--serif);font-size:clamp(24px,3.5vw,36px);font-weight:700;margin-bottom:8px}
+.sd{font-size:15px;color:var(--ink-light);line-height:1.8;margin-bottom:32px}
+/* === CARDS === */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.ic{background:#fff;border-radius:10px;padding:18px;border:1px solid var(--border);cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.ic::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cm);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.ic:hover::before{transform:scaleX(1)}.ic:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.ic.rv{background:var(--cml);border-color:var(--cm)}
+.ii{font-size:24px;margin-bottom:8px;display:block}
+.in{font-weight:700;font-size:14px;margin-bottom:2px}.is{font-size:11px;color:var(--ink-light)}
+.ib{font-size:12px;color:var(--ink-light);line-height:1.6;margin-top:8px;max-height:0;overflow:hidden;transition:max-height .4s ease}
+.ic.rv .ib{max-height:200px}
+.it{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:var(--cml);color:var(--cm)}
+/* === TIMELINE === */
+.tl{position:relative;padding-left:32px}.tl::before{content:'';position:absolute;left:12px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tp{position:relative;margin-bottom:28px;opacity:0;transform:translateX(-12px);transition:opacity .5s ease,transform .5s ease}
+.tp.vi{opacity:1;transform:translateX(0)}
+.tp::before{content:'';position:absolute;left:-26px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid var(--border);transition:.3s}
+.tp.vi::before{background:var(--cm);border-color:var(--cm)}
+.tn{font-size:10px;font-weight:700;color:var(--cm);letter-spacing:1px;margin-bottom:3px}
+.tt{font-weight:700;font-size:14px;margin-bottom:4px}
+.td{font-size:13px;color:var(--ink-light);line-height:1.6}
+/* === EVALUATION BOX === */
+.ev-box{background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden}
+.ev-tabs{display:flex;background:#fafaf8;border-bottom:1px solid var(--border)}
+.ev-tab{flex:1;text-align:center;padding:12px 8px;font-size:11px;color:#999;cursor:pointer;border-bottom:3px solid transparent;transition:.3s;font-weight:500}
+.ev-tab .en{font-weight:700;display:block;font-size:12px;margin-bottom:2px}
+.ev-tab.ac{color:var(--cm);border-bottom-color:var(--cm);background:var(--cml)}
+.ev-tab.done{color:#16a34a;border-bottom-color:#16a34a}
+.ev-panel{display:none;padding:24px;min-height:280px}
+.ev-panel.ac{display:block}
+/* === FORM GRID === */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.sg label{font-size:11px;font-weight:600;color:var(--ink-light);display:block;margin-bottom:2px}
+.sg input{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;font-family:var(--sans);background:#fff;transition:.2s}
+.sg input:focus{outline:none;border-color:var(--cm);box-shadow:0 0 0 3px color-mix(in srgb,var(--cm) 15%,transparent)}
+select{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);background:#fff;cursor:pointer}
+select:focus{outline:none;border-color:var(--cm)}
+/* === PRESET GRID === */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0}
+.pi{padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:.3s;background:#fff}
+.pi:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.pi.ac{background:var(--cml);border-color:var(--cm)}
+.pi .pn{font-weight:600;font-size:12px}.pi .pp{font-size:10px;color:var(--ink-light);margin-top:2px}
+/* === RESULT BOX === */
+.rb{text-align:center;padding:24px;border-radius:12px;margin-top:16px;display:none;border:1px solid var(--border)}
+.rb .rn{font-family:var(--serif);font-size:42px;font-weight:900;line-height:1;display:block}
+.rb .rl{font-size:16px;margin-top:4px;font-weight:600}
+.rb .rd{font-size:12px;color:var(--ink-light);margin-top:8px;line-height:1.7}
+/* === DETAIL GRID === */
+.dg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:12px 0}
+.dg div{padding:8px;border-radius:6px;font-size:11px;text-align:center;background:#fafaf8}
+.dg .dv{font-weight:700;font-size:15px;font-family:var(--serif);display:block}
+.dg .dl{font-size:10px;color:var(--ink-light)}
+/* === BUTTONS === */
+.zb{padding:10px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.3s;font-family:var(--sans)}
+.zb1{background:linear-gradient(135deg,var(--cm),color-mix(in srgb,var(--cm) 70%,#000));color:#fff}
+.zb1:hover{transform:translateY(-2px);box-shadow:0 6px 20px color-mix(in srgb,var(--cm) 30%,transparent)}
+.zb2{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff}
+.zb2:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(22,163,74,.25)}
+/* === VISUALIZATIONS === */
+.scale-wrap{background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border);margin:12px 0}
+.scale{height:14px;border-radius:7px;position:relative;margin:6px 0 12px;overflow:hidden}
+.scale-fill{height:100%;border-radius:7px;transition:width 1.2s ease;width:0}
+.scale-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light)}
+/* pH meter */
+.ph-visual{display:flex;align-items:center;gap:20px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.ph-meter{width:100px;height:150px;border-radius:6px 6px 50px 50px;background:linear-gradient(180deg,#dc2626,#fbbf24,#16a34a,#1e40af);position:relative;overflow:hidden;border:2px solid #cbd5e1}
+.ph-cursor{position:absolute;left:0;right:0;height:4px;background:#1a1a2e;transition:top .8s ease;border-radius:2px}
+.ph-ind{width:140px;padding:12px;background:#fafaf8;border-radius:10px;border:1px solid var(--border);text-align:center}
+.ph-ind .pv{font-family:var(--serif);font-size:40px;font-weight:900;line-height:1}
+/* AQI card */
+.aqi-card{border-radius:12px;padding:24px;text-align:center;margin:12px 0}
+.aqi-card .qn{font-family:var(--serif);font-size:56px;font-weight:900;line-height:1}
+.aqi-card .ql{font-size:18px;margin-top:4px;font-weight:700}
+.aqi-card .qd{font-size:12px;margin-top:6px}
+.aqi-bar{height:10px;border-radius:5px;margin:10px 0;position:relative;overflow:hidden}
+.aqi-fill{height:100%;transition:width 1.2s ease;width:0;border-radius:5px}
+.aqi-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--ink-light);margin-top:-2px}
+/* === COMPARE === */
+.cp-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+.cp-wrap table{width:100%;border-collapse:collapse;background:#fff;font-size:12px;min-width:600px}
+.cp-wrap th{background:var(--ink);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:12px}
+.cp-wrap td{padding:8px 12px;border-top:1px solid var(--border)}
+.cp-wrap tr:hover td{background:#fafaf8}
+.cp-empty{text-align:center;padding:40px;color:var(--ink-light);font-size:14px}
+/* === FOOTER === */
+.ft{text-align:center;padding:40px 24px;color:var(--ink-light);font-size:12px;border-top:1px solid var(--border);background:var(--paper-warm)}
+@media(max-width:640px){.sg{grid-template-columns:1fr}.dg{grid-template-columns:1fr 1fr}.ms-btn{min-width:80px;padding:12px 12px}.ms-btn .mi{font-size:24px}#nv{right:8px}.nd{width:8px;height:8px}}
+</style></head><body>
+<div id="sp"></div>
+<div id="nv"><div class="nd ac" onclick="gs(0)"><span class="nl">开篇</span></div><div class="nd" onclick="gs(1)"><span class="nl">河流</span></div><div class="nd" onclick="gs(2)"><span class="nl">湖泊</span></div><div class="nd" onclick="gs(3)"><span class="nl">土壤</span></div><div class="nd" onclick="gs(4)"><span class="nl">降水</span></div><div class="nd" onclick="gs(5)"><span class="nl">大气</span></div><div class="nd" onclick="gs(6)"><span class="nl">对比</span></div></div>
+
+<!-- ====== HERO ====== -->
+<header id="s0">
+<div class="hb">🌍 环境质量 · 综合体检中心</div>
+<h1>读懂<em>环境</em></h1>
+<p>从河流到大气，从土壤到降水——在同一页面上完成五种环境要素的综合质量评价。选择一种介质开始。</p>
+<div class="ms" id="mediaSelector">
+<div class="ms-btn c0 ac" onclick="sw(0)"><span class="mi">🏞️</span><span class="mn">河流</span><span class="msub">水质·WQI</span></div>
+<div class="ms-btn c1" onclick="sw(1)"><span class="mi">🏝️</span><span class="mn">湖泊</span><span class="msub">富营养化·TLI</span></div>
+<div class="ms-btn c2" onclick="sw(2)"><span class="mi">🌱</span><span class="mn">土壤</span><span class="msub">质量·内梅罗指数</span></div>
+<div class="ms-btn c3" onclick="sw(3)"><span class="mi">🌧️</span><span class="mn">降水</span><span class="msub">酸雨·pH评价</span></div>
+<div class="ms-btn c4" onclick="sw(4)"><span class="mn">☀️</span><span class="msub" style="display:block;margin-top:4px">大气</span><span class="msub">AQI·空气质量</span></div>
+</div>
+<div style="margin-top:36px;color:var(--ink-light);font-size:12px">↓ 滚动查看详情</div>
+</header>
+
+<!-- ====== RIVER (0) ====== -->
+<div class="mp c0 ac" id="mp0">
+<div class="sc vi"><div class="sn">🏞️ 河流 · 水质评价</div><h2 class="st">单因子指数法 + WQI</h2><p class="sd">依据 GB 3838-2002《地表水环境质量标准》，采用单因子评价法确定水质类别，以最差指标定类。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><span class="ii">🧪</span><div class="in">pH</div><div class="is">6~9 为达标</div><div class="ib">地表水标准限值 6~9。pH < 6 为酸性、> 9 为碱性，超出即不达标。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🫧</span><div class="in">DO</div><div class="is">溶解氧 ≥ 7.5 mg/L（Ⅰ类）</div><div class="ib">反映水体自净能力。DO 越高水质越好，Ⅰ类≥7.5，Ⅴ类≥2 mg/L。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🧫</span><div class="in">COD</div><div class="is">化学需氧量</div><div class="ib">反映有机物污染程度。Ⅰ类≤15，Ⅴ类≤40 mg/L。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🦠</span><div class="in">BOD₅</div><div class="is">五日生化需氧量</div><div class="ib">反映可生物降解有机物。Ⅰ类≤3，Ⅴ类≤10 mg/L。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">💧</span><div class="in">NH₃-N</div><div class="is">氨氮</div><div class="ib">反映富营养化风险。Ⅰ类≤0.15，Ⅴ类≤2.0 mg/L。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🔬</span><div class="in">TP</div><div class="is">总磷</div><div class="ib">富营养化关键因子。Ⅰ类≤0.02，Ⅴ类≤0.4 mg/L。</div></div>
+</div></div>
+
+<div class="sc"><div class="sn">评价方法</div><h2 class="st">单因子评价法</h2><p class="sd">将所有指标与 GB 3838-2002 标准对比，以水质最差的指标类别作为综合水质类别。</p>
+<div class="tl">
+<div class="tp"><div class="tn">STEP 01</div><div class="tt">确定各指标浓度</div><div class="td">将监测结果逐项列出</div></div>
+<div class="tp"><div class="tn">STEP 02</div><div class="tt">逐项对照标准类别</div><div class="td">每项指标找到其对应的水质类别（Ⅰ~Ⅴ类）</div></div>
+<div class="tp"><div class="tn">STEP 03</div><div class="tt">取最差类别</div><div class="td">所有指标中水质最差的那个类别即为综合水质类别</div></div>
+<div class="tp"><div class="tn">STEP 04</div><div class="tt">识别超标因子</div><div class="td">标记超出目标类别的指标</div></div>
+</div></div>
+
+<div class="sc"><div class="sn">交互评价</div><h2 class="st">河流水质 · 综合评价</h2><p class="sd">选择一个预设断面，或输入自定义数据开始评价。</p>
+<div class="ev-box">
+<div class="ev-tabs" id="riverTabs">
+<div class="ev-tab ac" onclick="ev('r',0)"><span class="en">①</span>选择断面</div>
+<div class="ev-tab" onclick="ev('r',1)"><span class="en">②</span>输入数据</div>
+<div class="ev-tab" onclick="ev('r',2)"><span class="en">③</span>查看结果</div>
+</div>
+<div class="ev-panel ac" id="rp0">
+<div class="pg">
+<div class="pi ac" onclick="cs(this,'r',0)"><div class="pn">上游源头</div><div class="pp">清洁对照断面</div></div>
+<div class="pi" onclick="cs(this,'r',1)"><div class="pn">工业区</div><div class="pp">混合区下游</div></div>
+<div class="pi" onclick="cs(this,'r',2)"><div class="pn">城区段</div><div class="pp">生活污水影响</div></div>
+<div class="pi" onclick="cs(this,'r',3)"><div class="pn">农业区</div><div class="pp">面源污染</div></div>
+<div class="pi" onclick="cs(this,'r',4)"><div class="pn">入河口</div><div class="pp">汇入前断面</div></div>
+</div>
+<button class="zb zb1" onclick="ev('r',1)">下一步 → 输入数据</button>
+</div>
+<div class="ev-panel" id="rp1">
+<div class="sg">
+<div><label>pH</label><input type="number" id="rpH" step="0.1" value="7.2"></div>
+<div><label>DO (mg/L)</label><input type="number" id="rDO" step="0.1" value="6.5"></div>
+<div><label>COD (mg/L)</label><input type="number" id="rCOD" step="0.1" value="18"></div>
+<div><label>BOD₅ (mg/L)</label><input type="number" id="rBOD" step="0.1" value="4.5"></div>
+<div><label>NH₃-N (mg/L)</label><input type="number" id="rNH3" step="0.01" value="1.2"></div>
+<div><label>TP (mg/L)</label><input type="number" id="rTP" step="0.01" value="0.25"></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="zb zb1" onclick="ev('r',2)">开始评价 →</button>
+<button class="zb zb2" onclick="resetRiver()">重置数据</button>
+</div>
+</div>
+<div class="ev-panel" id="rp2">
+<div id="riverResult" style="display:none">
+<div class="rb" id="riverRB" style="display:block">
+<span class="rn" id="riverClass">Ⅲ类</span>
+<span class="rl" id="riverLabel">水质一般</span>
+<div class="rd" id="riverDesc">适用于集中式生活饮用水地表水源地二级保护区、鱼虾类越冬场等</div>
+</div>
+<div class="dg" id="riverDg"></div>
+<div id="riverBad" style="margin:10px 0;padding:10px;border-radius:8px;background:#fef2f2;color:#dc2626;font-size:12px;display:none"></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="zb zb1" onclick="ev('r',1)">修改数据</button>
+<button class="zb zb2" onclick="addToCompare()">加入对比</button>
+</div>
+</div>
+<div id="riverWait" style="text-align:center;padding:40px;color:var(--ink-light)">请先在步骤②中输入数据</div>
+</div>
+</div></div>
+</div>
+
+<!-- ====== LAKE (1) ====== -->
+<div class="mp c1" id="mp1">
+<div class="sc"><div class="sn">🏝️ 湖泊 · 富营养化评价</div><h2 class="st">综合营养状态指数 TLI</h2><p class="sd">依据《地表水环境质量评价办法（试行）》，采用综合营养状态指数法（TLI）评价湖泊富营养化程度。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><span class="ii">🌿</span><div class="in">Chl-a</div><div class="is">叶绿素 a (μg/L)</div><div class="ib">藻类生物量的直接指标，TLI 中权重最高（0.266）。贫营养≤2.5，重度富营养≥100。</div><span class="it">权重 0.266</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">👁️</span><div class="in">SD</div><div class="is">透明度 (m)</div><div class="ib">水体的清澈程度。贫营养≥5m，重度富营养<0.5m。权重 0.183。</div><span class="it">权重 0.183</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">💧</span><div class="in">TP</div><div class="is">总磷 (mg/L)</div><div class="ib">富营养化的限制性营养盐。贫营养≤0.01，重度富营养≥0.1。权重 0.188。</div><span class="it">权重 0.188</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🧪</span><div class="in">TN</div><div class="is">总氮 (mg/L)</div><div class="ib">综合反映氮营养盐水平。权重 0.179。</div><span class="it">权重 0.179</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🧫</span><div class="in">COD</div><div class="is">化学需氧量 (mg/L)</div><div class="ib">反映有机物负荷。权重 0.183。</div><span class="it">权重 0.183</span></div>
+</div></div>
+
+<div class="sc"><div class="sn">评价方法</div><h2 class="st">TLI 计算流程</h2><p class="sd">分项 TLI 加权求和，TLI < 30 贫营养 → > 70 重度富营养。</p>
+<div class="tl">
+<div class="tp"><div class="tn">STEP 01</div><div class="tt">计算各指标的分营养状态指数</div><div class="td">TLI(Chl-a)=10(2.5+1.086×ln[Chl-a])，其余指标类似</div></div>
+<div class="tp"><div class="tn">STEP 02</div><div class="tt">加权求和</div><div class="td">TLI(Σ)=Σ(Wⱼ×TLIⱼ)，W 为各指标权重</div></div>
+<div class="tp"><div class="tn">STEP 03</div><div class="tt">对照营养分级</div><div class="td">TLI<30 贫营养；30≤TLI≤50 中营养；TLI>50 富营养（含轻/中/重度）</div></div>
+</div></div>
+
+<div class="sc"><div class="sn">交互评价</div><h2 class="st">湖泊营养 · 综合评价</h2><p class="sd">选择一个预设湖型或输入自定义数据。</p>
+<div class="ev-box">
+<div class="ev-tabs" id="lakeTabs">
+<div class="ev-tab ac" onclick="ev('l',0)"><span class="en">①</span>选择湖型</div>
+<div class="ev-tab" onclick="ev('l',1)"><span class="en">②</span>输入数据</div>
+<div class="ev-tab" onclick="ev('l',2)"><span class="en">③</span>查看结果</div>
+</div>
+<div class="ev-panel ac" id="lp0">
+<div class="pg">
+<div class="pi ac" onclick="cs(this,'l',0)"><div class="pn">天池</div><div class="pp">贫营养 · Chl-a 1.2</div></div>
+<div class="pi" onclick="cs(this,'l',1)"><div class="pn">抚仙湖</div><div class="pp">中营养 · Chl-a 3.5</div></div>
+<div class="pi" onclick="cs(this,'l',2)"><div class="pn">滇池</div><div class="pp">轻度富营养 · Chl-a 25</div></div>
+<div class="pi" onclick="cs(this,'l',3)"><div class="pn">太湖</div><div class="pp">中度富营养 · Chl-a 45</div></div>
+<div class="pi" onclick="cs(this,'l',4)"><div class="pn">巢湖</div><div class="pp">重度富营养 · Chl-a 85</div></div>
+</div>
+<button class="zb zb1" onclick="ev('l',1)">下一步 →</button>
+</div>
+<div class="ev-panel" id="lp1">
+<div class="sg">
+<div><label>Chl-a (μg/L)</label><input type="number" id="lChl" step="0.1" value="25"></div>
+<div><label>SD (m)</label><input type="number" id="lSD" step="0.1" value="0.8"></div>
+<div><label>TP (mg/L)</label><input type="number" id="lTP" step="0.001" value="0.12"></div>
+<div><label>TN (mg/L)</label><input type="number" id="lTN" step="0.01" value="2.5"></div>
+<div><label>COD (mg/L)</label><input type="number" id="lCOD" step="0.1" value="22"></div>
+</div>
+<button class="zb zb1" onclick="evalLake()">开始评价 →</button>
+</div>
+<div class="ev-panel" id="lp2">
+<div id="lakeResult" style="display:none">
+<div class="scale-wrap"><div class="scale-labels"><span>0 贫营养</span><span>30</span><span>50</span><span>60</span><span>70</span><span>100 重富营养</span></div>
+<div class="scale" style="background:linear-gradient(90deg,#0ea5e9,#22c55e,#eab308,#f97316,#dc2626)"><div class="scale-fill" id="tliFill" style="width:0;background:var(--ink)"></div></div></div>
+<div class="rb" id="lakeRB" style="display:block">
+<span class="rn" id="tliVal">—</span>
+<span class="rl" id="tliLbl">—</span>
+<div class="rd" id="tliDesc">—</div>
+</div>
+<div class="dg" id="tliDg"></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="zb zb1" onclick="ev('l',1)">修改数据</button>
+<button class="zb zb2" onclick="addToCompare()">加入对比</button>
+</div>
+</div>
+<div id="lakeWait" style="text-align:center;padding:40px;color:var(--ink-light)">请先输入数据</div>
+</div>
+</div></div>
+</div>
+
+<!-- ====== SOIL (2) ====== -->
+<div class="mp c2" id="mp2">
+<div class="sc"><div class="sn">🌱 土壤 · 质量评价</div><h2 class="st">内梅罗综合污染指数法</h2><p class="sd">依据 GB 15618-2018（农用地）和 GB 36600-2018（建设用地），采用单因子指数+内梅罗综合指数法评价。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">As</div><div class="is">砷</div><div class="ib">筛选值 20~60 mg/kg（农用地，pH 分组）。第一类用地 20 mg/kg。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Cd</div><div class="is">镉</div><div class="ib">高毒重金属，筛选值 0.3~0.6 mg/kg（农用地）。第一类用地 20 mg/kg。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Pb</div><div class="is">铅</div><div class="ib">筛选值 70~240 mg/kg（农用地）。第一类用地 400 mg/kg。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Cr</div><div class="is">六价铬</div><div class="ib">第一类用地筛选值 3.0 mg/kg。高毒性。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Cu</div><div class="is">铜</div><div class="ib">筛选值 50~150 mg/kg（农用地）。第一类用地 2000 mg/kg。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Ni</div><div class="is">镍</div><div class="ib">筛选值 60~100 mg/kg（农用地）。第一类用地 150 mg/kg。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Hg</div><div class="is">汞</div><div class="ib">筛选值 0.5~3.4 mg/kg。第一类用地 8 mg/kg。</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">⚡</span><div class="in">Zn</div><div class="is">锌</div><div class="ib">筛选值 200~300 mg/kg（农用地）。建设用地无统一筛选值。</div></div>
+</div></div>
+
+<div class="sc"><div class="sn">评价方法</div><h2 class="st">内梅罗综合指数</h2><p class="sd">Pᵢ = Cᵢ/Sᵢ；P̄ = 平均 Pᵢ；P<sub>综</sub> = √[(P̄²+Pmax²)/2]</p>
+<div class="tl">
+<div class="tp"><div class="tn">STEP 01</div><div class="tt">计算单因子指数 Pᵢ</div><div class="td">Pᵢ = 实测浓度 / 标准筛选值。Pᵢ ≤ 1 达标</div></div>
+<div class="tp"><div class="tn">STEP 02</div><div class="tt">求 P̄ 和 Pmax</div><div class="td">所有 Pᵢ 的算术平均和最大值</div></div>
+<div class="tp"><div class="tn">STEP 03</div><div class="tt">计算 P<sub>综</sub></div><div class="td">P<sub>综</sub> = √[(P̄²+Pmax²)/2]</div></div>
+<div class="tp"><div class="tn">STEP 04</div><div class="tt">分级判定</div><div class="td">P<sub>综</sub> ≤ 0.7 安全；0.7~1 警戒；1~2 轻污染；2~3 中污染；> 3 重污染</div></div>
+</div></div>
+
+<div class="sc"><div class="sn">交互评价</div><h2 class="st">土壤质量 · 综合评价</h2><p class="sd">选择功能区或输入自定义数据。采用第一类用地筛选值。</p>
+<div class="ev-box">
+<div class="ev-tabs" id="soilTabs">
+<div class="ev-tab ac" onclick="ev('s',0)"><span class="en">①</span>选择分区</div>
+<div class="ev-tab" onclick="ev('s',1)"><span class="en">②</span>输入数据</div>
+<div class="ev-tab" onclick="ev('s',2)"><span class="en">③</span>查看结果</div>
+</div>
+<div class="ev-panel ac" id="sp0">
+<div class="pg">
+<div class="pi ac" onclick="cs(this,'s',0)"><div class="pn">生产区</div><div class="pp">As/Cd 偏高</div></div>
+<div class="pi" onclick="cs(this,'s',1)"><div class="pn">储罐区</div><div class="pp">石油烃+重金属</div></div>
+<div class="pi" onclick="cs(this,'s',2)"><div class="pn">仓储区</div><div class="pp">轻度影响</div></div>
+<div class="pi" onclick="cs(this,'s',3)"><div class="pn">办公区</div><div class="pp">清洁区</div></div>
+</div>
+<button class="zb zb1" onclick="ev('s',1)">下一步 →</button>
+</div>
+<div class="ev-panel" id="sp1">
+<div class="sg">
+<div><label>As (mg/kg)</label><input type="number" id="sAs" step="0.1" value="25"></div>
+<div><label>Cd (mg/kg)</label><input type="number" id="sCd" step="0.01" value="0.8"></div>
+<div><label>Pb (mg/kg)</label><input type="number" id="sPb" step="0.1" value="120"></div>
+<div><label>Cu (mg/kg)</label><input type="number" id="sCu" step="0.1" value="60"></div>
+<div><label>Ni (mg/kg)</label><input type="number" id="sNi" step="0.1" value="50"></div>
+<div><label>Hg (mg/kg)</label><input type="number" id="sHg" step="0.01" value="0.3"></div>
+</div>
+<button class="zb zb1" onclick="evalSoil()">开始评价 →</button>
+</div>
+<div class="ev-panel" id="sp2">
+<div id="soilResult" style="display:none">
+<div class="scale-wrap"><div class="scale-labels"><span>安全</span><span>警戒</span><span>轻污染</span><span>中污染</span><span>重污染</span></div>
+<div class="scale" style="background:linear-gradient(90deg,#22c55e,#eab308,#f97316,#ef4444,#991b1b)"><div class="scale-fill" id="soilFill" style="width:0;background:var(--ink)"></div></div></div>
+<div class="rb" id="soilRB" style="display:block">
+<span class="rn" id="soilP">—</span>
+<span class="rl" id="soilLevel">—</span>
+<div class="rd" id="soilDesc">—</div>
+</div>
+<div class="dg" id="soilDg"></div>
+<div id="soilBad" style="margin:10px 0;display:none"></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="zb zb1" onclick="ev('s',1)">修改数据</button>
+<button class="zb zb2" onclick="addToCompare()">加入对比</button>
+</div>
+</div>
+<div id="soilWait" style="text-align:center;padding:40px;color:var(--ink-light)">请先输入数据</div>
+</div>
+</div></div>
+</div>
+
+<!-- ====== RAIN (3) ====== -->
+<div class="mp c3" id="mp3">
+<div class="sc"><div class="sn">🌧️ 降水 · 酸雨评价</div><h2 class="st">pH + 离子平衡法</h2><p class="sd">依据 HJ/T 165-2004《酸沉降监测技术规范》，通过降水 pH 值和主要离子浓度判断酸雨状况。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><span class="ii">🧪</span><div class="in">pH</div><div class="is">酸度核心指标</div><div class="ib">pH < 5.6 为酸雨；4.5 ≤ pH < 5.0 较重酸雨；pH < 4.5 重度酸雨。</div><span class="it">一级判定</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">💨</span><div class="in">SO₄²⁻</div><div class="is">硫酸根</div><div class="ib">主要致酸离子，来自燃煤排放。SO₄²⁻/NO₃⁻ 比值判断酸雨类型。</div><span class="it">致酸因子</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🚗</span><div class="in">NO₃⁻</div><div class="is">硝酸根</div><div class="ib">来自机动车尾气。随机动化率提高，NO₃⁻ 贡献逐年增加。</div><span class="it">致酸因子</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🧱</span><div class="in">Ca²⁺</div><div class="is">钙离子</div><div class="ib">主要中和离子，来自土壤扬尘。Ca²⁺ 浓度高的地区酸雨较弱。</div><span class="it">中和因子</span></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🧬</span><div class="in">NH₄⁺</div><div class="is">铵离子</div><div class="ib">来自农业施肥挥发，对降水有中和作用。</div><span class="it">中和因子</span></div>
+</div></div>
+
+<div class="sc"><div class="sn">酸雨分级</div><h2 class="st">pH 分级标准</h2><p class="sd">以降水 pH 年均值为基准。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><div class="in">非酸雨</div><div class="is">pH ≥ 5.6</div><div class="ib">CO₂ 饱和水溶液的 pH 约为 5.6，以此为酸雨判断阈值。</div><span class="it">✅ 正常</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">弱酸雨</div><div class="is">5.0 ≤ pH < 5.6</div><div class="ib">轻微酸化，对生态环境影响有限。</div><span class="it" style="background:#fef3c7;color:#b45309">⚠️ 注意</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">较重酸雨</div><div class="is">4.5 ≤ pH < 5.0</div><div class="ib">对建筑物、水体生态和土壤产生明显影响。</div><span class="it" style="background:#fed7aa;color:#c2410c">⚠️⚠️</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">重度酸雨</div><div class="is">pH < 4.5</div><div class="ib">严重酸化，重庆、贵阳等地区历史上曾出现。</div><span class="it" style="background:#fecaca;color:#dc2626">🚫 严重</span></div>
+</div></div>
+
+<div class="sc"><div class="sn">交互评价</div><h2 class="st">降水酸度 · 综合评价</h2><p class="sd">选择城市或输入自定义降水数据。</p>
+<div class="ev-box">
+<div class="ev-tabs" id="rainTabs">
+<div class="ev-tab ac" onclick="ev('rn',0)"><span class="en">①</span>选择城市</div>
+<div class="ev-tab" onclick="ev('rn',1)"><span class="en">②</span>输入数据</div>
+<div class="ev-tab" onclick="ev('rn',2)"><span class="en">③</span>查看结果</div>
+</div>
+<div class="ev-panel ac" id="rnp0">
+<div class="pg">
+<div class="pi ac" onclick="cs(this,'rn',0)"><div class="pn">重庆</div><div class="pp">pH 4.5 · 重酸雨区</div></div>
+<div class="pi" onclick="cs(this,'rn',1)"><div class="pn">上海</div><div class="pp">pH 4.9 · 较重酸雨</div></div>
+<div class="pi" onclick="cs(this,'rn',2)"><div class="pn">广州</div><div class="pp">pH 5.1 · 弱酸雨</div></div>
+<div class="pi" onclick="cs(this,'rn',3)"><div class="pn">北京</div><div class="pp">pH 5.8 · 非酸雨</div></div>
+<div class="pi" onclick="cs(this,'rn',4)"><div class="pn">拉萨</div><div class="pp">pH 6.5 · 清洁降水</div></div>
+<div class="pi" onclick="cs(this,'rn',5)"><div class="pn">自定义</div><div class="pp">手动输入</div></div>
+</div>
+<button class="zb zb1" onclick="ev('rn',1)">下一步 →</button>
+</div>
+<div class="ev-panel" id="rnp1">
+<div class="sg">
+<div><label>降水 pH</label><input type="number" id="rnpH" step="0.1" value="4.5"></div>
+<div><label>SO₄²⁻ (mg/L)</label><input type="number" id="rnSO4" step="0.1" value="18.5"></div>
+<div><label>NO₃⁻ (mg/L)</label><input type="number" id="rnNO3" step="0.1" value="5.2"></div>
+<div><label>Ca²⁺ (mg/L)</label><input type="number" id="rnCa" step="0.1" value="3.8"></div>
+<div><label>NH₄⁺ (mg/L)</label><input type="number" id="rnNH4" step="0.1" value="2.1"></div>
+</div>
+<button class="zb zb1" onclick="evalRain()">开始评价 →</button>
+</div>
+<div class="ev-panel" id="rnp2">
+<div id="rainResult" style="display:none">
+<div class="ph-visual"><div class="ph-meter" id="phMeter"><div class="ph-cursor" id="phCursor" style="top:70%"></div></div>
+<div class="ph-ind"><div class="pv" id="phDisplay">—</div><div class="pl" id="phLabel">—</div></div></div>
+<div class="rb" id="rainRB" style="display:block">
+<span class="rn" id="rainType">—</span>
+<span class="rl" id="rainLevel">—</span>
+<div class="rd" id="rainDesc">—</div>
+</div>
+<div class="dg" id="rainDg"></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="zb zb1" onclick="ev('rn',1)">修改数据</button>
+<button class="zb zb2" onclick="addToCompare()">加入对比</button>
+</div>
+</div>
+<div id="rainWait" style="text-align:center;padding:40px;color:var(--ink-light)">请先输入数据</div>
+</div>
+</div></div>
+</div>
+
+<!-- ====== AIR (4) ====== -->
+<div class="mp c4" id="mp4">
+<div class="sc"><div class="sn">☀️ 大气 · 环境空气质量评价</div><h2 class="st">AQI · 空气质量指数</h2><p class="sd">依据 HJ 633—2026《环境空气质量指数（AQI）技术规定》（2026-03-01 起代替 HJ 633—2012），由 6 项污染物分指数 IAQI 取最大值定级。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><span class="ii">🌫️</span><div class="in">PM₂.₅</div><div class="is">24h 均值 ≤ 35 μg/m³</div><div class="ib">可进入肺泡和血液，中国 AQI 首要超标因子。IAQI 分档：35(优) / 75(良) / 115(轻) / 150(中) / 250(重) / 500(严)</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">💨</span><div class="in">PM₁₀</div><div class="is">24h 均值 ≤ 50 μg/m³</div><div class="ib">可吸入颗粒物，来自扬尘和工业粉尘。IAQI 分档：50 / 150 / 250 / 350 / 420 / 500</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🧪</span><div class="in">SO₂</div><div class="is">1h 均值 ≤ 150 μg/m³</div><div class="ib">煤烟型污染代表。IAQI 分档：150(一级) / 500 / 650 / 800</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🚗</span><div class="in">NO₂</div><div class="is">1h 均值 ≤ 200 μg/m³</div><div class="ib">交通源污染代表。IAQI 分档：100 / 200 / 700 / 1200 / 2340 / 3090</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">🔥</span><div class="in">CO</div><div class="is">1h 均值 ≤ 5 mg/m³</div><div class="ib">不完全燃烧产物。IAQI 分档：5 / 10 / 35 / 60 / 90 / 120 (mg/m³)</div></div>
+<div class="ic" onclick="rc(this)"><span class="ii">☀️</span><div class="in">O₃</div><div class="is">8h 最大均值 ≤ 100 μg/m³</div><div class="ib">光化学烟雾核心组分。IAQI 分档：100 / 160 / 215 / 265 / 800</div></div>
+</div></div>
+
+<div class="sc"><div class="sn">AQI 分级</div><h2 class="st">六色空气质量</h2><p class="sd">AQI 0~50 优 → 51~100 良 → 101~150 轻度 → 151~200 中度 → 201~300 重度 → >300 严重</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><div class="in">优 · 绿色</div><div class="is">AQI 0~50</div><div class="ib">空气质量令人满意，基本无空气污染。各类人群可正常活动。</div><span class="it" style="background:#dcfce7;color:#16a34a">适合户外</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">良 · 黄色</div><div class="is">AQI 51~100</div><div class="ib">可接受，某些污染物对极少数敏感人群有轻微影响。</div><span class="it" style="background:#fef9c3;color:#ca8a04">敏感人群注意</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">轻度 · 橙色</div><div class="is">AQI 101~150</div><div class="ib">敏感人群症状有轻度加剧，健康人群出现刺激症状。</div><span class="it" style="background:#fed7aa;color:#c2410c">减少户外</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">中度 · 红色</div><div class="is">AQI 151~200</div><div class="ib">进一步加剧敏感人群症状，对健康人群心脏/呼吸系统有影响。</div><span class="it" style="background:#fecaca;color:#dc2626">避免户外</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">重度 · 紫色</div><div class="is">AQI 201~300</div><div class="ib">心脏病和肺病患者症状加剧，运动耐受力降低。</div><span class="it" style="background:#e9d5ff;color:#7c3aed">减少外出</span></div>
+<div class="ic" onclick="rc(this)"><div class="in">严重 · 褐红</div><div class="is">AQI > 300</div><div class="ib">健康人群运动耐受力降低，有明显强烈症状。</div><span class="it" style="background:#7c2d12;color:#fecaca">避免外出</span></div>
+</div></div>
+
+<div class="sc"><div class="sn">交互评价</div><h2 class="st">AQI · 实时评价</h2><p class="sd">选择城市或输入自定义浓度数据，系统按 HJ 633—2012 分级限值计算 AQI<span style="color:#b45309;">（该分级限值已于 2026-03-01 被 HJ 633—2026 更新，待同步）</span>。</p>
+<div class="ev-box">
+<div class="ev-tabs" id="airTabs">
+<div class="ev-tab ac" onclick="ev('a',0)"><span class="en">①</span>选择城市</div>
+<div class="ev-tab" onclick="ev('a',1)"><span class="en">②</span>输入数据</div>
+<div class="ev-tab" onclick="ev('a',2)"><span class="en">③</span>查看结果</div>
+</div>
+<div class="ev-panel ac" id="ap0">
+<div class="pg">
+<div class="pi ac" onclick="cs(this,'a',0)"><div class="pn">昆明</div><div class="pp">优 · PM₂.₅ 15</div></div>
+<div class="pi" onclick="cs(this,'a',1)"><div class="pn">上海</div><div class="pp">良 · PM₂.₅ 45</div></div>
+<div class="pi" onclick="cs(this,'a',2)"><div class="pn">北京</div><div class="pp">轻度 · PM₂.₅ 85</div></div>
+<div class="pi" onclick="cs(this,'a',3)"><div class="pn">石家庄</div><div class="pp">中度 · PM₂.₅ 160</div></div>
+<div class="pi" onclick="cs(this,'a',4)"><div class="pn">自定义</div><div class="pp">手动输入</div></div>
+</div>
+<button class="zb zb1" onclick="ev('a',1)">下一步 →</button>
+</div>
+<div class="ev-panel" id="ap1">
+<div class="sg" style="grid-template-columns:1fr 1fr 1fr">
+<div><label>PM₂.₅ (μg/m³)</label><input type="number" id="aPM25" value="85"></div>
+<div><label>PM₁₀ (μg/m³)</label><input type="number" id="aPM10" value="130"></div>
+<div><label>SO₂ (μg/m³)</label><input type="number" id="aSO2" value="25"></div>
+<div><label>NO₂ (μg/m³)</label><input type="number" id="aNO2" value="55"></div>
+<div><label>CO (mg/m³)</label><input type="number" id="aCO" value="1.2" step="0.1"></div>
+<div><label>O₃ (μg/m³)</label><input type="number" id="aO3" value="90"></div>
+</div>
+<button class="zb zb1" onclick="evalAir()">开始评价 →</button>
+</div>
+<div class="ev-panel" id="ap2">
+<div id="airResult" style="display:none">
+<div class="aqi-card" id="aqiCard" style="background:#fef3c7">
+<div class="qn" id="aqiVal" style="color:#b45309">—</div>
+<div class="ql" id="aqiLbl" style="color:#b45309">—</div>
+<div class="qd" id="aqiDesc" style="color:#b45309">—</div>
+<div class="aqi-bar" style="background:#ddd"><div class="aqi-fill" id="aqiFill" style="width:0;background:#eab308"></div></div>
+<div class="aqi-labels"><span>0 优</span><span>50</span><span>100</span><span>150</span><span>200</span><span>300</span><span>500</span></div>
+</div>
+<div class="dg" id="airDg"></div>
+<div style="margin-top:12px"><span class="it" id="airPrimary" style="background:var(--cml);color:var(--cm);padding:6px 14px">首要污染物：—</span></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="zb zb1" onclick="ev('a',1)">修改数据</button>
+<button class="zb zb2" onclick="addToCompare()">加入对比</button>
+</div>
+</div>
+<div id="airWait" style="text-align:center;padding:40px;color:var(--ink-light)">请先输入数据</div>
+</div>
+</div></div>
+</div>
+
+<!-- ====== COMPARE ====== -->
+<div class="mp" id="mpComp" style="max-width:960px;margin:0 auto;padding:60px 24px">
+<div class="sc vi"><div class="sn" style="color:var(--ink)">📊 综合对比</div><h2 class="st">五介质环境质量对比</h2><p class="sd">在 5 个评价模块中分别点击"加入对比"后，结果会在这里汇总。跨介质对比有助于识别系统性环境问题。</p>
+<div id="compareContent"><div class="cp-empty">暂无对比数据。请在各个介质的评价模块中完成评价后，点击"加入对比"按钮。</div></div>
+<div class="cp-wrap" id="compareTableWrap" style="display:none"><table><thead><tr><th>介质</th><th>评价方法</th><th>核心结果</th><th>等级</th><th>状态</th></tr></thead><tbody id="compareBody"></tbody></table></div>
+<button class="zb zb1" onclick="clearCompare()" style="margin-top:16px;display:none" id="clearCmpBtn">清空对比数据</button>
+</div></div>
+
+<footer class="ft">
+环境检测 · 交互式教学 &nbsp;|&nbsp; 联系方式：【联系方式见仓库主页】
+</footer>
+
+<script>
+// === Tab / Media switching ===
+let curMedia = 0;
+function sw(n){
+  document.querySelectorAll('.mp').forEach(m=>m.classList.remove('ac'));
+  document.querySelectorAll('.ms-btn').forEach(b=>{b.classList.remove('ac');b.classList.remove('c'+curMedia)});
+  curMedia = n;
+  document.getElementById('mp'+n).classList.add('ac');
+  let btn = document.querySelectorAll('.ms-btn')[n];
+  btn.classList.add('ac','c'+n);
+  // Activate scroll sections in new panel
+  document.querySelectorAll('#mp'+n+' .sc').forEach(s=>{if(isInViewport(s))s.classList.add('vi')});
+  updateDots();
+}
+// === Section nav dots ===
+let sections = [];
+function initDots(){
+  sections = [{el:document.querySelector('header')||document.createElement('div'),label:'开篇'}];
+  for(let i=0;i<5;i++){
+    let panel = document.getElementById('mp'+i);
+    if(panel){
+      let scs = panel.querySelectorAll('.sc');
+      let label = ['河流','湖泊','土壤','降水','大气'][i];
+      sections.push({el:scs[0]||panel,label:label});
+    }
+  }
+  sections.push({el:document.getElementById('mpComp'),label:'对比'});
+}
+function updateDots(){
+  let scrollY = window.scrollY + window.innerHeight/3;
+  let idx = 0;
+  for(let i=0;i<sections.length;i++){
+    let el = sections[i].el;
+    if(el && el.offsetTop <= scrollY) idx = i;
+  }
+  document.querySelectorAll('.nd').forEach((d,i)=>{d.classList.toggle('ac',i===idx)});
+}
+function gs(n){
+  let el = sections[n] && sections[n].el;
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+// === Utility ===
+function rc(el){el.classList.toggle('rv')}
+function isInViewport(el){if(!el)return false;let r=el.getBoundingClientRect();return r.top<window.innerHeight-100&&r.bottom>0}
+// === Tab switching per media ===
+function ev(media,step){
+  // media: 'r'(river), 'l'(lake), 's'(soil), 'rn'(rain), 'a'(air)
+  let prefix = {'r':'r','l':'l','s':'s','rn':'rn','a':'a'}[media];
+  let panel = document.getElementById(prefix+'p'+step);
+  if(!panel) return;
+  // Update tabs
+  let tabs = document.getElementById(media+'Tabs') || document.getElementById(media+'Tabs') || 
+    (media==='rn' ? document.getElementById('rainTabs') : null);
+  // Try to find tabs in current active panel
+  let tabContainer = panel.closest('.ev-box') ? panel.closest('.ev-box').querySelector('.ev-tabs') : null;
+  if(tabContainer){
+    tabContainer.querySelectorAll('.ev-tab').forEach((t,i)=>{t.classList.toggle('ac',i===step);if(i<step)t.classList.add('done')});
+  }
+  // Show panel
+  panel.closest('.ev-box').querySelectorAll('.ev-panel').forEach(p=>p.classList.remove('ac'));
+  panel.classList.add('ac');
+}
+// === Preset selection ===
+function cs(el,media,idx){
+  let parent = el.closest('.pg') || el.parentElement;
+  parent.querySelectorAll('.pi').forEach(p=>p.classList.remove('ac'));
+  el.classList.add('ac');
+  // Load preset data based on media and index
+  let data = getPresetData(media,idx);
+  if(data) applyPresetData(media,data);
+}
+// === PRESET DATA ===
+function getPresetData(media,idx){
+  const presets = {
+    'r':[
+      {pH:7.2,DO:8.2,COD:12,BOD:2.5,NH3:0.15,TP:0.03},
+      {pH:6.8,DO:5.5,COD:28,BOD:6.8,NH3:1.8,TP:0.35},
+      {pH:7.5,DO:4.2,COD:22,BOD:5.0,NH3:1.2,TP:0.25},
+      {pH:7.0,DO:6.0,COD:18,BOD:4.0,NH3:0.8,TP:0.18},
+      {pH:7.3,DO:5.0,COD:25,BOD:5.5,NH3:1.5,TP:0.30}
+    ],
+    'l':[
+      {Chl:1.2,SD:6.5,TP:0.008,TN:0.35,COD:5},
+      {Chl:3.5,SD:3.0,TP:0.025,TN:0.8,COD:10},
+      {Chl:25,SD:0.8,TP:0.12,TN:2.5,COD:22},
+      {Chl:45,SD:0.4,TP:0.18,TN:3.8,COD:30},
+      {Chl:85,SD:0.2,TP:0.35,TN:6.5,COD:45}
+    ],
+    's':[
+      {As:25,Cd:0.8,Pb:120,Cu:60,Ni:50,Hg:0.3},
+      {As:35,Cd:2.5,Pb:280,Cu:90,Ni:75,Hg:0.8},
+      {As:12,Cd:0.2,Pb:45,Cu:20,Ni:18,Hg:0.08},
+      {As:8,Cd:0.1,Pb:25,Cu:12,Ni:10,Hg:0.03}
+    ],
+    'rn':[
+      {pH:4.5,SO4:18.5,NO3:5.2,Ca:3.8,NH4:2.1},
+      {pH:4.9,SO4:12.3,NO3:6.8,Ca:2.5,NH4:1.8},
+      {pH:5.1,SO4:8.6,NO3:4.5,Ca:4.2,NH4:3.0},
+      {pH:5.8,SO4:5.2,NO3:3.8,Ca:6.5,NH4:4.5},
+      {pH:6.5,SO4:1.2,NO3:0.8,Ca:8.5,NH4:2.0},
+      null
+    ],
+    'a':[
+      {pm25:15,pm10:30,so2:8,no2:18,co:0.6,o3:55},
+      {pm25:45,pm10:70,so2:15,no2:40,co:1.0,o3:80},
+      {pm25:85,pm10:130,so2:25,no2:55,co:1.2,o3:90},
+      {pm25:160,pm10:210,so2:35,no2:65,co:1.8,o3:75},
+      null
+    ]
+  };
+  let d = presets[media];
+  return d && d[idx] ? d[idx] : null;
+}
+function applyPresetData(media,data){
+  const map = {
+    'r':{pH:'rpH',DO:'rDO',COD:'rCOD',BOD:'rBOD',NH3:'rNH3',TP:'rTP'},
+    'l':{Chl:'lChl',SD:'lSD',TP:'lTP',TN:'lTN',COD:'lCOD'},
+    's':{As:'sAs',Cd:'sCd',Pb:'sPb',Cu:'sCu',Ni:'sNi',Hg:'sHg'},
+    'rn':{pH:'rnpH',SO4:'rnSO4',NO3:'rnNO3',Ca:'rnCa',NH4:'rnNH4'},
+    'a':{pm25:'aPM25',pm10:'aPM10',so2:'aSO2',no2:'aNO2',co:'aCO',o3:'aO3'}
+  };
+  let m = map[media];
+  if(!m) return;
+  for(let k in data){
+    let id = m[k];
+    if(id){
+      let inp = document.getElementById(id);
+      if(inp) inp.value = data[k];
+    }
+  }
+}
+// === RIVER EVAL ===
+function evalRiver(){
+  let pH=parseFloat(document.getElementById('rpH').value)||7;
+  let DO=parseFloat(document.getElementById('rDO').value)||0;
+  let COD=parseFloat(document.getElementById('rCOD').value)||0;
+  let BOD=parseFloat(document.getElementById('rBOD').value)||0;
+  let NH3=parseFloat(document.getElementById('rNH3').value)||0;
+  let TP=parseFloat(document.getElementById('rTP').value)||0;
+  let std = {
+    pH:[{min:6,max:9,cls:0},{min:6,max:9,cls:0},{min:6,max:9,cls:0},{min:6,max:9,cls:0},{min:6,max:9,cls:0}],
+    DO:[{v:7.5,cls:0},{v:6,cls:1},{v:5,cls:2},{v:3,cls:3},{v:2,cls:4}],
+    COD:[{v:15,cls:0},{v:15,cls:0},{v:20,cls:2},{v:30,cls:3},{v:40,cls:4}],
+    BOD:[{v:3,cls:0},{v:3,cls:0},{v:4,cls:2},{v:6,cls:3},{v:10,cls:4}],
+    NH3:[{v:0.15,cls:0},{v:0.5,cls:1},{v:1.0,cls:2},{v:1.5,cls:3},{v:2.0,cls:4}],
+    TP:[{v:0.02,cls:0},{v:0.1,cls:1},{v:0.2,cls:2},{v:0.3,cls:3},{v:0.4,cls:4}]
+  };
+  let classes = ['Ⅰ类','Ⅱ类','Ⅲ类','Ⅳ类','Ⅴ类'];
+  let labels = ['水质优','水质良好','水质一般','水质较差','水质差'];
+  let descs = ['适用于源头水、国家自然保护区','适用于集中式生活饮用水地表水源地一级保护区','适用于集中式饮用水二级保护区、鱼虾越冬场','适用于一般工业用水区、人体非直接接触娱乐用水区','适用于农业用水区、一般景观要求水域'];
+  let vals = {pH,DO,COD,BOD,NH3,TP};
+  let names = {pH:'pH',DO:'DO (mg/L)',COD:'COD (mg/L)',BOD:'BOD₅ (mg/L)',NH3:'NH₃-N (mg/L)',TP:'TP (mg/L)'};
+  let cls = {};
+  for(let k in vals){
+    if(k==='pH'){
+      cls[k] = (vals[k]>=6&&vals[k]<=9)?0:4;
+      continue;
+    }
+    let s = std[k];
+    cls[k] = 0;
+    for(let i=s.length-1;i>=0;i--){
+      if(vals[k] <= s[i].v) cls[k] = s[i].cls;
+      else break;
+    }
+  }
+  let maxCls = Math.max(...Object.values(cls));
+  document.getElementById('riverClass').textContent = classes[maxCls];
+  document.getElementById('riverLabel').textContent = labels[maxCls];
+  document.getElementById('riverDesc').textContent = descs[maxCls];
+  let rb = document.getElementById('riverRB');
+  let colors = ['#0ea5e9','#22c55e','#eab308','#f97316','#dc2626'];
+  rb.style.background = colors[maxCls]+'15';
+  rb.style.borderColor = colors[maxCls];
+  document.getElementById('riverClass').style.color = colors[maxCls];
+  // Detail grid
+  let dg = document.getElementById('riverDg');
+  dg.innerHTML = '';
+  let badList = [];
+  for(let k in vals){
+    let c = cls[k];
+    let bg = c===0?'#f0fdf4':'#fef2f2';
+    let tc = c===0?'#16a34a':'#dc2626';
+    let icon = vals[k]>=(k==='pH'?0:0)?'':'';
+    dg.innerHTML += `<div style="background:${bg};color:${tc}"><span class="dv">${vals[k]}${k==='pH'?'':''}</span><span class="dl">${names[k]} (${classes[c]})</span></div>`;
+    if(c>0) badList.push(names[k]+' ('+classes[c]+')');
+  }
+  let badEl = document.getElementById('riverBad');
+  if(badList.length>0){
+    badEl.style.display='block';
+    badEl.innerHTML = '⚠️ 超标因子：'+badList.join('、');
+  } else badEl.style.display='none';
+  document.getElementById('riverResult').style.display='block';
+  document.getElementById('riverWait').style.display='none';
+  ev('r',2);
+}
+// === LAKE EVAL ===
+function evalLake(){
+  let Chl=parseFloat(document.getElementById('lChl').value)||0;
+  let SD=parseFloat(document.getElementById('lSD').value)||0;
+  let TP=parseFloat(document.getElementById('lTP').value)||0;
+  let TN=parseFloat(document.getElementById('lTN').value)||0;
+  let COD=parseFloat(document.getElementById('lCOD').value)||0;
+  if(Chl<=0||SD<=0){alert('请输入有效数据');return}
+  let tliChl = 10*(2.5+1.086*Math.log(Math.max(Chl,0.1)));
+  let tliSD = 10*(5.118-1.94*Math.log(Math.max(SD,0.1)));
+  let tliTP = 10*(4.624+0.554*Math.log(Math.max(TP*1000,0.01)));
+  let tliTN = 10*(-1.294+2.694*Math.log(Math.max(TN,0.1)));
+  let tliCOD = 10*(2.427+1.694*Math.log(Math.max(COD,0.1)));
+  let tli = 0.266*tliChl + 0.188*tliTP + 0.179*tliTN + 0.183*tliSD + 0.183*tliCOD;
+  let level,label,desc,color;
+  if(tli<30){level='贫营养';label='L';desc='湖水清澈，营养盐含量极低';color='#0ea5e9'}
+  else if(tli<=50){level='中营养';label='M';desc='营养适中，藻类生长正常';color='#22c55e'}
+  else if(tli<=60){level='轻度富营养';label='ML';desc='营养盐偏高，藻类开始大量繁殖';color='#eab308'}
+  else if(tli<=70){level='中度富营养';label='MH';desc='藻类暴发风险高，水质明显下降';color='#f97316'}
+  else{level='重度富营养';label='H';desc='藻华频发，水质严重恶化';color='#dc2626'}
+  document.getElementById('tliVal').textContent = tli.toFixed(1);
+  document.getElementById('tliLbl').textContent = level;
+  document.getElementById('tliDesc').textContent = desc;
+  document.getElementById('tliVal').style.color = color;
+  document.getElementById('tliLbl').style.color = color;
+  let rb = document.getElementById('lakeRB');
+  rb.style.background = color+'15';
+  rb.style.borderColor = color;
+  // Fill
+  document.getElementById('tliFill').style.width = Math.min(tli,100)+'%';
+  document.getElementById('tliFill').style.background = color;
+  // Details
+  let dg = document.getElementById('tliDg');
+  dg.innerHTML = `<div><span class="dv">${tliChl.toFixed(1)}</span><span class="dl">TLI(Chl-a)</span></div>
+    <div><span class="dv">${tliSD.toFixed(1)}</span><span class="dl">TLI(SD)</span></div>
+    <div><span class="dv">${tliTP.toFixed(1)}</span><span class="dl">TLI(TP)</span></div>
+    <div><span class="dv">${tliTN.toFixed(1)}</span><span class="dl">TLI(TN)</span></div>
+    <div><span class="dv">${tliCOD.toFixed(1)}</span><span class="dl">TLI(COD)</span></div>`;
+  document.getElementById('lakeResult').style.display='block';
+  document.getElementById('lakeWait').style.display='none';
+}
+// === SOIL EVAL ===
+function evalSoil(){
+  let As=parseFloat(document.getElementById('sAs').value)||0;
+  let Cd=parseFloat(document.getElementById('sCd').value)||0;
+  let Pb=parseFloat(document.getElementById('sPb').value)||0;
+  let Cu=parseFloat(document.getElementById('sCu').value)||0;
+  let Ni=parseFloat(document.getElementById('sNi').value)||0;
+  let Hg=parseFloat(document.getElementById('sHg').value)||0;
+  // First class land screening values (GB 36600-2018)
+  let sv = {As:20,Cd:20,Pb:400,Cu:2000,Ni:150,Hg:8};
+  let items = {As,Pb,Cu,Ni,Hg,Cd};
+  let names = {As:'As',Cd:'Cd',Pb:'Pb',Cu:'Cu',Ni:'Ni',Hg:'Hg'};
+  let pis = {};
+  for(let k in items){
+    pis[k] = items[k] / sv[k];
+  }
+  let arr = Object.values(pis);
+  let avg = arr.reduce((a,b)=>a+b,0)/arr.length;
+  let max = Math.max(...arr);
+  let Pn = Math.sqrt((avg*avg+max*max)/2);
+  let level,desc,color;
+  if(Pn<=0.7){level='安全';desc='土壤清洁，可正常利用';color='#22c55e'}
+  else if(Pn<=1){level='警戒线';desc='土壤尚清洁，需关注污染趋势';color='#eab308'}
+  else if(Pn<=2){level='轻度污染';desc='污染物超标，需采取管控措施';color='#f97316'}
+  else if(Pn<=3){level='中度污染';desc='污染较严重，需修复治理';color='#ef4444'}
+  else{level='重度污染';desc='污染极其严重，立即采取修复行动';color='#991b1b'}
+  document.getElementById('soilP').textContent = 'P<sub>综</sub> = '+Pn.toFixed(2);
+  document.getElementById('soilLevel').textContent = level;
+  document.getElementById('soilDesc').textContent = desc;
+  document.getElementById('soilP').style.color = color;
+  let rb = document.getElementById('soilRB');
+  rb.style.background = color+'15';
+  rb.style.borderColor = color;
+  document.getElementById('soilFill').style.width = Math.min(Pn/3.5*100,100)+'%';
+  document.getElementById('soilFill').style.background = color;
+  // Details
+  let dg = document.getElementById('soilDg');
+  dg.innerHTML = '';
+  for(let k in pis){
+    let pi = pis[k];
+    let bg = pi<=1?'#f0fdf4':'#fef2f2';
+    let tc = pi<=1?'#16a34a':'#dc2626';
+    dg.innerHTML += `<div style="background:${bg};color:${tc}"><span class="dv">${pi.toFixed(2)}</span><span class="dl">${names[k]}</span></div>`;
+  }
+  // Bad items
+  let bad = Object.keys(pis).filter(k=>pis[k]>1);
+  let badEl = document.getElementById('soilBad');
+  if(bad.length>0){
+    badEl.style.display='block';
+    badEl.innerHTML = '<div style="padding:10px;border-radius:8px;background:#fef2f2;color:#dc2626;font-size:12px">⚠️ 超标因子：'+bad.map(k=>names[k]+' (Pi='+pis[k].toFixed(2)+')').join('、')+'</div>';
+  } else badEl.style.display='none';
+  document.getElementById('soilResult').style.display='block';
+  document.getElementById('soilWait').style.display='none';
+}
+// === RAIN EVAL ===
+function evalRain(){
+  let pH=parseFloat(document.getElementById('rnpH').value)||7;
+  let SO4=parseFloat(document.getElementById('rnSO4').value)||0;
+  let NO3=parseFloat(document.getElementById('rnNO3').value)||0;
+  let Ca=parseFloat(document.getElementById('rnCa').value)||0;
+  let NH4=parseFloat(document.getElementById('rnNH4').value)||0;
+  let type,level,desc,color;
+  if(pH>=5.6){type='非酸雨';level='正常降水';desc='pH 高于 5.6，未受酸性物质显著影响';color='#22c55e'}
+  else if(pH>=5.0){type='弱酸雨';level='轻度酸化';desc='pH 在 5.0~5.6 之间，对生态环境影响有限';color='#eab308'}
+  else if(pH>=4.5){type='较重酸雨';level='中度酸化';desc='pH 在 4.5~5.0，对建筑物和水体有明显影响';color='#f97316'}
+  else{type='重度酸雨';level='严重酸化';desc='pH < 4.5，生态环境严重受损';color='#dc2626'}
+  // pH meter cursor
+  let pct = 100 - ((pH-2)/5*100);
+  pct = Math.max(0,Math.min(100,pct));
+  document.getElementById('phCursor').style.top = pct+'%';
+  document.getElementById('phDisplay').textContent = pH.toFixed(1);
+  document.getElementById('phDisplay').style.color = color;
+  let labels = ['强酸','','酸雨','','弱酸','','非酸雨','','碱性'];
+  let labelIdx = Math.floor((7-pH)/0.7);
+  labelIdx = Math.max(0,Math.min(8,labelIdx));
+  document.getElementById('phLabel').textContent = labels[labelIdx]||'';
+  document.getElementById('phLabel').style.color = color;
+  // Type indicators
+  let ratio = SO4>0&&NO3>0?SO4/NO3:0;
+  let rainType = ratio>3?'硫酸型':ratio>1?'混合型':'硝酸型';
+  document.getElementById('rainType').textContent = type;
+  document.getElementById('rainLevel').textContent = level;
+  document.getElementById('rainDesc').textContent = desc;
+  document.getElementById('rainType').style.color = color;
+  let rb = document.getElementById('rainRB');
+  rb.style.background = color+'15';
+  rb.style.borderColor = color;
+  // Details
+  let dg = document.getElementById('rainDg');
+  dg.innerHTML = `<div><span class="dv">${pH.toFixed(1)}</span><span class="dl">降水 pH</span></div>
+    <div><span class="dv">${SO4.toFixed(1)}</span><span class="dl">SO₄²⁻ (mg/L)</span></div>
+    <div><span class="dv">${NO3.toFixed(1)}</span><span class="dl">NO₃⁻ (mg/L)</span></div>
+    <div><span class="dv">${Ca.toFixed(1)}</span><span class="dl">Ca²⁺ (mg/L)</span></div>
+    <div><span class="dv">${NH4.toFixed(1)}</span><span class="dl">NH₄⁺ (mg/L)</span></div>
+    <div><span class="dv">${rainType}</span><span class="dl">酸雨类型</span></div>`;
+  document.getElementById('rainResult').style.display='block';
+  document.getElementById('rainWait').style.display='none';
+}
+// === AIR EVAL ===
+function evalAir(){
+  let pm25=parseFloat(document.getElementById('aPM25').value)||0;
+  let pm10=parseFloat(document.getElementById('aPM10').value)||0;
+  let so2=parseFloat(document.getElementById('aSO2').value)||0;
+  let no2=parseFloat(document.getElementById('aNO2').value)||0;
+  let co=parseFloat(document.getElementById('aCO').value)||0;
+  let o3=parseFloat(document.getElementById('aO3').value)||0;
+  function calcIAQI(v,bp){
+    if(v<=0||!bp||bp.length<2) return 0;
+    for(let i=0;i<bp.length-1;i++){
+      if(v>=bp[i][0]&&v<=bp[i+1][0]){
+        let iaqi = bp[i][1]+(bp[i+1][1]-bp[i][1])/(bp[i+1][0]-bp[i][0])*(v-bp[i][0]);
+        return Math.round(iaqi);
+      }
+    }
+    return bp[bp.length-1][1];
+  }
+  let bp_pm25 = [[0,0],[35,50],[75,100],[115,150],[150,200],[250,300],[350,400],[500,500]];
+  let bp_pm10 = [[0,0],[50,50],[150,100],[250,150],[350,200],[420,300],[500,400],[600,500]];
+  let bp_so2 = [[0,0],[150,50],[500,150],[650,200],[800,300],[1600,400],[1600,500]];
+  let bp_no2 = [[0,0],[100,50],[200,100],[700,200],[1200,300],[2340,400],[3090,500]];
+  let bp_co = [[0,0],[5,50],[10,100],[35,150],[60,200],[90,300],[120,400],[150,500]];
+  let bp_o3 = [[0,0],[160,100],[200,150],[300,200],[400,300],[800,400],[1000,500]];
+  let iaqis = [
+    calcIAQI(pm25,bp_pm25),
+    calcIAQI(pm10,bp_pm10),
+    calcIAQI(so2,bp_so2),
+    calcIAQI(no2,bp_no2),
+    calcIAQI(co,bp_co),
+    calcIAQI(o3,bp_o3)
+  ];
+  let names = ['PM₂.₅','PM₁₀','SO₂','NO₂','CO','O₃'];
+  let aqi = Math.max(...iaqis);
+  let level,desc,color,bg,barColor;
+  if(aqi<=50){level='优';desc='空气质量令人满意，基本无空气污染';color='#16a34a';bg='#f0fdf4';barColor='#22c55e'}
+  else if(aqi<=100){level='良';desc='可接受，极少数敏感人群有轻微影响';color='#ca8a04';bg='#fefce8';barColor='#eab308'}
+  else if(aqi<=150){level='轻度污染';desc='敏感人群症状加剧，健康人群出现刺激症状';color='#c2410c';bg='#fff7ed';barColor='#f97316'}
+  else if(aqi<=200){level='中度污染';desc='进一步加剧敏感人群症状，影响健康人群心肺';color='#dc2626';bg='#fef2f2';barColor='#ef4444'}
+  else if(aqi<=300){level='重度污染';desc='心脏病和肺病患者症状剧烈加剧';color='#7c3aed';bg='#f5f3ff';barColor='#8b5cf6'}
+  else{level='严重污染';desc='健康人群运动耐受力降低，有明显强烈症状';color='#7c2d12';bg='#fef2f2';barColor='#7c2d12'}
+  document.getElementById('aqiVal').textContent = aqi;
+  document.getElementById('aqiLbl').textContent = level;
+  document.getElementById('aqiDesc').textContent = desc;
+  document.getElementById('aqiVal').style.color = color;
+  document.getElementById('aqiLbl').style.color = color;
+  document.getElementById('aqiDesc').style.color = color;
+  let card = document.getElementById('aqiCard');
+  card.style.background = bg;
+  document.getElementById('aqiFill').style.width = Math.min(aqi/500*100,100)+'%';
+  document.getElementById('aqiFill').style.background = barColor;
+  // Primary pollutant
+  let maxIdx = iaqis.indexOf(aqi);
+  let primary = names[maxIdx]+' ('+iaqis[maxIdx]+')';
+  document.getElementById('airPrimary').textContent = '首要污染物：'+primary;
+  // Details
+  let dg = document.getElementById('airDg');
+  dg.innerHTML = '';
+  let vals = [pm25,pm10,so2,no2,co,o3];
+  for(let i=0;i<6;i++){
+    let bg = iaqis[i]<=100?'#f0fdf4':'#fef2f2';
+    let tc = iaqis[i]<=100?'#16a34a':'#dc2626';
+    dg.innerHTML += `<div style="background:${bg};color:${tc}"><span class="dv">${iaqis[i]}</span><span class="dl">${names[i]}</span></div>`;
+  }
+  document.getElementById('airResult').style.display='block';
+  document.getElementById('airWait').style.display='none';
+}
+// === COMPARE ===
+let compareData = [];
+function addToCompare(){
+  // Determine which media is active
+  let active = curMedia;
+  let names = ['🏞️ 河流','🏝️ 湖泊','🌱 土壤','🌧️ 降水','☀️ 大气'];
+  let methods = ['单因子+WQI','综合营养指数TLI','内梅罗综合指数','pH+离子分类','AQI (IAQI)'];
+  let entry = {name:names[active],method:methods[active]};
+  if(active===0){
+    let cls = document.getElementById('riverClass').textContent;
+    entry.result = cls; entry.status = '✅';
+  } else if(active===1){
+    entry.result = document.getElementById('tliVal').textContent+' · '+document.getElementById('tliLbl').textContent;
+    entry.status = '✅';
+  } else if(active===2){
+    entry.result = document.getElementById('soilLevel').textContent;
+    entry.status = '✅';
+  } else if(active===3){
+    entry.result = document.getElementById('rainType').textContent+' · '+document.getElementById('rainLevel').textContent;
+    entry.status = '✅';
+  } else if(active===4){
+    entry.result = document.getElementById('aqiVal').textContent+' · '+document.getElementById('aqiLbl').textContent;
+    entry.status = '✅';
+  }
+  // Check if already added
+  let exists = compareData.some(d=>d.name===entry.name);
+  if(!exists){
+    compareData.push(entry);
+    updateCompare();
+  } else {
+    // Update
+    compareData = compareData.map(d=>d.name===entry.name?entry:d);
+    updateCompare();
+  }
+}
+function updateCompare(){
+  let wrap = document.getElementById('compareTableWrap');
+  let body = document.getElementById('compareBody');
+  let empty = document.getElementById('compareContent').querySelector('.cp-empty');
+  let clearBtn = document.getElementById('clearCmpBtn');
+  if(compareData.length===0){
+    wrap.style.display='none';
+    empty.style.display='block';
+    clearBtn.style.display='none';
+    return;
+  }
+  empty.style.display='none';
+  wrap.style.display='block';
+  clearBtn.style.display='inline-block';
+  body.innerHTML = '';
+  compareData.forEach(d=>{
+    body.innerHTML += `<tr><td><strong>${d.name}</strong></td><td>${d.method}</td><td>${d.result}</td><td>${d.status}</td><td>${d.status === '✅' ? '<span style="color:#16a34a">已评价</span>' : '<span style="color:#999">未评价</span>'}</td></tr>`;
+  });
+}
+function clearCompare(){
+  compareData = [];
+  updateCompare();
+}
+// === RESET ===
+function resetRiver(){
+  document.getElementById('rpH').value='7.2';document.getElementById('rDO').value='6.5';
+  document.getElementById('rCOD').value='18';document.getElementById('rBOD').value='4.5';
+  document.getElementById('rNH3').value='1.2';document.getElementById('rTP').value='0.25';
+}
+// === ON LOAD ===
+window.addEventListener('load',function(){
+  initDots();
+  updateDots();
+  // Scroll observer
+  let observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vi')});
+  },{threshold:0.15});
+  document.querySelectorAll('.sc').forEach(s=>observer.observe(s));
+  // Timeline items
+  let tobs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vi')});
+  },{threshold:0.3});
+  document.querySelectorAll('.tp').forEach(t=>tobs.observe(t));
+  // Progress bar
+  window.addEventListener('scroll',function(){
+    let h = document.documentElement.scrollHeight-window.innerHeight;
+    if(h>0) document.getElementById('sp').style.width=(window.scrollY/h*100)+'%';
+    updateDots();
+  });
+});
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 633-2012</td><td>环境空气质量指数（AQI）技术规定（试行）</td><td class="sb-s" style="color:#b91c1c">已废止</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 15618-2018</td><td>土壤环境质量 农用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 36600-2018</td><td>土壤环境质量 建设用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 3838-2002</td><td>地表水环境质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">地表水水质类别判定</td></tr><tr><td class="sb-c">HJ 633-2026</td><td>环境空气质量指数（AQI）技术规定</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">AQI 分级与计算方法（现行版）</td></tr><tr><td class="sb-c">HJ/T 165-2004</td><td>酸沉降监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>6</b> 项标准：<b>6</b> 项已回官方源核验（截至 2026-09-11），0 项待核；其中 <b style="color:#b91c1c">1 项标为已废止／部分废止</b>，仅作历史对照，不得作为现行方法依据。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 <b>HJ 633-2012</b>（已废止）：自 2026-03-01 起废止，由 HJ 633-2026 代替；新版更新了 AQI 中 PM2.5／PM10 的分级浓度限值</li></ul></div></div></div></details>
+</body></html>

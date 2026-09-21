@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>土壤金属分析 · ICP-MS 锰铁铜砷汞</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#0a1628,#1a2a4a);color:#fff;padding:20px;text-align:center}
+        .header h1{font-size:18px;font-weight:700}.header .sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}.header .badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(74,222,128,0.2);border-radius:10px;font-size:10px;color:#4ade80}
+        .container{max-width:720px;margin:0 auto;padding:16px}
+        .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}.card h2 .std{font-size:11px;color:#999;font-weight:400;margin-left:8px}.card p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+        .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:12px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:2px;transition:width .5s}
+        .step-indicator{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+        .step-dot{flex:1;text-align:center;padding:6px 4px;border-radius:6px;font-size:10px;color:#999;background:#f5f5f5;cursor:pointer;min-width:56px;border:1px solid transparent}
+        .step-dot .num{font-size:13px;font-weight:700;display:block}
+        .step-dot.active{background:#f0fdf4;border-color:#4ade80;color:#166534;font-weight:600}.step-dot.done{background:#f0fdf4;border-color:#4ade80;color:#4ade80}
+        .lab-bench{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:10px;padding:20px;margin:12px 0;border:1px solid #e2e8f0;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .lab-bench .equip-icon{font-size:48px;margin-bottom:8px}.lab-bench .desc{font-size:13px;color:#475569;line-height:1.7}.lab-bench .status{padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;margin-top:8px}
+        .st-wait{background:#f1f5f9;color:#64748b}.st-run{background:#fef3c7;color:#ca8a04}.st-ok{background:#f0fdf4;color:#166534}
+        .step-btn{padding:8px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:linear-gradient(135deg,#4ade80,#22c55e);margin-top:8px}
+        .step-btn:hover{box-shadow:0 4px 12px rgba(74,222,128,0.3)}.step-btn:disabled{opacity:.4;cursor:default}.step-btn.purple{background:linear-gradient(135deg,#6366f1,#8b5cf6)}.step-btn.orange{background:linear-gradient(135deg,#f59e0b,#d97706)}
+        .info-box{padding:10px 14px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#166534;border:1px solid #bbf7d0;margin:8px 0}
+        .safety-box{padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:#92400e;border:1px solid #fde68a;margin:8px 0}
+        .data-table{width:100%;font-size:12px;border-collapse:collapse;margin:8px 0}
+        .data-table th{background:#0a1628;color:#fff;padding:6px;text-align:left}.data-table td{padding:5px 6px;border-bottom:1px solid #e0e0e0;font-size:12px}
+        .result-box{padding:20px;border-radius:10px;text-align:center;margin-top:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:none}
+        .result-box .big{font-size:40px;font-weight:800} .result-box .lbl{font-size:13px;color:#666;margin-top:4px}
+        .microwave-box{background:linear-gradient(135deg,#e2e8f0,#cbd5e1);border-radius:12px;padding:16px;margin:8px 0;text-align:center}
+        .microwave-box .temp{font-size:22px;font-weight:700;color:#ca8a04;margin:6px 0}.microwave-box .step-label{font-size:11px;color:#666;display:flex;justify-content:space-between}
+        .element-row{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+        .el-item{flex:1;padding:10px;text-align:center;background:#f9fafb;border-radius:6px;min-width:60px}
+        .el-item .sym{font-size:14px;font-weight:700;color:#333}.el-item .mass{font-size:10px;color:#999}.el-item .cps{font-size:18px;font-weight:700;color:#166534}
+        .tune-bar{height:80px;background:linear-gradient(to right,#0f172a,#1e293b);border-radius:8px;margin:8px 0;position:relative;padding:8px}
+        .tune-peak{position:absolute;top:10px;width:3px;background:#4ade80;border-radius:2px}
+        @media (max-width:600px){.element-row .el-item{min-width:45px;padding:6px}}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 土壤中金属元素分析 · ICP-MS法</h1>
+        <div class="sub">锰(Mn)·铁(Fe)·铜(Cu)·砷(As)·汞(Hg) · HJ 766-2015</div>
+        <div class="badge">🔬 场景：土壤样品前处理→上机分析→结果报告</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>📋 样品信息</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;">
+                <span><strong>样品编号：</strong>SOIL-2026-0622-001</span><span><strong>采样地点：</strong>某农用地 0-20cm表层</span>
+                <span><strong>前处理：</strong>微波消解(HNO₃+HF+H₂O₂)</span><span><strong>方法标准：</strong>HJ 766-2015</span>
+                <span><strong>分析仪器：</strong>ICP-MS（CCT模式）</span><span><strong>内标元素：</strong>¹⁰³Rh + ¹⁸⁷Re</span>
+            </div>
+        </div>
+
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active"><span class="num">①</span>前处理</div>
+            <div class="step-dot"><span class="num">②</span>消解</div>
+            <div class="step-dot"><span class="num">③</span>定容</div>
+            <div class="step-dot"><span class="num">④</span>调谐</div>
+            <div class="step-dot"><span class="num">⑤</span>测试</div>
+            <div class="step-dot"><span class="num">⑥</span>报告</div>
+        </div>
+
+        <!-- ===== 步骤0：前处理 ===== -->
+        <div class="card step-panel active" id="step0">
+            <h2>① 样品前处理 <span class="std">风干·研磨·过筛</span></h2>
+            <p>土壤样品经风干、剔除石块植物根系、研磨过100目筛。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">🌍</div>
+                <div class="desc">
+                    <strong>称取0.2000g 风干土壤样品</strong><br>
+                    （精确至0.0001g）<br>
+                    于微波消解罐中<br>
+                    同时称取平行样和质控样
+                </div>
+                <div class="status st-wait" id="s0Status">⏳ 待称量</div>
+            </div>
+            <div class="info-box">
+                📌 称量前土壤需风干→研磨→过100目尼龙筛。称量时记录实际质量，用于最终结果计算。
+            </div>
+            <button class="step-btn" onclick="goStep(1)">✅ 称量完成 → 微波消解</button>
+        </div>
+
+        <!-- ===== 步骤1：消解 ===== -->
+        <div class="card step-panel" id="step1">
+            <h2>② 微波消解 <span class="std">HNO₃+HF+H₂O₂</span></h2>
+            <p>向消解罐中依次加入硝酸、氢氟酸、过氧化氢，按程序升温消解。</p>
+
+            <div class="safety-box">
+                ⚠️ 消解前必须盖紧防爆膜！HNO₃+HF为强腐蚀性混酸，全程在通风橱内操作。
+            </div>
+
+            <div class="reagent-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;">
+                <div class="rl-item" style="padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #ef4444;">
+                    <div class="n">HNO₃</div><div class="v">6.0 mL 优级纯</div>
+                </div>
+                <div class="rl-item" style="padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #f59e0b;">
+                    <div class="n">HF</div><div class="v">2.0 mL 优级纯</div>
+                </div>
+                <div class="rl-item" style="padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #3b82f6;">
+                    <div class="n">H₂O₂</div><div class="v">1.0 mL 30%</div>
+                </div>
+                <div class="rl-item" style="padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #22c55e;">
+                    <div class="n">土壤样品</div><div class="v">0.2000g</div>
+                </div>
+            </div>
+
+            <div class="microwave-box">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:#666;">
+                    <span>功率 1600W</span>
+                    <span>步骤 1/3</span>
+                </div>
+                <div class="temp" id="mwTemp">25</div>
+                <div class="step-label"><span>25℃</span><span id="mwProg">爬坡中</span><span>190℃</span></div>
+                <div style="font-size:12px;color:#999;" id="mwStatus">⏳ 待启动</div>
+            </div>
+
+            <button class="step-btn" id="mwBtn" onclick="startMW()">▶ 开始微波消解</button>
+        </div>
+
+        <!-- ===== 步骤2：定容 ===== -->
+        <div class="card step-panel" id="step2">
+            <h2>③ 赶酸·定容 <span class="std">电热板赶HF + 内标加入</span></h2>
+            <p>消解液转移至电热板赶酸后定容，加入内标。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">⚗️</div>
+                <div class="desc">
+                    <strong>消解液转移至聚四氟乙烯坩埚</strong><br>
+                    电热板140℃赶酸至近干（除HF）<br>
+                    加入1.0mL HNO₃复溶，转移至50mL容量瓶<br>
+                    加入内标Rh/Re → 超纯水定容至标线
+                </div>
+                <div class="status st-wait" id="s2Status">⏳ 待定容</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;font-size:12px;">
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">样品质量</div>
+                    <div style="font-weight:700;">0.2000 g</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">定容体积</div>
+                    <div style="font-weight:700;">50.0 mL</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">稀释因子</div>
+                    <div style="font-weight:700;color:#166534;">250</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">内标</div>
+                    <div style="font-weight:700;">¹⁰³Rh 10ppb</div>
+                </div>
+            </div>
+
+            <button class="step-btn" onclick="goStep(3)">✅ 定容完成 → 仪器调谐</button>
+        </div>
+
+        <!-- ===== 步骤3：调谐 ===== -->
+        <div class="card step-panel" id="step3">
+            <h2>④ ICP-MS调谐 <span class="std">质量轴校准+灵敏度优化</span></h2>
+            <p>上机前用调谐液（Li/Co/In/U）校准质量轴和灵敏度。</p>
+
+            <div class="tune-bar" id="tuneBar">
+                <div class="tune-peak" style="left:8%;height:40px;"></div>
+                <div class="tune-peak" style="left:22%;height:65px;"></div>
+                <div class="tune-peak" style="left:38%;height:55px;"></div>
+                <div class="tune-peak" style="left:52%;height:80px;"></div>
+                <div class="tune-peak" style="left:68%;height:45px;"></div>
+                <div class="tune-peak" style="left:82%;height:70px;"></div>
+                <div style="position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;">
+                    <span>⁷Li</span><span>⁵⁹Co</span><span>¹¹⁵In</span><span>²³⁸U</span><span>¹⁰³Rh</span><span>¹⁸⁷Re</span>
+                </div>
+            </div>
+
+            <div class="element-row">
+                <div class="el-item"><div class="sym">⁷Li</div><div class="cps">8500</div><div class="mass">cps</div></div>
+                <div class="el-item"><div class="sym">⁵⁹Co</div><div class="cps">28500</div><div class="mass">cps</div></div>
+                <div class="el-item"><div class="sym">¹¹⁵In</div><div class="cps">52000</div><div class="mass">cps</div></div>
+                <div class="el-item"><div class="sym">²³⁸U</div><div class="cps">68000</div><div class="mass">cps</div></div>
+            </div>
+
+            <div class="info-box">
+                ✅ 质量轴校准通过 · 氧化物产率＜2% · 双电荷产率＜3% · 灵敏度达标<br>
+                CCT模式开启（He流量4.5mL/min）→ 消除ArCl对As的干扰
+            </div>
+
+            <button class="step-btn" onclick="goStep(4)">✅ 调谐通过 → 上机测试</button>
+        </div>
+
+        <!-- ===== 步骤4：测试 ===== -->
+        <div class="card step-panel" id="step4">
+            <h2>⑤ 样品测定 <span class="std">标准曲线→样品→质控</span></h2>
+            <p>建立标准曲线后测定样品，每10个样品插入质控样和空白样。</p>
+
+            <table class="data-table">
+                <thead><tr><th>元素</th><th>同位素</th><th>曲线方程</th><th>R²</th><th>样品cps</th><th>浓度(ppb)</th></tr></thead>
+                <tbody>
+                    <tr><td>Mn</td><td>⁵⁵Mn</td><td>y=4820x+120</td><td>0.9998</td><td>38560</td><td>7.98</td></tr>
+                    <tr><td>Fe</td><td>⁵⁶Fe</td><td>y=386x+55</td><td>0.9996</td><td>61910</td><td>160.2</td></tr>
+                    <tr><td>Cu</td><td>⁶³Cu</td><td>y=5210x+85</td><td>0.9999</td><td>18625</td><td>3.56</td></tr>
+                    <tr><td>As</td><td>⁷⁵As</td><td>y=3850x+45</td><td>0.9997</td><td>4652</td><td>1.20</td></tr>
+                    <tr><td>Hg</td><td>²⁰²Hg</td><td>y=8920x+28</td><td>0.9995</td><td>1362</td><td>0.149</td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                📊 CCT模式下As的ArCl干扰已被消除 · 内标Rh回收率在90-110%之间 ✅
+            </div>
+
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;">
+                <span style="padding:2px 8px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#166534;">空白样：均＜MDL ✅</span>
+                <span style="padding:2px 8px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#166534;">质控样回收率：96-104% ✅</span>
+                <span style="padding:2px 8px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#166534;">平行样RPD＜8% ✅</span>
+            </div>
+
+            <button class="step-btn" onclick="goStep(5)">✅ 测试完成 → 出报告</button>
+        </div>
+
+        <!-- ===== 步骤5：报告 ===== -->
+        <div class="card step-panel" id="step5">
+            <h2>⑥ 检测报告 <span class="std">土壤中5种金属含量</span></h2>
+
+            <table class="data-table">
+                <thead><tr><th>元素</th><th>溶液浓度(ppb)</th><th>稀释因子</th><th>土壤含量(mg/kg)</th><th>GB 15618限值</th><th>判定</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Mn</strong></td><td>7.98</td><td>250</td><td style="font-weight:700;color:#333;">498</td><td>—</td><td style="color:#166534;">未规定</td></tr>
+                    <tr><td><strong>Fe</strong></td><td>160.2</td><td>250</td><td style="font-weight:700;color:#333;">40050</td><td>—</td><td style="color:#166534;">未规定</td></tr>
+                    <tr><td><strong>Cu</strong></td><td>3.56</td><td>250</td><td style="font-weight:700;color:#333;"><span id="cuResult">89</span></td><td>≤100</td><td style="color:#166534;">✅</td></tr>
+                    <tr><td><strong>As</strong></td><td>1.20</td><td>250</td><td style="font-weight:700;color:#333;"><span id="asResult">30.0</span></td><td>≤30</td><td style="color:#166534;">✅ 临界</td></tr>
+                    <tr><td><strong>Hg</strong></td><td>0.149</td><td>250</td><td style="font-weight:700;color:#333;"><span id="hgResult">3.72</span></td><td>≤3.4</td><td style="color:#dc2626;font-weight:700;">❌ 超标</td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box" style="margin-top:12px;">
+                <strong>计算结果：</strong>土壤含量(mg/kg) = 溶液浓度(ppb) × 定容体积(mL) / 样品质量(g) × 稀释因子<br>
+                例：Mn = 7.98 × 50 / 0.2000 = <strong>498 mg/kg</strong>
+            </div>
+
+            <div style="padding:12px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <strong>质控总结</strong><br>
+                · 方法空白：所有目标物均＜MDL ✅<br>
+                · 平行样RPD：3.5%-7.8%（≤15% ✅）<br>
+                · 质控土壤(GBW07401)回收率：96.5%-103.2% ✅<br>
+                · 加标回收率：Mn 98.2%, Fe 101.5%, Cu 97.6%, As 95.8%, Hg 94.3%
+            </div>
+
+            <div style="padding:12px;background:#fff6f0;border-radius:8px;margin:8px 0;font-size:12px;color:#c2410c;border:1px solid #fed7aa;">
+                ⚠️ <strong>Hg超标提示：</strong>Hg含量3.72mg/kg超过GB 15618-2018农用地≤3.4mg/kg限值。<br>
+                建议复测确认，并对该地块做进一步调查。
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="step-btn purple" onclick="resetAll()">🔄 重做实验</button>
+                <button class="step-btn orange" onclick='alert(`土壤金属检测报告\n─────────────\n样品编号：SOIL-2026-0622-001\n\nMn：498 mg/kg\nFe：40050 mg/kg\nCu：89 mg/kg  ✅\nAs：30.0 mg/kg  ✅(临界)\nHg：3.72 mg/kg  ❌超标\n\n结论：Hg超GB 15618-2018限值(3.4mg/kg)，建议复测。`)'>📄 导出报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let mwRunning = false;
+
+        function goStep(n) { currentStep = n; updateUI(); }
+
+        function updateUI() {
+            document.querySelectorAll('.step-dot').forEach((d,i) => {
+                d.classList.remove('active','done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            document.querySelectorAll('.step-panel').forEach((p,i) => {
+                p.style.display = i === currentStep ? 'block' : 'none';
+            });
+            document.getElementById('progressFill').style.width = (currentStep / 5 * 100) + '%';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        function startMW() {
+            if (mwRunning) return;
+            mwRunning = true;
+            const btn = document.getElementById('mwBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 消解中…';
+
+            const steps = [
+                {target:150,time:10,label:'升温至150℃ (10min)'},
+                {target:190,time:15,label:'升温至190℃ (15min)'},
+                {target:190,time:20,label:'190℃保持消解 (20min)'},
+            ];
+            let stepIdx = 0;
+            let currentTemp = 25;
+            let timer;
+
+            function runStep() {
+                if (stepIdx >= steps.length) {
+                    clearInterval(timer);
+                    document.getElementById('mwStatus').textContent = '✅ 消解完成！';
+                    document.getElementById('mwStatus').style.color = '#166534';
+                    document.getElementById('mwTemp').textContent = '190';
+                    btn.textContent = '✅ 消解完成 → 定容';
+                    btn.onclick = () => goStep(2);
+                    btn.disabled = false;
+                    mwRunning = false;
+                    return;
+                }
+                const step = steps[stepIdx];
+                document.getElementById('mwProg').textContent = step.label;
+                document.getElementById('mwStatus').textContent = '🔥 消解中';
+                const increment = (step.target - currentTemp) / 5;
+                let count = 0;
+
+                timer = setInterval(() => {
+                    count++;
+                    currentTemp = Math.min(step.target, currentTemp + increment);
+                    document.getElementById('mwTemp').textContent = Math.round(currentTemp);
+                    
+                    if (currentTemp >= step.target && count > 5) {
+                        clearInterval(timer);
+                        stepIdx++;
+                        setTimeout(runStep, 400);
+                    }
+                }, 300);
+            }
+            runStep();
+        }
+
+        function resetAll() {
+            currentStep = 0;
+            mwRunning = false;
+            document.getElementById('mwTemp').textContent = '25';
+            document.getElementById('mwProg').textContent = '爬坡中';
+            document.getElementById('mwStatus').textContent = '⏳ 待启动';
+            document.getElementById('mwStatus').style.color = '#64748b';
+            const btn = document.getElementById('mwBtn');
+            btn.textContent = '▶ 开始微波消解';
+            btn.onclick = startMW;
+            btn.disabled = false;
+            document.getElementById('s0Status').textContent = '⏳ 待称量';
+            document.getElementById('s0Status').className = 'status st-wait';
+            document.getElementById('s2Status').textContent = '⏳ 待定容';
+            document.getElementById('s2Status').className = 'status st-wait';
+            goStep(0);
+        }
+
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 15618-2018</td><td>土壤环境质量 农用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 766-2015</td><td>固体废物 金属元素的测定 电感耦合等离子体质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

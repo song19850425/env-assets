@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>环境空气NOx检测实验 · 盐酸萘乙二胺分光光度法</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#0a1628,#1a2a4a);color:#fff;padding:20px;text-align:center}
+        .header h1{font-size:18px;font-weight:700}
+        .header .sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}
+        .header .badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(74,222,128,0.2);border-radius:10px;font-size:10px;color:#4ade80}
+
+        .container{max-width:680px;margin:0 auto;padding:16px}
+        .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+        .card h2 .std{font-size:11px;color:#999;font-weight:400;margin-left:8px}
+        .card p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+
+        .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:12px;overflow:hidden}
+        .progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:2px;transition:width .5s}
+
+        .step-indicator{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+        .step-dot{flex:1;text-align:center;padding:6px 4px;border-radius:6px;font-size:10px;color:#999;background:#f5f5f5;cursor:pointer;min-width:56px;border:1px solid transparent}
+        .step-dot .num{font-size:13px;font-weight:700;display:block}
+        .step-dot.active{background:#f0fdf4;border-color:#4ade80;color:#166534;font-weight:600}
+        .step-dot.done{background:#f0fdf4;border-color:#4ade80;color:#4ade80}
+
+        .lab-bench{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:10px;padding:20px;margin:12px 0;border:1px solid #e2e8f0;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .lab-bench .equip-icon{font-size:56px;margin-bottom:8px;transition:all .3s}
+        .lab-bench .desc{font-size:13px;color:#475569;line-height:1.7}
+        .lab-bench .status{padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;margin-top:8px}
+        .st-wait{background:#f1f5f9;color:#64748b}
+        .st-run{background:#fef3c7;color:#ca8a04}
+        .st-ok{background:#f0fdf4;color:#166534}
+
+        .step-btn{padding:8px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:linear-gradient(135deg,#4ade80,#22c55e);margin-top:8px}
+        .step-btn:hover{box-shadow:0 4px 12px rgba(74,222,128,0.3)}
+        .step-btn:disabled{opacity:.4;cursor:default}
+
+        .sampler-box{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:10px;padding:16px;margin:12px 0;text-align:center}
+        .sampler-box .flow{font-size:22px;font-weight:700;color:#166534}
+        .sampler-box .lbl{font-size:11px;color:#666}
+        .sampler-box .timer{font-size:30px;font-weight:700;color:#ca8a04;margin:8px 0}
+
+        .spec-meter{background:linear-gradient(to right,#1e293b,#334155,#1e293b);border-radius:8px;padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0}
+        .spec-meter .display{background:#0f172a;padding:8px 20px;border-radius:4px;color:#4ade80;font-size:28px;font-weight:700;font-family:monospace}
+        .spec-meter .label{color:#94a3b8;font-size:12px}
+
+        .result-box{padding:20px;border-radius:10px;text-align:center;margin-top:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:none}
+        .result-box .big{font-size:40px;font-weight:800;color:#166534}
+        .result-box .lbl{font-size:13px;color:#666;margin-top:4px}
+        .result-box .detail{font-size:12px;color:#999;margin-top:10px;line-height:1.6;text-align:left}
+
+        .color-row{display:flex;gap:16px;justify-content:center;margin:12px 0;align-items:end}
+        .color-swatch{text-align:center}
+        .color-swatch .circle{width:32px;height:32px;border-radius:50%;margin:0 auto 4px;border:1px solid #e0e0e0;transition:all .5s}
+        .color-swatch .label{font-size:10px;color:#999}
+
+        .info-box{padding:10px 14px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#166534;border:1px solid #bbf7d0;margin:8px 0}
+        .safety-box{padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:#92400e;border:1px solid #fde68a;margin:8px 0}
+
+        .reagent-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+        .rl-item{padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #4ade80}
+        .rl-item .n{font-size:12px;font-weight:600;color:#333}
+        .rl-item .v{font-size:10px;color:#999}
+
+        .formula-box{padding:16px;background:#f8fafc;border-radius:8px;margin:8px 0;text-align:center}
+        .formula-box .eq{font-size:15px;font-weight:600;color:#333;line-height:1.8}
+        .formula-box .vars{font-size:12px;color:#666;margin-top:8px;display:grid;grid-template-columns:1fr;gap:4px}
+
+        @media (max-width:600px){.reagent-list{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌫️ 环境空气 NOx 检测实验</h1>
+        <div class="sub">盐酸萘乙二胺分光光度法 · HJ 479-2009</div>
+        <div class="badge">🔬 场景：现场采样后的实验室分析</div>
+    </div>
+
+    <div class="container">
+
+        <div class="card">
+            <h2>📋 基本信息</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;">
+                <span><strong>样品编号：</strong>NOx-2026-0622-001</span>
+                <span><strong>采样地点：</strong>河南省·郑州市 国控点位</span>
+                <span><strong>采样日期：</strong>2026-06-21 10:00</span>
+                <span><strong>方法标准：</strong>HJ 479-2009</span>
+                <span><strong>采样流量：</strong>0.4 L/min</span>
+                <span><strong>采样时长：</strong>24 h</span>
+                <span><strong>吸收液：</strong>对氨基苯磺酸+盐酸萘乙二胺</span>
+                <span><strong>测定波长：</strong>540 nm</span>
+            </div>
+        </div>
+
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active" data-step="0"><span class="num">①</span>配液</div>
+            <div class="step-dot" data-step="1"><span class="num">②</span>采样</div>
+            <div class="step-dot" data-step="2"><span class="num">③</span>显色</div>
+            <div class="step-dot" data-step="3"><span class="num">④</span>标曲</div>
+            <div class="step-dot" data-step="4"><span class="num">⑤</span>比色</div>
+            <div class="step-dot" data-step="5"><span class="num">⑥</span>计算</div>
+        </div>
+
+        <!-- ===== 步骤0：配液 ===== -->
+        <div class="card step-panel active" id="step0">
+            <h2>① 吸收液配制 <span class="std">对氨基苯磺酸+盐酸萘乙二胺</span></h2>
+            <p>采样前配制NOx吸收液，避光保存。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">⚗️</div>
+                <div class="desc">
+                    <strong>配制吸收液（400mL）</strong><br>
+                    准确称取2.0g 对氨基苯磺酸 + 0.040g 盐酸萘乙二胺<br>
+                    溶于400mL水中，加冰乙酸调pH至3.0-4.0<br>
+                    贮于棕色瓶，避光保存，有效期3天
+                </div>
+                <div class="status st-wait" id="s0Status">⏳ 待配制</div>
+            </div>
+            <div class="safety-box">
+                ⚠️ 吸收液避光保存！盐酸萘乙二胺见光易分解。配制时戴手套，避免皮肤接触。
+            </div>
+            <button class="step-btn" onclick="goStep(1)">✅ 吸收液已配好 → 现场采样</button>
+        </div>
+
+        <!-- ===== 步骤1：采样 ===== -->
+        <div class="card step-panel" id="step1">
+            <h2>② 现场采样 <span class="std">吸收液采集24h</span></h2>
+            <p>将吸收液装入多孔玻板吸收管，连接大气采样器。</p>
+            <div class="sampler-box">
+                <div class="flow">0.40 L/min</div>
+                <div class="lbl">采样流量 · 24小时连续</div>
+                <div class="timer" id="samplingTimer">24:00:00</div>
+                <div style="font-size:12px;color:#666;" id="samplingStatus">⏳ 待采样</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <span><strong>采样体积：</strong><span id="sampleVol">0.0</span> L</span>
+                <span><strong>标况体积：</strong><span id="stdVolNox">0.0</span> L</span>
+            </div>
+            <div class="info-box">
+                📌 多孔玻板吸收管装10.0mL吸收液，以0.4L/min采样24h。同时带1支空白吸收管（未采样）做参比。
+            </div>
+            <button class="step-btn" id="samplingBtn" onclick="startSampling()">▶ 开始采样（模拟）</button>
+        </div>
+
+        <!-- ===== 步骤2：显色 ===== -->
+        <div class="card step-panel" id="step2">
+            <h2>③ 显色反应 <span class="std">玫瑰红色偶氮染料</span></h2>
+            <p>采样后吸收液中的NO₂与显色剂反应生成玫瑰红色偶氮染料。</p>
+
+            <div class="lab-bench">
+                <div class="equip-icon" id="colorIcon">🧪</div>
+                <div class="desc" id="colorDesc">
+                    采样后的吸收液转移至25mL比色管<br>
+                    用少量吸收液冲洗吸收管2-3次<br>
+                    定容至25mL标线，摇匀
+                </div>
+                <div class="status st-wait" id="s2Status">⏳ 待显色</div>
+            </div>
+
+            <div class="color-row" id="colorRow" style="display:none;">
+                <div class="color-swatch"><div class="circle" style="background:#fce7f3;" id="blankColor"></div><div class="label">空白</div></div>
+                <div class="color-swatch"><div class="circle" style="background:#fbcfe8;" id="stdColor"></div><div class="label">标准</div></div>
+                <div class="color-swatch"><div class="circle" style="background:#f9a8d4;" id="sampleColor"></div><div class="label" id="sampleLabel">样品→</div></div>
+                <div class="color-swatch"><div class="circle" id="finalColor" style="background:#ec4899;"></div><div class="label">显色后</div></div>
+            </div>
+
+            <div class="info-box" id="colorNote" style="display:none;">
+                🎯 溶液由无色变为<strong style="color:#ec4899;">玫瑰红色</strong>→NO₂含量越高颜色越深
+            </div>
+
+            <button class="step-btn" id="colorBtn" onclick="startColor()">▶ 开始显色</button>
+        </div>
+
+        <!-- ===== 步骤3：标曲 ===== -->
+        <div class="card step-panel" id="step3">
+            <h2>④ 标准曲线制备 <span class="std">亚硝酸钠标准溶液</span></h2>
+            <p>用亚硝酸钠标准溶液制备标准曲线，计算回归方程。</p>
+
+            <div style="overflow-x:auto;">
+                <table style="width:100%;font-size:12px;border-collapse:collapse;margin:8px 0;">
+                    <thead><tr style="background:#0a1628;color:#fff;">
+                        <th style="padding:6px;">管号</th><th>标液(mL)</th><th>吸收液(mL)</th><th>NO₂含量(μg)</th><th>吸光度A</th>
+                    </tr></thead>
+                    <tbody id="stdCurveBody" style="color:#555;">
+                        <tr><td style="padding:4px;text-align:center;">0</td><td style="text-align:center;">0.00</td><td style="text-align:center;">5.00</td><td style="text-align:center;">0.0</td><td style="text-align:center;">0.003</td></tr>
+                        <tr><td style="padding:4px;text-align:center;">1</td><td style="text-align:center;">0.20</td><td style="text-align:center;">4.80</td><td style="text-align:center;">0.8</td><td style="text-align:center;">0.063</td></tr>
+                        <tr><td style="padding:4px;text-align:center;">2</td><td style="text-align:center;">0.50</td><td style="text-align:center;">4.50</td><td style="text-align:center;">2.0</td><td style="text-align:center;">0.158</td></tr>
+                        <tr><td style="padding:4px;text-align:center;">3</td><td style="text-align:center;">1.00</td><td style="text-align:center;">4.00</td><td style="text-align:center;">4.0</td><td style="text-align:center;">0.315</td></tr>
+                        <tr><td style="padding:4px;text-align:center;">4</td><td style="text-align:center;">2.00</td><td style="text-align:center;">3.00</td><td style="text-align:center;">8.0</td><td style="text-align:center;">0.628</td></tr>
+                        <tr><td style="padding:4px;text-align:center;">5</td><td style="text-align:center;">3.00</td><td style="text-align:center;">2.00</td><td style="text-align:center;">12.0</td><td style="text-align:center;">0.941</td></tr>
+                        <tr><td style="padding:4px;text-align:center;">6</td><td style="text-align:center;">4.00</td><td style="text-align:center;">1.00</td><td style="text-align:center;">16.0</td><td style="text-align:center;">1.252</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="info-box">
+                📊 标准曲线：y = 0.0784x + 0.002, R² = 0.9997<br>
+                y为吸光度A，x为NO₂含量(μg) · 取样品A=<span id="sampleAbsVal">0.483</span>代入计算
+            </div>
+            <button class="step-btn" onclick="goStep(4)">✅ 标曲已完成 → 上机比色</button>
+        </div>
+
+        <!-- ===== 步骤4：比色 ===== -->
+        <div class="card step-panel" id="step4">
+            <h2>⑤ 分光光度测定 <span class="std">540 nm</span></h2>
+            <p>在540nm波长处，用1cm比色皿测定吸光度。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">📊</div>
+                <div class="desc">
+                    样品管、空白管、标准管依次上机测定<br>
+                    以空白管调零，540nm处读取吸光度
+                </div>
+                <div class="status st-wait" id="s4Status">⏳ 待测定</div>
+            </div>
+            <div class="spec-meter">
+                <span class="label">λ = 540 nm</span>
+                <span class="display" id="absDisplay">0.483</span>
+                <span class="label">Abs</span>
+            </div>
+            <div class="color-row">
+                <div class="color-swatch"><div class="circle" style="background:#fce7f3;"></div><div class="label">空白A=0.003</div></div>
+                <div class="color-swatch"><div class="circle" style="background:#ec4899;"></div><div class="label">样品A=0.483</div></div>
+                <div class="color-swatch"><div class="circle" style="background:#db2777;"></div><div class="label">高浓度标样</div></div>
+            </div>
+            <button class="step-btn" onclick="goStep(5)">✅ 比色完成 → 计算浓度</button>
+        </div>
+
+        <!-- ===== 步骤5：计算 ===== -->
+        <div class="card step-panel" id="step5">
+            <h2>⑥ 浓度计算 <span class="std">结果以NO₂计</span></h2>
+            <p>根据标准曲线和采样体积计算NOx浓度。</p>
+
+            <div class="formula-box">
+                <div class="eq">c (NOx) = (A - a) / (b × Vₙ)</div>
+                <div class="vars">
+                    <span>A = 样品吸光度（扣除空白后）</span>
+                    <span>a、b = 标准曲线截距和斜率</span>
+                    <span>Vₙ = 标况采样体积 (m³)</span>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;">
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">样品吸光度 A</div>
+                    <div style="font-size:18px;font-weight:700;">0.483</div>
+                </div>
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">扣除空白 A校正</div>
+                    <div style="font-size:18px;font-weight:700;color:#166534;">0.480</div>
+                </div>
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">曲线计算 NO₂含量</div>
+                    <div style="font-size:18px;font-weight:700;color:#166534;">6.10 μg</div>
+                </div>
+                <div style="padding:12px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="font-size:10px;color:#999;">标况采样体积</div>
+                    <div style="font-size:18px;font-weight:700;">0.489 m³</div>
+                </div>
+            </div>
+
+            <div style="padding:12px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;">
+                <strong>计算过程：</strong><br>
+                · 采样体积 = 0.4 L/min × 24h × 60min = 576 L<br>
+                · 标况体积 Vₙ = 576 × (273.15/293.15) × (101.3/101.325) ≈ 489 L = <strong>0.489 m³</strong><br>
+                · 由标准曲线y=0.0784x+0.002，当A=0.480时，NO₂含量x=(0.480-0.002)/0.0784 = <strong>6.10 μg</strong><br>
+                · 吸收液总量25mL，取5mL测定（分取比5/25）<br>
+                · NOx浓度 c = (6.10 × 25/5) / 0.489 × 1000 = <strong>62.4 μg/m³</strong>
+            </div>
+
+            <button class="step-btn" onclick="showResult()">🔢 计算最终结果</button>
+
+            <div class="result-box" id="finalResult">
+                <div class="big">62</div>
+                <div class="lbl">NOx 质量浓度 (μg/m³) · 以NO₂计</div>
+                <div style="margin-top:8px;">
+                    <span id="noxLevel" style="display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#fff;background:#00e400;">优 ✅</span>
+                </div>
+                <div class="detail" style="margin-top:12px;">
+                    <strong>计算结果</strong><br>
+                    NOx = 62 μg/m³（保留整数位）<br><br>
+                    <strong>对比 GB 3095-2026</strong><br>
+                    <span style="color:#b45309;">⚠️ 原引 GB 3095-2012 的 100 μg/m³（24 小时平均）已随该标准废止；GB 3095-2026 采用两阶段实施，NOx 限值以新标准原文为准</span><br>
+                    本次结果：<strong style="color:#166534;">62 μg/m³ → 达标 ✅</strong><br><br>
+                    <strong>质控数据</strong><br>
+                    · 空白管A=0.003（≤0.010 ✅）<br>
+                    · 平行样RPD=4.2%（≤15% ✅）<br>
+                    · 标准曲线R²=0.9997（≥0.999 ✅）
+                </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="step-btn" onclick="resetAll()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">🔄 重做实验</button>
+                <button class="step-btn" onclick="alert(`NOx 检测报告\n───────────\n样品编号：NOx-2026-0622-001\n采样地点：郑州市 国控点位\n标况体积：0.489 m³\nNOx浓度：62 μg/m³\n\n结论：NOx 62μg/m³（限值以GB 3095-2026为准）`)" style="background:linear-gradient(135deg,#f59e0b,#d97706);">📄 生成报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let isSampling = false;
+        let samplingDone_ = false;
+        let colorDone_ = false;
+
+        function goStep(n) { if (currentStep < n && !canGo(n)) return; currentStep = n; updateUI(); }
+
+        function canGo(n) {
+            // 采样完成后才能到显色
+            if (n >= 2 && !samplingDone_) return false;
+            if (n >= 3 && !colorDone_) return false;
+            return true;
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.step-dot').forEach((d,i) => {
+                d.classList.remove('active','done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            document.querySelectorAll('.step-panel').forEach((p,i) => {
+                p.style.display = i === currentStep ? 'block' : 'none';
+            });
+            document.getElementById('progressFill').style.width = (currentStep / 5 * 100) + '%';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        // ===== 采样 =====
+        function startSampling() {
+            const btn = document.getElementById('samplingBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 采样中…';
+            document.getElementById('samplingStatus').textContent = '🌫️ 采样中';
+
+            let sec = 24;
+            const timer = setInterval(() => {
+                sec--;
+                document.getElementById('samplingTimer').textContent = `${String(sec).padStart(2,'0')}:00:00`;
+                const volL = (24 - sec) * 0.4 * 60;
+                document.getElementById('sampleVol').textContent = volL.toFixed(0);
+                const stdV = volL * (273.15/293.15) * (101.3/101.325);
+                document.getElementById('stdVolNox').textContent = stdV.toFixed(1);
+
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 采样完成';
+                    document.getElementById('samplingStatus').textContent = '✅ 采样完成(24h)';
+                    samplingDone_ = true;
+                    const nxtBtn = document.querySelector('#step1 .step-btn');
+                    nxtBtn.textContent = '✅ 采样完成 → 显色';
+                    nxtBtn.onclick = () => goStep(2);
+                    goStep(2);
+                }
+            }, 300);
+        }
+
+        // ===== 显色 =====
+        function startColor() {
+            const btn = document.getElementById('colorBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 显色中(30min)…';
+            document.getElementById('s2Status').textContent = '🟣 显色中';
+            document.getElementById('s2Status').className = 'status st-run';
+
+            document.getElementById('colorRow').style.display = 'flex';
+            document.getElementById('sampleColor').style.background = '#fce7f3';
+
+            let sec = 6; // 模拟30min
+            const timer = setInterval(() => {
+                sec--;
+                const pct = 1 - sec / 6;
+                // 颜色渐深
+                const r = Math.round(252 - pct * 100);
+                const g = Math.round(231 - pct * 120);
+                const b = Math.round(243 - pct * 100);
+                document.getElementById('sampleColor').style.background = `rgb(${r},${g},${b})`;
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 显色完成';
+                    document.getElementById('s2Status').textContent = '✅ 显色完成（玫瑰红色）';
+                    document.getElementById('s2Status').className = 'status st-ok';
+                    document.getElementById('finalColor').style.background = '#ec4899';
+                    document.getElementById('colorNote').style.display = 'block';
+                    document.getElementById('sampleLabel').textContent = '显色后';
+                    document.getElementById('colorIcon').textContent = '🟣';
+                    document.getElementById('colorDesc').innerHTML = '显色完成！<br>溶液呈玫瑰红色→可以上机测定';
+                    colorDone_ = true;
+                    const nxtBtn = document.querySelector('#step2 .step-btn');
+                    nxtBtn.textContent = '✅ 显色完成 → 标曲';
+                    nxtBtn.onclick = () => goStep(3);
+                    goStep(3);
+                }
+            }, 600);
+        }
+
+        // ===== 结果 =====
+        function showResult() {
+            document.getElementById('finalResult').style.display = 'block';
+            const btn = document.querySelector('#step5 .step-btn');
+            btn.disabled = true;
+            btn.textContent = '✅ 完成';
+        }
+
+        // ===== 重置 =====
+        function resetAll() {
+            currentStep = 0;
+            samplingDone_ = false;
+            colorDone_ = false;
+
+            document.getElementById('samplingTimer').textContent = '24:00:00';
+            document.getElementById('samplingStatus').textContent = '⏳ 待采样';
+            document.getElementById('sampleVol').textContent = '0.0';
+            document.getElementById('stdVolNox').textContent = '0.0';
+            document.getElementById('finalResult').style.display = 'none';
+            document.getElementById('colorRow').style.display = 'none';
+            document.getElementById('colorNote').style.display = 'none';
+            document.getElementById('s2Status').textContent = '⏳ 待显色';
+            document.getElementById('s2Status').className = 'status st-wait';
+            document.getElementById('colorIcon').textContent = '🧪';
+            document.getElementById('colorDesc').innerHTML = '采样后的吸收液转移至25mL比色管<br>用少量吸收液冲洗吸收管2-3次<br>定容至25mL标线，摇匀';
+            document.getElementById('sampleLabel').textContent = '样品→';
+            document.getElementById('sampleColor').style.background = '#fce7f3';
+
+            ['samplingBtn','colorBtn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) { b.disabled = false; b.textContent = id.includes('sampling') ? '▶ 开始采样（模拟）' : '▶ 开始显色'; }
+            });
+
+            // 恢复按钮
+            const btn1 = document.querySelector('#step1 .step-btn');
+            btn1.textContent = '✅ 吸收液已配好 → 现场采样';
+            btn1.onclick = () => goStep(1);
+            const btn2 = document.querySelector('#step2 .step-btn');
+            btn2.textContent = '▶ 开始显色';
+            btn2.onclick = startColor;
+
+            updateUI();
+        }
+
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 3095-2012</td><td>环境空气质量标准</td><td class="sb-s" style="color:#b91c1c">已废止</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 3095-2026</td><td>环境空气质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">NOx 浓度限值判定依据（现行版）</td></tr><tr><td class="sb-c">HJ 479-2009</td><td>环境空气 氮氧化物（一氧化氮和二氧化氮）的测定 盐酸萘乙二胺分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">环境空气氮氧化物的测定方法</td></tr></table><div class="sb-ft">本页共依据 <b>3</b> 项标准：<b>3</b> 项已回官方源核验（截至 2026-09-11），0 项待核；其中 <b style="color:#b91c1c">1 项标为已废止／部分废止</b>，仅作历史对照，不得作为现行方法依据。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 <b>GB 3095-2012</b>（已废止）：自 2026-03-01 起废止（含其修改单），由 GB 3095-2026 代替</li></ul></div></div></div></details>
+</body>
+</html>

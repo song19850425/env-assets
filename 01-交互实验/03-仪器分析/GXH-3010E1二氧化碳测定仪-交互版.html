@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二氧化碳测定仪 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#10b981;--accent-glow:#34d399;--accent-bg:rgba(16,185,129,.12);--green:#4ade80;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#06231a 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(16,185,129,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(16,185,129,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(16,185,129,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#06231a);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(74,222,128,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#10b981,#34d399);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(16,185,129,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb.bad{background:rgba(251,113,133,.12);color:var(--rose);border-color:var(--rose)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr3{grid-template-columns:1fr}}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:150px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">二氧化碳测定仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">GXH-3010E1</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">便携红外式 · 气相 CO₂ 浓度测定 · 环境温压补偿</div>
+  <div class="hst">
+    <div><span class="n">便携式</span><span class="l">探头直读</span></div>
+    <div><span class="n">ppm / %</span><span class="l">双单位</span></div>
+    <div><span class="n">仅气相</span><span class="l">严禁测液体</span></div>
+    <div><span class="n">温压</span><span class="l">先设再测</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">GXH-3010E1 是一台便携式<b>红外二氧化碳测定仪</b>，用于测定某一混合气体氛围中<b>气相 CO₂ 的含量</b>——环境空气、培养箱气氛、发酵/呼吸实验取气袋等场景。探头直接置于待测气体中，仪器自动读出浓度，可选 ppm 或百分数两种单位，并能记录数据、绘制"浓度-时间"曲线。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">📡</div><div class="in">探头直读</div><div class="id">把探头置于待测气体氛围内（可在取气袋中进行），仪器自动测量氛围中 CO₂ 含量，无需取样前处理。</div><span class="it">气相测量</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">环境温压补偿</div><div class="id">气体浓度随温度、压力变化。测量前必须在"环境"菜单里设好当前温度和压力及单位，否则读数不可信。</div><span class="it">先设参数</span></div>
+    <div class="ic"><div class="ii">🔢</div><div class="in">双单位显示</div><div class="id">在"显示→数值和单位"里选择 ppm 或百分数。低浓度场景用 ppm 更直观，高浓度（如培养箱 5%）用百分数。</div><span class="it">ppm / %</span></div>
+    <div class="ic"><div class="ii">📈</div><div class="in">记录与作图</div><div class="id">"记录/查看"可存取历史数据；"显示→作图"生成浓度-时间曲线并暂存，适合监测浓度变化过程。</div><span class="it">曲线记录</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>参数没设、探头放错地方、换电极没关机，系统会直接提醒你</b>，这几条正是这台仪器最容易出错、最容易损坏探头的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ GXH-3010E1 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">GXH-3010E1 便携红外二氧化碳测定仪</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 开机（打开电源开关，按方向键进入主菜单）</div>
+    <div class="acts">
+      <button class="btn b1" id="btnPwr" onclick="power()">🔌 打开电源</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 设置显示单位（显示 → 数值和单位）</div>
+    <div class="seg">
+      <div class="pb" id="uP" onclick="setUnit('ppm')">ppm<span class="po">低浓度</span></div>
+      <div class="pb" id="uPct" onclick="setUnit('pct')">百分数 %<span class="po">高浓度</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">③ 设置环境温度 / 压力（<b style="color:var(--rose)">红线：不设直接测 → 读数不可信</b>）</div>
+    <div class="cols">
+      <div class="fld"><label>环境温度 (℃)</label><input type="number" id="iTemp" value="25" step="1"></div>
+      <div class="fld"><label>环境压力 (kPa)</label><input type="number" id="iPress" value="101.3" step="0.1"></div>
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnEnv" onclick="setEnv()" disabled>⚙️ 确认环境参数</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 放置探头（<b style="color:var(--rose)">红线：只能测气相，严禁插入液体</b>）</div>
+    <div class="seg">
+      <div class="pb" id="prGas" onclick="setProbe('gas')">气相取气袋 / 气氛<span class="po">✅ 正确</span></div>
+      <div class="pb" id="prLiq" onclick="setProbe('liq')">插入液体样品<span class="po">❌ 会损坏探头</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑤ 测量 / 记录 / 作图</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">CO₂ 浓度</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">单位</div><div class="dd" id="dU" style="font-size:13px">—</div></div>
+      <div class="dv"><div class="dl">测量状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnMeasure" onclick="measure()" disabled>▶ 开始测量</button>
+      <button class="btn b2" id="btnRec" onclick="record()" disabled>💾 记录数据</button>
+      <button class="btn b2" id="btnPlot" onclick="plot()" disabled>📈 作曲线图</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 更换电极（<b style="color:var(--rose)">红线：必须先关机，再旋出电极</b>）</div>
+    <div class="pwr3">
+      <div class="pb" id="ec1" onclick="elec(1)">关闭电源<span class="po">step 1</span></div>
+      <div class="pb" id="ec2" onclick="elec(2)">旋出旧电极<span class="po">旋约5圈上拔</span></div>
+      <div class="pb" id="ec3" onclick="elec(3)">插入新电极<span class="po">插槽旋紧</span></div>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌡️</div><div class="in">环境温压必须先设</div><div class="id">气体浓度随温度、压力变化。测量前必须在"环境"菜单设好当前温度、压力和单位。不设直接测 → 读数系统性偏差、不可信。</div><span class="it">数据红线</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">探头只测气相，严禁液相</div><div class="id">该仪器只能测定气相环境下的 CO₂，<b>不能将探头置于液相中测液体里的 CO₂ 含量，否则探头会损坏</b>。这是最容易造成设备损失的红线。</div><span class="it">损坏红线</span></div>
+    <div class="ic"><div class="ii">🔧</div><div class="in">换电极必须关机态</div><div class="id">更换电极前必须先确认仪器<b>处于关机状态</b>，再将电极旋约 5 圈向上拔出，插入新电极旋紧。带电操作有损坏/危险风险。</div><span class="it">维护红线</span></div>
+    <div class="ic"><div class="ii">🧽</div><div class="in">清洗防进水</div><div class="id">用湿布擦拭塑料部分，可用适度清洗剂，但<b>切勿让水从按键缝进入显示器内电子板</b>。仪器长期不用应关机存放。</div><span class="it">期间维护</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">这台仪器没有"顺序错就爆炸"的致命红线，但有典型的<b>"参数不设读数就废、探头放错就报废"</b>的实操坑——把它做成可交互培训，新人上手前先在屏幕上把参数流程和禁忌走一遍，非常适合作为上岗前的交互式培训材料。这类受控操作规程合集里有大量仪器，都适合用同样的方式做成培训页。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={power:false,unit:'',env:false,probe:'',measured:false,elec:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4000);}
+
+function power(){
+  if(S.power){warn('仪器已开机');return;}
+  S.power=true;$('btnPwr').classList.add('on');$('btnPwr').textContent='🟢 已开机';
+  setSts('🟢 已开机','sa');log('打开电源，按方向键进入主菜单');
+  $('btnEnv').disabled=false;warn('');
+}
+function setUnit(u){
+  if(!S.power){warn('请先打开电源');return;}
+  S.unit=u;
+  $('uP').classList.toggle('on',u==='ppm');
+  $('uPct').classList.toggle('on',u==='pct');
+  log('显示单位设为：'+(u==='ppm'?'ppm':'百分数 %'));
+  $('dU').textContent=(u==='ppm'?'ppm':'%');
+}
+function setEnv(){
+  if(!S.power){warn('请先打开电源');return;}
+  const t=+$('iTemp').value, p=+$('iPress').value;
+  if(isNaN(t)||isNaN(p)||p<=0){warn('请填写有效的环境温度和压力');return;}
+  S.env=true;$('btnEnv').classList.add('on');$('btnEnv').textContent='✅ 环境参数已确认';
+  log('环境参数已确认：温度 '+t+'℃ / 压力 '+p+' kPa',true);warn('');
+  refreshMeasureBtn();
+}
+function setProbe(type){
+  if(!S.power){warn('请先打开电源');return;}
+  if(type==='liq'){
+    $('prLiq').classList.add('bad');
+    warn('⚠️ 严禁将探头插入液体！该仪器只能测气相 CO₂，插入液相会直接损坏探头');
+    log('探头误插入液体样品 → 已阻断（会损坏探头）',false);
+    setTimeout(()=>$('prLiq').classList.remove('bad'),1500);
+    return;
+  }
+  S.probe='gas';$('prGas').classList.add('on');$('prLiq').classList.remove('on');
+  log('探头已置于气相取气袋 / 气氛中',true);warn('');
+  refreshMeasureBtn();
+}
+function refreshMeasureBtn(){
+  $('btnMeasure').disabled=!(S.power&&S.unit&&S.env&&S.probe==='gas');
+}
+function measure(){
+  if(!S.power){warn('请先打开电源');return;}
+  if(!S.unit){warn('请先设置显示单位（ppm 或 百分数）');return;}
+  if(!S.env){warn('请先设置环境温度和压力（操作规程红线：不设直接测，读数不可信）');return;}
+  if(S.probe!=='gas'){warn('请先把探头正确置于气相气氛中');return;}
+  setSts('📡 测量中…','sa');$('dState').textContent='测量中';log('探头读取气相 CO₂ 含量…');
+  let p=0;const iv=setInterval(()=>{p++;if(p>=8){clearInterval(iv);
+    let val,disp;
+    if(S.unit==='ppm'){val=Math.round(Math.random()*1200+400);disp=val+' ';}
+    else{val=(Math.random()*0.4+0.04).toFixed(3);disp=val+' ';}
+    $('dC').textContent=disp;$('dState').textContent='完成';
+    setSts('✅ 测量完成','sok');S.measured=true;
+    log('测量完成：CO₂ '+disp+(S.unit==='ppm'?'ppm':'%')+'（示例值）',true);
+    $('btnRec').disabled=false;$('btnPlot').disabled=false;
+  }},150);
+}
+function record(){
+  if(!S.measured){warn('请先完成一次测量');return;}
+  log('数据已记录（记录/查看菜单可回看历史）',true);
+}
+function plot(){
+  if(!S.measured){warn('请先完成一次测量');return;}
+  log('已生成"浓度-时间"曲线图并暂存（显示→作图）',true);
+}
+function elec(n){
+  // 红线：换电极必须先关机
+  if(n>=2 && S.power){
+    warn('⚠️ 换电极前必须先关闭电源！带电旋出电极有损坏/危险风险');
+    log('未关机就旋电极 → 已阻断（操作规程要求关机态更换）',false);
+    return;
+  }
+  if(n===1){
+    if(!S.power){warn('仪器当前已是关机状态');/*仍允许推进*/}
+    S.power=false;S.probe='';S.measured=false;
+    $('btnPwr').classList.remove('on');$('btnPwr').textContent='🔌 打开电源';
+    $('prGas').classList.remove('on');
+    $('btnMeasure').disabled=true;$('btnRec').disabled=true;$('btnPlot').disabled=true;
+    setSts('🔒 已关机','si');$('ec1').classList.add('on');
+    log('已关闭电源（进入可换电极状态）',true);S.elec=1;warn('');
+    return;
+  }
+  if(n!==S.elec+1){warn('换电极顺序：关闭电源 → 旋出旧电极 → 插入新电极');return;}
+  S.elec=n;$('ec'+n).classList.add('on');
+  if(n===2)log('旧电极旋约 5 圈，向上拔出',true);
+  if(n===3){log('新电极插入手柄槽并旋紧，更换完成',true);setSts('🔧 电极更换完成','sok');}
+}
+function resetAll(){
+  S={power:false,unit:'',env:false,probe:'',measured:false,elec:0};
+  ['uP','uPct','prGas','prLiq','ec1','ec2','ec3'].forEach(id=>{$(id).classList.remove('on');$(id).classList.remove('bad');});
+  $('btnPwr').classList.remove('on');$('btnPwr').textContent='🔌 打开电源';
+  $('btnEnv').classList.remove('on');$('btnEnv').textContent='⚙️ 确认环境参数';$('btnEnv').disabled=true;
+  $('btnMeasure').disabled=true;$('btnRec').disabled=true;$('btnPlot').disabled=true;
+  $('dC').textContent='—';$('dU').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

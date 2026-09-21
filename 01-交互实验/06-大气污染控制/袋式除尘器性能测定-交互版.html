@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>袋式除尘器性能测定 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f59e0b;--glow:#fbbf24;--abg:rgba(245,158,11,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2b1a05 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(245,158,11,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(245,158,11,.13),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(245,158,11,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:640px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:23px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:760px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(245,158,11,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#2b1a05);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#f59e0b;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:190px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:280px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+#cv2{width:100%;height:250px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.legend span i.dot{width:9px;height:9px;border-radius:50%}
+.note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#fcd34d;line-height:1.7;margin:16px 0}
+.note b{color:#fde68a}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.note.green{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.18);border-left-color:var(--green);color:#a7f3d0}
+.note.green b{color:#d1fae5}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:var(--accent)}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:rgba(245,158,11,.08);color:var(--glow);font-weight:700;font-size:11.5px}
+.tbl td{color:#94a3b8;line-height:1.6}
+.tbl td b{color:#e2e8f0}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">袋式除尘器<br><em>性能测定</em></h1>
+  <div class="hs">效率能到 99.9%，出口浓度压到 10 mg/m³ 以下——几乎什么粉尘都能抓。<br>代价是：<b style="color:#fcd34d">它的阻力是电除尘的五倍，而阻力一旦失控，效率和滤袋寿命一起垮</b>。</div>
+  <div class="hst">
+    <div><span class="n">99.9%</span><span class="l">典型除尘效率</span></div>
+    <div><span class="n">0.8~1.5</span><span class="l">气布比 m/min</span></div>
+    <div><span class="n">800~1500</span><span class="l">运行阻力 Pa</span></div>
+    <div><span class="n">5</span><span class="l">测量步骤</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">效率最高的那个<br>也最怕"堵"</div>
+  <div class="sd">三种主流除尘方式里，袋式除尘器的效率是最高的——<b>常规就能稳定在 99.9% 以上</b>，出口浓度压在 10 mg/m³ 以下很轻松，覆膜滤料还能更低。它对粉尘性质几乎不挑：不分比电阻、不看粒径分布，连电除尘最怕的亚微米粉尘也照样抓得住。超低排放改造里，它是最常被选中的那条路。</div>
+  <div class="sd">代价在于<b>阻力</b>。它靠滤布"挡"粉尘，气流必须硬挤过滤料和粉尘层，所以运行阻力通常在 <b>800～1500 Pa</b>——是电除尘（200～300 Pa）的五倍左右。这部分压降最终要由风机来买单。</div>
+  <div class="sd">于是袋式除尘器的运行就变成了一场<b>循环博弈</b>：粉尘在滤袋表面积厚 → 阻力升高 → 触发清灰 → 阻力降下来但要保留一层"残余粉尘层"维持效率 → 再积厚 → 再清灰……<b>这个锯齿循环的每一个参数，都在效率、能耗和滤袋寿命之间做交换。</b></div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🏆</div><div class="in">效率天花板最高</div><div class="id">稳定 99.9% 以上，出口可低至 10 mg/m³ 以内。不挑粉尘性质，是目前超低排放改造的主力路线。</div><span class="it">优势</span></div>
+    <div class="ic"><div class="ii">📉</div><div class="in">阻力带来的电耗账</div><div class="id">运行阻力约为电除尘的 <b>5 倍</b>，风机电耗随之上升。把阻力定得越高，清灰越少、滤袋越省，但风机越费电。</div><span class="it">核心矛盾</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">温度是生死线</div><div class="id">超过滤料耐温会<b>烧袋</b>，低于酸露点会<b>糊袋</b>——两者都是不可逆的报废。滤料选型是第一个决策，不是最后一个。</div><span class="it">选型红线</span></div>
+  </div>
+  <div class="note blue">
+    <b>先分清三个层次</b>：<b>滤料选型</b>（能不能用、耐多高温度）→ <b>设备设计</b>（气布比定多大，设备做多大）→ <b>运行清灰</b>（多大阻力触发清灰）。三个层次错一个，后面全盘皆输——而它们对应的是完全不同的责任人和判断依据。
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个概念撑起整个实验</div>
+  <div class="sd">模拟台的锯齿曲线和读数，都能从下面四条推出来。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">🧵</div><div class="in">① 真正在过滤的是粉尘层</div>
+      <div class="id">滤布本身的孔隙比很多粉尘颗粒还大，刚上袋的清洁滤料效率并不高。<b>真正起过滤作用的是滤袋表面那层粉尘（初层／粉尘层）</b>——它把孔隙填细，亚微米颗粒才能被拦住。所以清灰时必须<b>保留一层残余粉尘层</b>：清得越"干净"，效率反而越差。</div>
+      <div class="fx">清洁滤料 + 粉尘层 → 粉尘层才是高效过滤介质</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📐</div><div class="in">② 阻力 = 滤料阻力 + 粉尘层阻力</div>
+      <div class="id">过滤器总阻力由两部分相加：滤料自身阻力（与风速成正比）＋粉尘层阻力（与风速、且与<b>累计粉尘面负荷</b>成正比）。这就是阻力会随时间不断爬升的原因。</div>
+      <div class="fx">ΔP = μ·v·(ξ₀ + S_e·W)　　W 随时间累积</div>
+    </div>
+    <div class="ic">
+      <div class="ii">⏱️</div><div class="in">③ 清灰周期由上限阻力决定</div>
+      <div class="id">设定一个"阻力上限"，到点就清灰，于是阻力呈<b>锯齿状</b>循环：爬升→跌落到残余值→再爬升。粉尘面负荷累积得越快（风速越高、进口浓度越大），锯齿就越密——<b>清灰越频繁，滤袋寿命越短</b>，因为每次脉冲喷吹都是一次机械冲击。</div>
+      <div class="fx">T = (W_max − W_残余) / (C_in · v)　　（清灰周期）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🎯</div><div class="in">④ 气布比：设计阶段最关键的一个数</div>
+      <div class="id">气布比（过滤风速）＝处理风量 ÷ 滤布总面积，单位 m/min。它一旦定下来，设备尺寸就定了：气布比越小，需要的滤布面积越大，设备越庞大。<b>脉冲袋式推荐 0.8～1.5 m/min</b>；风速偏高会同时推高阻力、清灰频次和排放浓度。</div>
+      <div class="fx">v = Q / A　　（V 越小 → 设备越大、但清灰越少）</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把四个概念连起来看</b>：进口浓度 C_in 定时，粉尘面负荷 W 的累积速度只取决于气布比 v。v 定得高 → 锯齿密 → 清灰频繁 → 滤袋寿命短、清灰泄漏峰频繁；v 定得低 → 清灰稀疏、寿命长，但<b>滤布面积要成倍增加，设备造价和占地一起上去</b>。<span style="color:#fde68a">这就是气布比选型的完整账：一头是运行费与寿命，一头是一次投资。</span>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">浓度测定按固定污染源监测相关标准（GB/T 16157、HJ 836 等）执行。<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">烟气工况确认与滤料选型核对</div><div class="rd">记录烟气温度、含湿量、含硫情况（决定酸露点）与进口含尘浓度，核对<b>滤料耐温是否覆盖工况温度</b>、烟气温度是否高于露点 20℃ 以上。<b>滤料选错，后面所有数据都没有意义</b>——这是整个实验的第一道门。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">过滤风速（气布比）与清洁阻力测定</div><div class="rd">测定风量与滤布总面积，算出气布比；同时记录清洁状态下的滤料阻力。气布比是后面阻力增长与清灰周期的输入。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">阻力增长记录与清灰周期确定</div><div class="rd">连续记录运行阻力，绘出阻力—时间曲线，确定在设定上限阻力下的<b>清灰周期</b>。这是袋式除尘器最有辨识度的一条曲线——锯齿。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">清灰与排放浓度测定</div><div class="rd">观察清灰前后的阻力落差，并测定<b>清灰瞬间的泄漏峰</b>与稳定运行时的出口浓度。<b>只测稳定值不看清灰峰，会漏掉袋式除尘最特有的那个排放特征。</b></div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">达标判定与滤袋寿命核算</div><div class="rd">按排放限值判定达标性，并按清灰频次核算滤袋寿命与相对设备规模，给出气布比是否合理的结论。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🧵 袋式除尘器性能测定 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">工况与滤料核对<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>测气布比<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>阻力增长/清灰周期<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>清灰与浓度<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>达标与寿命<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>滤料材质（括号内为连续耐温）</label>
+          <select id="media" onchange="onParam()">
+            <option value="pet">涤纶针刺毡（≤130℃）· 便宜通用，常温工况</option>
+            <option value="pps" selected>PPS 针刺毡（≤190℃）· 耐酸碱耐水解，燃煤／含硫烟气常用</option>
+            <option value="nomex">诺美克斯（芳纶，≤200℃）· 耐磨阻燃，沥青搅拌／水泥窑头</option>
+            <option value="ptfe">PTFE 覆膜（≤260℃）· 耐强腐蚀、易清灰，价格高</option>
+            <option value="gf">玻纤覆膜（≤280℃）· 耐高温但不耐折弯，水泥窑头／高炉</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>烟气工况（决定露点）</label>
+          <select id="gas" onchange="onParam()">
+            <option value="dry">干燥烟气（露点约 40℃）</option>
+            <option value="wet">含湿烟气（露点约 60℃）</option>
+            <option value="sulfur" selected>含硫烟气（酸露点约 110℃）</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>烟气温度 T　<b style="color:#fbbf24" id="tTxt">140 ℃</b>　（滤料耐温 <b id="tLim" style="color:#34d399">190</b> ℃）</label>
+          <input type="range" id="tIn" min="80" max="300" step="5" value="140" oninput="onParam()">
+          <div class="hint" id="tHint">—</div>
+        </div>
+        <div class="fld">
+          <label>过滤风速（气布比）v　<b style="color:#fbbf24" id="vTxt">1.2 m/min</b></label>
+          <input type="range" id="vIn" min="0.5" max="2.5" step="0.1" value="1.2" oninput="onParam()">
+          <div class="hint" id="vHint">脉冲袋式推荐 0.8～1.5 m/min。</div>
+        </div>
+        <div class="fld">
+          <label>清灰触发阻力上限 ΔP_max　<b style="color:#fbbf24" id="pTxt">1500 Pa</b></label>
+          <input type="range" id="pIn" min="800" max="2500" step="50" value="1500" oninput="onParam()">
+          <div class="hint">定得高 → 清灰少、滤袋省，但风机长期在高阻力下跑、电耗上升。</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv"><div class="dl">清灰周期</div><div class="dd" id="oCyc">—</div><div class="du">min</div></div>
+          <div class="dv" id="dvLife"><div class="dl">滤袋寿命</div><div class="dd" id="oLife">—</div><div class="du">月</div></div>
+          <div class="dv" id="dvOut"><div class="dl">稳态出口浓度</div><div class="dd" id="oOut">—</div><div class="du">mg/m³</div></div>
+          <div class="dv" id="dvPeak"><div class="dl">清灰泄漏峰</div><div class="dd" id="oPeak">—</div><div class="du">mg/m³（瞬时）</div></div>
+        </div>
+        <div style="font-size:10.5px;color:#475569;margin:6px 0 4px">阻力—时间曲线（锯齿＝周期性清灰；时间轴固定 6 小时）</div>
+        <canvas id="cv" width="900" height="560"></canvas>
+        <div class="legend">
+          <span><i style="background:#fbbf24"></i>运行阻力 ΔP</span>
+          <span><i style="height:0;border-top:2px dashed #fb7185"></i>清灰触发上限</span>
+          <span><i style="height:0;border-top:2px dashed #34d399"></i>清灰后残余阻力</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:10.5px;color:#475569;margin-bottom:4px">气布比选型的两种代价（横轴过滤风速，双纵轴）</div>
+      <canvas id="cv2" width="900" height="500"></canvas>
+      <div class="legend">
+        <span><i style="background:#fbbf24"></i>清灰周期（左轴·对数）</span>
+        <span><i style="background:#38bdf8"></i>滤袋寿命（右轴）</span>
+        <span><i style="background:rgba(52,211,153,.35);height:9px"></i>推荐气布比 0.8～1.5 m/min</span>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与红线</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">滤料选型是第一道门</div><div class="id">先看烟气温度、含湿量、含硫情况，再选滤料。<b>超过耐温＝烧袋，低于露点＝糊袋</b>，两者都不可逆、都得整批换袋。耐温不是"留 5℃ 余量就行"，工程上通常要留出 10～20℃ 的安全余量。</div><span class="it">选型红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">清灰要留"残余粉尘层"</div><div class="id">真正在过滤的是粉尘层。清灰清得越彻底，效率反而越低——所以清灰的目标不是"清干净"，而是<b>在不把粉尘层清空的前提下把阻力降下来</b>。这是袋式除尘与其他除尘方式最不同的一条逻辑。</div><span class="it">机理红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">气布比定下来，设备就定型了</div><div class="id">气布比是设计参数，不是运行参数——设备做完再想改，只能加滤袋或改造箱体。定高了：阻力高、清灰频繁、滤袋寿命短；定低了：滤布面积成倍增加、投资和占地都上去。<b>这是袋式除尘最典型的取舍题。</b></div><span class="it">设计红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">别忽略清灰瞬间的泄漏峰</div><div class="id">清灰时粉尘层被震落，出口浓度会瞬时升到稳态值的数倍。虽然时段均值不因此超标，但<b>高频清灰会把泄漏峰变成常态</b>，时段均值也会被拉高。测效率时必须区分"稳态"与"清灰瞬间"两个值。</div><span class="it">测点红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：是把一套袋式除尘器看成一个<b>循环系统</b>来理解——滤料选型决定"能不能用"，气布比决定"设备多大、清灰多频"，阻力上限决定"电费多少、滤袋多久换一次"。这三个决策分属不同层次，<span style="color:#fde68a">现场出问题时，先判断它落在哪一层，再谈改什么。</span>
+  </div>
+  <div class="note green">
+    <b>三种主流除尘方式对照</b>
+    <table class="tbl">
+      <tr><th style="width:24%">对比项</th><th>旋风除尘器</th><th>电除尘器</th><th>袋式除尘器</th></tr>
+      <tr><td><b>分离机理</b></td><td>离心力</td><td>电场力（荷电＋迁移）</td><td>滤布＋粉尘层过滤</td></tr>
+      <tr><td><b>典型效率</b></td><td>70～90%</td><td>99～99.8%</td><td><b>99.9% 以上</b></td></tr>
+      <tr><td><b>运行阻力</b></td><td>600～1500 Pa</td><td><b>200～300 Pa（最低）</b></td><td>800～1500 Pa</td></tr>
+      <tr><td><b>耐温上限</b></td><td>可 400℃ 以上</td><td>可 300℃ 以上</td><td>受滤料限制（130～280℃）</td></tr>
+      <tr><td><b>对粉尘性质的敏感点</b></td><td>粒径分布</td><td><b>比电阻（断崖式）</b></td><td>温度／湿度／粘性</td></tr>
+      <tr><td><b>最怕什么</b></td><td>灰斗漏风、细颗粒</td><td>反电晕、二次飞扬</td><td>烧袋、糊袋、阻力失控</td></tr>
+      <tr><td><b>典型定位</b></td><td>预除尘（第一级）</td><td>大风量高温主力</td><td>超低排放末端</td></tr>
+    </table>
+  </div>
+  <div class="fw">
+    <a href="旋风除尘器性能测定-交互版.html"><div class="t">→ 旋风除尘器性能测定</div><div class="d">除尘链的第一级。看"效率线性、能耗平方"这个经典矛盾。</div></a>
+    <a href="电除尘器性能测定-交互版.html"><div class="t">→ 电除尘器性能测定</div><div class="d">另一种主流方式：阻力最低，但被粉尘比电阻卡脖子。</div></a>
+    <a href="00-大气污染控制工程实验-课程对照总览.html"><div class="t">→ 课程对照总览</div><div class="d">返回总览，查看本页对应的课程大纲位置与覆盖情况。</div></a>
+  </div>
+  <div class="sd" style="margin-top:18px">
+    排放限值依据：GB 13223《火电厂大气污染物排放标准》，燃煤锅炉烟尘排放限值 <b>30 mg/m³</b>（重点地区特别排放限值 <b>20 mg/m³</b>）；超低排放要求烟尘不高于 <b>10 mg/m³</b>。本页取 30 mg/m³ 作教学达标基准。<br>
+    本页示例工况：进口含尘浓度 20 g/m³、滤料阻力系数 5.5×10⁸ m⁻¹、粉尘层比阻力 6×10⁹ m/kg（中等粘性飞灰），清灰后残余面负荷 0.12 kg/m²。<b>滤料耐温与气布比区间为工程惯用参考值，实际选型须以滤料厂家样本与具体工况为准。曲线与数值用于教学演示，不作为检测报告数据。</b>
+  </div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3<br>
+  <span style="font-size:11px;color:#334155">配套总览：<a href="00-大气污染控制工程实验-课程对照总览.html" style="color:#475569">大气污染控制工程实验 · 课程对照总览</a></span>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const MU=1.81e-5, XI0=5.5e8, SE=6e9, CIN=0.02, WRES=0.12;   // μ、滤料阻力系数、粉尘层比阻力、进口浓度 kg/m³、残余面负荷 kg/m²
+const COUT_LIMIT=30, CIN_MG=20000;                            // 排放限值、进口浓度 mg/m³
+const T_RUN=360;                                              // 曲线时间窗（min）
+const MEDIA={
+  pet:{lim:130,film:false,label:'涤纶针刺毡',note:'便宜通用，适合常温工况'},
+  pps:{lim:190,film:false,label:'PPS 针刺毡',note:'耐酸碱、耐水解，燃煤／含硫烟气常用'},
+  nomex:{lim:200,film:false,label:'诺美克斯（芳纶）',note:'耐磨阻燃，适合沥青搅拌、水泥窑头'},
+  ptfe:{lim:260,film:true,label:'PTFE 覆膜',note:'耐强腐蚀、表面光滑易清灰，价格高'},
+  gf:{lim:280,film:true,label:'玻纤覆膜',note:'耐高温但不耐折弯，用于水泥窑头、高炉'}
+};
+const GAS={dry:{dp:40,label:'干燥烟气'},wet:{dp:60,label:'含湿烟气'},sulfur:{dp:110,label:'含硫烟气'}};
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let curKey=null;
+
+function media(){return MEDIA[$('media').value];}
+function gas(){return GAS[$('gas').value];}
+function vMin(){return +$('vIn').value;}
+function vs(){return vMin()/60;}                 // m/s
+function pMax(){return +$('pIn').value;}
+function temp(){return +$('tIn').value;}
+function basePen(){return media().film?1.5e-4:5e-4;}
+function vFactor(){const r=Math.max(0,(vMin()-1.2)/1.2); return 1+2.2*Math.pow(r,1.6);}
+function penSteady(){return basePen()*vFactor();}
+function penPeak(){return penSteady()*4;}
+function dPRow(W){return MU*vs()*(XI0+SE*W);}     // Pa
+function wMax(){const x=(pMax()-MU*vs()*XI0)/(MU*vs()*SE); return Math.max(WRES*1.05,x);}
+function cycleSec(){return (wMax()-WRES)/(CIN*vs());}
+function cycleMin(){return cycleSec()/60;}
+function lifeMonth(){
+  const perDay=1440/Math.max(cycleMin(),0.1);
+  let m=90000/perDay/30;
+  if(temp()>media().lim-10) m*=0.5;               // 接近耐温上限 → 老化加速
+  return Math.min(60,m);
+}
+function scaleX(){return 1.2/vMin();}             // 相对设备规模（以 v=1.2 为 1.0）
+
+/* 工况是否可用 */
+function blocked(){
+  if(temp()>media().lim) return 'over';
+  if(temp()<=gas().dp) return 'dew';
+  return null;
+}
+function tempState(){
+  const b=blocked();
+  if(b==='over') return {tag:'烧袋',ok:false,col:'#fb7185'};
+  if(b==='dew') return {tag:'糊袋',ok:false,col:'#fb7185'};
+  if(temp()<=gas().dp+20) return {tag:'结露风险',ok:false,col:'#fbbf24'};
+  if(temp()>media().lim-10) return {tag:'高温老化',ok:false,col:'#fbbf24'};
+  return {tag:'匹配良好',ok:true,col:'#34d399'};
+}
+function params(){return {media:$('media').value,gas:$('gas').value,t:+$('tIn').value,v:+$('vIn').value,p:+$('pIn').value};}
+function key(p){return [p.media,p.gas,p.t,p.v,p.p].join('|');}
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},7000);}
+
+function render(){
+  const p=params(), m=media(), g=gas(), st2=tempState(), blk=blocked();
+  $('tTxt').textContent=p.t+' ℃';
+  $('tLim').textContent=m.lim;
+  $('tLim').style.color=(p.t>m.lim)?'#fb7185':'#34d399';
+  $('vTxt').textContent=vMin().toFixed(1)+' m/min';
+  $('pTxt').textContent=pMax()+' Pa';
+  $('tHint').innerHTML='滤料 '+m.label+'：'+m.note+'。'+g.label+' 露点约 '+g.dp+'℃。<b style="color:'+st2.col+'">当前判定：'+st2.tag+'</b>';
+  $('vHint').innerHTML='脉冲袋式推荐 0.8～1.5 m/min。当前相对设备规模 <b style="color:#fbbf24">×'+scaleX().toFixed(2)+'</b>（以 1.2 m/min 为基准）。';
+  const ok=!blk;
+  $('oCyc').textContent=(S.s3&&ok)?cycleMin().toFixed(1):'—';
+  $('dvLife').className='dv'+(S.s4&&ok?(lifeMonth()<18?' bad':' good'):'');
+  $('oLife').textContent=(S.s4&&ok)?lifeMonth().toFixed(1):'—';
+  $('oOut').textContent=(S.s4&&ok)?(CIN_MG*penSteady()).toFixed(1):'—';
+  $('dvOut').className='dv'+(S.s4&&ok?((CIN_MG*penSteady())<=COUT_LIMIT?' good':' bad'):'');
+  $('oPeak').textContent=(S.s4&&ok)?(CIN_MG*penPeak()).toFixed(0):'—';
+  $('dvPeak').className='dv'+(S.s4&&ok?'':'');
+  drawSaw(ok); drawTrade(ok);
+}
+
+/* ---------- 图1：阻力—时间锯齿 ---------- */
+function drawSaw(ok){
+  const cv=$('cv'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,H=280;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=56,PR=18,PT=18,PB=34,gw=W-PL-PR,gh=H-PT-PB;
+  const yTop=Math.max(2000,pMax()+400);
+  const X=mn=>PL+mn/T_RUN*gw;
+  const Y=pa=>PT+(yTop-Math.min(pa,yTop))/yTop*gh;
+  /* 推荐运行带 800~1500 Pa */
+  ctx.fillStyle='rgba(52,211,153,.07)';
+  ctx.fillRect(PL,Y(1500),gw,Y(800)-Y(1500));
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  const step=yTop<=2200?500:1000;
+  for(let pa=0;pa<=yTop;pa+=step){ctx.beginPath();ctx.moveTo(PL,Y(pa));ctx.lineTo(PL+gw,Y(pa));ctx.stroke();}
+  for(let mn=0;mn<=T_RUN;mn+=60){ctx.beginPath();ctx.moveTo(X(mn),PT);ctx.lineTo(X(mn),PT+gh);ctx.stroke();}
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  for(let pa=0;pa<=yTop;pa+=step) ctx.fillText(pa,PL-7,Y(pa));
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  for(let mn=0;mn<=T_RUN;mn+=60) ctx.fillText(mn,X(mn),PT+gh+7);
+  ctx.fillStyle='#475569';
+  ctx.fillText('运行时间（min）',PL+gw/2,PT+gh+20);
+  ctx.save(); ctx.translate(12,PT+gh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#475569';
+  ctx.fillText('运行阻力 ΔP（Pa）',0,0); ctx.restore();
+  ctx.fillStyle='rgba(52,211,153,.75)'; ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText('推荐运行区间 800～1500 Pa',PL+6,Y(1150));
+
+  if(!ok){
+    ctx.fillStyle='rgba(10,14,23,.62)'; ctx.fillRect(PL,PT,gw,gh);
+    ctx.fillStyle='#fb7185'; ctx.font='bold 13px Inter,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(blocked()==='over'?'滤料超温（烧袋）——工况不可用，曲线无意义':'烟气温度低于露点（糊袋）——工况不可用，曲线无意义',PL+gw/2,PT+gh/2);
+    ctx.fillStyle='#94a3b8'; ctx.font='11px Inter,sans-serif';
+    ctx.fillText('请调整滤料选型或烟气温度，使温度落在「露点+20℃」与「耐温−10℃」之间',PL+gw/2,PT+gh/2+18);
+    return;
+  }
+  /* 锯齿点列 */
+  const rate=CIN*vs(), Wm=wMax(), cyc=cycleSec(), dPm=pMax();
+  const pts=[[0,dPRow(WRES)]];
+  let t=0, Wd=WRES, guard=0;
+  while(t<T_RUN*60 && guard++<4000){
+    const tDrop=t+(Wm-Wd)/rate;
+    if(tDrop>=T_RUN*60){ pts.push([T_RUN*60, dPRow(Wd+(T_RUN*60-t)*rate)]); break; }
+    pts.push([tDrop/60, dPRow(Wm)]);
+    pts.push([tDrop/60, dPRow(WRES)]);
+    t=tDrop; Wd=WRES;
+  }
+  ctx.save(); ctx.beginPath(); ctx.rect(PL,PT,gw,gh); ctx.clip();
+  /* 上限线与残余线 */
+  ctx.strokeStyle='#fb7185'; ctx.lineWidth=1.2; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(PL,Y(dPm)); ctx.lineTo(PL+gw,Y(dPm)); ctx.stroke();
+  ctx.strokeStyle='#34d399'; ctx.lineWidth=1.2; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(PL,Y(dPRow(WRES))); ctx.lineTo(PL+gw,Y(dPRow(WRES))); ctx.stroke();
+  ctx.setLineDash([]);
+  /* 曲线 */
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=1.8; ctx.beginPath();
+  pts.forEach((p2,i)=>{const x=X(p2[0]),y=Y(p2[1]); if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+  ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle='#fb7185'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='bottom';
+  ctx.fillText('触发上限 '+dPm+' Pa',PL+gw-4,Y(dPm)-4);
+  ctx.fillStyle='#34d399'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('清灰后残余 '+Math.round(dPRow(WRES))+' Pa',PL+4,Y(dPRow(WRES))+4);
+  ctx.fillStyle='#94a3b8'; ctx.textAlign='right'; ctx.textBaseline='top';
+  ctx.fillText('本窗口内清灰 '+Math.round(T_RUN/Math.max(cycleMin(),0.1))+' 次',PL+gw-4,PT+6);
+}
+
+/* ---------- 图2：气布比选型双轴图 ---------- */
+function drawTrade(ok){
+  const cv=$('cv2'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,H=250;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=58,PR=58,PT=18,PB=42,gw=W-PL-PR,gh=H-PT-PB;
+  const V0=0.5,V1=2.5;
+  const X=v=>PL+(v-V0)/(V1-V0)*gw;
+  const LMIN=1,LMAX=300;                          // 左轴：清灰周期 min（对数）
+  const YL=t=>PT+(Math.log10(LMAX)-Math.log10(Math.max(t,LMIN)))/(Math.log10(LMAX)-Math.log10(LMIN))*gh;
+  const YR=m=>PT+(60-m)/60*gh;                    // 右轴：寿命 0~60 月
+  /* 推荐气布比带 */
+  ctx.fillStyle='rgba(52,211,153,.10)';
+  ctx.fillRect(X(0.8),PT,X(1.5)-X(0.8),gh);
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  [1,3,10,30,100,300].forEach(t=>{ctx.beginPath();ctx.moveTo(PL,YL(t));ctx.lineTo(PL+gw,YL(t));ctx.stroke();});
+  [0,15,30,45,60].forEach(m=>{ctx.beginPath();ctx.moveTo(PL,YR(m));ctx.lineTo(PL+gw,YR(m));ctx.stroke();});
+  for(let v=0.5;v<=2.51;v+=0.25){ctx.beginPath();ctx.moveTo(X(v),PT);ctx.lineTo(X(v),PT+gh);ctx.stroke();}
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  for(let v=0.5;v<=2.51;v+=0.5) ctx.fillText(v.toFixed(1),X(v),PT+gh+7);
+  ctx.fillStyle='#475569';
+  ctx.fillText('过滤风速（气布比）v  m/min',PL+gw/2,PT+gh+22);
+  ctx.save(); ctx.translate(12,PT+gh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#fbbf24';
+  ctx.fillText('清灰周期（min，对数）',0,0); ctx.restore();
+  ctx.save(); ctx.translate(W-12,PT+gh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#38bdf8';
+  ctx.fillText('滤袋寿命（月）',0,0); ctx.restore();
+  ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillStyle='#fbbf24'; ctx.font='10px Inter,sans-serif';
+  [1,3,10,30,100,300].forEach(t=>ctx.fillText(t,PL-7,YL(t)));
+  ctx.textAlign='left'; ctx.fillStyle='#38bdf8';
+  [0,15,30,45,60].forEach(m=>ctx.fillText(m,PL+gw+7,YR(m)));
+  if(!ok){
+    ctx.fillStyle='rgba(10,14,23,.55)'; ctx.fillRect(PL,PT,gw,gh);
+    ctx.fillStyle='#64748b'; ctx.font='12px Inter,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('工况不可用，先修正滤料选型／烟气温度',PL+gw/2,PT+gh/2);
+    return;
+  }
+  /* 保存当前工况，逐点扫描 v */
+  const savedV=$('vIn').value;
+  const scan=[];
+  for(let i=0;i<=60;i++){
+    const v=V0+(V1-V0)*i/60;
+    $('vIn').value=v.toFixed(2);
+    const t=Math.min(cycleMin(),LMAX*1.5);
+    scan.push([v,t,lifeMonth()]);
+  }
+  $('vIn').value=savedV;
+  ctx.save(); ctx.beginPath(); ctx.rect(PL,PT,gw,gh); ctx.clip();
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=2; ctx.beginPath();
+  scan.forEach((s,i)=>{const x=X(s[0]),y=YL(s[1]); if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+  ctx.stroke();
+  ctx.strokeStyle='#38bdf8'; ctx.lineWidth=2; ctx.beginPath();
+  scan.forEach((s,i)=>{const x=X(s[0]),y=YR(s[2]); if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+  ctx.stroke();
+  ctx.restore();
+  /* 当前点 */
+  const cv2x=X(Math.min(Math.max(vMin(),V0),V1));
+  const p1=[cv2x,YL(Math.min(cycleMin(),LMAX*1.5))], p2=[cv2x,YR(lifeMonth())];
+  [[p1,'#fbbf24','周期 '+cycleMin().toFixed(1)+' min',-1],[p2,'#38bdf8','寿命 '+lifeMonth().toFixed(0)+' 月',1]].forEach(o=>{
+    const y=Math.min(Math.max(o[0][1],PT+6),PT+gh-6);
+    ctx.fillStyle=o[1]; ctx.beginPath(); ctx.arc(cv2x,y,4.2,0,7); ctx.fill();
+    ctx.font='10.5px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.textBaseline=o[2]<0?'bottom':'top';
+    ctx.fillText(o[2],Math.min(Math.max(cv2x,PL+62),PL+gw-62),o[2]<0?y-7:y+7);
+  });
+}
+
+/* ---------- 分级重置 ---------- */
+function resetFrom(n){
+  const keys=['','s1','s2','s3','s4','s5'];
+  for(let i=n;i<=5;i++){ S[keys[i]]=false; ['p2','p3','p4','p5'].forEach((id,k)=>{if(k+2>=n)$(id).classList.remove('on');}); }
+  for(let i=2;i<=5;i++) $('p'+i).disabled=(i!==n);
+  render();
+}
+function hardReset(clearLog){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false}; curKey=null;
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  if(clearLog){ $('log').innerHTML=''; setSts('⏳ 未开始','si'); }
+  render();
+}
+function onParam(){
+  const p=params();
+  if(S.s1 && curKey!==null && key(p)!==curKey){
+    const o=curKey.split('|');
+    let level=1, why='滤料／烟气工况／温度已改变（等于换了工况），请从 STEP 1 重新核对选型';
+    if(o[0]===p.media && o[1]===p.gas && o[2]===String(p.t) && o[3]===String(p.v) && o[4]!==String(p.p)){
+      level=3; why='清灰触发上限已改变（等于改了清灰设定），请从 STEP 3 重新确定清灰周期';
+    } else if(o[0]===p.media && o[1]===p.gas && o[2]===String(p.t) && o[3]!==String(p.v)){
+      level=2; why='过滤风速（气布比）已改变（等于换了设备规格），请从 STEP 2 重新测定';
+    }
+    log(why,'bad'); setSts('⚠️ 参数已变，需重做','sbad');
+    warn('⚠️ 参数变了：旧数据不能与新数据混用。');
+    if(level===1){ hardReset(false); } else { resetFrom(level); }
+    curKey=key(p);
+  }
+  if(S.s1&&!S.s2) curKey=key(p);
+  render();
+}
+
+function step1(){
+  if(S.s1) return;
+  const m=media(), g=gas(), st2=tempState(), blk=blocked();
+  S.s1=true; curKey=key(params());
+  $('p1').classList.add('on');
+  log('烟气工况确认：温度 <b>'+temp()+' ℃</b>，'+g.label+'（露点约 '+g.dp+'℃），进口含尘浓度 <b>20 g/m³</b>',true);
+  log('滤料核对：选用 '+m.label+'，连续耐温 <b>'+m.lim+' ℃</b> —— '+m.note,true);
+  if(blk==='over'){
+    setSts('🔴 滤料选型不匹配','sbad');
+    log('⛔ 烟气温度 '+temp()+'℃ <b>超过滤料耐温 '+m.lim+'℃</b>：滤袋会碳化／熔缩（烧袋），属于不可逆损坏。',false);
+    warn('⚠️ 滤料超温＝烧袋，不可逆。请改选耐温更高的滤料（如 PTFE 覆膜 260℃、玻纤覆膜 280℃）或先给烟气降温，否则本工况不可用——后续步骤已被阻断。');
+    $('p2').disabled=true;
+  } else if(blk==='dew'){
+    setSts('🔴 烟气温度过低','sbad');
+    log('⛔ 烟气温度 '+temp()+'℃ <b>低于露点 '+g.dp+'℃</b>：水汽在滤袋上结露，粉尘粘结糊袋并腐蚀滤袋，同样不可逆。',false);
+    warn('⚠️ 温度低于露点＝糊袋，不可逆。工程上要求烟气温度至少高于露点 20℃（本工况需 >'+(g.dp+20)+'℃）。');
+    $('p2').disabled=true;
+  } else {
+    $('p2').disabled=false;
+    if(!st2.ok){ setSts('⚠️ 工况有风险','sbad'); warn('⚠️ '+st2.tag+'：'+ (temp()>m.lim-10 ? '温度已接近滤料耐温上限（余量不足 10℃），滤袋老化会明显加速，寿命按折半计。' : '温度距露点余量不足 20℃，存在结露糊袋风险。')); }
+    else { setSts('🟡 选型匹配','sa'); warn(''); }
+  }
+  render();
+}
+function step2(){
+  if(!S.s1){ warn('请先完成 STEP 1 烟气工况确认与滤料选型核对'); return; }
+  if(blocked()){ warn('⚠️ 当前工况滤料选型不匹配（'+tempState().tag+'），无法继续测量——请先修正滤料或烟气温度'); log('顺序错误：工况不可用，STEP 2 已阻断',false); return; }
+  if(S.s2) return;
+  S.s2=true; $('p2').classList.add('on'); $('p3').disabled=false;
+  const dPc=MU*vs()*XI0;
+  log('气布比测定：过滤风速 v = <b>'+vMin().toFixed(1)+' m/min</b>，相对设备规模 ×'+scaleX().toFixed(2)+'（以 1.2 m/min 为基准）',true);
+  log('清洁滤料阻力 = μ·v·ξ₀ = <b>'+Math.round(dPc)+' Pa</b>（随气布比线性变化）',true);
+  if(vMin()>1.5) warn('⚠️ 气布比 '+vMin().toFixed(1)+' m/min 高于脉冲袋式推荐上限 1.5——阻力、清灰频次与排放浓度都会上升。');
+  else if(vMin()<0.8) warn('⚠️ 气布比 '+vMin().toFixed(1)+' m/min 低于推荐下限 0.8——滤布面积要成倍增加，设备投资和占地都上去。');
+  else warn('');
+  setSts('🟡 气布比已测','sa');
+  render();
+}
+function step3(){
+  if(!S.s2){ warn('⚠️ 请先完成 STEP 2 气布比测定——没有气布比就算不出粉尘负荷累积速度，也定不出清灰周期'); log('顺序错误：跳过气布比直接记录阻力，已阻断',false); return; }
+  if(S.s3) return;
+  S.s3=true; $('p3').classList.add('on'); $('p4').disabled=false;
+  const cyc=cycleMin(), n=Math.round(T_RUN/cyc);
+  log('阻力增长记录：设定清灰触发上限 <b>'+pMax()+' Pa</b>，清灰周期 <b>'+cyc.toFixed(1)+' min</b>（6 小时内约 '+n+' 次）',true);
+  log('清灰后残余阻力 <b>'+Math.round(dPRow(WRES))+' Pa</b> —— 清灰不会把粉尘层清空，这层残余粉尘正是高效过滤的关键。',true);
+  if(cyc<8) warn('⚠️ 清灰周期仅 '+cyc.toFixed(1)+' min，清灰过于频繁：脉冲喷吹的机械冲击会明显缩短滤袋寿命。');
+  setSts('🟡 清灰周期已定','sa');
+  render();
+}
+function step4(){
+  if(!S.s3){ warn('⚠️ 请先完成 STEP 3 确定清灰周期——清灰周期未定，此刻测的效率说不清代表循环中的哪个阶段'); log('顺序错误：跳过清灰周期直接测浓度，已阻断',false); return; }
+  if(S.s4) return;
+  S.s4=true; $('p4').classList.add('on'); $('p5').disabled=false;
+  const out=CIN_MG*penSteady(), peak=CIN_MG*penPeak();
+  log('排放浓度测定：稳定运行出口 <b>'+out.toFixed(1)+' mg/m³</b>，除尘效率 <b>'+(100-out/CIN_MG*100).toFixed(2)+'%</b>',true);
+  log('清灰瞬间泄漏峰：出口浓度瞬时可达 <b>'+peak.toFixed(0)+' mg/m³</b>（约为稳态的 4 倍）——粉尘层被震落时的短时穿透。',false);
+  if(out>COUT_LIMIT) warn('⚠️ 稳态出口浓度 '+out.toFixed(1)+' mg/m³ 超过排放限值 30 mg/m³——气布比偏高导致粉尘层被压穿，应先降气布比而不是加清灰频次。');
+  else warn('');
+  setSts('🟡 浓度已测','sa');
+  render();
+}
+function step5(){
+  if(!S.s4){ warn('⚠️ 请先完成 STEP 4 清灰与排放浓度测定'); log('顺序错误：跳过浓度测定直接下结论，已阻断',false); return; }
+  if(S.s5) return;
+  S.s5=true; $('p5').classList.add('on');
+  const out=CIN_MG*penSteady(), life=lifeMonth(), cyc=cycleMin();
+  log('核算：气布比 '+vMin().toFixed(1)+' m/min，清灰周期 '+cyc.toFixed(1)+' min，滤袋寿命约 <b>'+life.toFixed(1)+' 月</b>，相对设备规模 ×'+scaleX().toFixed(2),true);
+  if(out<=COUT_LIMIT){
+    setSts('🟢 达标','sok');
+    log('判定：出口 '+out.toFixed(1)+' mg/m³ ≤ 限值 30 mg/m³，<b>本次工况下达标</b>。',true);
+    if(vMin()>=0.8&&vMin()<=1.5) log('气布比落在脉冲袋式推荐区间 0.8～1.5 m/min 内，设计与运行参数匹配。',true);
+    else if(vMin()>1.5) log('提示：虽然达标，但气布比高于推荐上限——清灰周期仅 '+cyc.toFixed(1)+' min、寿命约 '+life.toFixed(0)+' 月，长期运行成本偏高。',false);
+    else log('提示：气布比低于推荐下限，滤布面积大、相对设备规模 ×'+scaleX().toFixed(2)+'，一次投资与占地都偏高。',false);
+    warn('');
+  } else {
+    setSts('🔴 不达标','sbad');
+    log('判定：出口 '+out.toFixed(1)+' mg/m³ <b>超过排放限值 30 mg/m³</b>，本次工况下不达标。',false);
+    warn('⚠️ 气布比 '+vMin().toFixed(1)+' m/min 偏高，粉尘层被压穿导致穿透上升——正确对策是<b>增大滤布面积降低气布比</b>，而不是提高清灰频次（那样只会更差、还伤滤袋）。');
+  }
+  drawSaw(true); drawTrade(true);
+}
+function resetAll(){
+  $('media').value='pps'; $('gas').value='sulfur'; $('tIn').value=140; $('vIn').value=1.2; $('pIn').value=1500;
+  hardReset(true); warn('');
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 13223-2011</td><td>火电厂大气污染物排放标准</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">烟尘排放限值 30／20 mg/m³ 的来源</td></tr><tr><td class="sb-c">GB/T 16157-1996</td><td>固定污染源排气中颗粒物测定与气态污染物采样方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">进口颗粒物采样与浓度测定方法</td></tr><tr><td class="sb-c">HJ 836-2017</td><td>固定污染源废气 低浓度颗粒物的测定 重量法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">低浓度颗粒物测定的法定方法（≤20 mg/m³）</td></tr></table><div class="sb-ft">本页共依据 <b>3</b> 项标准：<b>3</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 GB/T 16157-1996。请注意其 <b>2018-03-01 实施的修改单</b>：颗粒物浓度 ≤20 mg/m³ 时应适用 HJ 836，&gt;20 且 ≤50 mg/m³ 时两者同时适用；用本标准测 ≤20 mg/m³ 时结果表述为「&lt;20 mg/m³」。涉及超低排放／低浓度判定的页面须按修改单处理。</li></ul></div></div></div></details>
+</body>
+</html>

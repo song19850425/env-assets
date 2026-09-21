@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COD检测实验 · 从水样到报告</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system,'PingFang SC','Microsoft YaHei',sans-serif; background: #f5f5f5; }
+        .header {
+            background: linear-gradient(135deg,#0a1628,#1a2a4a); color: #fff; padding: 24px; text-align: center;
+        }
+        .header h1 { font-size: 20px; font-weight: 700; }
+        .header .sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+        .header .badge { display: inline-block; margin-top: 8px; padding: 3px 12px; background: rgba(74,222,128,0.2); border-radius: 12px; font-size: 11px; color: #4ade80; }
+
+        .container { max-width: 680px; margin: 0 auto; padding: 20px; }
+
+        /* 步骤条 */
+        .step-indicator {
+            display: flex; gap: 4px; margin-bottom: 20px; overflow-x: auto;
+        }
+        .step-dot {
+            flex: 1; text-align: center; padding: 8px 4px; border-radius: 8px;
+            font-size: 11px; color: #999; background: #fff; cursor: pointer;
+            border: 1px solid #e0e0e0; min-width: 60px;
+        }
+        .step-dot .num { font-weight: 700; font-size: 13px; display: block; }
+        .step-dot.active { background: #f0fdf4; border-color: #4ade80; color: #166534; font-weight: 600; }
+        .step-dot.done { background: #f0fdf4; border-color: #4ade80; color: #4ade80; }
+
+        /* 步骤面板 */
+        .step-panel { display: none; }
+        .step-panel.active { display: block; }
+
+        .card {
+            background: #fff; border-radius: 12px; padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 16px;
+        }
+        .card h2 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+        .card h2 .tag { font-size: 11px; color: #4ade80; font-weight: 600; margin-left: 8px; }
+        .card p { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 12px; }
+        .card .highlight { background: #fef3c7; padding: 0 4px; border-radius: 2px; font-weight: 600; }
+
+        .reagent-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+        .reagent-item { padding: 8px 12px; background: #f9fafb; border-radius: 6px; border-left: 3px solid #4ade80; }
+        .reagent-item .name { font-size: 13px; font-weight: 600; color: #333; }
+        .reagent-item .vol { font-size: 11px; color: #999; }
+
+        .step-btn {
+            padding: 10px 28px; background: linear-gradient(135deg,#4ade80,#22c55e);
+            color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+            cursor: pointer; margin-top: 12px;
+        }
+        .step-btn:hover { box-shadow: 0 4px 12px rgba(74,222,128,0.3); }
+        .step-btn.secondary { background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+        .step-btn.secondary:hover { box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+
+        /* 实验台可视化 */
+        .lab-bench {
+            background: linear-gradient(135deg,#f8fafc,#f1f5f9);
+            border-radius: 10px; padding: 20px; margin: 16px 0;
+            border: 1px solid #e2e8f0; min-height: 200px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .lab-bench .equipment {
+            font-size: 64px; margin-bottom: 8px;
+        }
+        .lab-bench .desc { font-size: 13px; color: #64748b; text-align: center; line-height: 1.6; }
+        .lab-bench .status {
+            padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-top: 8px;
+        }
+        .status-running { background: #fef3c7; color: #ca8a04; }
+        .status-done { background: #f0fdf4; color: #166534; }
+        .status-waiting { background: #f1f5f9; color: #64748b; }
+
+        /* 滴定动画 */
+        .titration-area {
+            display: flex; align-items: center; gap: 24px; justify-content: center; margin: 16px 0;
+        }
+        .burette {
+            width: 30px; height: 160px; background: linear-gradient(to bottom, #e2e8f0 10%, #cbd5e1 100%);
+            border-radius: 4px 4px 15px 15px; position: relative;
+        }
+        .burette .liquid {
+            position: absolute; bottom: 0; left: 2px; right: 2px;
+            background: linear-gradient(to bottom, #f59e0b, #d97706);
+            border-radius: 4px; transition: height 0.5s;
+        }
+        .flask {
+            width: 80px; height: 70px; background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            border-radius: 5px 5px 40px 40px; position: relative; opacity: 0.8;
+        }
+        .flask .liquid-color {
+            position: absolute; bottom: 5px; left: 5px; right: 5px;
+            border-radius: 0 0 35px 35px; transition: background 0.5s;
+        }
+        .titration-info { text-align: center; }
+        .titration-info .reading { font-size: 24px; font-weight: 700; color: #333; }
+        .titration-info .label { font-size: 12px; color: #666; }
+
+        /* 结果 */
+        .result-show {
+            padding: 20px; border-radius: 10px; margin-top: 16px;
+            background: linear-gradient(135deg,#f0fdf4,#dcfce7); text-align: center;
+        }
+        .result-show .big { font-size: 40px; font-weight: 800; color: #166534; }
+        .result-show .lbl { font-size: 13px; color: #666; margin-top: 4px; }
+        .result-show .unit { font-size: 14px; color: #666; }
+        .result-show .detail { font-size: 12px; color: #999; margin-top: 12px; line-height: 1.6; text-align: left; }
+
+        .qc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+        .qc-item { padding: 12px; background: #f9fafb; border-radius: 8px; }
+        .qc-item .label { font-size: 11px; color: #999; }
+        .qc-item .value { font-size: 16px; font-weight: 700; color: #333; }
+        .qc-item .value.pass { color: #166534; }
+        .qc-item .value.fail { color: #dc2626; }
+
+        @media (max-width:600px) {
+            .reagent-list { grid-template-columns: 1fr; }
+            .qc-grid { grid-template-columns: 1fr; }
+        }
+
+        /* 进度 */
+        .progress-bar {
+            height: 4px; background: #e0e0e0; border-radius: 2px; margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-fill { height: 100%; background: linear-gradient(90deg,#4ade80,#22c55e); border-radius: 2px; transition: width 0.5s; width: 0%; }
+
+        .sample-info {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px;
+            background: #f8fafc; border-radius: 8px; margin-bottom: 16px;
+        }
+        .sample-info .item { font-size: 12px; color: #555; }
+        .sample-info .item strong { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 COD检测实验 · 从水样到报告</h1>
+        <div class="sub">重铬酸盐法 · 依据 HJ 828-2017（代替 GB 11914-89）</div>
+        <div class="badge">🔬 场景：水样已到实验室，现在开始做实验</div>
+    </div>
+
+    <div class="container">
+
+        <!-- 样品信息 -->
+        <div class="card">
+            <h2>📋 样品信息</h2>
+            <div class="sample-info">
+                <div class="item"><strong>样品编号：</strong>WQ-2026-0615-008</div>
+                <div class="item"><strong>采样地点：</strong>河南省 · 某河流 控制断面</div>
+                <div class="item"><strong>采样日期：</strong>2026-06-15 09:30</div>
+                <div class="item"><strong>接样日期：</strong>2026-06-15 11:20</div>
+                <div class="item"><strong>样品类型：</strong>地表水</div>
+                <div class="item"><strong>检测项目：</strong>CODcr</div>
+                <div class="item"><strong>保存方式：</strong>H₂SO₄调pH≤2, 4℃冷藏</div>
+                <div class="item"><strong>方法标准：</strong>HJ 828-2017</div>
+            </div>
+        </div>
+
+        <!-- 进度 -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+
+        <!-- 步骤指示器 -->
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active" data-step="0" onclick="goStep(0)"><span class="num">①</span>取样</div>
+            <div class="step-dot" data-step="1" onclick="goStep(1)"><span class="num">②</span>加试剂</div>
+            <div class="step-dot" data-step="2" onclick="goStep(2)"><span class="num">③</span>消解</div>
+            <div class="step-dot" data-step="3" onclick="goStep(3)"><span class="num">④</span>冷却</div>
+            <div class="step-dot" data-step="4" onclick="goStep(4)"><span class="num">⑤</span>滴定</div>
+            <div class="step-dot" data-step="5" onclick="goStep(5)"><span class="num">⑥</span>计算</div>
+            <div class="step-dot" data-step="6" onclick="goStep(6)"><span class="num">⑦</span>报告</div>
+        </div>
+
+        <!-- ===== 步骤0：取样 ===== -->
+        <div class="step-panel active" id="step0">
+            <div class="card">
+                <h2>① 取样 <span class="tag">取适量水样</span></h2>
+                <p>水样已到实验室，接样时已检查：样品瓶完好、标签清晰、保存条件符合要求。</p>
+                <div class="lab-bench">
+                    <div class="equipment">🧪</div>
+                    <div class="desc">
+                        <strong>取10.00 mL混匀水样</strong><br>
+                        于250 mL磨口锥形瓶中（已用铬酸洗液洗净）<br>
+                        水样需充分摇匀，如有大颗粒悬浮物需先均化
+                    </div>
+                    <div class="status status-waiting" id="step0Status">⏳ 等待操作</div>
+                </div>
+                <p style="font-size:13px;color:#666;background:#f8fafc;padding:10px;border-radius:6px;">
+                    📌 <strong>操作要点：</strong><br>
+                    · 取样前将水样瓶上下颠倒20次，确保均匀<br>
+                    · 使用经校准的移液管或移液器<br>
+                    · 记录取样体积，平行取2份做平行测定
+                </p>
+                <button class="step-btn" onclick="doStep(0)">✅ 已完成取样 → 加试剂</button>
+            </div>
+        </div>
+
+        <!-- ===== 步骤1：加试剂 ===== -->
+        <div class="step-panel" id="step1">
+            <div class="card">
+                <h2>② 加入试剂 <span class="tag">按顺序加入</span></h2>
+                <p>在装有水样的锥形瓶中，按以下顺序加入试剂：</p>
+                <div class="reagent-list">
+                    <div class="reagent-item"><div class="name">硫酸汞</div><div class="vol">0.4 g（掩蔽氯离子）</div></div>
+                    <div class="reagent-item"><div class="name">重铬酸钾 (0.25mol/L)</div><div class="vol">5.00 mL</div></div>
+                    <div class="reagent-item"><div class="name">硫酸银-硫酸</div><div class="vol">15 mL（催化剂+介质）</div></div>
+                    <div class="reagent-item"><div class="name">防爆沸玻璃珠</div><div class="vol">2-3 粒</div></div>
+                </div>
+                <div class="lab-bench">
+                    <div class="equipment">⚗️</div>
+                    <div class="desc">
+                        试剂已全部加入锥形瓶<br>
+                        溶液呈<span style="color:#f59e0b;font-weight:600;">橙黄色</span>（重铬酸钾颜色）<br>
+                        轻微旋动锥形瓶使试剂混匀
+                    </div>
+                    <div class="status status-waiting" id="step1Status">⏳ 等待操作</div>
+                </div>
+                <p style="font-size:13px;color:#666;background:#fffbeb;padding:10px;border-radius:6px;">
+                    ⚠️ <strong>安全提示：</strong>硫酸银-硫酸为强腐蚀性试剂！操作时务必戴防护手套和护目镜，在通风橱中进行。
+                </p>
+                <button class="step-btn" onclick="doStep(1)">✅ 试剂已加入 → 开始消解</button>
+            </div>
+        </div>
+
+        <!-- ===== 步骤2：消解 ===== -->
+        <div class="step-panel" id="step2">
+            <div class="card">
+                <h2>③ 加热消解 <span class="tag">148℃ · 2小时</span></h2>
+                <p>将锥形瓶接上回流冷凝管，在加热装置上消解：</p>
+                <div class="lab-bench">
+                    <div class="equipment" id="digestIcon">🔥</div>
+                    <div class="desc" id="digestDesc">
+                        温度：<strong>148℃</strong><br>
+                        时间：<strong>120 分钟</strong><br>
+                        从溶液开始沸腾计时
+                    </div>
+                    <div class="status status-waiting" id="step2Status">⏳ 点击开始消解</div>
+                </div>
+                <div style="text-align:center;margin:12px 0;" id="digestTimer">
+                    <div style="font-size:36px;font-weight:700;color:#ca8a04;" id="timerDisplay">02:00</div>
+                    <div style="font-size:12px;color:#999;">剩余时间</div>
+                </div>
+                <p style="font-size:13px;color:#666;background:#f8fafc;padding:10px;border-radius:6px;">
+                    📌 <strong>关键控制点：</strong><br>
+                    · 消解过程中溶液应保持微沸，不能暴沸<br>
+                    · 冷凝水流量适中，确保蒸汽完全冷凝回流<br>
+                    · 消解结束后溶液应呈<span style="color:#f59e0b;font-weight:600;">橙黄色或黄绿色</span>→如变为<strong style="color:#22c55e;">绿色</strong>，说明COD浓度过高需稀释重做
+                </p>
+                <button class="step-btn" id="digestBtn" onclick="startDigest()">🔥 开始消解</button>
+            </div>
+        </div>
+
+        <!-- ===== 步骤3：冷却 ===== -->
+        <div class="step-panel" id="step3">
+            <div class="card">
+                <h2>④ 冷却 <span class="tag">自然冷却至室温</span></h2>
+                <p>消解完成后，关闭加热电源，让锥形瓶自然冷却：</p>
+                <div class="lab-bench">
+                    <div class="equipment">❄️</div>
+                    <div class="desc" id="coolDesc">
+                        用少量蒸馏水冲洗冷凝管内壁和锥形瓶壁<br>
+                        总体积控制在70 mL左右<br>
+                        静置自然冷却至室温
+                    </div>
+                    <div class="status status-done" id="step3Status">✅ 已完成</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:14px;color:#666;margin:12px 0;">
+                        冷却后溶液呈 <strong style="color:#f59e0b;">橙黄色</strong>（正常，说明重铬酸钾有剩余）
+                    </div>
+                </div>
+                <button class="step-btn" onclick="doStep(3)">✅ 已冷却 → 开始滴定</button>
+            </div>
+        </div>
+
+        <!-- ===== 步骤4：滴定 ===== -->
+        <div class="step-panel" id="step4">
+            <div class="card">
+                <h2>⑤ 硫酸亚铁铵滴定 <span class="tag">终点判断是关键</span></h2>
+                <p>用硫酸亚铁铵标准溶液滴定至终点：</p>
+                <div class="titration-area">
+                    <div style="text-align:center;">
+                        <div class="burette">
+                            <div class="liquid" id="buretteLiquid" style="height:90%;"></div>
+                        </div>
+                        <div style="font-size:11px;color:#666;margin-top:4px;">滴定管</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div class="flask">
+                            <div class="liquid-color" id="flaskLiquid" style="height:60%;background:#f59e0b;"></div>
+                        </div>
+                        <div style="font-size:11px;color:#666;margin-top:4px;">锥形瓶</div>
+                    </div>
+                    <div class="titration-info">
+                        <div class="reading" id="titerReading">0.00</div>
+                        <div class="label">消耗体积 (mL)</div>
+                        <div style="margin-top:4px;"><span id="endpointColor" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#f59e0b;"></span></div>
+                        <div style="font-size:11px;color:#999;" id="endpointLabel">橙黄色 → 待滴定</div>
+                    </div>
+                </div>
+                <div style="text-align:center;">
+                    <button class="step-btn" id="titerBtn" onclick="startTitration()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">🧪 开始滴定模拟</button>
+                    <button class="step-btn" id="titerDone" onclick="doStep(4)" style="display:none;background:linear-gradient(135deg,#4ade80,#22c55e);">✅ 滴定终点已到 → 计算</button>
+                </div>
+                <p style="font-size:13px;color:#666;background:#fffbeb;padding:10px;border-radius:6px;margin-top:12px;">
+                    💡 <strong>终点判断：</strong>溶液颜色由<span style="color:#f59e0b;font-weight:600;">橙黄</span>→<span style="color:#22c55e;font-weight:600;">蓝绿</span>→<span style="color:#99154b;font-weight:600;">红褐色</span>（试亚铁灵指示剂）<br>
+                     最后1滴使溶液由蓝绿色变为红褐色即为终点，记录消耗的硫酸亚铁铵体积V₁
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== 步骤5：计算 ===== -->
+        <div class="step-panel" id="step5">
+            <div class="card">
+                <h2>⑥ 计算COD值</h2>
+                <p>根据滴定结果，代入公式计算CODcr浓度：</p>
+
+                <div style="background:#f8fafc;border-radius:8px;padding:16px;margin:12px 0;">
+                    <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:8px;">📐 CODcr 计算公式</div>
+                    <div style="font-size:14px;text-align:center;padding:12px;background:#fff;border-radius:6px;font-family:'Times New Roman',serif;">
+                        COD<sub>cr</sub> (mg/L) = <sup>(V₀ - V₁) × C × 8 × 1000</sup>⁄<sub>V</sub>
+                    </div>
+                    <div style="font-size:12px;color:#666;margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+                        <span>V₀ = 空白消耗 (mL)</span>
+                        <span>V₁ = 样品消耗 (mL)</span>
+                        <span>C = 硫酸亚铁铵浓度 (mol/L)</span>
+                        <span>V = 取样体积 (mL)</span>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;">
+                    <div style="padding:12px;background:#f9fafb;border-radius:8px;">
+                        <div style="font-size:11px;color:#999;">空白消耗 V₀</div>
+                        <div style="font-size:18px;font-weight:700;color:#333;">25.20 mL</div>
+                    </div>
+                    <div style="padding:12px;background:#f9fafb;border-radius:8px;">
+                        <div style="font-size:11px;color:#999;">样品消耗 V₁</div>
+                        <div style="font-size:18px;font-weight:700;color:#333;" id="sampleTiter">19.86 mL</div>
+                    </div>
+                    <div style="padding:12px;background:#f9fafb;border-radius:8px;">
+                        <div style="font-size:11px;color:#999;">硫酸亚铁铵浓度 C</div>
+                        <div style="font-size:18px;font-weight:700;color:#333;">0.0500 mol/L</div>
+                    </div>
+                    <div style="padding:12px;background:#f9fafb;border-radius:8px;">
+                        <div style="font-size:11px;color:#999;">取样体积 V</div>
+                        <div style="font-size:18px;font-weight:700;color:#333;">10.00 mL</div>
+                    </div>
+                </div>
+
+                <button class="step-btn" onclick="doStep(5)">🔢 计算COD → 查看结果</button>
+            </div>
+        </div>
+
+        <!-- ===== 步骤6：报告 ===== -->
+        <div class="step-panel" id="step6">
+            <div class="card">
+                <h2>⑦ 检测结果与报告</h2>
+                <div class="result-show">
+                    <div class="big" id="codResult">42.7</div>
+                    <div class="unit">mg/L</div>
+                    <div class="lbl">COD<sub>cr</sub> 检测结果</div>
+                </div>
+
+                <div style="margin:16px 0;">
+                    <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:8px;">✅ 质控数据</div>
+                    <div class="qc-grid">
+                        <div class="qc-item">
+                            <div class="label">平行样相对偏差</div>
+                            <div class="value pass">3.2% (≤20% ✅)</div>
+                        </div>
+                        <div class="qc-item">
+                            <div class="label">空白样COD</div>
+                            <div class="value pass">0.5 mg/L ✅</div>
+                        </div>
+                        <div class="qc-item">
+                            <div class="label">加标回收率</div>
+                            <div class="value pass">96.8% (90-110% ✅)</div>
+                        </div>
+                        <div class="qc-item">
+                            <div class="label">精密度RSD</div>
+                            <div class="value pass">2.8% ✅</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background:#f8fafc;border-radius:8px;padding:14px;margin:12px 0;">
+                    <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px;">📄 检测结论</div>
+                    <div style="font-size:13px;color:#555;line-height:1.7;">
+                        该水样COD<sub>cr</sub>检测结果为 <strong>42.7 mg/L</strong>。<br>
+                        依据GB 3838-2002 地表水环境质量标准，对照Ⅲ类水COD限值（≤20 mg/L），<strong style="color:#dc2626;">该水样COD超出Ⅲ类标准</strong>，但满足Ⅴ类水标准（≤40 mg/L）……<br>
+                        等等，42.7 > 40，该水样属于<span style="color:#dc2626;font-weight:600;">劣Ⅴ类水质</span>（COD指标）。
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button class="step-btn" onclick="resetAll()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">🔄 重新做一次</button>
+                    <button class="step-btn secondary" onclick="printReport()">📄 生成报告</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let isDigesting = false;
+        let digestTimer = null;
+        let isTitrating = false;
+        let titerTimer = null;
+        let titerValue = 0;
+        let codValue = 0;
+
+        function goStep(n) {
+            if (n > currentStep + 1) return; // 只能跳到当前或下一步
+            currentStep = n;
+            updateUI();
+        }
+
+        function updateUI() {
+            // dots
+            document.querySelectorAll('.step-dot').forEach((d, i) => {
+                d.classList.remove('active', 'done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            // panels
+            document.querySelectorAll('.step-panel').forEach((p, i) => {
+                p.classList.toggle('active', i === currentStep);
+            });
+            // progress
+            document.getElementById('progressFill').style.width = ((currentStep / 6) * 100) + '%';
+            // scroll top
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function doStep(n) {
+            if (n === currentStep && currentStep < 6) {
+                currentStep++;
+                updateUI();
+                // 如果跳转到步骤6，触发自动计算
+                if (currentStep === 6) calculateCOD();
+            }
+        }
+
+        // ===== 步骤0：取样 =====
+        // 自动标记
+
+        // ===== 步骤2：消解 =====
+        function startDigest() {
+            if (isDigesting) return;
+            isDigesting = true;
+            document.getElementById('digestBtn').disabled = true;
+            document.getElementById('digestBtn').textContent = '⏳ 消解中…';
+            document.getElementById('step2Status').textContent = '🔥 消解进行中';
+            document.getElementById('step2Status').className = 'status status-running';
+            document.getElementById('digestIcon').textContent = '🔥';
+
+            let totalSec = 120; // 2分钟模拟（真实2小时）
+            document.getElementById('timerDisplay').textContent = '02:00';
+
+            digestTimer = setInterval(() => {
+                totalSec--;
+                const m = String(Math.floor(totalSec / 60)).padStart(2, '0');
+                const s = String(totalSec % 60).padStart(2, '0');
+                document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+
+                if (totalSec <= 60) document.getElementById('digestDesc').innerHTML = '温度：<strong>148℃</strong><br>即将完成…';
+                if (totalSec <= 30) document.getElementById('digestIcon').textContent = '✅';
+
+                if (totalSec <= 0) {
+                    clearInterval(digestTimer);
+                    isDigesting = false;
+                    document.getElementById('digestBtn').textContent = '✅ 消解完成';
+                    document.getElementById('step2Status').textContent = '✅ 消解完成';
+                    document.getElementById('step2Status').className = 'status status-done';
+                    document.getElementById('timerDisplay').textContent = '00:00';
+                    document.getElementById('digestDesc').innerHTML = '消解完成！<br>溶液呈橙黄色（正常）';
+                    // 自动前进
+                    setTimeout(() => doStep(2), 800);
+                }
+            }, 400); // 加速模拟
+        }
+
+        // ===== 步骤4：滴定 =====
+        function startTitration() {
+            if (isTitrating) return;
+            isTitrating = true;
+            document.getElementById('titerBtn').disabled = true;
+            document.getElementById('titerBtn').textContent = '⏳ 滴定中…';
+
+            titerValue = 0;
+            const target = 19.86;
+            const endpointReached = false;
+
+            titerTimer = setInterval(() => {
+                const increment = 0.05 + Math.random() * 0.1;
+                titerValue = Math.round((titerValue + increment) * 100) / 100;
+                if (titerValue > target + 1) titerValue = target;
+                
+                document.getElementById('titerReading').textContent = titerValue.toFixed(2);
+                
+                // 滴定管液面下降
+                const pct = Math.max(10, 90 - (titerValue / target) * 70);
+                document.getElementById('buretteLiquid').style.height = pct + '%';
+
+                // 锥形瓶颜色变化
+                const progress = titerValue / target;
+                let color;
+                if (progress < 0.5) color = '#f59e0b'; // 橙黄
+                else if (progress < 0.8) color = '#84cc16'; // 黄绿
+                else if (progress < 0.95) color = '#22c55e'; // 蓝绿
+                else color = '#99154b'; // 红褐
+                
+                document.getElementById('flaskLiquid').style.background = color;
+                document.getElementById('endpointColor').style.background = color;
+
+                if (progress < 0.5) document.getElementById('endpointLabel').textContent = '橙黄色';
+                else if (progress < 0.8) document.getElementById('endpointLabel').textContent = '黄绿色';
+                else if (progress < 0.95) document.getElementById('endpointLabel').textContent = '蓝绿色 → 接近终点';
+                else document.getElementById('endpointLabel').textContent = '🎯 终点！红褐色';
+
+                if (titerValue >= target) {
+                    clearInterval(titerTimer);
+                    isTitrating = false;
+                    document.getElementById('titerBtn').style.display = 'none';
+                    document.getElementById('titerDone').style.display = 'inline-block';
+                    document.getElementById('sampleTiter').textContent = target.toFixed(2) + ' mL';
+                    document.getElementById('titerReading').textContent = target.toFixed(2);
+                }
+            }, 100);
+        }
+
+        // ===== 步骤5-6：计算 =====
+        function calculateCOD() {
+            const V0 = 25.20;
+            const V1 = 19.86;
+            const C = 0.0500;
+            const V = 10.00;
+            
+            codValue = ((V0 - V1) * C * 8 * 1000) / V;
+            codValue = Math.round(codValue * 10) / 10;
+            
+            document.getElementById('codResult').textContent = codValue;
+        }
+
+        // ===== 重置 =====
+        function resetAll() {
+            currentStep = 0;
+            isDigesting = false;
+            isTitrating = false;
+            titerValue = 0;
+            codValue = 0;
+            
+            if (digestTimer) clearInterval(digestTimer);
+            if (titerTimer) clearInterval(titerTimer);
+            
+            document.getElementById('digestBtn').disabled = false;
+            document.getElementById('digestBtn').textContent = '🔥 开始消解';
+            document.getElementById('titerBtn').disabled = false;
+            document.getElementById('titerBtn').textContent = '🧪 开始滴定模拟';
+            document.getElementById('titerBtn').style.display = 'inline-block';
+            document.getElementById('titerDone').style.display = 'none';
+            document.getElementById('timerDisplay').textContent = '02:00';
+            document.getElementById('step2Status').textContent = '⏳ 点击开始消解';
+            document.getElementById('step2Status').className = 'status status-waiting';
+            
+            updateUI();
+        }
+
+        // ===== 报告 =====
+        function printReport() {
+            const text = `环境实验 环境检测报告
+─────────────────
+样品编号：WQ-2026-0615-008
+采样地点：河南省 · 某河流 控制断面
+检测项目：化学需氧量（CODcr）
+方法标准：HJ 828-2017
+
+检测结果：${codValue || 42.7} mg/L
+
+质控数据：
+  · 平行样相对偏差：3.2% ✅
+  · 空白样COD：0.5 mg/L ✅
+  · 加标回收率：96.8% ✅
+  · 精密度RSD：2.8% ✅
+
+结论：依据GB 3838-2002，该水样COD指标超出Ⅲ类标准（≤20mg/L），为劣Ⅴ类水质。
+
+检测人：______    审核人：______
+日期：2026-06-22
+
+— 环境实验 环境检测AI工作台`;
+            alert(text);
+        }
+
+        // 初始化
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 11914-89</td><td>水质 化学需氧量的测定 重铬酸盐法</td><td class="sb-s" style="color:#b91c1c">已废止</td><td class="sb-u">历史版本对照（已废止）</td></tr><tr><td class="sb-c">HJ 828-2017</td><td>水质 化学需氧量的测定 重铬酸盐法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">现行方法依据（重铬酸盐法）</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核；其中 <b style="color:#b91c1c">1 项标为已废止／部分废止</b>，仅作历史对照，不得作为现行方法依据。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 <b>GB 11914-89</b>（已废止）：自 2017-05-01 起废止，由 HJ 828-2017 代替</li></ul></div></div></div></details>
+</body>
+</html>

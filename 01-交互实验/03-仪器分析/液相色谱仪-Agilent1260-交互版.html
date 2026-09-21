@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>液相色谱仪 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#a855f7;--accent-glow:#c084fc;--accent-bg:rgba(168,85,247,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1c0e2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(168,85,247,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(168,85,247,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#1c0e2e);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#a855f7,#c084fc);color:#fff}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(168,85,247,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:560px){.pwr{grid-template-columns:1fr 1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}@media(max-width:560px){.pwr4{grid-template-columns:1fr 1fr}}
+.gauge{margin:14px 0;padding:14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid var(--border);text-align:center}
+.gauge .gv{font-size:34px;font-weight:900;color:var(--accent-glow);font-variant-numeric:tabular-nums}
+.gauge .gl{font-size:11px;color:#64748b;margin-top:2px}
+.gauge .bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:10px 0}
+.gauge .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#34d399,#facc15,#ef4444);transition:width .4s}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px;font-weight:600}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{padding:7px 14px;background:transparent;border:none;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.seg button.on{background:var(--accent-bg);color:var(--accent-glow)}
+.blk{margin:14px 0;padding:14px 16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px}
+.blk .bt{font-size:12px;font-weight:700;color:var(--accent-glow);margin-bottom:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1"><em>液相色谱仪</em></h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">Agilent 1260</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">HPLC · 高沸点 / 热不稳定化合物分离定量</div>
+  <div class="hst">
+    <div><span class="n">200</span><span class="l">bar 压力上限建议</span></div>
+    <div><span class="n">5</span><span class="l">ml/min Purge 流速</span></div>
+    <div><span class="n">30min</span><span class="l">基线平衡</span></div>
+    <div><span class="n">10%</span><span class="l">用盐后先冲有机-水</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">高效液相色谱（HPLC）是环境检测里分离<b>高沸点、热不稳定、离子型化合物</b>的主力——多环芳烃、农药、酚类、阴离子表面活性剂都靠它。样品由<b>高压泵</b>推着流动相流过色谱柱，组分在固定相中分配不同先后流出，被紫外 / 荧光 / 示差检测器定量。和 GC 不同，HPLC 不怕热，但<b>最怕气泡、怕盐析出、怕柱压骤变</b>。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">💧</div><div class="in">高压泵推流动相</div><div class="id">四元泵按配比输送流动相（建议压力上限设 200bar）。流动相必须过滤、超声脱气，否则气泡进柱会让柱压剧烈波动。</div><span class="it">流动相是命门</span></div>
+    <div class="ic"><div class="ii">🫧</div><div class="in">Purge 排尽气泡</div><div class="id">开机先开 Purge 阀（逆时针），各通道 5ml/min 排气至无气泡，再关阀顺时针冲洗。气泡没排尽就进样 = 鬼峰、柱压不稳。</div><span class="it">排气红线</span></div>
+    <div class="ic"><div class="ii">🧂</div><div class="in">缓冲盐要冲干净</div><div class="id">用了缓冲盐的流动相，关机必须先 10% 有机-水冲洗，再纯有机冲洗。直接上纯有机 → 盐析出堵柱，柱报废。</div><span class="it">盐析出红线</span></div>
+    <div class="ic"><div class="ii">📋</div><div class="in">受控操作规程依据</div><div class="id">合并两份真实受控作业指导书（1260 紫外/荧光版 + 1260 示差版），顺序与红线均按其原文提炼。</div><span class="it">操作规程双型号</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这台模拟器，<b>流动相没脱气就进样、气泡没排尽就关阀、用盐不冲洗</b>，系统都会拦你——这正是真实 HPLC 最毁柱、最出鬼峰的几步。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ 液相色谱仪 操作模拟台（Agilent 1260）</div><span class="tag-real">依据 真实受控操作规程（双型号合并）</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 待配制流动相</span>
+      <span style="font-size:10px;color:#475569">Agilent 1260 · 四元泵 + 检测器</span>
+    </div>
+
+    <div class="gauge">
+      <div class="gv" id="dP">—</div>
+      <div class="gl">柱前压力 (bar) · &gt;10bar 应换排气阀过滤白头</div>
+      <div class="bar"><i id="dPbar"></i></div>
+    </div>
+
+    <div class="blk">
+      <div class="bt">① 流动相准备（必须先做）</div>
+      <div class="acts">
+        <button class="btn b2" id="bMix" onclick="prep(1)">⚗️ 配制+过滤+超声脱气</button>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;margin:8px 0 4px">本批是否用缓冲盐流动相？</div>
+      <div class="seg">
+        <button id="sNo" class="on" onclick="setSalt(false)">不用盐</button>
+        <button id="sYes" onclick="setSalt(true)">用缓冲盐</button>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">② 开机（自上而下依次开模块电源 → 联机 CP）</div>
+    <div class="pwr">
+      <div class="pb" id="bw1" onclick="boot(1)">开模块电源<span class="po">自上而下</span></div>
+      <div class="pb" id="bw2" onclick="boot(2)">联机 CP<span class="po">step 2</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">③ Purge 排气泡（开阀逆时针 → 各通道 5ml/min 排气 → 关阀顺时针）</div>
+    <div class="pwr">
+      <div class="pb" id="pg1" onclick="purge(1)">开Purge阀<span class="po">逆时针</span></div>
+      <div class="pb" id="pg2" onclick="purge(2)">各通道排气<span class="po">A/B/C/D</span></div>
+      <div class="pb" id="pg3" onclick="purge(3)">关Purge阀<span class="po">顺时针</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">④ 冲洗平衡（20–30min，柱压稳定、基线平稳）</div>
+    <div class="acts">
+      <button class="btn b2" id="bEq" onclick="equil()" disabled>⏳ 冲洗平衡系统</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">⑤ 进样分析</div>
+    <div class="acts">
+      <button class="btn b1" id="bRun" onclick="run()" disabled>▶ 运行序列进样</button>
+    </div>
+
+    <div class="blk">
+      <div class="bt">⑥ 关机维护（<b style="color:var(--rose)">缓慢降流速；用盐先冲 10% 有机-水，再纯有机</b>）</div>
+      <div class="pwr4">
+        <div class="pb" id="sh1" onclick="shut(1)">缓慢降流速<span class="po">防柱压骤变</span></div>
+        <div class="pb" id="sh2" onclick="shut(2)">10%有机-水冲<span class="po">用盐必做</span></div>
+        <div class="pb" id="sh3" onclick="shut(3)">纯有机冲洗<span class="po">step 3</span></div>
+        <div class="pb" id="sh4" onclick="shut(4)">关模块电源<span class="po">最后</span></div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:10px">
+      <button class="btn b2" id="bFast" onclick="fastFlow()">⚡ 猛拉流速（错误示范）</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这两份受控作业指导书，卡的就是这几条</div>
+  <div class="sd">下面是从真实操作规程里直接提炼的红线。模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">⚗️</div><div class="in">流动相必须过滤+脱气</div><div class="id">水相用新制超纯水（超 2 天更换），有机相乙腈超 1 个月更换。未过滤未脱气 → 气泡进柱、柱压剧烈波动、出鬼峰。</div><span class="it">流动相红线</span></div>
+    <div class="ic"><div class="ii">🫧</div><div class="in">Purge 必须排尽气泡</div><div class="id">开 Purge 阀（逆时针）→ 5ml/min 各通道排气至管路无气泡 → 关阀（顺时针）冲洗。柱前压力 &gt;10bar 应换排气阀过滤白头。气泡没排尽就进样 = 柱压不稳。</div><span class="it">排气红线</span></div>
+    <div class="ic"><div class="ii">🧂</div><div class="in">用盐后两段冲洗</div><div class="id">用了缓冲盐，关机必须先 10% 甲醇/乙腈-水冲洗，再用纯有机相冲洗。直接上纯有机 → 盐析出堵柱，柱报废。这是 HPLC 最常见的毁柱操作。</div><span class="it">盐析出红线</span></div>
+    <div class="ic"><div class="ii">📉</div><div class="in">缓慢改变流速</div><div class="id">泵开始和结束前注意缓慢改变流速。流速骤变 → 柱压骤变 → 填料塌陷或松动、柱压下降、柱效尽失。</div><span class="it">柱压红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">HPLC 没有 GC 那种「高温断载气」的瞬间爆炸风险，但<b>气泡、盐析出、柱压骤变</b>是慢刀子割肉——柱子和色谱柱一年好几万。把它做成可交互培训，新人先把「脱气 → 排气 → 两段冲盐」走熟，比背操作规程直观得多。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={prep:false,salt:false,boot:0,purge:0,equil:false,running:false,shut:0,pResolved:false};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+function showP(v){$('dP').textContent=v;$('dPbar').style.width=Math.min(100,v/300*100)+'%';}
+
+function prep(n){
+  if(S.prep){warn('流动相已配制');return;}
+  S.prep=true;$('bMix').classList.add('on');$('bMix').textContent='✅ 已过滤+脱气';
+  log('流动相配制完成：已过滤 + 超声脱气；水相现配现用',true);
+  $('bw1').disabled=false;warn('');
+}
+function setSalt(v){
+  S.salt=v;$('sNo').classList.toggle('on',!v);$('sYes').classList.toggle('on',v);
+  log('缓冲盐设置：'+(v?'本批用缓冲盐（关机须两段冲洗）':'本批不用盐'));
+}
+function boot(n){
+  if(n===1 && !S.prep){warn('⚠️ 请先配制并过滤+脱气流动相，再开电源！');log('未配流动相就开电源，已提醒',false);return;}
+  if(S.running){warn('运行中不可重开');return;}
+  S.boot=n;$('bw'+n).classList.add('on');
+  if(n===1){log('自上而下依次打开各模块电源',true);$('bw2').disabled=false;}
+  if(n===2){log('联机 CP，进入控制面板',true);$('pg1').disabled=false;setSts('🔌 已联机','sa');warn('');}
+}
+function purge(n){
+  if(S.boot<2){warn('请先开机并联机');return;}
+  if(n===2 && S.purge<1){warn('⚠️ 请先开 Purge 阀（逆时针）再排气');log('未开阀就排气，已阻断',false);return;}
+  if(n===3 && S.purge<2){warn('⚠️ 各通道气泡尚未排尽，不能关 Purge 阀！否则气泡进柱');log('气泡未排尽就关阀，已阻断',false);return;}
+  if(n!==S.purge+1){warn('Purge 顺序错误：开阀 → 各通道排气 → 关阀');log('Purge 顺序错误，已阻断',false);return;}
+  S.purge=n;$('pg'+n).classList.add('on');
+  if(n===1){log('开 Purge 阀（逆时针）',true);$('pg2').disabled=false;}
+  if(n===2){log('各通道 5ml/min 排气至无气泡（A/B/C/D）',true);showP(7);$('pg3').disabled=false;}
+  if(n===3){log('关 Purge 阀（顺时针），准备冲洗',true);$('bEq').disabled=false;}
+}
+function equil(){
+  if(S.equil){warn('已平衡');return;}
+  if(S.purge<3){warn('请先完成 Purge 排气');return;}
+  S.equil=true;$('bEq').classList.add('on');$('bEq').textContent='✅ 基线已平稳';
+  log('冲洗系统 20–30min，柱压稳定、基线平稳',true);
+  showP(95);$('bRun').disabled=false;setSts('✅ 可进样','sok');warn('');
+}
+function run(){
+  if(!S.equil){warn('请先完成 Purge 并平衡基线');return;}
+  if(!S.prep){warn('流动相未配制/脱气');return;}
+  if(S.running)return;
+  S.running=true;setSts('📡 进样分析中…','sa');
+  log('运行序列进样，分离定量开始');
+  let p=0;const iv=setInterval(()=>{p++;if(p>=6){clearInterval(iv);
+    setSts('✅ 分析完成','sok');S.running=false;
+    log('✔ 分析完成，色谱图已生成（示例）',true);
+    [1,2,3,4].forEach(n=>$('sh'+n).disabled=false);
+  }},150);
+}
+function fastFlow(){
+  warn('⚠️ 流速骤变！柱压瞬间波动，色谱柱填料会塌陷/松动、柱效下降（操作规程红线：泵始末须缓慢改变流速）');
+  log('猛拉流速被记录为错误操作（柱压红线）',false);
+}
+function shut(n){
+  if(S.shut>=4)return;
+  if(n===2 && S.shut<1){warn('⚠️ 请先缓慢降低流速');log('未降流速就冲洗，已阻断',false);return;}
+  if(n===3 && S.shut<2){warn('⚠️ 用缓冲盐时必须先 10% 有机-水冲洗，再纯有机冲洗！否则盐析出堵柱');log('跳过10%有机-水直接纯有机，已阻断（盐析出红线）',false);return;}
+  if(n!==S.shut+1){warn('关机顺序错误：缓慢降流速 → (用盐则10%有机-水) → 纯有机冲洗 → 关模块');log('关机顺序错误，已阻断',false);return;}
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){log('缓慢降低流速（防柱压骤变）',true);}
+  if(n===2){log(S.salt?'10% 甲醇/乙腈-水 冲洗（用盐必做，冲掉残留盐）':'有机相冲洗',true);if(!S.salt)$('sh3').classList.add('on'),S.shut=3;}
+  if(n===3){log('纯有机相冲洗柱子，保存',true);}
+  if(n===4){log('关闭各模块电源，关机完成 ✅',true);setSts('🔒 已关机','si');warn('');}
+}
+function resetAll(){
+  S={prep:false,salt:false,boot:0,purge:0,equil:false,running:false,shut:0,pResolved:false};
+  $('bMix').classList.remove('on');$('bMix').textContent='⚗️ 配制+过滤+超声脱气';$('bMix').disabled=false;
+  ['bw1','bw2'].forEach(n=>{$(''+n).classList.remove('on');});
+  $('bw1').disabled=true;$('bw2').disabled=true;
+  [1,2,3].forEach(n=>{$('pg'+n).classList.remove('on');$('pg'+n).disabled=true;});
+  $('bEq').disabled=true;$('bEq').classList.remove('on');$('bEq').textContent='⏳ 冲洗平衡系统';
+  $('bRun').disabled=true;
+  [1,2,3,4].forEach(n=>{$('sh'+n).classList.remove('on');$('sh'+n).disabled=true;});
+  setSalt(false);showP('—');setSts('⏳ 待配制流动相','si');$('log').innerHTML='';warn('');
+}
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

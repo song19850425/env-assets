@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMA 与 CNAS 双体系对照表</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Source Han Sans SC","Microsoft YaHei",-apple-system,sans-serif;background:#f6f3ec;color:#2b2b2b;line-height:1.7;font-size:14px}
+.cover{background:#14365c;padding:28px 24px 20px;text-align:center;border-bottom:3px solid #9e2b25}
+.cover .tag{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#e8eef4;padding:3px 12px;border-radius:4px;font-size:11px;letter-spacing:1px}
+.cover h1{font-family:"Source Han Serif SC","Songti SC","SimSun",serif;font-size:22px;margin:10px 0 4px;color:#fff;font-weight:700}
+.cover .sub{color:#c9d4de;font-size:13px}
+.cover .meta{margin-top:8px;color:#9fb0bf;font-size:11px}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 20px 60px}
+.intro{background:#fff;border:1px solid #d8d0c0;border-radius:8px;padding:14px 18px;margin-bottom:14px;font-size:13px;color:#444;line-height:1.7}
+.intro b{color:#14365c}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:#666}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.c{background:#14365c}.dot.n{background:#9e2b25}.dot.s{background:#2e6b3e}
+.row{border:1px solid #d8d0c0;border-radius:8px;margin-bottom:10px;overflow:hidden;background:#fff}
+.row-head{display:flex;align-items:stretch;cursor:pointer;user-select:none}
+.row-head .theme{flex:1;padding:13px 16px;font-weight:600;font-size:14px;color:#14365c;display:flex;align-items:center}
+.row-head .clause{padding:13px 14px;font-size:12px;color:#444;text-align:center;border-left:1px solid #f0ede4;min-width:150px}
+.row-head .clause .lab{font-size:10px;color:#888;display:block;margin-bottom:2px}
+.row-head .clause.c{background:#eef2f7}
+.row-head .clause.n{background:#fbf0ef}
+.row-head .arrow{padding:0 14px;display:flex;align-items:center;color:#888;font-size:14px;transition:transform .3s}
+.row-head.open .arrow{transform:rotate(180deg)}
+.row-body{display:none;border-top:1px solid #e8eef4;padding:14px 18px;background:#faf8f3}
+.row-body.open{display:block}
+.blk{margin-bottom:12px}
+.blk:last-child{margin-bottom:0}
+.blk .lab{font-size:12px;font-weight:700;margin-bottom:4px}
+.blk.common .lab{color:#2e6b3e}
+.blk.diff .lab{color:#9e2b25}
+.blk .txt{font-size:13px;color:#444;line-height:1.7}
+.blk.diff .txt{background:#f3e7e6;border-left:3px solid #9e2b25;padding:8px 12px;border-radius:0 4px 4px 0}
+.foot{margin-top:24px;border-top:1px solid #d8d0c0;padding-top:12px;color:#888;font-size:11px;text-align:right}
+@media print{.row-body{display:block!important}.row-head .arrow{display:none}}
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="tag">环境实验 · 评审工具 · 双体系</div>
+  <h1>CMA 与 CNAS 双体系对照表</h1>
+  <div class="sub">《检验检测机构资质认定评审准则》（市监检测发〔2023〕21号） × 《检测和校准实验室能力认可准则》（CNAS-CL01:2018）</div>
+  <div class="meta">2026/07 版 · 同一核查项两体系条款并排 + 差异点</div>
+</div>
+<div class="wrap">
+  <div class="intro">
+    <b>怎么用：</b>双体系约 60% 要素重叠。下表把同一核查主题对应的 <b>CMA 2023 版条款</b> 与 <b>CNAS-CL01 条款</b> 并排，点开任意一行看「共同核心要求」与「差异点 / 各自额外要求」。准备双体系的实验室可一次对照、一次整改。
+    <div class="legend">
+      <span><i class="dot c"></i>CMA 2023 版</span>
+      <span><i class="dot n"></i>CNAS-CL01</span>
+      <span><i class="dot s"></i>共同要求</span>
+    </div>
+  </div>
+  <div id="app"></div>
+  <div class="foot">脱敏说明：本表不含真实机构名、真名、具体城市 · 条款号以现行有效版本为准</div>
+</div>
+<script>
+const DATA=[
+ {t:"法律地位与责任",cma:"4.1 ~ 4.3",cnas:"5.1 ~ 5.2",
+  common:"实验室须为独立法人或可独立承担法律责任的实体；若为分支机构须有法人书面授权，明确法律责任承担主体。",
+  diff:"CMA 明确使用「检验检测机构」主体称谓，并单列法人/授权文件要求；CNAS-CL01 强调「实验室自身」法律地位，授权链须到实验室层级。两者均不强制质量/技术负责人由不同人担任（勿写死「必须分设」）。"},
+ {t:"公正性与保密性",cma:"第 5 章（2023 新增重点）",cnas:"5.3 / 5.4",
+  common:"须建立公正性程序与保密性程序，全员签署承诺书，识别并管控对公正性的风险，保护客户机密与所有权。",
+  diff:"CMA 2023 版将「公正性」提升为独立章节并新增风险识别管控要求；CNAS 在 CL01 general requirements 中以 5.3（公正性）/5.4（保密性）条款体现，结构不同但实质一致。"},
+ {t:"人员能力与授权",cma:"第 6 章",cnas:"6.2",
+  common:"技术负责人、授权签字人须满足任职条件（学历+经历）；人员须经培训→监督→能力确认→授权，且授权在能力确认之后。",
+  diff:"CMA 明确技术负责人（本科5年/专科8年）、质量负责人任职条件；CNAS-CL01 6.2 更强调人员能力监控的持续性，并要求授权范围与能力确认记录严格对应（授权签字人领域不得超出能力确认范围）。"},
+ {t:"人员监督（双线之一）",cma:"6.2",cnas:"6.2.5",
+  common:"须制定监督计划并对新员工/转岗/在培人员实施监督，保留含具体观察与评价的监督记录。",
+  diff:"两体系要求一致。高频不符合项均为「有监督计划无监督记录」「记录仅写『合格』二字」——属双体系共性问题。"},
+ {t:"设施与环境条件",cma:"第 7 章",cnas:"6.3",
+  common:"检测场所环境条件（温湿度/洁净度/通风）须满足方法标准，配置连续监控记录，不相容区域有效隔离。",
+  diff:"条款归属不同（CMA 单列第7章；CNAS 归入资源要求 6.3），核查要点完全一致。"},
+ {t:"设备校准与计量溯源",cma:"第 8 章",cnas:"6.4 / 6.5",
+  common:"设备须按期校准/检定，校准参数与量程覆盖方法要求；关键设备须实施期间核查。",
+  diff:"CNAS 强烈强调『计量溯源性』——校准证书须可溯源至 SI 单位或由 CNAS 认可实验室出具（带 CNAS 标识）；CMA 2023 版表述为量值溯源要求，未强制校准机构须获 CNAS 认可。"},
+ {t:"方法验证 / 确认",cma:"第 9 章",cnas:"7.2",
+  common:"标准方法首次使用前须做验证（检出限/精密度/准确度/线性）；非标/自制/超出范围方法须做确认（含比对数据）。验证与确认不得混淆。",
+  diff:"CNAS 额外强调「测量不确定度评定」须与方法绑定（每个检测项目至少一份有效评定报告）；CMA 2023 版将不确定度纳入方法验证/结果报告要求，但未像 CNAS 那样单列强约束。"},
+ {t:"标准查新",cma:"9.2",cnas:"7.2.1",
+  common:"须建立标准查新机制（至少每半年一次），确保能力表中方法版本现行有效；发现换版须评估影响并更新。",
+  diff:"两体系一致，且均为最高频不符合项来源（能力表版本号与现行标准不符）。"},
+ {t:"抽样",cma:"（含于方法/样品管理）",cnas:"7.3",
+  common:"涉及抽样的检测活动须有抽样计划与程序，抽样记录含位置/时间/方法/采样人/环境条件，确保样品可追溯。",
+  diff:"CMA 2023 版未单列抽样章节（散见于方法/样品要素）；CNAS-CL01 单列 7.3 抽样条款，对环境监测等含抽样活动领域要求更显式。"},
+ {t:"样品管理",cma:"第 10 章",cnas:"7.4",
+  common:"样品编码须唯一，流转记录覆盖接样→流转→分析→处置全路径，保存条件满足方法要求。",
+  diff:"核查要点一致；CNAS 在 7.4 更强调样品处置（含留样、废弃）的书面程序与记录。"},
+ {t:"技术记录",cma:"（记录控制）",cnas:"7.5",
+  common:"原始记录须含样品信息/方法/仪器/环境条件/原始数据/计算过程/结果/人员与日期，修改须杠改签名，可追溯可复现。",
+  diff:"CNAS 7.5 明确强调对计算、数据系统、图表与测量不确定度的核查；CMA 2023 版在记录控制中要求等效，表述侧重管理体系。"},
+ {t:"质量控制 / 结果有效性",cma:"第 11 章",cnas:"7.7",
+  common:"须制定年度内部质控计划（空白/平行/加标/质控样/人员比对/留样复测）覆盖全部项目，并参加能力验证/实验室间比对。",
+  diff:"一致。不满意结果均须有根因分析+纠正措施+验证，不得仅补做样品。"},
+ {t:"结果报告",cma:"第 12 章",cnas:"7.8",
+  common:"报告信息须完整（标题/编号/委托方/样品/日期/方法/结果/签字）；修改须有记录并标注替代关系；分包须标注。",
+  diff:"CMA 强调「CMA 章」使用须授权、盖章规范；CNAS 强调「CNAS 认可标识」使用须授权且不得用于非认可项目，并关联 ILAC-MRA 互认。"},
+ {t:"投诉与不符合工作",cma:"（管理体系）",cnas:"7.9 / 7.10",
+  common:"须有投诉处理程序与不符合工作控制程序；不符合须根因分析→纠正措施→验证→关闭。",
+  diff:"CNAS 将投诉(7.9)、不符合(7.10)单独成条；CMA 2023 版纳入管理体系要素统一要求，实质相同。"},
+ {t:"数据系统与 LIMS",cma:"（建议，非强制）",cnas:"7.11",
+  common:"使用计算机化系统须功能验证、权限分级、修改有审计追踪、数据定期备份。",
+  diff:"关键差异：CMA 法规（市监检测发〔2023〕21号）未强制要求 LIMS，只能表述为『建议数字化固化』；CNAS-CL01 7.11 对计算机化系统与数据控制有明确要求，认可评审会查系统验证与审计追踪。"},
+ {t:"内部审核",cma:"13.2",cnas:"8.8",
+  common:"每年至少一次完整内审，覆盖全部要素与部门；内审员须培训授权且独立于被审核部门；不符合项须整改验证。",
+  diff:"一致。"},
+ {t:"管理评审",cma:"13.3",cnas:"8.9",
+  common:"每年至少一次，输入须含内审结果/质控/客户反馈/投诉/能力验证/风险评估等（CMA 列 12 项输入）；输出须有改进措施与跟踪。",
+  diff:"一致。"},
+ {t:"风险识别与管控",cma:"第 5 章 / 13.4",cnas:"8.5",
+  common:"须识别并应对风险（技术/管理/公正性/安全等），保留风险评估与跟踪记录。",
+  diff:"CMA 2023 版将风险识别提升为新增独立要求（公正性风险+体系风险）；CNAS-CL01 8.5 将『风险与机遇』并列，既识别风险也识别改进机遇（如扩项/新方法开发）。"},
+ {t:"文件与记录控制",cma:"第 13 章",cnas:"8.3 / 8.4",
+  common:"体系文件须受控（审批/发放/回收/作废），技术记录保存期限合规（环境领域≥6 年）。",
+  diff:"一致。共性问题：现场使用非现行有效版本作业指导书、作废文件未撤除。"}
+];
+const app=document.getElementById('app');
+let html='';
+DATA.forEach((d,i)=>{
+  html+=`<div class="row" data-i="${i}">
+    <div class="row-head">
+      <div class="theme">${i+1}. ${d.t}</div>
+      <div class="clause c"><span class="lab">CMA 2023</span>${d.cma}</div>
+      <div class="clause n"><span class="lab">CNAS-CL01</span>${d.cnas}</div>
+      <div class="arrow">▾</div>
+    </div>
+    <div class="row-body">
+      <div class="blk common"><div class="lab">✓ 共同核心要求</div><div class="txt">${d.common}</div></div>
+      <div class="blk diff"><div class="lab">⚠ 差异点 / 各自额外要求</div><div class="txt">${d.diff}</div></div>
+    </div>
+  </div>`;
+});
+app.innerHTML=html;
+document.addEventListener('click',function(e){
+  const h=e.target.closest('.row-head');
+  if(h){ h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); }
+});
+</script>
+</body>
+</html>

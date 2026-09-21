@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>环境实验 · 学习路径 Demo（COD 多邻国壳）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --blue: #185FA5; --blue-d: #0C447C; --rose: #D4537E; --rose-d: #993556;
+    --ink: #1a2332; --sub: #5f6b7a; --line: #e6e9ef; --bg: #f4f6fa; --card: #fff;
+    --green: #2f9e6b; --green-bg: #eaf6ef; --red: #d8553f; --red-bg: #fdecea;
+    --amber: #c9881f; --amber-bg: #fdf4e3;
+  }
+  body { font-family: -apple-system,'PingFang SC','Microsoft YaHei',sans-serif; background: var(--bg); color: var(--ink); }
+  /* HUD */
+  .hud { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--line);
+         display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; }
+  .hud-left { display: flex; align-items: center; gap: 12px; }
+  .logo { font-weight: 700; font-size: 16px; color: var(--blue-d); letter-spacing: .5px; }
+  .logo b { color: var(--rose); }
+  .lesson-no { font-size: 13px; color: var(--sub); background: var(--bg); padding: 4px 10px; border-radius: 999px; }
+  .hud-right { display: flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 600; }
+  .streak { color: var(--amber); } .xp { color: var(--blue); }
+  /* path strip */
+  .path { display: flex; gap: 6px; padding: 14px 18px; overflow-x: auto; background: #fff; border-bottom: 1px solid var(--line); }
+  .pnode { flex: 0 0 auto; min-width: 64px; text-align: center; padding: 8px 6px; border-radius: 10px;
+           font-size: 11px; color: var(--sub); background: var(--bg); border: 1px solid var(--line); }
+  .pnode.done { background: var(--green-bg); color: var(--green); border-color: #bfe6cf; }
+  .pnode.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 600; box-shadow: 0 2px 8px rgba(24,95,165,.25); }
+  .pnode .ic { font-size: 15px; display: block; margin-bottom: 2px; }
+  /* main */
+  .wrap { max-width: 760px; margin: 0 auto; padding: 18px; }
+  .lesson-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+  .lesson-head h1 { font-size: 18px; font-weight: 700; }
+  .lesson-head .tag { font-size: 12px; color: var(--rose); background: #fbeaf0; padding: 3px 10px; border-radius: 999px; }
+  .frame-box { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; }
+  iframe.sim { width: 100%; height: 540px; border: 0; display: block; }
+  .ai-tip { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0; padding: 12px 14px;
+            background: linear-gradient(135deg,#f3f8ff,#fdf0f5); border: 1px solid #dfeaf7; border-radius: 12px; font-size: 13px; color: #344; }
+  .ai-tip .ava { width: 30px; height: 30px; border-radius: 50%; background: var(--rose); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex:0 0 auto; }
+  .ai-tip b { color: var(--rose-d); }
+  .btn { display: block; width: 100%; padding: 15px; border: 0; border-radius: 14px; font-size: 16px; font-weight: 700;
+         cursor: pointer; color: #fff; background: var(--blue); margin-top: 14px; transition: transform .08s, filter .15s; }
+  .btn:hover { filter: brightness(1.05); } .btn:active { transform: translateY(2px); }
+  .btn.rose { background: var(--rose); }
+  .btn.ghost { background: #fff; color: var(--blue); border: 1.5px solid var(--blue); }
+  .btn:disabled { background: #c7ced8; cursor: not-allowed; }
+  /* quiz */
+  .quiz { display: none; }
+  .q { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+  .q .qt { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+  .opt { display: block; width: 100%; text-align: left; padding: 12px 14px; margin-bottom: 8px; border-radius: 10px;
+         border: 1.5px solid var(--line); background: #fff; font-size: 14px; cursor: pointer; transition: .12s; color: var(--ink); }
+  .opt:hover { border-color: var(--blue); }
+  .opt.correct { background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .opt.wrong { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+  .opt:disabled { cursor: default; }
+  .exp { font-size: 13px; color: var(--sub); margin-top: 8px; display: none; line-height: 1.6; }
+  .exp.show { display: block; }
+  .exp b { color: var(--ink); }
+  /* done */
+  .done { display: none; text-align: center; padding: 30px 18px; }
+  .done .burst { font-size: 46px; }
+  .done h2 { font-size: 22px; margin: 8px 0; }
+  .done .gain { display: inline-flex; gap: 18px; margin: 14px 0 6px; }
+  .done .gain div { background: var(--bg); border-radius: 12px; padding: 12px 18px; }
+  .done .gain .n { font-size: 22px; font-weight: 700; }
+  .done .gain .l { font-size: 12px; color: var(--sub); }
+  .done .review { font-size: 13px; color: var(--sub); margin: 14px 0 4px; background: var(--amber-bg); border-radius: 10px; padding: 10px; }
+  .progress-top { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+  .progress-top > i { display: block; height: 100%; width: 4.8%; background: var(--blue); }
+  .hint { font-size: 12px; color: var(--sub); text-align:center; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header class="hud">
+  <div class="hud-left">
+    <span class="logo">Env<b>Lab</b></span>
+    <span class="lesson-no" id="lessonNo">第 3 课 / 共 62</span>
+  </div>
+  <div class="hud-right">
+    <span class="streak" id="streakHud">🔥 0</span>
+    <span class="xp" id="xpHud">⚡ 0 XP</span>
+  </div>
+</header>
+
+<div class="path" id="pathStrip">
+  <div class="pnode done"><span class="ic">📍</span>采样布点</div>
+  <div class="pnode done"><span class="ic">🧪</span>前处理</div>
+  <div class="pnode active"><span class="ic">💧</span>COD 检测</div>
+  <div class="pnode"><span class="ic">🔬</span>仪器分析</div>
+  <div class="pnode"><span class="ic">📊</span>水质评价</div>
+  <div class="pnode"><span class="ic">🌱</span>修复技术</div>
+</div>
+
+<div class="wrap">
+
+  <!-- LESSON VIEW -->
+  <section id="lessonView">
+    <div class="progress-top"><i></i></div>
+    <div class="lesson-head">
+      <h1>COD 重铬酸盐法 · 从水样到报告</h1>
+      <span class="tag">实验课 · 约 5 分钟</span>
+    </div>
+    <div class="frame-box">
+      <iframe class="sim" src="COD检测实验-从水样到报告.html" title="COD 交互实验"></iframe>
+    </div>
+
+    <div class="ai-tip">
+      <div class="ava">宋</div>
+      <div><b>小宋导师：</b>做完上面实验，重点记住三件事——<b>氯离子用硫酸汞掩蔽</b>、<b>硫酸银催化</b>、<b>回流时间决定氧化完全程度</b>。下面 3 道题会考你，错一题要重选到对为止（复训闸门，不是扣分）。</div>
+    </div>
+
+    <button class="btn rose" id="toQuizBtn">我做完了，去小测 →</button>
+    <p class="hint">提示：真实实验页面可自由操作，做完点上面按钮进入小测。</p>
+  </section>
+
+  <!-- QUIZ VIEW -->
+  <section class="quiz" id="quizView">
+    <div class="lesson-head">
+      <h1>随堂小测 · 3 题</h1>
+      <span class="tag">即时判分 · 错了看解析</span>
+    </div>
+    <div id="quizBox"></div>
+    <button class="btn" id="finishBtn" disabled>完成课程 ✦</button>
+    <p class="hint" id="quizHint">每题选对才能解锁"完成课程"。</p>
+  </section>
+
+  <!-- DONE VIEW -->
+  <section class="done" id="doneView">
+    <div class="burst">🎉</div>
+    <h2 id="doneTitle">课程完成！</h2>
+    <div class="gain">
+      <div><div class="n" id="gainXp" style="color:var(--blue)">+10</div><div class="l">经验值 XP</div></div>
+      <div><div class="n" id="gainStreak" style="color:var(--amber)">🔥 1</div><div class="l">连续打卡</div></div>
+    </div>
+    <div class="review">📅 明日复习：系统会弹出"复习昨日 1 题"（间隔重复），帮你把 COD 要点钉进长期记忆。</div>
+    <button class="btn ghost" id="nextBtn" style="margin-top:18px">下一课：GC-MS 仪器分析 →</button>
+    <p class="hint">这是纯前端 Demo，数据存在浏览器本地，刷新不丢（清缓存会重置）。</p>
+  </section>
+
+</div>
+
+<script>
+// ---------- 状态（浏览器本地存储，演示用） ----------
+const KEY = '环境实验_demo_state_v1';
+const todayStr = () => new Date().toISOString().slice(0,10);
+const dayDiff = (a,b) => Math.round((new Date(b)-new Date(a))/86400000);
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(KEY)); } catch(e){ return null; }
+}
+function saveState(s){ localStorage.setItem(KEY, JSON.stringify(s)); }
+
+// 首次进入：演示种子（假装已练 2 天，让打卡有体感）
+let st = loadState();
+if(!st){
+  const y = new Date(); y.setDate(y.getDate()-1);
+  st = { xp: 40, streak: 2, lastStreakDate: y.toISOString().slice(0,10), done:{} };
+  saveState(st);
+}
+// 断签检测：超过 1 天没来，打卡清零
+if(st.lastStreakDate && dayDiff(st.lastStreakDate, todayStr()) > 1){ st.streak = 0; saveState(st); }
+
+function renderHud(){
+  document.getElementById('streakHud').textContent = '🔥 ' + st.streak;
+  document.getElementById('xpHud').textContent = '⚡ ' + st.xp + ' XP';
+}
+renderHud();
+
+// ---------- 小测数据（领域准确） ----------
+const QUIZ = [
+  {
+    q: 'COD 重铬酸盐法中，用于掩蔽氯离子(Cl⁻)干扰的试剂是？',
+    opts: ['硫酸银 (Ag₂SO₄)', '硫酸汞 (HgSO₄)', '硫酸亚铁铵', '邻菲啰啉'],
+    ans: 1,
+    exp: '<b>硫酸汞</b>。Cl⁻ 会被重铬酸钾氧化导致结果偏高，HgSO₄ 与 Cl⁻ 生成稳定络合物 [HgCl₄]²⁻ 将其掩蔽。硫酸银是催化剂，硫酸亚铁铵是滴定剂，邻菲啰啉是指示剂。'
+  },
+  {
+    q: '国标法测定 COD（HJ 828-2017）的加热回流时间通常为？',
+    opts: ['15 分钟', '30 分钟', '2 小时', '4 小时'],
+    ans: 2,
+    exp: '<b>2 小时</b>。HJ 828-2017 采用重铬酸钾法，沸水浴回流 2h 保证难氧化有机物充分分解。"15 分钟"是快速密闭消解法（HJ/T 399，165℃）的参数，不是国标法。'
+  },
+  {
+    q: 'COD 测定中，起催化作用、加快直链有机物氧化的是？',
+    opts: ['硫酸银 (Ag₂SO₄)', '硫酸汞', '浓硫酸', '磷酸'],
+    ans: 0,
+    exp: '<b>硫酸银</b>。Ag₂SO₄ 作催化剂促进脂肪族化合物氧化；银量不足会使结果偏低。注意别和"掩蔽剂硫酸汞"搞混。'
+  }
+];
+
+// ---------- 渲染小测 ----------
+const box = document.getElementById('quizBox');
+let answered = 0;
+QUIZ.forEach((item, i) => {
+  const q = document.createElement('div'); q.className = 'q';
+  q.innerHTML = '<div class="qt">' + (i+1) + '. ' + item.q + '</div>';
+  item.opts.forEach((txt, j) => {
+    const b = document.createElement('button'); b.className = 'opt'; b.textContent = txt;
+    b.onclick = () => choose(b, i, j, item, q);
+    q.appendChild(b);
+  });
+  const exp = document.createElement('div'); exp.className = 'exp'; exp.id = 'exp'+i;
+  q.appendChild(exp);
+  box.appendChild(q);
+});
+
+function choose(btn, qi, ji, item, q){
+  if(btn.disabled) return;
+  const opts = q.querySelectorAll('.opt');
+  if(ji === item.ans){
+    opts.forEach(o => o.disabled = true);
+    btn.classList.add('correct');
+    const e = document.getElementById('exp'+qi); e.innerHTML = item.exp; e.classList.add('show');
+    if(!q.dataset.ok){ q.dataset.ok = '1'; answered++; }
+  } else {
+    btn.classList.add('wrong');
+    btn.disabled = true;
+    const e = document.getElementById('exp'+qi);
+    e.innerHTML = '✗ 不对，看解析：' + item.exp; e.classList.add('show');
+  }
+  document.getElementById('finishBtn').disabled = (answered < QUIZ.length);
+  if(answered < QUIZ.length) document.getElementById('quizHint').textContent = '还差 ' + (QUIZ.length-answered) + ' 题选对，才能解锁完成。';
+}
+
+// ---------- 流程切换 ----------
+document.getElementById('toQuizBtn').onclick = () => {
+  document.getElementById('lessonView').style.display = 'none';
+  document.getElementById('quizView').style.display = 'block';
+  window.scrollTo(0,0);
+};
+document.getElementById('finishBtn').onclick = () => {
+  // 打卡 + XP
+  if(st.lastStreakDate !== todayStr()){ st.streak += 1; st.lastStreakDate = todayStr(); }
+  st.xp += 10; st.done['cod'] = true; saveState(st); renderHud();
+  document.getElementById('quizView').style.display = 'none';
+  document.getElementById('doneView').style.display = 'block';
+  document.getElementById('gainStreak').textContent = '🔥 ' + st.streak;
+  document.getElementById('gainXp').textContent = '+' + (st.xp - (st.xp-10));
+  window.scrollTo(0,0);
+};
+document.getElementById('nextBtn').onclick = () => {
+  alert('Demo 边界：下一课（GC-MS 仪器分析）尚未接入。\n真实产品里这里会沿"学习路径"跳转到对应交互实验，并继续累计 XP / 打卡。');
+};
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 828-2017</td><td>水质 化学需氧量的测定 重铬酸盐法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ/T 399-2007</td><td>水质 化学需氧量的测定 快速消解分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

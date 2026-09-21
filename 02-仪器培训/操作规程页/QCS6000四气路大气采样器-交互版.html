@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四气路大气采样器 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#10b981;--accent-glow:#34d399;--accent-bg:rgba(16,185,129,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#06231a 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(16,185,129,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(16,185,129,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(16,185,129,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#06231a);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#10b981,#34d399);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(16,185,129,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.seq{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input,.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+
+/* ===== 移动端适配（环境实验 操作规程仿真页）===== */
+@media(max-width:680px){
+  .sec{padding:54px 16px}
+  .lb{padding:42px 0}
+  .lc{padding:0 14px}
+  .lbb{padding:16px 14px}
+  .hr{padding:54px 18px;min-height:58vh}
+  .h1{font-size:clamp(25px,7vw,34px)}
+  .hb{font-size:11px;padding:5px 13px}
+  .hs{font-size:14px;padding:0 6px}
+  .hst{gap:16px;margin-top:16px}
+  .hst>div{display:flex;flex-direction:column;align-items:center}
+  .hst .n{font-size:25px}
+  .sd{font-size:13.5px;line-height:1.65}
+  .ic{padding:13px 13px}
+  .ic .in{font-size:13px}.ic .id{font-size:11.5px;line-height:1.55}
+  .lh{font-size:11px}
+  .btn{font-size:15px;padding:13px 18px;width:100%}
+  .acts{flex-direction:column;align-items:stretch;gap:10px}
+  .fld{margin:10px 0}
+  .fld input,.fld select{font-size:16px;padding:12px 12px}
+  .fld label{font-size:11px}
+  .dp{grid-template-columns:1fr 1fr}
+  .dv .dd{font-size:15px}
+  .pb{padding:14px 8px;font-size:13px;min-height:50px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+  .pwr,.pwr6,.seq{grid-template-columns:1fr 1fr}
+  .cols{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  #log{font-size:12px;max-height:140px;padding:10px}
+  .warn{font-size:12px}
+}
+@media(max-width:420px){
+  .dp,.pwr,.pwr6,.seq{grid-template-columns:1fr}
+  .hst{gap:10px}
+  .hst .n{font-size:22px}
+}
+
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">四气路大气采样器</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">QCS6000</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">大气污染物富集 · 滤膜/吸收液采样 · 现场采样</div>
+  <div class="hst">
+    <div><span class="n">4</span><span class="l">独立气路</span></div>
+    <div><span class="n">含尘</span><span class="l">先装滤膜</span></div>
+    <div><span class="n">取消键</span><span class="l">暂停/继续/重计</span></div>
+    <div><span class="n">3秒</span><span class="l">长按关机</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">大气采样器用泵把一定体积的空气抽过<b>滤膜或吸收液</b>，把污染物富集下来，再回实验室称重/分析。流量和时间是算浓度的关键（浓度 = 污染物质量 ÷ 采样体积）。QCS6000 是四气路，可同时采 4 个点/4 种污染物。红线在<b>装滤膜、采集顺序、关机方式</b>上。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🧫</div><div class="in">含尘先装滤膜</div><div class="id">采含尘空气（TSP/颗粒物）前必须先装滤膜，否则粉尘进泵损伤。气态污染物用吸收液同理。</div><span class="it">装样红线</span></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">设时→确定→采集</div><div class="id">先设采样时间，按确定，再开始采集。顺序错或没确定就运行 → 计时混乱。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">⏸️</div><div class="in">取消键多义</div><div class="id">运行中按取消=暂停/继续；连按两次取消=重新计时。用错会误停或误清零已采体积。</div><span class="it">按键红线</span></div>
+    <div class="ic"><div class="ii">🔌</div><div class="in">关机与总开关</div><div class="id">关机按住取消 3 秒或按电源键；采样完必须关背面总开关。充电开背面开关约 12h。</div><span class="it">关机红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>含尘没装滤膜就运行、没确定就采集、关机没关总开关，系统都会直接提醒你</b>。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ QCS6000 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 待机</span>
+      <span style="font-size:10px;color:#475569">QCS6000 四气路大气采样器</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 装滤膜 / 吸收液（<b style="color:var(--rose)">含尘空气必须先装滤膜，否则伤泵</b>）</div>
+    <div class="fld"><label>采样介质类型</label><select id="iMed"><option value="gas">气态（吸收液）</option><option value="dust">含尘（需滤膜）</option></select></div>
+    <div class="fld"><label>是否已装滤膜</label><select id="iFilter"><option value="ok">已装滤膜（正确）</option><option value="no">未装滤膜</option></select></div>
+    <div class="acts"><button class="btn b1" id="btnFilter" onclick="loadFilter()">🧫 装样确认</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 设采样时间 → 确定</div>
+    <div class="fld"><label>采样时间 (min)</label><input type="number" id="iTime" value="60" step="10"></div>
+    <div class="acts"><button class="btn b2" id="btnSet" onclick="setTime()" disabled>✅ 设定并确认</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 开始采集（运行中 取消键=暂停/继续；连按两次=重计时）</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">已采体积 L</div><div class="dd" id="dVol">0</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+      <div class="dv"><div class="dl">运行</div><div class="dd" id="dRun" style="font-size:13px">—</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnStart" onclick="start()" disabled>▶ 开始采集</button>
+      <button class="btn b2" id="btnCancel" onclick="cancel()" disabled>⏸️ 取消键</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">④ 关机（按住取消 3 秒）→ 关背面总开关</div>
+    <div class="seq">
+      <div class="pb" id="sh1" onclick="shut()">按住取消关机<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="mainSwitch()">关背面总开关<span class="po">step 2</span></div>
+    </div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🧫</div><div class="in">含尘先装滤膜</div><div class="id">采含尘空气前必须装滤膜。没装就运行 → 粉尘进泵，磨损甚至卡死，维修成本高。</div><span class="it">装样红线</span></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">设时确认再采集</div><div class="id">设时间→按确定→采集，三步不能省。没确定就运行 → 计时基准错，体积算错浓度全废。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">⏸️</div><div class="in">取消键别乱按</div><div class="id">暂停/继续/重计三态靠按法区分。连按两次取消会清空已采体积——珍贵现场样重来一次至少半天。</div><span class="it">按键红线</span></div>
+    <div class="ic"><div class="ii">🔌</div><div class="in">关机关总开关</div><div class="id">关机按住取消 3 秒或电源键；采样完必须关背面总开关，否则电池亏电。充电开背面开关约 12h。</div><span class="it">关机红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={filter:false,set:false,running:false,paused:false,shut:false,main:false};
+let lastCancel=0, vol=0, timer=null;
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function loadFilter(){
+  if(S.filter){warn('已装样');return;}
+  if($('iMed').value==='dust' && $('iFilter').value==='no'){warn('⚠️ 含尘空气采样必须先装滤膜！否则粉尘进泵损伤');log('含尘未装滤膜就运行，已阻断',false);return;}
+  S.filter=true;$('btnFilter').classList.add('on');$('btnFilter').textContent='✅ 装样正确';
+  log('装样确认：'+($('iMed').value==='dust'?'含尘-已装滤膜':'气态-吸收液就位'),true);
+  $('btnSet').disabled=false;warn('');
+}
+function setTime(){
+  if(!S.filter){warn('请先装样');return;}
+  const t=+$('iTime').value;
+  if(t<=0){warn('采样时间须大于 0');return;}
+  S.set=true;$('btnSet').classList.add('on');$('btnSet').textContent='✅ 已设 '+t+'min';
+  log('设定采样时间 '+t+' min 并确认',true);
+  $('btnStart').disabled=false;$('btnCancel').disabled=false;warn('');
+}
+function start(){
+  if(!S.set){warn('请先设时确认');return;}
+  if(S.running){warn('已在采集');return;}
+  S.running=true;S.paused=false;setSts('🟢 采集中','sa');$('dState').textContent='采集中';$('dRun').textContent='运行';
+  log('开始采集（泵启动，体积累计）');
+  timer=setInterval(()=>{if(!S.paused){vol+=5;$('dVol').textContent=vol;}},150);
+}
+function cancel(){
+  if(!S.running){warn('未开始采集');return;}
+  const now=Date.now();
+  if(now-lastCancel<700){
+    // 连按两次 → 重计时
+    clearInterval(timer);vol=0;$('dVol').textContent=0;S.running=false;S.paused=false;
+    setSts('⏳ 已重计时','si');$('dState').textContent='待机';$('dRun').textContent='—';
+    log('连按两次取消 → 重新计时，已采体积清零',true);warn('');
+    return;
+  }
+  lastCancel=now;
+  S.paused=!S.paused;
+  if(S.paused){setSts('⏸️ 已暂停','sa');$('dState').textContent='暂停';$('dRun').textContent='停';log('取消键：暂停',true);}
+  else{setSts('🟢 采集中','sa');$('dState').textContent='采集中';$('dRun').textContent='运行';log('取消键：继续采集',true);}
+}
+function shut(){
+  if(!S.running && vol===0){warn('尚未采集');return;}
+  if(S.shut){warn('已关机');return;}
+  if(S.running){clearInterval(timer);S.running=false;}
+  S.shut=true;$('sh1').classList.add('on');log('按住取消 3 秒 → 关机',true);
+  $('sh2').classList.add('on');warn('');
+}
+function mainSwitch(){
+  if(!S.shut){warn('⚠️ 请先按住取消关机，再关背面总开关！');log('未关机就关总开关，已提醒',false);return;}
+  if(S.main){warn('已关');return;}
+  S.main=true;$('sh2').classList.remove('on');$('sh2').textContent='✅ 总开关已关';
+  setSts('🔒 已关机','si');log('关闭背面总开关，采样流程结束',true);warn('');
+}
+function resetAll(){
+  clearInterval(timer);S={filter:false,set:false,running:false,paused:false,shut:false,main:false};
+  vol=0;lastCancel=0;
+  $('btnFilter').classList.remove('on');$('btnFilter').textContent='🧫 装样确认';
+  $('btnSet').classList.remove('on');$('btnSet').textContent='✅ 设定并确认';$('btnSet').disabled=true;
+  $('btnStart').disabled=true;$('btnCancel').disabled=true;
+  $('sh1').classList.remove('on');$('sh1').textContent='按住取消关机';
+  $('sh2').classList.remove('on');$('sh2').textContent='关背面总开关';
+  $('dVol').textContent=0;$('dState').textContent='待机';$('dRun').textContent='—';
+  setSts('⏳ 待机','si');$('log').innerHTML='';warn('');
+}
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

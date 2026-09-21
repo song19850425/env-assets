@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>粉尘分散度测定·显微镜法 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f59e0b;--glow:#fbbf24;--abg:rgba(245,158,11,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2b1a05 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(245,158,11,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(245,158,11,.13),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(245,158,11,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:620px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:26px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:760px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(245,158,11,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#2b1a05);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#f59e0b;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:190px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:380px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border);cursor:crosshair}
+#cv2{width:100%;height:210px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#fcd34d;line-height:1.7;margin:16px 0}
+.note b{color:#fde68a}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.note.green{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.18);border-left-color:var(--green);color:#a7f3d0}
+.note.green b{color:#d1fae5}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:var(--accent)}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">粉尘分散度测定<br><em>显微镜法</em></h1>
+  <div class="hs">分散度回答的不是"有多少尘"，而是<b style="color:#fcd34d">尘有多细</b>。<br>同样 4 mg/m³ 的浓度，细颗粒占比不同，致病部位和除尘器选型完全是两回事。</div>
+  <div class="hst">
+    <div><span class="n">投影直径</span><span class="l">测量对象</span></div>
+    <div><span class="n">D=a×10/b</span><span class="l">目镜测微尺标定</span></div>
+    <div><span class="n">≥200</span><span class="l">随机测量颗粒数</span></div>
+    <div><span class="n">4</span><span class="l">粒径分组</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">为什么同一个浓度<br>危害能差十倍</div>
+  <div class="sd">工作场所空气里，粉尘浓度相同、分散度不同，健康风险可以差一个量级。原因很简单：<b>颗粒能不能进到肺泡，取决于它的直径</b>。大于 10 μm 的基本被鼻腔和上呼吸道拦下；5 μm 以下能到达细支气管和肺泡；2 μm 以下几乎全部进入气体交换区，还容易携带有毒成分穿透肺泡壁入血。</div>
+  <div class="sd">这就是分散度的意义——它把"多少毫克"换成了"这些毫克有多危险"。它同时也是<b>除尘器选型的依据</b>：粉尘中位径 2 μm 的焊烟，用旋风除尘器基本白干；中位径 20 μm 的砂轮粉尘，旋风就够用了。所以无论是职业卫生评价还是大气污染控制，分散度都是最靠前的基础数据。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🫁</div><div class="in">决定致病部位</div><div class="id">粒径决定沉积位置。<b>粗颗粒留在上呼吸道</b>，可被纤毛排出；<b>细颗粒直达肺泡</b>，长期滞留引发尘肺。</div><span class="it">职业卫生</span></div>
+    <div class="ic"><div class="ii">🧹</div><div class="in">决定除尘器选型</div><div class="id">分散度是选除尘工艺的输入参数。细颗粒占比高，就必须上袋式或电除尘，不能只靠旋风。</div><span class="it">污染控制</span></div>
+    <div class="ic"><div class="ii">📐</div><div class="in">数量百分比，不是质量</div><div class="id">分散度按<b>颗粒个数</b>统计各粒径组的百分比。细颗粒数量多但质量小——这一点最容易被误解。</div><span class="it">易错点</span></div>
+  </div>
+  <div class="note blue">
+    <b>先分清两个概念</b>：<b>浓度</b>是质量／体积（mg/m³），回答"有多少"；<b>分散度</b>是各粒径组的数量占比（%），回答"有多细"。国标把它俩分成不同的部分各自测定——本页对应的是粉尘分散度这一部分。
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个要点撑起整个实验</div>
+  <div class="sd">显微镜法的所有操作细节，都能从下面四条推出来。理解它们，模拟台里的每一步你都知道为什么必须那样做。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">🔬</div><div class="in">① 测什么：投影直径</div>
+      <div class="id">在显微镜下，颗粒是不规则的立体，无法直接量"真实粒径"。国标规定的做法是量它在视野里的<b>投影</b>大小，表述为"<b>遇长径量长径，遇短径量短径</b>"——遇到扁平片状颗粒量它的长径，遇到纤维状量它的短径，一律记为一个投影直径。</div>
+      <div class="fx">测量对象 = 颗粒在镜下的投影直径（非几何直径）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📊</div><div class="in">② 怎么表达：数量百分比</div>
+      <div class="id">把所有测得的直径分成四组：<b>&lt;2 μm、2～5 μm、5～10 μm、≥10 μm</b>，分别统计落在每组的颗粒个数，除以总数得到百分比。四个数加起来＝100%。这就是这份样品的分散度。</div>
+      <div class="fx">分散度 = 各粒径组颗粒数 / 测量总颗粒数 × 100%</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📏</div><div class="in">③ 怎么量：目镜测微尺标定</div>
+      <div class="id">目镜里装的刻度尺本身没有单位，必须先标定。把<b>物镜测微尺</b>（每格固定＝10 μm）放到载物台上，看它与目镜测微尺的重合关系：物镜侧 a 格正好对上目镜侧 b 格，则目镜每格的真实长度就是 a×10/b 微米。</div>
+      <div class="fx">D = a × 10 / b　（μm／目镜格）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🧪</div><div class="in">④ 为什么叫"滤膜溶解涂片法"</div>
+      <div class="id">采样用的<b>过氯乙烯滤膜</b>是可以被有机溶剂溶掉的。把采尘后的滤膜放在载玻片上，滴 1～2 mL <b>乙酸丁酯</b>把滤膜溶解掉，粉尘就留在透明溶液里；再用另一块载玻片以约 <b>45°</b> 角推成均匀薄片，干燥后即得透明标本。<b>滤膜消失了，颗粒留下了</b>——这就是方法名的由来。</div>
+      <div class="fx">过氯乙烯滤膜 + 乙酸丁酯 → 溶解 → 45° 推片 → 透明标本</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>这套方法的适用边界</b>：如果粉尘本身能溶于乙酸丁酯（比如某些有机粉尘、沥青尘），或者样品是<b>纤维状</b>（石棉、玻璃纤维，推片时会碎断），滤膜溶解涂片法就<b>用不了</b>——必须改用另一种方法。<span style="color:#fde68a">见页末方法对照。</span>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">方法依据：<b>GBZ/T 192.3《工作场所空气中粉尘测定 第3部分：粉尘分散度》</b>。下面五步是标准链路，<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">滤膜采样与称重</div><div class="rd">用过氯乙烯滤膜采集工作场所空气中的粉尘，采样前后各称一次（恒温恒湿平衡后），得滤膜增重，除以采样体积即得粉尘浓度（mg/m³）。<b>浓度与分散度是两个数据</b>，但样品是同一张滤膜。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">乙酸丁酯溶解制涂片</div><div class="rd">把采尘滤膜置于载玻片上，滴乙酸丁酯 1～2 mL 使滤膜完全溶解，用另一载玻片以约 45° 推制成均匀薄片。这一步是<b>数据质量的源头</b>：溶解不完全会粘连成团，推片角度过大条痕拖尾，涂片过厚则颗粒重叠无法辨认。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">目镜测微尺标定</div><div class="rd">用物镜测微尺标定目镜测微尺，按 D=a×10/b 算出每格的微米数。<b>先标定再测量</b>——没标定就去量颗粒，等于拿一把不知道刻度的尺子量东西，读出来的数没有任何意义。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">镜下随机测量 ≥200 粒</div><div class="rd">在 400～600 倍下，按"遇长径量长径，遇短径量短径"逐个测量颗粒的投影直径。<b>必须随机视野、不得挑选</b>，且总数不少于 <b>200 粒</b>——挑着量或者量得太少，分布就不可靠。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">分组统计与计算</div><div class="rd">把测得的直径按 <b>&lt;2 / 2～5 / 5～10 / ≥10 μm</b> 四组归类，统计各组个数，算出数量百分比，即得该样品的粉尘分散度。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 粉尘分散度测定·显微镜法 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">滤膜采样称重<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>制透明涂片<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>测微尺标定<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>镜下测 40 粒<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>分组统计<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>制样方式（乙酸丁酯用量 + 推片角度）</label>
+          <select id="prep" onchange="onParam()">
+            <option value="ok" selected>规范：乙酸丁酯适量，45° 推片，涂片透明</option>
+            <option value="tail">推片角度过大 → 颗粒拖尾</option>
+            <option value="clump">滤膜未完全溶解 → 颗粒粘连成团</option>
+            <option value="thick">涂片过厚 → 颗粒重叠无法辨认</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>显微镜放大倍数（标准建议 400～600 倍）</label>
+          <select id="mag" onchange="onParam()">
+            <option value="400">400×</option>
+            <option value="500" selected>500×</option>
+            <option value="600">600×</option>
+          </select>
+          <div class="hint">倍数偏低时，&lt;2 μm 的颗粒接近分辨极限，读数偏差会明显变大。</div>
+        </div>
+        <div class="fld">
+          <label>物镜测微尺读数 a　<b style="color:#fbbf24" id="aTxt">3.0</b> 格　（每格固定 10 μm）</label>
+          <input type="range" id="ca" min="1" max="6" step="0.5" value="3" oninput="onParam()">
+        </div>
+        <div class="fld">
+          <label>目镜测微尺读数 b　<b style="color:#fbbf24" id="bTxt">10</b> 格　（与之重合的格数）</label>
+          <input type="range" id="cb" min="4" max="40" step="1" value="10" oninput="onParam()">
+          <div class="hint">物镜侧 a 格与目镜侧 b 格恰好重合时读数成立。D = a×10/b μm/格。</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv"><div class="dl">粉尘浓度</div><div class="dd" id="oConc">—</div><div class="du">mg/m³</div></div>
+          <div class="dv" id="dvD"><div class="dl">目镜格值 D</div><div class="dd" id="oD">—</div><div class="du">μm/格</div></div>
+          <div class="dv"><div class="dl">已测颗粒</div><div class="dd" id="oN">0 / 40</div><div class="du">粒</div></div>
+          <div class="dv" id="dvQ"><div class="dl">制样质量</div><div class="dd" id="oQ" style="font-size:13px">待制样</div><div class="du">&nbsp;</div></div>
+        </div>
+        <div style="font-size:10.5px;color:#475569;margin:6px 0 4px">镜检视场（点击颗粒逐个测量投影直径）</div>
+        <canvas id="cv" width="900" height="760"></canvas>
+        <div class="legend">
+          <span><i style="background:rgba(148,163,184,.75)"></i>未测颗粒</span>
+          <span><i style="background:#34d399"></i>已测颗粒</span>
+          <span><i style="background:#fbbf24;height:0;border-top:2px dashed #fbbf24"></i>目镜测微尺</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:10.5px;color:#475569;margin-bottom:4px">粒径分布（STEP 5 完成统计后绘出；虚线为累计百分比）</div>
+      <canvas id="cv2" width="900" height="420"></canvas>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" id="autoBtn" onclick="autoMeasure()" disabled>⚡ 自动测量剩余颗粒（模拟图像分析）</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与红线</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">先标定，再测量</div><div class="id">目镜测微尺本身无单位，格值靠物镜测微尺标定得出。跳过标定直接读数，你拿到的是一堆"格数"，换算不成微米，数据完全无效。这是顺序红线里最硬的一条。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">不少于 200 粒，且随机</div><div class="id">测量颗粒太少，少量颗粒就能左右百分比，分布不可靠；只挑大颗粒或只挑小颗粒，则是人为造数据。国标要求随机视野、总数 ≥200 粒。</div><span class="it">取样红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">制样决定数据成败</div><div class="id">溶解不完全→粘连成团→粒径偏大；推片角度过大→拖尾→长径被拉长；涂片过厚→重叠→无法辨认单粒。这三类错误全都<b>把分布推向偏粗</b>，而且<b>后期无法修正</b>，只能重做。<b>这一步出问题，后面全白做。</b></div><span class="it">制样红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">它是数量百分比，不是质量百分比</div><div class="id">分散度统计的是<b>颗粒个数</b>。一个 20 μm 颗粒的质量相当于上千个 2 μm 颗粒，所以"细颗粒占 60%（数量）"和"细颗粒占 60%（质量）"完全是两件事。写报告时务必注明统计口径。</div><span class="it">口径红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：不是会数颗粒，而是拿到一份分散度数据时能判断它<b>可不可信</b>——制样是否规范、测量数是否够、是否随机。以及能把分散度<b>用起来</b>：<span style="color:#fde68a">写职业卫生评价时用它说明危害程度，做除尘设计时用它选工艺。</span>会测不会用，等于没学。
+  </div>
+  <div class="note green">
+    <b>方法对照：什么时候不能用显微镜法</b><br>
+    滤膜溶解涂片法要靠乙酸丁酯溶解滤膜。如果粉尘<b>本身可溶于乙酸丁酯</b>，或者样品是<b>纤维状</b>（石棉、玻璃纤维），这套方法就失效——必须改用<b>自然沉降法</b>，靠重力让颗粒自然落到盖玻片上，不经过溶剂。两种方法测的都是投影直径，分组也完全一致。
+  </div>
+  <div class="fw">
+    <a href="粉尘分散度测定-自然沉降法-交互版.html"><div class="t">→ 粉尘分散度测定 · 自然沉降法</div><div class="d">可溶／纤维状粉尘的必选方法。看 Stokes 沉降如何决定"细颗粒有没有落下来"。</div></a>
+    <a href="00-大气污染控制工程实验-课程对照总览.html"><div class="t">→ 大气污染控制工程实验 · 课程对照总览</div><div class="d">返回总览，查看本页对应的课程大纲位置与实验项目覆盖情况。</div></a>
+  </div>
+  <div class="sd" style="margin-top:18px">
+    方法依据：GBZ/T 192.3《工作场所空气中粉尘测定 第3部分：粉尘分散度》，滤膜溶解涂片法。<br>
+    本页示例视场含 40 粒颗粒并预置了一组粒径分布，用于演示测量与统计流程；<b>标准要求随机测量 ≥200 粒</b>，实际工作由图像分析软件自动完成。曲线与数值用于教学演示，不作为检测报告数据。
+  </div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3<br>
+  <span style="font-size:11px;color:#334155">配套总览：<a href="00-大气污染控制工程实验-课程对照总览.html" style="color:#475569">大气污染控制工程实验 · 课程对照总览</a></span>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+/* 40 粒示例颗粒的投影直径（μm），预置一组偏细的分布 */
+const DIAMS=[0.55,0.62,0.70,0.80,0.90,1.00,1.10,1.25,1.40,1.55,1.70,1.90,
+             2.10,2.30,2.50,2.70,2.90,3.10,3.30,3.50,3.70,4.00,4.20,4.50,4.70,4.90,
+             5.20,5.60,6.00,6.50,7.00,7.60,8.30,9.10,
+             10.5,11.8,13.2,15.0,17.5,21.0];
+const PREP={
+  ok:{m:1,ok:true,tag:'合格',note:'涂片透明、颗粒分散良好'},
+  tail:{m:1.4,ok:false,tag:'拖尾',note:'推片角度过大 → 颗粒拖尾，长径被拉长，分布偏粗'},
+  clump:{m:1.9,ok:false,tag:'粘连',note:'滤膜未完全溶解 → 颗粒粘连成团，粒径明显偏大'},
+  thick:{m:1.2,ok:false,tag:'重叠',note:'涂片过厚 → 颗粒重叠，无法辨认单粒'}
+};
+const GROUPS=['<2 μm','2～5 μm','5～10 μm','≥10 μm'];
+const GCOL=['#38bdf8','#34d399','#fbbf24','#fb7185'];
+let _sd=20260911;
+function rnd(){_sd=(_sd*1103515245+12345)&0x7fffffff;return _sd/0x7fffffff;}
+const PARTS=DIAMS.map((d,i)=>{
+  const col=i%8,row=Math.floor(i/8);
+  return {d,cx:(col+0.5+(rnd()-0.5)*0.44)/8,cy:(row+0.5+(rnd()-0.5)*0.44)/5,
+          measured:false,md:0,seed:rnd()*10};
+});
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let curKey=null, s4done=false, animTimer=null;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},7000);}
+function grp(d){return d<2?0:d<5?1:d<10?2:3;}
+function prepObj(){return PREP[$('prep').value];}
+function calibrate(){return (+$('ca').value)*10/(+$('cb').value);}
+function params(){return {prep:$('prep').value,mag:$('mag').value,a:+$('ca').value,b:+$('cb').value};}
+function key(p){return p.prep+'|'+p.mag+'|'+p.a+'|'+p.b;}
+function measuredCount(){return PARTS.filter(p=>p.measured).length;}
+
+function render(){
+  const p=params(), D=calibrate(), po=prepObj();
+  $('aTxt').textContent=p.a.toFixed(1);
+  $('bTxt').textContent=p.b;
+  $('oConc').textContent=(S.s1?'4.30':'—');
+  $('oD').textContent=(S.s3?D.toFixed(2):'—');
+  $('dvD').className='dv'+(S.s3?(D<1.6||D>4.5?' bad':' good'):'');
+  $('oN').textContent=measuredCount()+' / 40';
+  $('oQ').textContent=(S.s2?po.tag:'待制样');
+  $('oQ').style.color=po.ok?'#34d399':'#fb7185';
+  $('dvQ').className='dv'+(S.s2?(po.ok?' good':' bad'):'');
+  drawField(); drawChart();
+}
+
+function blob(ctx,x,y,r,seed){
+  ctx.beginPath();
+  const n=16;
+  for(let i=0;i<=n;i++){
+    const a=i/n*Math.PI*2;
+    const rr=r*(0.80+0.26*Math.abs(Math.sin(a*3+seed))+0.10*Math.sin(a*5+seed*2));
+    const px=x+Math.cos(a)*rr, py=y+Math.sin(a)*rr;
+    if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+}
+
+function drawField(){
+  const cv=$('cv'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,H=380;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const P=16, GT=H-46;
+  const cw=(W-2*P)/8, ch=(GT-P)/5;
+  /* 目镜测微尺 */
+  const gx=P+4, gy=H-24, step=Math.min(30,(W-2*P-70)/20), gn=20;
+  ctx.strokeStyle='rgba(245,158,11,.5)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(gx+gn*step,gy); ctx.stroke();
+  ctx.font='9px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+  for(let i=0;i<=gn;i++){
+    const x=gx+i*step, big=(i%5===0);
+    ctx.beginPath(); ctx.moveTo(x,gy); ctx.lineTo(x,gy+(big?7:4)); ctx.stroke();
+    if(big) ctx.fillText(i,gx+i*step,gy+9);
+  }
+  ctx.fillStyle='rgba(251,191,36,.85)'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  const D=calibrate();
+  ctx.fillText('目镜测微尺　每格 = '+(S.s3?D.toFixed(2)+' μm':'— μm（未标定）'), gx, H-8);
+  /* 十字丝 */
+  ctx.strokeStyle='rgba(245,158,11,.22)'; ctx.beginPath();
+  ctx.moveTo(W/2,P); ctx.lineTo(W/2,GT); ctx.moveTo(P,GT/2); ctx.lineTo(W-P,GT/2); ctx.stroke();
+  /* 颗粒 */
+  PARTS.forEach(p=>{
+    const x=P+p.cx*(W-2*P), y=P+p.cy*(GT-P);
+    const r=Math.min(cw*0.40, 3+1.0*p.d);
+    blob(ctx,x,y,r,p.seed);
+    if(p.measured){
+      ctx.fillStyle='rgba(52,211,153,.30)'; ctx.fill();
+      ctx.strokeStyle='#34d399'; ctx.lineWidth=1.4; ctx.stroke();
+      ctx.strokeStyle='rgba(52,211,153,.8)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(x-r,y); ctx.lineTo(x+r,y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#6ee7b7'; ctx.font='9.5px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+      ctx.fillText(p.md.toFixed(p.md<1?2:1), x+r+3, y-1);
+    }else{
+      ctx.fillStyle='rgba(148,163,184,.75)'; ctx.fill();
+      ctx.strokeStyle='rgba(226,232,240,.35)'; ctx.lineWidth=.8; ctx.stroke();
+    }
+  });
+  if(!S.s3){
+    ctx.fillStyle='rgba(10,14,23,.55)'; ctx.fillRect(0,0,W,GT);
+    ctx.fillStyle='#fb7185'; ctx.font='bold 13px Inter,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('未标定目镜测微尺 —— 此时读出的"格数"无法换算成微米', W/2, GT/2-8);
+    ctx.fillStyle='#94a3b8'; ctx.font='11px Inter,sans-serif';
+    ctx.fillText('请先完成 STEP 3 标定，再点击颗粒测量', W/2, GT/2+14);
+  }
+}
+
+function counts(){
+  const c=[0,0,0,0]; let tot=0;
+  PARTS.forEach(p=>{ if(p.measured){ c[grp(p.md)]++; tot++; } });
+  return {c,tot};
+}
+function drawChart(){
+  const cv=$('cv2'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,H=210;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const {c,tot}=counts();
+  const PL=46,PR=16,PT=16,PB=34, gw=W-PL-PR, gh=H-PT-PB;
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(f=>{ctx.beginPath();ctx.moveTo(PL,PT+(1-f)*gh);ctx.lineTo(PL+gw,PT+(1-f)*gh);ctx.stroke();});
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+  [0,.25,.5,.75,1].forEach(f=>ctx.fillText(Math.round(f*100)+'%',PL-7,PT+(1-f)*gh));
+  const bw=gw/4*0.5;
+  let cum=0; const pts=[];
+  for(let i=0;i<4;i++){
+    const cx0=PL+gw/4*(i+0.5);
+    const v=tot?c[i]/tot:0;
+    const y=PT+(1-v)*gh;
+    const grd=ctx.createLinearGradient(0,y,0,PT+gh);
+    grd.addColorStop(0,GCOL[i]); grd.addColorStop(1,GCOL[i]+'44');
+    ctx.fillStyle=tot?grd:'rgba(255,255,255,.05)';
+    ctx.fillRect(cx0-bw/2,y,bw,PT+gh-y);
+    ctx.fillStyle='#94a3b8'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(GROUPS[i],cx0,PT+gh+7);
+    if(tot){
+      ctx.fillStyle=GCOL[i]; ctx.font='bold 11px Inter,sans-serif'; ctx.textBaseline='bottom';
+      ctx.fillText((v*100).toFixed(1)+'%',cx0,y-4);
+      cum+=v; pts.push([cx0,PT+(1-cum)*gh]);
+    }
+  }
+  ctx.fillStyle='#475569'; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.font='10px Inter,sans-serif';
+  ctx.fillText('粒径组',PL+gw/2,PT+gh+20);
+  if(pts.length===4){
+    ctx.strokeStyle='rgba(251,113,133,.9)'; ctx.lineWidth=1.6; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(PL+gw/8,PT); ctx.lineTo(pts[0][0],pts[0][1]); ctx.stroke();
+    pts.forEach((p,i)=>{ if(i>0){ctx.beginPath();ctx.moveTo(pts[i-1][0],pts[i-1][1]);ctx.lineTo(p[0],p[1]);ctx.stroke();} });
+    ctx.setLineDash([]);
+    ctx.fillStyle='#fb7185';
+    pts.forEach(p=>{ctx.beginPath();ctx.arc(p[0],p[1],2.6,0,7);ctx.fill();});
+  }
+  if(!tot){
+    ctx.fillStyle='#475569'; ctx.font='12px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('完成 STEP 5 后绘出粒径分布', PL+gw/2, PT+gh/2);
+  }
+}
+
+function measurePart(p){
+  if(p.measured) return false;
+  p.measured=true;
+  p.md=p.d*prepObj().m;
+  return true;
+}
+function onCanvasClick(e){
+  if(!S.s4){ warn('请先按顺序启动 STEP 4 镜下测量'); return; }
+  if(animTimer) return;
+  const cv=$('cv'), rect=cv.getBoundingClientRect();
+  const mx=(e.clientX-rect.left), my=(e.clientY-rect.top);
+  const W=rect.width,H=380,P=16,GT=H-46,cw=(W-2*P)/8;
+  let best=null,bd=1e9;
+  PARTS.forEach(p=>{
+    const x=P+p.cx*(W-2*P), y=P+p.cy*(GT-P);
+    const r=Math.min(cw*0.40, 3+1.0*p.d);
+    const dd=Math.hypot(mx-x,my-y);
+    if(dd<r+6 && dd<bd){bd=dd;best=p;}
+  });
+  if(!best){ warn('视场内未选中颗粒——请点在颗粒上'); return; }
+  if(best.measured){ warn('该颗粒已测量过，请换一颗（标准要求随机视野）'); return; }
+  measurePart(best);
+  drawField(); render();
+  const n=measuredCount();
+  if(n<=3) log('测得 第 '+n+' 粒：投影直径 <b>'+best.md.toFixed(best.md<1?2:1)+' μm</b>'+(best.md!==best.d?'　（制样偏差已计入）':''));
+  if(n===40) finishMeasure();
+}
+function autoMeasure(){
+  if(!S.s4){ warn('请先按顺序启动 STEP 4 镜下测量'); return; }
+  if(animTimer) return;
+  const rest=PARTS.filter(p=>!p.measured);
+  if(!rest.length){ warn('全部颗粒已测量完成'); return; }
+  log('启动自动测量（模拟图像分析连续计数），剩余 '+rest.length+' 粒……');
+  let i=0;
+  animTimer=setInterval(()=>{
+    if(i>=rest.length){ clearInterval(animTimer); animTimer=null; drawField(); render(); finishMeasure(); return; }
+    measurePart(rest[i]); i++;
+    drawField(); render();
+  },55);
+}
+function finishMeasure(){
+  if(measuredCount()<40) return;
+  s4done=true; $('p5').disabled=false;
+  $('autoBtn').disabled=true;
+  setSts('🟡 测量完成，待统计','sa');
+  const {c,tot}=counts();
+  log('镜下随机测量完成：共 <b>'+tot+' 粒</b>（标准要求 ≥200 粒，本页为教学示例视场）',true);
+  warn('测量已完成，请执行 STEP 5 分组统计。');
+}
+
+function onParam(){
+  const p=params();
+  if(S.s2 && curKey!==null && key(p)!==curKey){
+    log('制样方式／放大倍数／标定读数已改变，已测数据失效——请重新从 STEP 2 制透明涂片开始（滤膜样品仍在，无需重新采样）','bad');
+    setSts('⚠️ 制样已变，需重做','sbad');
+    warn('⚠️ 制样或标定参数变了：旧数据不能与新数据混用，现场也必须重新制样。');
+    resetFromStep2();
+    curKey=key(p);
+  }
+  if(S.s1&&!S.s2) curKey=key(p);
+  render();
+}
+/* 制样环节可反复重做（同一张滤膜样品），不必回到采样 */
+function resetFromStep2(){
+  S.s2=false;S.s3=false;S.s4=false;S.s5=false; s4done=false;
+  if(animTimer){ clearInterval(animTimer); animTimer=null; }
+  PARTS.forEach(p=>{p.measured=false;p.md=0;});
+  ['p2','p3','p4','p5'].forEach(id=>$(id).classList.remove('on'));
+  $('p2').disabled=false; $('p3').disabled=true; $('p4').disabled=true; $('p5').disabled=true;
+  $('autoBtn').disabled=true;
+  render();
+}
+
+function step1(){
+  if(S.s1) return;
+  S.s1=true; curKey=key(params());
+  $('p1').classList.add('on'); $('p2').disabled=false;
+  setSts('🟡 采样完成','sa');
+  log('滤膜采样：采样体积 <b>200 L</b>，滤膜增重 <b>0.86 mg</b> → 粉尘浓度 <b>4.30 mg/m³</b>',true);
+  const over=4.30>1;
+  if(over) log('提示：该浓度已高于多数矽尘／煤尘的时间加权平均容许浓度（多在 1～4 mg/m³ 量级）——浓度是否超标需按具体粉尘种类判定。');
+  warn('');
+  render();
+}
+function step2(){
+  if(!S.s1){ warn('请先完成 STEP 1 滤膜采样'); return; }
+  if(S.s2) return;
+  const po=prepObj();
+  S.s2=true; $('p2').classList.add('on'); $('p3').disabled=false;
+  if(po.ok){
+    log('制透明涂片：滤膜已完全溶解，45° 推片成均匀薄片——制样合格',true);
+    setSts('🟡 涂片合格','sa'); warn('');
+  }else{
+    log('制透明涂片：<b>'+po.tag+'</b>——'+po.note,false);
+    setSts('⚠️ 涂片不合格','sbad');
+    warn('⚠️ 制样不合格：'+po.note+'。分布会被推向偏粗，且后期无法修正——现场只能重做涂片。');
+  }
+  render();
+}
+function step3(){
+  if(!S.s2){ warn('⚠️ 请先完成 STEP 2 制透明涂片'); log('顺序错误：跳过制样直接标定，已阻断',false); return; }
+  if(S.s3) return;
+  const D=calibrate(), p=params();
+  S.s3=true; $('p3').classList.add('on'); $('p4').disabled=false; $('autoBtn').disabled=false;
+  log('目镜测微尺标定：物镜 '+p.a.toFixed(1)+' 格 × 10 μm ÷ 目镜 '+p.b+' 格 = <b>D = '+D.toFixed(2)+' μm/格</b>',true);
+  if(D<1.6) warn('⚠️ 格值偏小（'+D.toFixed(2)+' μm/格）——通常意味着放大倍数与读数不匹配，请核对两组刻度是否真正重合。');
+  else if(D>4.5) warn('⚠️ 格值偏大（'+D.toFixed(2)+' μm/格）——放大倍数偏低，<2 μm 颗粒会接近分辨极限，读数偏差明显。');
+  else warn('');
+  setSts('🟡 已标定','sa');
+  render();
+}
+function step4(){
+  if(!S.s3){ warn('⚠️ 必须先用 STEP 3 标定目镜测微尺——没标定就读数，格数换算不成微米，数据完全无效'); log('顺序错误：跳过标定直接测量，已阻断',false); return; }
+  if(S.s4) return;
+  S.s4=true; $('p4').classList.add('on');
+  setSts('🟡 测量中…','sa');
+  log('进入镜下测量：请在视场中<b>随机点击颗粒</b>逐个测投影直径（遇长径量长径，遇短径量短径）。',true);
+  warn('测量中：点击视场里的颗粒即可记录它的投影直径。');
+  render();
+}
+function step5(){
+  if(!S.s4){ warn('⚠️ 请先完成 STEP 4 镜下测量'); log('顺序错误：跳过测量直接统计，已阻断',false); return; }
+  if(measuredCount()<40){ warn('⚠️ 还有 '+(40-measuredCount())+' 粒未测量——样本不足，统计结果不可靠（标准要求 ≥200 粒）'); return; }
+  if(S.s5) return;
+  S.s5=true; $('p5').classList.add('on');
+  const {c,tot}=counts();
+  const pct=c.map(v=>v/tot*100);
+  log('分组统计完成（n='+tot+'）：<b>&lt;2 μm '+pct[0].toFixed(1)+'%</b>　2～5 μm '+pct[1].toFixed(1)+'%　5～10 μm '+pct[2].toFixed(1)+'%　≥10 μm '+pct[3].toFixed(1)+'%',true);
+  const fine=(pct[0]+pct[1]).toFixed(1);
+  log('&lt;5 μm 累计 <b>'+fine+'%</b>——这部分是可进入下呼吸道与肺泡的主要人群，也是除尘器选型必须看的数据。');
+  const po=prepObj();
+  if(po.ok){ setSts('🟢 实验完成','sok'); log('制样合格，本次分散度数据有效。',true); }
+  else { setSts('🔴 数据无效，需重做','sbad'); log('⚠️ 制样为「'+po.tag+'」，分布已被系统性推向偏粗，<b>本次分散度数据判定为无效</b>，须重新制样后复测。',false); }
+  warn(po.ok?'':'⚠️ 制样不合格导致数据无效——现场必须重做涂片，数据不能"修一修凑合用"。');
+  drawChart();
+}
+function hardReset(clearLog){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false};
+  curKey=null; s4done=false;
+  if(animTimer){ clearInterval(animTimer); animTimer=null; }
+  PARTS.forEach(p=>{p.measured=false;p.md=0;});
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('autoBtn').disabled=true;
+  if(clearLog){ $('log').innerHTML=''; setSts('⏳ 未开始','si'); }
+  render();
+}
+function resetAll(){
+  $('prep').value='ok'; $('mag').value='500'; $('ca').value=3; $('cb').value=10;
+  hardReset(true); warn('');
+}
+
+$('cv').addEventListener('click',onCanvasClick);
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GBZ/T 192.3-2007</td><td>工作场所空气中粉尘测定 第3部分：粉尘分散度</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">滤膜溶解涂片法全流程（乙酸丁酯制样、目镜测微尺标定、四组粒径计数）</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

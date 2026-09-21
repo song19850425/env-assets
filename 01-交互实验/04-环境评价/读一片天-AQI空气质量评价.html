@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>读一片天 · 环境空气质量评价</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--ink-light:#555;--paper:#faf9f6;--paper-warm:#f5f0e8;--sky:#0284c7;--sky-light:#e0f2fe;--sky-bg:#f0f9ff;--green:#16a34a;--green-light:#f0fdf4;--gold:#b45309;--gold-light:#fefce8;--red:#dc2626;--red-light:#fef2f2;--purple:#7c3aed;--purple-light:#ede9fe;--border:#e8e0d4;--serif:'Noto Serif SC','Source Han Serif SC','Songti SC',serif;--sans:'Inter',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+html{scroll-behavior:smooth}body{font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--sky),var(--green));z-index:1000;transition:width .1s}
+#nv{position:fixed;right:24px;top:50%;z-index:999;display:flex;flex-direction:column;gap:14px}
+.nd{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;border:2px solid transparent;position:relative;transition:.3s}
+.nd.ac{background:var(--sky);transform:scale(1.5)}.nd:hover{border-color:var(--sky)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:11px;white-space:nowrap;color:var(--ink-light);background:#fff;padding:3px 10px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .2s}
+.nd:hover .nl{opacity:1}
+.he{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,var(--sky-bg) 0%,var(--paper) 100%)}
+.hb{display:inline-block;padding:6px 18px;border-radius:20px;background:var(--sky-light);color:var(--sky);font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:24px;border:1px solid rgba(2,132,199,.15)}
+.he h1{font-family:var(--serif);font-size:clamp(36px,6vw,72px);font-weight:900;color:var(--ink);max-width:700px}
+.he h1 em{font-style:normal;color:var(--sky)}
+.he p{margin-top:20px;font-size:clamp(14px,2vw,18px);color:var(--ink-light);max-width:560px;line-height:1.7}
+.hs{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap;justify-content:center}
+.hs div{text-align:center}.hs .n{font-family:var(--serif);font-size:36px;font-weight:900;color:var(--sky);display:block}
+.hs .l{font-size:12px;color:var(--ink-light);margin-top:4px}
+.sh{position:absolute;bottom:32px;left:50%;color:var(--ink-light);font-size:12px;animation:fl 2s infinite}@keyframes fl{0%,100%{transform:translateX(-50%)}50%{transform:translateX(-50%) translateY(8px)}}
+.sc{max-width:900px;margin:0 auto;padding:100px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}.sc.vi{opacity:1;transform:translateY(0)}
+.sn{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--sky);margin-bottom:8px}
+.st{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:700;margin-bottom:12px}
+.sd{font-size:16px;color:var(--ink-light);line-height:1.8;max-width:600px;margin-bottom:48px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px}
+.ic{background:#fff;border-radius:12px;padding:24px;border:1px solid var(--border);cursor:pointer;transition:.35s ease;position:relative;overflow:hidden}
+.ic::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--sky);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.ic:hover::before{transform:scaleX(1)}.ic:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
+.ic.rv{background:var(--sky-light);border-color:rgba(2,132,199,.2)}
+.ii{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.in{font-weight:700;font-size:15px;margin-bottom:2px}.is{font-size:12px;color:var(--ink-light)}
+.ib{font-size:13px;color:var(--ink-light);line-height:1.6;margin-top:10px;max-height:0;overflow:hidden;transition:max-height .5s ease,margin-top .5s ease}
+.ic.rv .ib{max-height:300px;margin-top:10px}
+.it{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.ev-box{background:#fff;border-radius:16px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+.ev-tabs{display:flex;background:#fafaf8;border-bottom:1px solid var(--border)}
+.ev-tab{flex:1;text-align:center;padding:16px 8px;font-size:12px;color:#999;cursor:pointer;border-bottom:3px solid transparent;transition:.3s;font-weight:500}
+.ev-tab .en{font-weight:700;display:block;font-size:13px;margin-bottom:2px}
+.ev-tab.ac{color:var(--sky);border-bottom-color:var(--sky);background:var(--sky-light)}
+.ev-tab.done{color:var(--green);border-bottom-color:var(--green)}
+.ev-panel{display:none;padding:32px;min-height:360px}
+.ev-panel.ac{display:block}
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0}
+.sg label{font-size:11px;font-weight:600;color:var(--ink-light);display:block;margin-bottom:2px}
+.sg input{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;font-family:var(--sans);background:#fff}
+.sg input:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px rgba(2,132,199,.1)}
+.zb{padding:12px 28px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;font-family:var(--sans)}
+.zb1{background:linear-gradient(135deg,var(--sky),#0369a1);color:#fff}
+.zb1:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(2,132,199,.3)}
+.zb2{background:linear-gradient(135deg,var(--green),#15803d);color:#fff}
+/* AQI Display */
+.aqi-card{border-radius:16px;padding:32px;text-align:center;margin:16px 0;transition:background .5s}
+.aqi-card .aqi-num{font-family:var(--serif);font-size:72px;font-weight:900;line-height:1}
+.aqi-card .aqi-lbl{font-size:22px;margin-top:4px;font-weight:700}
+.aqi-card .aqi-desc{font-size:14px;margin-top:8px;line-height:1.8}
+.aqi-bar{height:12px;border-radius:6px;margin:12px 0;position:relative;overflow:hidden}
+.aqi-fill{height:100%;transition:width 1.5s ease;width:0;border-radius:6px}
+.aqi-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:-4px}
+.city-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:16px 0}
+.city-item{padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:.3s;background:#fff}
+.city-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.city-item.ac{background:var(--sky-light);border-color:var(--sky)}
+.city-item .cn{font-weight:600;font-size:13px}.city-item .ca{font-size:11px;color:var(--ink-light);margin-top:2px}
+.idetail{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0}
+.idetail div{padding:10px;border-radius:8px;font-size:12px;text-align:center}
+.idetail .iv{font-weight:700;font-size:18px;font-family:var(--serif);display:block}
+.idetail .il{font-size:11px;color:var(--ink-light)}
+.ft{text-align:center;padding:60px 24px;color:var(--ink-light);font-size:13px;border-top:1px solid var(--border);background:var(--paper-warm)}
+@media(max-width:600px){.sg{grid-template-columns:1fr}.idetail{grid-template-columns:1fr}.hs{gap:24px}#nv{right:12px}}
+</style></head><body>
+<div id="sp"></div><div id="nv"><div class="nd ac" onclick="gs(0)"><span class="nl">开篇</span></div><div class="nd" onclick="gs(1)"><span class="nl">指标</span></div><div class="nd" onclick="gs(2)"><span class="nl">标准</span></div><div class="nd" onclick="gs(3)"><span class="nl">交互评价</span></div><div class="nd" onclick="gs(4)"><span class="nl">总结</span></div></div>
+
+<div class="he"><div class="hb">大气环境 · 交互式科普</div><h1>读一片<em>天</em></h1><p>Ambient Air Quality Assessment<br>AQI 是每个人都每天在看的数字——但你真的懂它吗？</p><div class="hs"><div><span class="n">6</span><span class="l">项 AQI 参数</span></div><div><span class="n">6</span><span class="l">级空气质量</span></div><div><span class="n">IAQI</span><span class="l">分指数算法</span></div><div><span class="n">北京·上海</span><span class="l">经典案例</span></div></div><div class="sh">↓ 向下滚动</div></div>
+
+<div class="sc vi" id="s1">
+<div class="sn">Section 01 · AQI 六参数</div><h2 class="st">空气质量的"体检指标"</h2><p class="sd">AQI 涵盖 6 项污染物，各算 IAQI 后取最大值定级。点击卡片了解每项指标。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#1a1a2e;color:#fff;">🌫️</div><div class="in">PM₂.₅</div><div class="is">细颗粒物</div><div class="ib">直径 ≤ 2.5μm 的可吸入颗粒物，可进入肺泡和血液。中国 AQI 中最主要的超标因子。日均限值 75 μg/m³（二级）。</div><span class="it" style="background:#e2e8f0;color:#1e293b;">首要污染物</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#dbeafe;">💨</div><div class="in">PM₁₀</div><div class="is">可吸入颗粒物</div><div class="ib">直径 ≤ 10μm 的颗粒物，可进入呼吸道。主要来自扬尘、建筑工地和工业粉尘。日均限值 150 μg/m³。</div><span class="it" style="background:#dbeafe;color:#1e40af;">扬尘</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef3c7;">🧪</div><div class="in">SO₂</div><div class="is">二氧化硫</div><div class="ib">燃煤排放的酸性气体，是酸雨的主要前体物。近年 SO₂ 浓度大幅下降。小时均限值 500 μg/m³。</div><span class="it" style="background:#fef3c7;color:#92400e;">燃煤</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef2f2;">⚗️</div><div class="in">NO₂</div><div class="is">二氧化氮</div><div class="ib">机动车尾气和工业燃烧排放。在光化学烟雾形成中起关键作用。小时均限值 200 μg/m³。</div><span class="it" style="background:#fef2f2;color:#991b1b;">机动车</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#f0fdf4;">🫧</div><div class="in">CO</div><div class="is">一氧化碳</div><div class="ib">不完全燃烧产物，主要来自机动车尾气。中国 CO 浓度整体较低，很少成为首要污染物。日均限值 4 mg/m³。</div><span class="it" style="background:#f0fdf4;color:#166534;">燃烧</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#ede9fe;">☀️</div><div class="in">O₃</div><div class="is">臭氧</div><div class="ib">NOx 和 VOCs 在光照下生成的光化学产物。夏季午后浓度最高。近年 O₃ 已成为部分城市的首要污染物。小时均限值 200 μg/m³。</div><span class="it" style="background:#ede9fe;color:#6b21a8;">光化学</span></div></div></div>
+
+<div class="sc" id="s2">
+<div class="sn">Section 02 · AQI 计算与分级</div><h2 class="st">AQI 是怎么算出来的？</h2><p class="sd">AQI 采用 IAQI 分指数法——每项污染物算一个分指数，取最大值为当日 AQI。</p>
+<div class="ev-box"><div class="ev-tabs" id="aqiInfoTabs"><div class="ev-tab ac" onclick="at(0)"><span class="en">📐</span>计算步骤</div><div class="ev-tab" onclick="at(1)"><span class="en">🎨</span>等级划分</div></div>
+<div class="ev-panel ac" id="at0"><div style="padding:24px;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+<div style="padding:16px;border-radius:10px;background:var(--sky-light);border:1px solid rgba(2,132,199,.2);"><strong style="display:block;font-size:14px;margin-bottom:6px;">第一步</strong><span style="font-size:13px;color:var(--ink-light);">各污染物的实测浓度 → 查表找到对应的 IAQI</span></div>
+<div style="padding:16px;border-radius:10px;background:#fef3c7;border:1px solid rgba(180,83,9,.2);"><strong style="display:block;font-size:14px;margin-bottom:6px;">第二步</strong><span style="font-size:13px;color:var(--ink-light);">6 项 IAQI 取最大值 → AQI = max(IAQI₁...IAQI₆)</span></div>
+<div style="padding:16px;border-radius:10px;background:#f0fdf4;border:1px solid rgba(22,163,74,.2);"><strong style="display:block;font-size:14px;margin-bottom:6px;">第三步</strong><span style="font-size:13px;color:var(--ink-light);">AQI 值查表 → 确定空气质量等级（优/良/轻度/中度/重度/严重）</span></div>
+<div style="padding:16px;border-radius:10px;background:#ede9fe;border:1px solid rgba(124,58,237,.2);"><strong style="display:block;font-size:14px;margin-bottom:6px;">第四步</strong><span style="font-size:13px;color:var(--ink-light);">首要污染物 = IAQI 最大的那个。发布健康提示。</span></div></div></div></div>
+<div class="ev-panel" id="at1"><div style="padding:24px;">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;">
+<div style="padding:14px;border-radius:8px;background:#f0fdf4;border:1px solid #86efac;text-align:center;"><strong style="color:#16a34a;font-size:18px;">优</strong><div style="font-size:12px;color:#166534;">0~50</div><div style="font-size:11px;color:var(--ink-light);">绿色</div></div>
+<div style="padding:14px;border-radius:8px;background:#fefce8;border:1px solid #fde68a;text-align:center;"><strong style="color:#b45309;font-size:18px;">良</strong><div style="font-size:12px;color:#92400e;">51~100</div><div style="font-size:11px;color:var(--ink-light);">黄色</div></div>
+<div style="padding:14px;border-radius:8px;background:#fef2f2;border:1px solid #fca5a5;text-align:center;"><strong style="color:#dc2626;font-size:18px;">轻度</strong><div style="font-size:12px;color:#991b1b;">101~150</div><div style="font-size:11px;color:var(--ink-light);">橙色</div></div>
+<div style="padding:14px;border-radius:8px;background:#fef2f2;border:1px solid #f87171;text-align:center;"><strong style="color:#dc2626;font-size:18px;">中度</strong><div style="font-size:12px;color:#991b1b;">151~200</div><div style="font-size:11px;color:var(--ink-light);">红色</div></div>
+<div style="padding:14px;border-radius:8px;background:#fce7f3;border:1px solid #f9a8d4;text-align:center;"><strong style="color:#be185d;font-size:18px;">重度</strong><div style="font-size:12px;color:#9d174d;">201~300</div><div style="font-size:11px;color:var(--ink-light);">紫色</div></div>
+<div style="padding:14px;border-radius:8px;background:#881337;border:1px solid #9f1239;text-align:center;"><strong style="color:#fff;font-size:18px;">严重</strong><div style="font-size:12px;color:#fecdd3;">>300</div><div style="font-size:11px;color:#fecdd3;">褐红</div></div></div></div></div></div></div>
+
+<div class="sc" id="s3">
+<div class="sn">Section 03 · 交互评价</div><h2 class="st">计算你所在城市的 AQI</h2><p class="sd">选择城市（加载实时典型数据）或手动输入 6 项浓度值，自动计算 AQI 并发布健康提示。</p>
+<div class="city-grid">
+<div class="city-item ac" onclick="setC(0)"><div class="cn">北京</div><div class="ca">轻度</div></div>
+<div class="city-item" onclick="setC(1)"><div class="cn">上海</div><div class="ca">良</div></div>
+<div class="city-item" onclick="setC(2)"><div class="cn">广州</div><div class="ca">优</div></div>
+<div class="city-item" onclick="setC(3)"><div class="cn">成都</div><div class="ca">轻度</div></div>
+<div class="city-item" onclick="setC(4)"><div class="cn">石家庄</div><div class="ca">中度</div></div>
+<div class="city-item" onclick="setC(5)"><div class="cn">昆明</div><div class="ca">优</div></div>
+<div class="city-item" onclick="setC(6)"><div class="cn">哈尔滨</div><div class="ca">良</div></div>
+<div class="city-item" onclick="setC(7)"><div class="cn">自定义</div><div class="ca">输入</div></div></div>
+
+<div class="ev-box">
+<div class="ev-tabs" id="evalTabs"><div class="ev-tab ac" onclick="eg(0)"><span class="en">①</span>输入浓度</div><div class="ev-tab" onclick="eg(1)"><span class="en">②</span>AQI 结果</div></div>
+<div class="ev-panel ac" id="ep0">
+<div class="sg">
+<div><label>PM₂.₅ (μg/m³)</label><input type="number" id="i-pm25" value="85" step="1"></div>
+<div><label>PM₁₀ (μg/m³)</label><input type="number" id="i-pm10" value="120" step="1"></div>
+<div><label>SO₂ (μg/m³)</label><input type="number" id="i-so2" value="15" step="1"></div>
+<div><label>NO₂ (μg/m³)</label><input type="number" id="i-no2" value="55" step="1"></div>
+<div><label>CO (mg/m³)</label><input type="number" id="i-co" value="1.2" step="0.1"></div>
+<div><label>O₃ (μg/m³)</label><input type="number" id="i-o3" value="95" step="1"></div></div>
+<div style="text-align:center;margin-top:16px;"><button class="zb zb1" onclick="doAQI()">📐 计算 AQI</button></div></div>
+
+<div class="ev-panel" id="ep1">
+<div class="aqi-card" id="aqiCard" style="background:#f0fdf4;">
+<div class="aqi-num" id="aqiNum" style="color:#16a34a;">—</div>
+<div class="aqi-lbl" id="aqiLbl" style="color:#16a34a;">请先输入数据</div>
+<div class="aqi-bar" style="background:linear-gradient(90deg,#16a34a,#fefce8,#fef2f2,#dc2626,#be185d,#881337);">
+<div class="aqi-fill" id="aqiFill" style="width:0%;background:#1a1a2e;"></div></div>
+<div class="aqi-labels"><span>0 优</span><span>50</span><span>100</span><span>150</span><span>200</span><span>300 严重</span></div>
+<div class="aqi-desc" id="aqiDesc">健康提示将在计算后显示</div></div>
+<div class="idetail" id="idetail"></div>
+<div style="text-align:center;margin-top:16px;">
+<button class="zb zb2" onclick="eg(0)">🔄 修改数据</button>
+<button class="zb zb1" onclick="scrollToSection(4)" style="margin-left:8px;">📖 保护建议 →</button></div></div></div></div>
+
+<div class="sc" id="s4">
+<div class="sn">Section 04 · 总结</div><h2 class="st">关键要点回顾</h2><p class="sd">掌握以下要点，每天看 AQI 时心里有数。</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🎯</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">PM₂.₅ 是关键</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">中国 AQI 超标 90% 由 PM₂.₅ 导致</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">☀️</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">夏季防 O₃</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">夏季午后 O₃ 浓度最高，避免户外活动</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🏠</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">重污染戴口罩</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">AQI > 150 时出门需佩戴 N95 口罩</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">📈</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">趋势向好</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">全国 PM₂.₅ 年均值较 2013 年下降超 50%</div></div></div></div>
+
+<div class="ft"><p>环境实验 · 环境科普交互平台</p><p style="margin-top:4px;">联系方式：【联系方式见仓库主页】</p></div>
+
+<script>
+window.addEventListener('scroll',()=>{let h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=(window.scrollY/h*100)+'%'})
+let ss=document.querySelectorAll('.sc'),dd=document.querySelectorAll('.nd')
+ss.forEach(s=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.1}).observe(s))
+window.addEventListener('scroll',()=>{let c=0;ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)c=i});dd.forEach((d,i)=>d.classList.toggle('ac',i===c))})
+function gs(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+function rc(c){if(!c.classList.contains('rv'))c.classList.add('rv')}
+function at(n){
+    let ps=document.querySelectorAll('#at0,#at1');
+    let ts=document.querySelector('#aqiInfoTabs').querySelectorAll('.ev-tab');
+    ps.forEach(p=>p.classList.remove('ac'));
+    ts.forEach(t=>t.classList.remove('ac'));
+    document.getElementById('at'+n).classList.add('ac');
+    ts[n].classList.add('ac');
+}
+function eg(n){
+    let ps=document.querySelectorAll('#ep0,#ep1');
+    let ts=document.querySelector('#evalTabs').querySelectorAll('.ev-tab');
+    ps.forEach(p=>p.classList.remove('ac'));
+    ts.forEach(t=>t.classList.remove('ac','done'));
+    document.getElementById('ep'+n).classList.add('ac');
+    ts[n].classList.add('ac');
+    for(let i=0;i<n;i++)ts[i].classList.add('done');
+}
+
+let cc=0;
+const CD=[
+    {pm25:85,pm10:120,so2:15,no2:55,co:1.2,o3:95},
+    {pm25:45,pm10:70,so2:10,no2:42,co:0.9,o3:110},
+    {pm25:25,pm10:40,so2:8,no2:35,co:0.7,o3:85},
+    {pm25:95,pm10:130,so2:12,no2:48,co:1.0,o3:120},
+    {pm25:155,pm10:220,so2:25,no2:60,co:1.8,o3:80},
+    {pm25:18,pm10:30,so2:5,no2:22,co:0.5,o3:70},
+    {pm25:55,pm10:85,so2:18,no2:38,co:0.8,o3:65},
+    {pm25:35,pm10:50,so2:6,no2:28,co:0.6,o3:100}
+];
+
+function setC(idx){
+    cc=idx;document.querySelectorAll('.city-item').forEach((c,i)=>c.classList.toggle('ac',i===idx));
+    if(idx<8){const d=CD[idx];
+        ['i-pm25','i-pm10','i-so2','i-no2','i-co','i-o3'].forEach((id,i)=>{
+            const ks=['pm25','pm10','so2','no2','co','o3'];
+            document.getElementById(id).value=d[ks[i]];
+        });
+    }
+}
+
+// IAQI breakpoints for standard pollutants
+const BP_25=[0,35,75,115,150,250,350,500];
+const BP_10=[0,50,150,250,350,420,500,600];
+const BP_SO2=[0,50,150,475,800,1600,2100,2620];
+const BP_NO2=[0,40,80,180,280,565,750,940];
+const BP_CO=[0,2,4,14,24,36,48,60];
+const BP_O3=[0,100,160,215,265,800]; // 8hr avg for 0-4, 1hr for 5
+
+function calcIAQI(conc,bp){
+    if(conc<=0)return 0;
+    const IAQI=[0,50,100,150,200,300,400,500];
+    for(let i=0;i<bp.length-1;i++){
+        if(conc>bp[i]&&conc<=bp[i+1]){
+            return Math.round((IAQI[i+1]-IAQI[i])/(bp[i+1]-bp[i])*(conc-bp[i])+IAQI[i]);
+        }
+    }
+    return 500;
+}
+
+function doAQI(){
+    const d={
+        pm25:parseFloat(document.getElementById('i-pm25').value)||0,
+        pm10:parseFloat(document.getElementById('i-pm10').value)||0,
+        so2:parseFloat(document.getElementById('i-so2').value)||0,
+        no2:parseFloat(document.getElementById('i-no2').value)||0,
+        co:parseFloat(document.getElementById('i-co').value)||0,
+        o3:parseFloat(document.getElementById('i-o3').value)||0
+    };
+    
+    const i25=calcIAQI(d.pm25,BP_25);
+    const i10=calcIAQI(d.pm10,BP_10);
+    const iSO2=calcIAQI(d.so2,BP_SO2);
+    const iNO2=calcIAQI(d.no2,BP_NO2);
+    const iCO=calcIAQI(d.co,BP_CO);
+    const iO3=calcIAQI(d.o3,BP_O3);
+    
+    const aqi=Math.max(i25,i10,iSO2,iNO2,iCO,iO3);
+    const pct=Math.min(100,aqi/5);
+    
+    // Determine primary
+    const vals={i25:i25,c25:d.pm25,i10:i10,c10:d.pm10,iSO2:iSO2,cSO2:d.so2,iNO2:iNO2,cNO2:d.no2,iCO:iCO,cCO:d.co,iO3:iO3,cO3:d.o3};
+    const names={i25:'PM₂.₅',i10:'PM₁₀',iSO2:'SO₂',iNO2:'NO₂',iCO:'CO',iO3:'O₃'};
+    const units={i25:'μg/m³',i10:'μg/m³',iSO2:'μg/m³',iNO2:'μg/m³',iCO:'mg/m³',iO3:'μg/m³'};
+    const keys=Object.keys(vals).filter((_,i)=>i%2===0);
+    let maxK='i25',maxV=i25;
+    keys.forEach(k=>{if(vals[k]>maxV){maxV=vals[k];maxK=k}});
+    
+    // Grade
+    let grade,color,bg,desc,action;
+    if(aqi<=50){grade='优';color='#16a34a';bg='#f0fdf4';desc='空气质量令人满意，基本无空气污染。';action='各类人群可正常活动。'}
+    else if(aqi<=100){grade='良';color='#b45309';bg='#fefce8';desc='空气质量可接受，某些污染物可能对极少数敏感人群有影响。';action='极少数敏感人群应减少户外活动。'}
+    else if(aqi<=150){grade='轻度污染';color='#ea580c';bg='#fff7ed';desc='敏感人群症状有轻度加剧，健康人群出现刺激症状。';action='儿童、老年人及心脏病、呼吸系统疾病患者应减少长时间高强度的户外锻炼。'}
+    else if(aqi<=200){grade='中度污染';color='#dc2626';bg='#fef2f2';desc='进一步加剧敏感人群症状，可能对健康人群心脏、呼吸系统有影响。';action='敏感人群应减少户外活动，一般人群适量减少户外运动。'}
+    else if(aqi<=300){grade='重度污染';color='#be185d';bg='#fdf2f8';desc='心脏病和肺病患者症状显著加剧，运动耐受力降低。';action='儿童、老年人及患者应留在室内，一般人群避免户外活动。'}
+    else{grade='严重污染';color='#881337';bg='#fce7f3';desc='健康人群运动耐受力降低，有明显强烈症状。';action='儿童、老年人及患者应留在室内，一般人群应避免户外活动。'}
+    
+    document.getElementById('aqiCard').style.background=bg;
+    document.getElementById('aqiNum').textContent=aqi;document.getElementById('aqiNum').style.color=color;
+    document.getElementById('aqiLbl').textContent=grade+' | 首要: '+names[maxK];document.getElementById('aqiLbl').style.color=color;
+    document.getElementById('aqiDesc').innerHTML=`${desc}<br><br><strong>健康建议：</strong>${action}`;
+    
+    const fill=document.getElementById('aqiFill');
+    fill.style.transition='width 1.5s ease';
+    fill.style.width=pct+'%';
+    
+    document.getElementById('idetail').innerHTML=
+        `<div style="background:${i25>100?'#fef2f2':'#f0fdf4'};"><span class="iv" style="color:${i25>100?'#dc2626':'#16a34a'};">${i25}</span><span class="il">PM₂.₅ IAQI</span></div>
+        <div style="background:${i10>100?'#fef2f2':'#f0fdf4'};"><span class="iv" style="color:${i10>100?'#dc2626':'#16a34a'};">${i10}</span><span class="il">PM₁₀ IAQI</span></div>
+        <div style="background:${iSO2>100?'#fef2f2':'#f0fdf4'};"><span class="iv" style="color:${iSO2>100?'#dc2626':'#16a34a'};">${iSO2}</span><span class="il">SO₂ IAQI</span></div>
+        <div style="background:${iNO2>100?'#fef2f2':'#f0fdf4'};"><span class="iv" style="color:${iNO2>100?'#dc2626':'#16a34a'};">${iNO2}</span><span class="il">NO₂ IAQI</span></div>
+        <div style="background:${iCO>100?'#fef2f2':'#f0fdf4'};"><span class="iv" style="color:${iCO>100?'#dc2626':'#16a34a'};">${iCO}</span><span class="il">CO IAQI</span></div>
+        <div style="background:${iO3>100?'#fef2f2':'#f0fdf4'};"><span class="iv" style="color:${iO3>100?'#dc2626':'#16a34a'};">${iO3}</span><span class="il">O₃ IAQI</span></div>`;
+    
+    eg(1);
+}
+
+document.addEventListener('DOMContentLoaded',()=>setC(0));
+</script></body></html>

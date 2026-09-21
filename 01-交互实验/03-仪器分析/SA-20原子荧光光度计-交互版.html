@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原子荧光光度计 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#c026d3;--accent-glow:#d946ef;--accent-bg:rgba(192,38,211,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2a0a2e 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(192,38,211,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(192,38,211,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(192,38,211,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#2a0a2e);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#c026d3,#d946ef);color:#fff}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(192,38,211,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr7{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr7{grid-template-columns:1fr 1fr}}
+.pwr6{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr6{grid-template-columns:1fr 1fr}}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:150px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+.sub{font-size:11px;color:#94a3b8;margin:14px 0 4px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">原子荧光光度计</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">SA-20</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">氢化物/蒸气发生 · 氩氢火焰原子化 · 痕量 As/Hg/Se 等</div>
+  <div class="hst">
+    <div><span class="n">0.3</span><span class="l">氩气分压 MPa</span></div>
+    <div><span class="n">30min</span><span class="l">预热(测汞1h)</span></div>
+    <div><span class="n">双道</span><span class="l">A/B 元素灯</span></div>
+    <div><span class="n">荧光</span><span class="l">特征波长检测</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">原子荧光光度计（AFS）专攻<b>痕量重金属</b>——砷、汞、硒、铅、镉……样品加还原剂（硼氢化钾）生成氢化物或原子态蒸气，由氩气载入原子化器，在氩氢火焰中被激发，再测其特征荧光强度定量。灵敏度极高，是食品、水质中痕毒物的"照妖镜"。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">⚗️</div><div class="in">氢化物发生</div><div class="id">样品 + 硼氢化钾还原剂，生成气态氢化物/原子蒸气，与基体分离。</div><span class="it">蒸气发生</span></div>
+    <div class="ic"><div class="ii">🔥</div><div class="in">氩氢火焰</div><div class="id">氩气载带进入原子化器，氢氩火焰使原子激发。氩气是载气也是保护气。</div><span class="it">气路是命门</span></div>
+    <div class="ic"><div class="ii">✨</div><div class="in">荧光检测</div><div class="id">元素灯特征波长激发原子，测荧光强度，与浓度正相关。</div><span class="it">荧光定量</span></div>
+    <div class="ic"><div class="ii">📈</div><div class="in">标准曲线</div><div class="id">先测标准系列建曲线，再测样品反查浓度。每批样品必须带标准。</div><span class="it">外标法定量</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>先点火后开气、带电换灯、不预热就测、关机先关气不熄火，系统都会直接提醒你</b>，这些正是把灯烧坏、把信号做飞的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ SA-20 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">SA-20 原子荧光光度计</span>
+    </div>
+
+    <div class="sub">① 开机顺序：电脑 → 开氩气(0.3MPa) → 换元素灯 → 开主机/双泵 → 查光斑水封 → 工作站自检</div>
+    <div class="pwr">
+      <div class="pb" id="bw1" onclick="boot(1)">开电脑<span class="po">step 1</span></div>
+      <div class="pb" id="bw2" onclick="boot(2)">开氩气瓶<span class="po">0.3MPa</span></div>
+      <div class="pb" id="bw3" onclick="boot(3)">换元素灯<span class="po">step 3</span></div>
+      <div class="pb" id="bw4" onclick="boot(4)">开主机/双泵<span class="po">step 4</span></div>
+      <div class="pb" id="bw5" onclick="boot(5)">查光斑/水封<span class="po">step 5</span></div>
+      <div class="pb" id="bw6" onclick="boot(6)">工作站自检<span class="po">step 6</span></div>
+    </div>
+    <div class="cols">
+      <div class="fld"><label>氩气分压 (MPa，应 0.3)</label><input type="number" id="iAr" value="0.3" step="0.05"></div>
+      <div class="fld"><label>测量元素</label><input type="text" id="iElem" value="As（测汞请改 Hg）"></div>
+    </div>
+
+    <div class="sub">② 点火（需氩气已开 + 主机已开 + 自检通过）</div>
+    <div class="acts">
+      <button class="btn b1" id="btnIgnite" onclick="ignite()" disabled>🔥 点火（炉丝点亮）</button>
+    </div>
+
+    <div class="sub">③ 元素识别 + 仪器条件 + 标准系列 + 样品参数</div>
+    <div class="acts">
+      <button class="btn b2" id="btnMethod" onclick="makeMethod()" disabled>💡 建方法 + 标准/样品</button>
+    </div>
+
+    <div class="sub">④ 预热（30min 以上，测汞 1h 以上）</div>
+    <div class="acts">
+      <button class="btn b1" id="btnPre" onclick="preheat()" disabled>⏳ 预热</button>
+    </div>
+
+    <div class="sub">⑤ 开始测量</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">荧光强度</div><div class="dd" id="dF">—</div></div>
+      <div class="dv"><div class="dl">浓度 μg/L</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnMeasure" onclick="measure()" disabled>▶ 开始测量</button>
+    </div>
+
+    <div class="sub">⑥ 关机顺序：清洗 → 熄火 → 关软件 → 关仪器电源 → 关气 → 松泵压块 → 关电脑</div>
+    <div class="pwr7">
+      <div class="pb" id="sh1" onclick="shut(1)">清洗管路<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">熄火<span class="po">step 2</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">关软件<span class="po">step 3</span></div>
+      <div class="pb" id="sh4" onclick="shut(4)">关仪器电源<span class="po">step 4</span></div>
+      <div class="pb" id="sh5" onclick="shut(5)">关氩气<span class="po">step 5</span></div>
+      <div class="pb" id="sh6" onclick="shut(6)">松泵压块<span class="po">step 6</span></div>
+      <div class="pb" id="sh7" onclick="shut(7)">关电脑<span class="po">step 7</span></div>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">💨</div><div class="in">先开氩气再点火</div><div class="id">氩气分压 0.3MPa，点火前气路必须通。先点火后开气 → 炉丝干烧、无载气保护，灯和原子化器损坏。</div><span class="it">气路红线</span></div>
+    <div class="ic"><div class="ii">💡</div><div class="in">换灯必须在开主机前</div><div class="id">换元素灯在 开主机电源 之前完成。主机带电时插拔元素灯 → 烧毁灯与电源，操作规程明确"严禁带电插拔元素灯"。</div><span class="it">致命红线</span></div>
+    <div class="ic"><div class="ii">⏳</div><div class="in">预热 30min 以上</div><div class="id">测样前必须预热 30min 以上（测汞 1h 以上）。不预热直接测 → 基线漂移、荧光强度不稳、数据无效。</div><span class="it">时间红线</span></div>
+    <div class="ic"><div class="ii">🔌</div><div class="in">关机先熄火再关气/电源</div><div class="id">必须 清洗→熄火→关软件→关电源→关气→松泵压块→关电脑。先关气/断电而炉丝未熄 → 烧坏原子化器。</div><span class="it">反序致命</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={boot:0,arOk:false,lamp:false,host:false,selfTest:false,ignited:false,method:false,preheat:false,measuring:false,shut:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function boot(n){
+  if(S.measuring){warn('测量中不可操作');return;}
+  if(n!==S.boot+1){warn('开机顺序错误：电脑 → 开氩气 → 换元素灯 → 开主机/双泵 → 查光斑水封 → 工作站自检');log('开机顺序错误，已阻断',false);return;}
+  // 红线：开主机(4)前必须已换灯(3)
+  if(n===4 && !S.lamp){warn('⚠️ 必须先换元素灯、再开主机电源！严禁带电插拔元素灯（会烧毁灯与电源）');log('带电插拔元素灯风险，已阻断',false);return;}
+  S.boot=n;$('bw'+n).classList.add('on');
+  log('开启：'+['电脑','氩气瓶(分压0.3MPa)','换元素灯','主机+双泵电源','检查光斑/水封','双击工作站自检'][n-1]);
+  if(n===2){const ar=+$('iAr').value;if(ar<0.25||ar>0.35){warn('⚠️ 氩气分压应在 0.3 MPa（当前 '+ar+'）');return;}S.arOk=true;log('✔ 氩气已开，分压 '+ar+' MPa',true);}
+  if(n===3){S.lamp=true;log('✔ 元素灯已换（主机未通电，安全）',true);}
+  if(n===4) S.host=true;
+  if(n===6){S.selfTest=true;setSts('🟢 自检通过','sa');$('btnIgnite').disabled=false;warn('');log('✔ 自检全部正常',true);}
+}
+function ignite(){
+  if(S.ignited){warn('已点火');return;}
+  if(!S.arOk){warn('⚠️ 必须先开氩气瓶（分压0.3MPa）再点火！');log('未开氩气即点火，已阻断',false);return;}
+  if(!S.host||!S.selfTest){warn('请先开主机并完成工作站自检');return;}
+  S.ignited=true;$('btnIgnite').classList.add('on');$('btnIgnite').textContent='🔥 已点火';setSts('🔥 炉丝已点亮','sa');
+  log('点火成功：原子化器炉丝点亮',true);$('btnMethod').disabled=false;warn('');
+}
+function makeMethod(){
+  if(S.method){warn('方法已建');return;}
+  if(!S.ignited){warn('请先点火');return;}
+  S.method=true;$('btnMethod').classList.add('on');$('btnMethod').textContent='✅ 方法已建';
+  log('元素识别(A/B道)+仪器条件+标准系列S1~S5+样品参数 完成',true);$('btnPre').disabled=false;
+}
+function preheat(){
+  if(S.preheat){warn('已预热');return;}
+  const el=$('iElem').value;
+  S.preheat=true;$('btnPre').classList.add('on');setSts('⏳ 预热中…','sa');
+  const mins=el.indexOf('Hg')>=0?60:30;
+  log('预热 '+mins+' 分钟以上（'+(el.indexOf('Hg')>=0?'测汞需 1h':'常规 30min')+'）…');
+  setTimeout(()=>{log('✔ 预热完成，基线稳定',true);setSts('🟢 就绪','sa');$('btnMeasure').disabled=false;},700);
+}
+function measure(){
+  if(!S.ignited){warn('请先点火');return;}
+  if(!S.method){warn('请先建方法/标准系列');return;}
+  if(!S.preheat){warn('⚠️ 请先预热 30min 以上（测汞 1h）！不预热基线不稳、数据无效');log('未预热即测量，已阻断',false);return;}
+  if(S.measuring)return;
+  S.measuring=true;setSts('📡 测量中…','sa');$('dState').textContent='测量中';
+  log('开始测量（模拟荧光采集）');
+  let p=0;const iv=setInterval(()=>{p++;if(p>=8){clearInterval(iv);
+    const f=(Math.random()*400+100).toFixed(0);
+    const c=(Math.random()*10+0.5).toFixed(3);
+    $('dF').textContent=f;if(c)$('dC').textContent=c+' μg/L';
+    $('dState').textContent='完成';setSts('✅ 测量完成','sok');S.measuring=false;
+    log('测量完成：荧光 '+f+'，浓度 '+c+' μg/L（示例值）',true);
+    [1,2,3,4,5,6,7].forEach(n=>$('sh'+n).disabled=false);
+  }},150);
+}
+function shut(n){
+  const order=['清洗管路(载流/还原剂入超纯水)','熄火','关软件','关仪器电源','关氩气','松开泵压块','关电脑'];
+  if(n!==S.shut+1){
+    if(n===5 && S.shut<2){warn('⚠️ 必须先熄火、再关氩气！带火关气/断电会烧坏原子化器');}
+    else if(n===4 && S.shut<2){warn('⚠️ 必须先熄火、再关仪器电源！');}
+    else if(n===6 && S.shut<5){warn('⚠️ 关氩气后再松开泵压块！');}
+    else if(n===7 && S.shut<6){warn('⚠️ 最后一步才关电脑！');}
+    else warn('关机顺序错误：清洗 → 熄火 → 关软件 → 关电源 → 关气 → 松泵压块 → 关电脑');
+    log('关机顺序错误，已阻断',false);return;
+  }
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){setSts('🚿 清洗中…','sa');log('点击清洗程序，载流/还原剂毛细管入超纯水清洗');setTimeout(()=>log('✔ 管路清洗完成',true),500);}
+  else log('执行：'+order[n-1]);
+  if(n===2) log('✔ 炉丝已熄',true);
+  if(n===5) log('✔ 氩气已关',true);
+  if(n===7){setSts('🔒 已关机','si');log('关机完成，清废液、理台面',true);warn('');}
+}
+function resetAll(){
+  S={boot:0,arOk:false,lamp:false,host:false,selfTest:false,ignited:false,method:false,preheat:false,measuring:false,shut:0};
+  [1,2,3,4,5,6].forEach(n=>$('bw'+n).classList.remove('on'));
+  [1,2,3,4,5,6,7].forEach(n=>{$('sh'+n).classList.remove('on');$('sh'+n).disabled=true;});
+  $('btnIgnite').disabled=true;$('btnIgnite').classList.remove('on');$('btnIgnite').textContent='🔥 点火（炉丝点亮）';
+  $('btnMethod').disabled=true;$('btnMethod').classList.remove('on');$('btnMethod').textContent='💡 建方法 + 标准/样品';
+  $('btnPre').disabled=true;$('btnPre').classList.remove('on');$('btnPre').textContent='⏳ 预热';
+  $('btnMeasure').disabled=true;
+  $('dF').textContent='—';$('dC').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

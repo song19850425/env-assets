@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>读懂一个湖 · 富营养化评价</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--ink-light:#555;--paper:#faf9f6;--paper-warm:#f5f0e8;--lake:#0d9488;--lake-light:#ccfbf1;--lake-bg:#f0fdfa;--green:#16a34a;--green-light:#f0fdf4;--gold:#b45309;--gold-light:#fefce8;--blue:#1e40af;--blue-light:#eff6ff;--red:#dc2626;--red-light:#fef2f2;--border:#e8e0d4;--serif:'Noto Serif SC','Source Han Serif SC','Songti SC',serif;--sans:'Inter',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+html{scroll-behavior:smooth}body{font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--lake),var(--green));z-index:1000;transition:width .1s}
+#nv{position:fixed;right:24px;top:50%;z-index:999;display:flex;flex-direction:column;gap:14px}
+.nd{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;border:2px solid transparent;position:relative;transition:.3s}
+.nd.ac{background:var(--lake);transform:scale(1.5)}.nd:hover{border-color:var(--lake)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:11px;white-space:nowrap;color:var(--ink-light);background:#fff;padding:3px 10px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .2s}
+.nd:hover .nl{opacity:1}
+.he{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,var(--lake-bg) 0%,var(--paper) 100%)}
+.hb{display:inline-block;padding:6px 18px;border-radius:20px;background:var(--lake-light);color:var(--lake);font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:24px;border:1px solid rgba(13,148,136,.15)}
+.he h1{font-family:var(--serif);font-size:clamp(36px,6vw,72px);font-weight:900;color:var(--ink);max-width:700px}
+.he h1 em{font-style:normal;color:var(--lake)}
+.he p{margin-top:20px;font-size:clamp(14px,2vw,18px);color:var(--ink-light);max-width:560px;line-height:1.7}
+.hs{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap;justify-content:center}
+.hs div{text-align:center}.hs .n{font-family:var(--serif);font-size:36px;font-weight:900;color:var(--lake);display:block}
+.hs .l{font-size:12px;color:var(--ink-light);margin-top:4px}
+.sh{position:absolute;bottom:32px;left:50%;color:var(--ink-light);font-size:12px;animation:fl 2s infinite}@keyframes fl{0%,100%{transform:translateX(-50%)}50%{transform:translateX(-50%) translateY(8px)}}
+.sc{max-width:900px;margin:0 auto;padding:100px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}.sc.vi{opacity:1;transform:translateY(0)}
+.sn{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--lake);margin-bottom:8px}
+.st{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:700;margin-bottom:12px}
+.sd{font-size:16px;color:var(--ink-light);line-height:1.8;max-width:600px;margin-bottom:48px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px}
+.ic{background:#fff;border-radius:12px;padding:24px;border:1px solid var(--border);cursor:pointer;transition:.35s ease;position:relative;overflow:hidden}
+.ic::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--lake);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.ic:hover::before{transform:scaleX(1)}.ic:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
+.ic.rv{background:var(--lake-light);border-color:rgba(13,148,136,.2)}
+.ii{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.in{font-weight:700;font-size:15px;margin-bottom:2px}.is{font-size:12px;color:var(--ink-light)}
+.ib{font-size:13px;color:var(--ink-light);line-height:1.6;margin-top:10px;max-height:0;overflow:hidden;transition:max-height .5s ease,margin-top .5s ease}
+.ic.rv .ib{max-height:300px;margin-top:10px}
+.it{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.tl{position:relative;padding-left:36px}.tl::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tp{position:relative;margin-bottom:36px;opacity:0;transform:translateX(-16px);transition:opacity .6s ease,transform .6s ease}
+.tp.vi{opacity:1;transform:translateX(0)}
+.tp::before{content:'';position:absolute;left:-30px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid var(--border);transition:.3s}
+.tp.vi::before{background:var(--lake);border-color:var(--lake)}
+.tn{font-size:11px;font-weight:700;color:var(--lake);letter-spacing:1px;margin-bottom:4px}
+.tt{font-weight:700;font-size:15px;margin-bottom:6px}
+.td{font-size:14px;color:var(--ink-light);line-height:1.7}
+.to{display:inline-block;margin-top:6px;padding:3px 10px;background:var(--lake-light);color:var(--lake);border-radius:6px;font-size:12px}
+.ev-box{background:#fff;border-radius:16px;border:1px solid var(--border);overflow:hidden}
+.ev-tabs{display:flex;background:#fafaf8;border-bottom:1px solid var(--border)}
+.ev-tab{flex:1;text-align:center;padding:16px 8px;font-size:12px;color:#999;cursor:pointer;border-bottom:3px solid transparent;transition:.3s;font-weight:500}
+.ev-tab .en{font-weight:700;display:block;font-size:13px;margin-bottom:2px}
+.ev-tab.ac{color:var(--lake);border-bottom-color:var(--lake);background:var(--lake-light)}
+.ev-tab.done{color:var(--green);border-bottom-color:var(--green)}
+.ev-panel{display:none;padding:32px;min-height:360px}
+.ev-panel.ac{display:block}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.sg label{font-size:12px;font-weight:600;color:var(--ink-light);display:block;margin-bottom:4px}
+.sg input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;font-family:var(--sans);background:#fff;transition:.2s}
+.sg input:focus{outline:none;border-color:var(--lake);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+.lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.lc{background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border);cursor:pointer;transition:.3s;text-align:center}
+.lc:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.lc.ac{background:var(--lake-light);border-color:var(--lake)}
+.lc .li{font-size:28px;margin-bottom:4px}.lc .ln{font-weight:700;font-size:13px}.lc .ll{font-size:11px;color:var(--ink-light)}
+.zb{padding:12px 28px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;font-family:var(--sans)}
+.zb1{background:linear-gradient(135deg,var(--lake),#0f766e);color:#fff}
+.zb1:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,.3)}
+.zb2{background:linear-gradient(135deg,var(--blue),#1e3a8a);color:#fff}
+.zb2:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,64,175,.3)}
+.result-box{text-align:center;padding:32px;border-radius:14px;margin-top:20px;display:none}
+.result-box .gb{font-family:var(--serif);font-size:52px;font-weight:900;line-height:1;display:block}
+.result-box .gl{font-size:18px;margin-top:4px}
+.result-box .gd{font-size:13px;color:var(--ink-light);margin-top:8px;line-height:1.8}
+.idetail{display:grid;grid-template-columns:1fr;gap:8px;margin:16px 0}
+.idetail div{padding:12px 16px;border-radius:8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+/* TLI scale visual */
+.scale-wrap{background:#fff;border-radius:12px;padding:20px;border:1px solid var(--border);margin:16px 0}
+.scale{height:16px;border-radius:8px;position:relative;margin:8px 0 16px;overflow:hidden}
+.scale-fill{height:100%;border-radius:8px;transition:width 1.5s ease;width:0}
+.scale-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light)}
+.ft{text-align:center;padding:60px 24px;color:var(--ink-light);font-size:13px;border-top:1px solid var(--border);background:var(--paper-warm)}
+@media(max-width:600px){.sg{grid-template-columns:1fr}.hs{gap:24px}#nv{right:12px}}
+</style></head><body>
+<div id="sp"></div><div id="nv"><div class="nd ac" onclick="gs(0)"><span class="nl">开篇</span></div><div class="nd" onclick="gs(1)"><span class="nl">指标</span></div><div class="nd" onclick="gs(2)"><span class="nl">方法</span></div><div class="nd" onclick="gs(3)"><span class="nl">交互评价</span></div><div class="nd" onclick="gs(4)"><span class="nl">总结</span></div></div>
+
+<div class="he"><div class="hb">水环境 · 交互式教学</div><h1>读懂一个<em>湖</em></h1><p>Lake Eutrophication Assessment<br>从叶绿素到营养状态指数，系统掌握湖泊富营养化评价方法。</p><div class="hs"><div><span class="n">5</span><span class="l">项关键指标</span></div><div><span class="n">6</span><span class="l">级营养分级</span></div><div><span class="n">TLI</span><span class="l">综合营养指数</span></div><div><span class="n">太湖</span><span class="l">经典案例</span></div></div><div class="sh">↓ 向下滚动</div></div>
+
+<div class="sc vi" id="s1">
+<div class="sn">Section 01 · 指标体系</div><h2 class="st">五维度的"湖泊体检"</h2><p class="sd">富营养化评价以综合营养状态指数（TLI）为核心，涵盖 5 项指标。点击卡片查看。</p><div class="cg">
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#ccfbf1;">🌿</div><div class="in">叶绿素a (Chl-a)</div><div class="is">核心指标</div><div class="ib">反映藻类生物量的最直接指标。TLI 计算中以 Chl-a 为基准。单位 μg/L。贫营养湖 < 3，富营养湖可达 > 50。</div><span class="it" style="background:#ccfbf1;color:#0d9488;">核心</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#e0f2fe;">👁️</div><div class="in">透明度 (SD)</div><div class="is">Secchi Depth</div><div class="ib">塞氏盘深度，反映水体清澈程度。富营养化湖藻类大量繁殖，透明度显著下降。单位 m。太湖富营养区 SD 常 < 0.5 m。</div><span class="it" style="background:#e0f2fe;color:#0c4a6e;">物理</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef3c7;">🧪</div><div class="in">总磷 (TP)</div><div class="is">限制性营养盐</div><div class="ib">湖泊富营养化的限制性因子。磷浓度升高直接刺激藻类生长。单位 mg/L。贫营养 < 0.01，富营养 > 0.05。</div><span class="it" style="background:#fef3c7;color:#92400e;">限制</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#f0fdf4;">🧫</div><div class="in">总氮 (TN)</div><div class="is">综合营养盐</div><div class="ib">氮也是藻类生长的必需营养元素。TN/TP 比值可判断限制性元素。</div><span class="it" style="background:#f0fdf4;color:#166534;">营养</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef2f2;">⚗️</div><div class="in">COD</div><div class="is">有机物指标</div><div class="ib">反映水体中有机物总量。富营养化湖中藻类死亡分解产生大量有机物，COD 浓度升高。</div><span class="it" style="background:#fef2f2;color:#991b1b;">综合</span></div></div></div>
+
+<div class="sc" id="s2">
+<div class="sn">Section 02 · 评价方法</div><h2 class="st">综合营养状态指数法 (TLI)</h2><p class="sd">TLI 是中国湖泊富营养化评价的标准方法（中国环境监测总站，2001）。以 Chl-a 为基准，各指标加权计算。</p>
+<div class="tl">
+<div class="tp"><div class="tn">STEP 01</div><div class="tt">计算各指标的营养状态指数</div><div class="td">TLI(Chl-a) = 10(2.5+0.86 ln Chl-a)<br>TLI(TP) = 10(9.436+1.624 ln TP)<br>TLI(TN) = 10(5.453+1.694 ln TN)<br>TLI(SD) = 10(5.118-1.94 ln SD)<br>TLI(COD) = 10(0.109+2.661 ln COD)</div><span class="to">📐 ln 为自然对数</span></div>
+<div class="tp"><div class="tn">STEP 02</div><div class="tt">加权计算综合 TLI</div><div class="td">TLI(Σ) = Σ Wj × TLI(j)。权重 Wj 由 Chl-a 与其他参数的相关系数决定。Chl-a 权重最高（约 0.266）。</div><span class="to">🔢 Wj：Chl-a 0.266, TP 0.188, TN 0.179, SD 0.183, COD 0.183</span></div>
+<div class="tp"><div class="tn">STEP 03</div><div class="tt">营养状态分级</div><div class="td">TLI < 30：贫营养（Oligotrophic）· 30~50：中营养（Mesotrophic）· > 50：富营养（Eutrophic）<br>其中 50~60 轻度 · 60~70 中度 · > 70 重度富营养。</div><span class="to">🎯 中国大部分淡水湖处于富营养状态</span></div></div></div>
+
+<div class="sc" id="s3">
+<div class="sn">Section 03 · 交互评价</div><h2 class="st">湖泊富营养化评价</h2><p class="sd">选择湖泊类型或输入数据，系统自动计算 TLI 并判断营养状态。</p>
+<div class="ev-box">
+<div class="ev-tabs"><div class="ev-tab ac" onclick="eg(0)"><span class="en">①</span>选择湖泊</div><div class="ev-tab" onclick="eg(1)"><span class="en">②</span>录入数据</div><div class="ev-tab" onclick="eg(2)"><span class="en">③</span>评价结果</div></div>
+<div class="ev-panel ac" id="ep0"><p style="font-size:14px;color:var(--ink-light);margin-bottom:20px;">选择湖泊类型（系统加载预设数据）或选择「自定义」自行输入。</p>
+<div class="lg">
+<div class="lc ac" onclick="ls(0)"><div class="li">🏔️</div><div class="ln">贫营养湖</div><div class="ll">高山深水湖泊</div></div>
+<div class="lc" onclick="ls(1)"><div class="li">🌲</div><div class="ln">中营养湖</div><div class="ll">一般水库/湖泊</div></div>
+<div class="lc" onclick="ls(2)"><div class="li">🌊</div><div class="ln">富营养湖</div><div class="ll">城郊湖泊</div></div>
+<div class="lc" onclick="ls(3)"><div class="li">🔴</div><div class="ln">重度富营养</div><div class="ll">典型污染湖泊</div></div>
+<div class="lc" onclick="ls(4)"><div class="li">✏️</div><div class="ln">自定义</div><div class="ll">手动输入数据</div></div></div>
+<div style="text-align:center;margin-top:20px;"><button class="zb zb1" onclick="eg(1)">📋 进入数据录入</button></div></div>
+
+<div class="ev-panel" id="ep1"><p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">输入湖泊监测数据。</p>
+<div class="sg">
+<div><label>叶绿素a Chl-a (μg/L)</label><input type="number" id="in-chl" value="2.5" step="0.1"></div>
+<div><label>透明度 SD (m)</label><input type="number" id="in-sd" value="4.5" step="0.1"></div>
+<div><label>总磷 TP (mg/L)</label><input type="number" id="in-tp" value="0.008" step="0.001"></div>
+<div><label>总氮 TN (mg/L)</label><input type="number" id="in-tn" value="0.25" step="0.01"></div>
+<div><label>COD (mg/L)</label><input type="number" id="in-cod" value="2.0" step="0.1"></div></div>
+<div style="text-align:center;margin-top:20px;"><button class="zb zb1" onclick="doTLI()">📐 计算 TLI</button></div></div>
+
+<div class="ev-panel" id="ep2">
+<div class="scale-wrap"><strong style="font-size:14px;">综合营养状态指数 (TLI)</strong>
+<div class="scale" style="background:linear-gradient(90deg,#16a34a,#bae6fd,#fef3c7,#fbbf24,#dc2626);"><div class="scale-fill" id="tliBar" style="background:#1a1a2e;"></div></div>
+<div class="scale-labels"><span>0 贫营养</span><span>30</span><span>50</span><span>70</span><span>100 重度</span></div></div>
+<div class="result-box" id="resultBox">
+<span class="gb" id="rg">—</span>
+<div class="gl" id="rl">—</div>
+<div class="gd" id="rd">请点击「计算 TLI」</div></div>
+<div class="idetail" id="idetail"></div>
+<div style="text-align:center;margin-top:16px;">
+<button class="zb zb2" onclick="eg(0)">🔄 重新选择</button>
+<button class="zb zb1" onclick="eg(1)" style="margin-left:8px;">📝 修改数据</button></div></div></div></div>
+
+<div class="sc" id="s4">
+<div class="sn">Section 04 · 总结</div><h2 class="st">关键要点回顾</h2><p class="sd">掌握以下核心要点，有助于准确理解湖泊富营养化评价。</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🌿</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">Chl-a 为核心</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">叶绿素a是TLI计算的基准指标</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🧪</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">磷是限制因子</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">中国湖泊富营养化主要受磷控制</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">📊</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">TLI > 50 即富营养</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">50~60轻度·60~70中度·>70重度</div></div>
+<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);"><div style="font-size:28px;margin-bottom:8px;">🌎</div><div style="font-weight:700;font-size:14px;margin-bottom:4px;">太湖案例</div><div style="font-size:12px;color:var(--ink-light);line-height:1.6;">太湖典型区域TLI > 65，重度富营养</div></div></div></div>
+
+<div class="ft"><p>环境实验 · 环境检测交互式教学平台</p><p style="margin-top:4px;">联系方式：【联系方式见仓库主页】</p></div>
+
+<script>
+window.addEventListener('scroll',()=>{let h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=(window.scrollY/h*100)+'%'})
+let ss=document.querySelectorAll('.sc'),dd=document.querySelectorAll('.nd')
+ss.forEach(s=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.1}).observe(s))
+document.querySelectorAll('.tp').forEach(t=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.2}).observe(t))
+window.addEventListener('scroll',()=>{let c=0;ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)c=i});dd.forEach((d,i)=>d.classList.toggle('ac',i===c))})
+function gs(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+function rc(c){if(!c.classList.contains('rv'))c.classList.add('rv')}
+
+let eCur=0,eLake=0;
+const lNames=['贫营养湖','中营养湖','富营养湖','重度富营养','自定义'];
+const lData=[
+    {chl:2.5,sd:4.5,tp:0.008,tn:0.25,cod:2.0},
+    {chl:10,sd:2.5,tp:0.035,tn:0.8,cod:4.5},
+    {chl:42,sd:0.8,tp:0.12,tn:2.5,cod:8.2},
+    {chl:95,sd:0.3,tp:0.35,tn:5.8,cod:15.0},
+    {chl:25,sd:1.5,tp:0.08,tn:1.8,cod:5.5}
+];
+
+function eg(n){eCur=n;
+    document.querySelectorAll('.ev-panel').forEach(p=>p.classList.remove('ac'));
+    document.querySelectorAll('.ev-tab').forEach(t=>{t.classList.remove('ac');t.classList.remove('done')});
+    document.getElementById('ep'+n).classList.add('ac');
+    document.querySelectorAll('.ev-tab')[n].classList.add('ac');
+    for(let i=0;i<n;i++)document.querySelectorAll('.ev-tab')[i].classList.add('done');
+}
+
+function ls(idx){eLake=idx;
+    document.querySelectorAll('.lc').forEach((c,i)=>c.classList.toggle('ac',i===idx));
+    if(idx<4){const d=lData[idx];
+        document.getElementById('in-chl').value=d.chl;
+        document.getElementById('in-sd').value=d.sd;
+        document.getElementById('in-tp').value=d.tp;
+        document.getElementById('in-tn').value=d.tn;
+        document.getElementById('in-cod').value=d.cod;
+        document.querySelectorAll('.lc')[4].classList.remove('ac');
+    }
+}
+
+// TLI Calculation
+function tli_chl(v){return 10*(2.5+0.86*Math.log(v))}
+function tli_tp(v){return 10*(9.436+1.624*Math.log(v))}
+function tli_tn(v){return 10*(5.453+1.694*Math.log(v))}
+function tli_sd(v){return 10*(5.118-1.94*Math.log(v))}
+function tli_cod(v){return 10*(0.109+2.661*Math.log(v))}
+
+// Weights
+const W={chl:0.266,tp:0.188,tn:0.179,sd:0.183,cod:0.183};
+
+function doTLI(){
+    const d={
+        chl:parseFloat(document.getElementById('in-chl').value)||1,
+        sd:parseFloat(document.getElementById('in-sd').value)||1,
+        tp:parseFloat(document.getElementById('in-tp').value)||0.001,
+        tn:parseFloat(document.getElementById('in-tn').value)||0.01,
+        cod:parseFloat(document.getElementById('in-cod').value)||1
+    };
+    
+    // Calculate individual TLIs
+    const TLIs={};
+    TLIs.chl=tli_chl(d.chl);
+    TLIs.tp=tli_tp(d.tp);
+    TLIs.tn=tli_tn(d.tn);
+    TLIs.sd=tli_sd(d.sd);
+    TLIs.cod=tli_cod(d.cod);
+    
+    // Weighted TLI
+    let tli=0;
+    Object.keys(TLIs).forEach(k=>{tli+=W[k]*TLIs[k]});
+    
+    // Cap at 100
+    tli=Math.min(tli,100);
+    
+    // Grade
+    let grade,color,bg,desc;
+    if(tli<30){grade='贫营养';color='#16a34a';bg='#dcfce7';desc='水质优良，藻类生物量低，水体清澈透亮。常见于高山深水湖泊和源头水库。'}
+    else if(tli<50){grade='中营养';color='#0d9488';bg='#ccfbf1';desc='水质一般，季节性或波动性藻类生长。大部分水库和天然湖泊处此状态。'}
+    else if(tli<60){grade='轻度富营养';color='#b45309';bg='#fef3c7';desc='藻类明显增加，透明度下降。有蓝藻水华风险。需关注营养盐输入控制。'}
+    else if(tli<70){grade='中度富营养';color='#dc2626';bg='#fef2f2';desc='藻类大量繁殖，水华频发。水体浑浊，溶解氧波动大。需采取治理措施。'}
+    else{grade='重度富营养';color='#991b1b';bg='#fef2f2';desc='藻类极度繁茂，夏季水华严重。可能产生藻毒素。底泥厌氧，鱼类死亡风险高。'}
+    
+    // Update detail
+    const keys=['chl','sd','tp','tn','cod'];
+    const names=['Chl-a (μg/L)','SD (m)','TP (mg/L)','TN (mg/L)','COD (mg/L)'];
+    let html='';
+    keys.forEach((k,i)=>{
+        const t=TLIs[k];
+        const cl=t<30?'#dcfce7':t<50?'#ccfbf1':t<60?'#fef3c7':'#fef2f2';
+        html+=`<div style="background:${cl};"><span><strong>${names[i]}</strong> ${d[k]}</span><span>TLI=${t.toFixed(1)}</span></div>`;
+    });
+    document.getElementById('idetail').innerHTML=html;
+    
+    // Result box
+    const rb=document.getElementById('resultBox');
+    rb.style.display='block';rb.style.background=bg;
+    document.getElementById('rg').textContent=tli.toFixed(1);
+    document.getElementById('rg').style.color=color;
+    document.getElementById('rl').textContent=grade;
+    document.getElementById('rl').style.color=color;
+    document.getElementById('rd').innerHTML=`<strong>TLI(Σ) = ${tli.toFixed(1)} · ${grade}</strong><br>${desc}`;
+    
+    // Animate scale bar
+    const bar=document.getElementById('tliBar');
+    bar.style.transition='width 1.5s ease';
+    bar.style.width=(tli)+'%';
+    
+    eg(2);
+}
+</script></body></html>

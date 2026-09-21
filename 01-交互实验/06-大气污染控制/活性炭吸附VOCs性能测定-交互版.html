@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活性炭吸附 VOCs 性能测定 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#8b5cf6;--glow:#a78bfa;--abg:rgba(139,92,246,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1e1338 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(139,92,246,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(139,92,246,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(139,92,246,.22);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:620px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:740px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(139,92,246,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#1e1338);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:#0b0518}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,92,246,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.b3{background:linear-gradient(135deg,#f43f5e,#fb7185);color:#1a0308}.b3:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(244,63,94,.3)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#8b5cf6;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:170px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:var(--accent);color:var(--glow)}
+.ft .nav a.cur{border-color:var(--accent);color:var(--glow);background:var(--abg)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:250px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#ddd6fe;line-height:1.7;margin:16px 0}
+.note b{color:#ede9fe}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">活性炭吸附 VOCs<br><em>穿透曲线测定</em></h1>
+  <div class="hs">喷漆、印刷、制药车间的废气末端，最常见的就是一柜活性炭。<br>它什么时候该换？<b style="color:#ddd6fe">换早了浪费钱，换晚了等于直排</b>——答案全在一条穿透曲线里。</div>
+  <div class="hst">
+    <div><span class="n">C/C₀</span><span class="l">穿透曲线</span></div>
+    <div><span class="n">q₀</span><span class="l">有效吸附容量</span></div>
+    <div><span class="n">5</span><span class="l">测量步骤</span></div>
+    <div><span class="n">4</span><span class="l">红线</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">为什么活性炭吸附是个"时间问题"</div>
+  <div class="sd">活性炭吸附是 VOCs 末端治理里最成熟、最常用的一招：废气穿过一层活性炭床，有机物被吸附在巨大的孔隙表面上，净化后的气体排出。它的<b>吸附能力不是无限的</b>——活性炭吃饱了，就会彻底失效。</div>
+  <div class="sd">难点在于：活性炭从"完全有效"到"彻底失效"是连续过渡的，中间没有明显的报警点。这个过程画成曲线，就是本实验的核心——<b>穿透曲线</b>。它的形状像一条被拉长的 S 形：一开始出口几乎没有 VOCs；某个时刻开始缓慢上升；然后快速抬升；最后逼近进口浓度。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🧱</div><div class="in">吸附靠的是"表面"</div><div class="id">1 克活性炭的比表面积可达 <b>800–1500 m²</b>——一个足球场那么大。VOCs 分子被范德华力捕获在微孔里，所以它的"容量"是按 mg/g 算的，不是按体积。</div><span class="it">为什么是它</span></div>
+    <div class="ic"><div class="ii">🌊</div><div class="in">传质区在床层里往前爬</div><div class="id">床层分成三段：已饱和区、正在吸附的传质区、还没用过的干净区。<b>传质区越窄，活性炭利用率越高</b>；传质区越宽，越早穿透。</div><span class="it">核心概念</span></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">换炭时机 = 钱和合规之间</div><div class="id">换早了，炭没吃满，白花钱；换晚了，出口浓度超标，等于把污染物原样排出去。<b>现场真正在权衡的就是这个点</b>。</div><span class="it">核心矛盾</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个概念，读懂整条曲线</div>
+  <div class="sd">下面的式子就是模拟台的算法。理解了它们，你在模拟台里调任何参数，都能提前说出曲线会怎么变。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">🎯</div><div class="in">① 穿透点与饱和点</div>
+      <div class="id">工程上把出口浓度达到进口浓度的 <b>5%</b> 定义为穿透点，<b>95%</b> 定义为饱和点。穿透点到饱和点之间那一段，就是传质区还在床层里往前推进的过程。</div>
+      <div class="fx">穿透点 → C/C₀ = 0.05<br>饱和点 → C/C₀ = 0.95</div>
+    </div>
+    <div class="ic">
+      <div class="ii">⚖️</div><div class="in">② 有效吸附容量 q₀</div>
+      <div class="id">单位质量活性炭能吸附的 VOCs 质量（mg/g）。它由活性炭品质和 VOCs 种类共同决定。<b>动态穿透条件下的"有效容量"明显低于静态容量</b>——因为传质区一宽，一部分炭还没吃饱就得换。</div>
+      <div class="fx">q₀ = 220 mg/g（甲苯／煤质活性炭，本页假设值）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🕒</div><div class="in">③ 半穿透时间 τ</div>
+      <div class="id">出口浓度达到进口浓度一半所需的时间，由"床层总容量 ÷ 进料速率"决定。<b>装填量越大、浓度越低、流量越小，τ 越长</b>。这是一条纯粹的物料平衡关系。</div>
+      <div class="fx">τ = q₀ · M / (C₀ · Q)<br>（M=装填量 g，Q=流量 m³/min，C₀=进口浓度 mg/m³）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📈</div><div class="in">④ 传质区宽度 Δ</div>
+      <div class="id">曲线的陡缓由 Δ 决定：Δ 越小，曲线越陡、穿透点越接近饱和点，活性炭利用率越高。<b>气速越高，传质区越宽</b>——这是"加大风量"最容易被忽视的代价。</div>
+      <div class="fx">Δ ≈ 0.29 · τ · (Q/8)^0.3<br>C/C₀(t) = 1 / (1 + exp(−2.944·(t−τ)/Δ))</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把四条连起来看</b>：装填量 M 进入 τ 的分子（<b>装得多就撑得久</b>），流量 Q 和浓度 C₀ 进入分母（<b>风量越大、浓度越高，换炭越频繁</b>）。同时 Q 还让传质区变宽，进一步压缩有效容量。所以工程上的两难很清楚——<b>加大风量能少上设备，但炭的更换频次会上去，运行成本反而更高</b>。这就是"投资省"与"运行省"的取舍。
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">采样与分析按固定污染源废气监测相关标准（GB/T 16157、HJ 734 等）执行。下面五步是标准链路，<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">活性炭装填与称重</div><div class="rd">称量装填的活性炭质量 M、记录床层高度与堆积密度。<b>这一步必须最先做</b>——后面所有"吸附容量"的计算都以这个质量作分母，忘了称重，整组数据就只能算浓度、算不出容量。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">标定进口 VOCs 浓度 C₀</div><div class="rd">用气相色谱或在线检测器测进口浓度。<b>穿透曲线的纵轴是 C/C₀ 这个比值</b>，没有 C₀ 就没有纵轴，曲线无从画起。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">设定并稳定气体流量 Q</div><div class="rd">调好流量并等读数稳定。<b>流量同时影响三件事</b>：进料速率（τ 的分子）、传质区宽度（Δ）、以及出口浓度的上升速度。流量一漂，整条曲线都变了。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">连续记录出口浓度</div><div class="rd">从通气第一分钟起就<b>连续</b>记录出口浓度，直到超过饱和点。这是本实验最容易出错的一步——中途停记录、或者间隔采样间隔太大，都会漏掉穿透点，曲线就没法用了。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">判定穿透点与饱和点，算有效容量</div><div class="rd">在曲线上确定 C/C₀=5% 和 95% 两个点，对曲线下方的面积做积分，用物料平衡算出<b>动态有效吸附容量</b>，并据此推算实际工况下的换炭周期。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 活性炭吸附 VOCs · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步测量（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">装填与称重<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>标定进口浓度<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>稳定气体流量<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>通气并连续记录<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>判定穿透/饱和点<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>活性炭装填量 M　<b id="mTxt" style="color:#a78bfa">15 g</b></label>
+          <input type="range" id="mIn" min="5" max="30" step="1" value="15" oninput="onParam()">
+          <div class="hint">装填量决定床层总容量。<b>装得多撑得久</b>，但床层阻力也上升，且炭本身是耗材成本。</div>
+        </div>
+        <div class="fld">
+          <label>气体流量 Q　<b id="qTxt" style="color:#a78bfa">8.0 L/min</b></label>
+          <input type="range" id="qIn" min="4" max="20" step="0.5" value="8" oninput="onParam()">
+          <div class="hint">流量越大，换炭越频繁，<b>而且传质区会被拉宽、有效容量进一步下降</b>——加大风量的隐性代价。</div>
+        </div>
+        <div class="fld">
+          <label>进口 VOCs 浓度 C₀</label>
+          <select id="c0In" onchange="onParam()">
+            <option value="500">500 mg/m³ · 低浓度大风量</option>
+            <option value="1500" selected>1500 mg/m³ · 常见喷漆／印刷</option>
+            <option value="3000">3000 mg/m³ · 高浓度</option>
+            <option value="5000">5000 mg/m³ · 溶剂回收前段</option>
+          </select>
+          <div class="hint">浓度越高，单位时间喂进床层的 VOCs 越多，穿透来得越快。</div>
+        </div>
+        <div class="note" style="margin-top:14px;font-size:12px">
+          <b>本台按比例压缩了时间轴</b>：真实实验中穿透时间可能长达几十小时，模拟台把整条曲线的运行过程压缩到约 30 秒，<b>读数里的时间仍是真实分钟数</b>。
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数（通气后开始累计）</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv"><div class="dl">运行时间 t</div><div class="dd" id="oT">—</div><div class="du">min</div></div>
+          <div class="dv" id="dvCc"><div class="dl">穿透率 C/C₀</div><div class="dd" id="oCc">—</div><div class="du">%</div></div>
+          <div class="dv"><div class="dl">出口浓度</div><div class="dd" id="oCout">—</div><div class="du">mg/m³</div></div>
+          <div class="dv" id="dvQ"><div class="dl">已吸附量 q</div><div class="dd" id="oQ">—</div><div class="du">mg/g</div></div>
+        </div>
+        <canvas id="cv" width="900" height="500"></canvas>
+        <div class="legend">
+          <span><i style="background:#a78bfa"></i>穿透曲线 C/C₀(t)</span>
+          <span><i style="background:#fbbf24;height:0;border-top:2px dashed #fbbf24"></i>穿透点 5%</span>
+          <span><i style="background:#fb7185;height:0;border-top:2px dashed #fb7185"></i>饱和点 95%</span>
+          <span><i style="background:#34d399;height:0;border-top:2px dashed #34d399"></i>换炭动作</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b3" id="btnStop" onclick="stopSim()" disabled>⏹ 判定为穿透，停止并准备换炭</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">先标定进口浓度</div><div class="id">穿透曲线的纵轴是 C/C₀。没有进口浓度，你测到的只是一串出口浓度数字——既画不出曲线，也算不出穿透点在哪。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">必须连续记录，不能中断</div><div class="id">穿透点往往在几十分钟内就跨过去了。间隔采样、或者中途停一段，最容易漏掉曲线拐弯的那一段——而那段恰恰是唯一有价值的信息。</div><span class="it">记录红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">不能等到饱和才换炭</div><div class="id">床层饱和后出口浓度≈进口浓度，此时设备等同于<b>直排</b>。正确做法是穿透点一出现就开始准备换炭，把更换周期卡在穿透点附近。</div><span class="it">饱和红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">装填量必须称重记录</div><div class="id">吸附容量是"每克炭吸附多少毫克"，分母就是装填质量。少了这个数，你只能算出"这台设备能撑多久"，算不出"这种炭好不好"。</div><span class="it">计量红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：面对"活性炭失效快／换炭太频繁"，能分清是<b>炭的问题</b>（品质差／比表面低／受潮）、<b>工况的问题</b>（风量过大／进口浓度比设计高／湿度大／温度高）、还是<b>设计的问题</b>（装填量不足／床层截面积过小／气流短路）。这三类整改方向完全不同——现场最常见的错判，是拿炭的质量问题去掩盖风量超标的事实。
+  </div>
+  <div class="note warnbox">
+    <b>本页模型边界</b>：穿透曲线采用 Thomas 型 S 形函数（C/C₀ = 1/(1+exp(−2.944(t−τ)/Δ))），半穿透时间按物料平衡计算，传质区宽度用经验幂函数近似。取值假设：吸附质为甲苯，活性炭有效吸附容量 q₀ = 220 mg/g，床层温度与湿度恒定。<b>实际工程中温度、湿度、共存组分都会显著影响容量，曲线仅用于教学演示，不作为工程设计依据。</b>
+  </div>
+  <div class="sd" style="margin-top:18px">教材对应位置：第三部分「大气污染控制实验」中的吸附法净化气态污染物实验（活性炭固定床／穿透曲线）。</div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3
+  <div class="nav">
+    <a href="00-大气污染控制工程实验-课程对照总览.html">课程对照总览</a>
+    <a href="旋风除尘器性能测定-交互版.html">旋风除尘器</a>
+    <a href="填料塔吸收SO2性能测定-交互版.html">填料塔吸收 SO₂</a>
+    <a class="cur" href="活性炭吸附VOCs性能测定-交互版.html">活性炭吸附 VOCs</a>
+    <a href="催化净化NOx性能测定-交互版.html">催化净化 NOx</a>
+    <a href="烟气参数测定-交互版.html">烟气参数测定</a>
+  </div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+/* ---------- 模型常数（教学用）---------- */
+const QCAP=220;          // 有效吸附容量 mg/g (甲苯/煤质活性炭)
+const QREF=8;            // 传质区宽度参考流量 L/min
+const DEL_RATIO=0.29;    // Δ/τ 基准比
+const DEL_EXP=0.3;       // Δ 随流量变化的指数
+const K_SIG=2.944;       // ln(0.95/0.05)
+const RUN_MS=30000;      // 整条曲线压缩到约 30 秒
+
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let tag=null;            // 参数指纹
+let sim=null;            // 运行状态
+let timer=null;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},8000);}
+
+function params(){return{m:+$('mIn').value, q:+$('qIn').value, c0:+$('c0In').value};}
+function key(p){return p.m+'|'+p.q+'|'+p.c0;}
+
+function makeModel(p){
+  const Qm3=p.q/1000;                       // L/min → m³/min
+  const tau=QCAP*p.m/(p.c0*Qm3);            // 半穿透时间 min
+  const del=DEL_RATIO*tau*Math.pow(p.q/QREF,DEL_EXP);
+  const k=K_SIG/del;
+  return {Qm3,tau,del,k,total:tau+2.5*del,
+    cc:t=>1/(1+Math.exp(-k*(t-tau))),
+    rate:()=>p.c0*Qm3};                     // 进料速率 mg/min
+}
+
+function render(){
+  const p=params();
+  $('mTxt').textContent=p.m+' g';
+  $('qTxt').textContent=p.q.toFixed(1)+' L/min';
+  if(!sim){ $('oT').textContent='—';$('oCc').textContent='—';$('oCout').textContent='—';$('oQ').textContent='—'; }
+  draw();
+}
+
+function draw(){
+  const cv=$('cv'), ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=250;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=46, PR=18, PT=16, PB=34;
+  const gw=W-PL-PR, gh=H-PT-PB;
+
+  const p=params();
+  const mm=sim?sim.model:makeModel(p);
+  const TMAX=sim?sim.model.total:makeModel(p).total;
+  const X=t=>PL+Math.min(t/TMAX,1)*gw;
+  const Y=v=>PT+(1-v)*gh;
+
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(v=>{ctx.beginPath();ctx.moveTo(PL,Y(v));ctx.lineTo(PL+gw,Y(v));ctx.stroke();});
+  ctx.fillStyle='#64748b';ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  [0,.25,.5,.75,1].forEach(v=>ctx.fillText(Math.round(v*100)+'%',PL-7,Y(v)));
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='#475569';
+  for(let i=0;i<=5;i++){const t=TMAX*i/5;ctx.fillText(t>=100?Math.round(t):t.toFixed(0),X(t),PT+gh+7);}
+  ctx.fillText('运行时间 t (min)',PL+gw/2,PT+gh+20);
+  ctx.save();ctx.translate(12,PT+gh/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#475569';ctx.fillText('穿透率 C/C₀',0,0);ctx.restore();
+
+  // 5% / 95% 参考线
+  ctx.setLineDash([5,4]);
+  ctx.strokeStyle='rgba(251,191,36,.65)';ctx.beginPath();ctx.moveTo(PL,Y(.05));ctx.lineTo(PL+gw,Y(.05));ctx.stroke();
+  ctx.strokeStyle='rgba(251,113,133,.65)';ctx.beginPath();ctx.moveTo(PL,Y(.95));ctx.lineTo(PL+gw,Y(.95));ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font='9.5px Inter,sans-serif';ctx.textAlign='left';ctx.textBaseline='bottom';
+  ctx.fillStyle='#fbbf24';ctx.fillText('穿透点 5%',PL+4,Y(.05)-3);
+  ctx.fillStyle='#fb7185';ctx.fillText('饱和点 95%',PL+4,Y(.95)-3);
+
+  if(sim){
+    // 已跑出的曲线
+    const n=Math.max(2,Math.round(sim.t/TMAX*400));
+    ctx.strokeStyle='#a78bfa';ctx.lineWidth=2.4;ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const t=sim.t*i/n, y=Y(mm.cc(t));
+      if(i===0)ctx.moveTo(X(t),y);else ctx.lineTo(X(t),y);
+    }
+    ctx.stroke();
+    // 当前点
+    const ccNow=mm.cc(sim.t);
+    ctx.fillStyle='#a78bfa';ctx.beginPath();ctx.arc(X(sim.t),Y(ccNow),4,0,7);ctx.fill();
+    ctx.font='10.5px Inter,sans-serif';ctx.textAlign=X(sim.t)>PL+gw-80?'right':'left';ctx.textBaseline='bottom';
+    ctx.fillText((ccNow*100).toFixed(1)+'%',X(sim.t)+(X(sim.t)>PL+gw-80?-8:8),Y(ccNow)-6);
+    // 换炭竖线
+    if(sim.stoppedT!=null){
+      ctx.strokeStyle='#34d399';ctx.lineWidth=1.4;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(X(sim.stoppedT),PT);ctx.lineTo(X(sim.stoppedT),PT+gh);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#34d399';ctx.font='10px Inter,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
+      ctx.fillText('换炭',X(sim.stoppedT)+4,PT+2);
+    }
+  }else{
+    ctx.fillStyle='#475569';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('点击 STEP 4 「通气并连续记录」开始模拟',PL+gw/2,PT+gh/2);
+  }
+}
+
+function tick(){
+  if(!sim||!sim.running)return;
+  const p=params(), mm=sim.model;
+  const dt=50*sim.speed;                      // 每个 tick 推进的虚拟分钟数
+  const cMid=mm.cc(sim.t+dt/2);
+  sim.cumOut+=cMid*p.c0*mm.Qm3*dt;            // 累计出口 VOCs 质量 mg
+  sim.t=Math.min(sim.t+dt, mm.total);
+  updateReadout();
+  if(sim.t>=mm.total-1e-9){
+    sim.running=false;sim.stoppedT=sim.t;
+    $('btnStop').disabled=true;
+    setSts('⛔ 床层已饱和','sbad');
+    log('模拟结束：出口浓度已达到进口浓度的 95% 以上——<b>床层饱和，出口≈进口，等于直排</b>','bad');
+    warn('⛔ 红线：一直用到饱和才停（C/C₀≈95%）——饱和后出口浓度≈进口浓度，设备等同于直排，这段时间排出去的全是超标废气。正确做法是穿透点一出现就准备换炭。');
+  }
+  draw();
+}
+
+function updateReadout(){
+  const p=params(), mm=sim.model;
+  const cc=mm.cc(sim.t);
+  const q=Math.max(0,(p.c0*mm.Qm3*sim.t-sim.cumOut)/p.m);
+  $('oT').textContent=sim.t>=100?Math.round(sim.t):sim.t.toFixed(1);
+  $('oCc').textContent=(Math.min(cc,1)*100).toFixed(1);
+  $('oCout').textContent=Math.round(Math.min(cc,1)*p.c0);
+  $('oQ').textContent=Math.min(q,QCAP).toFixed(1);
+  $('dvCc').className='dv'+(cc>=.95?' bad':cc>=.5?' bad':'');
+  $('dvQ').className='dv'+(q>=QCAP*0.9?' good':'');
+}
+
+function onParam(){
+  const p=params(), k=key(p);
+  if(S.s4&&tag&&k!==tag){
+    log('工况参数已改变（装填量／流量／进口浓度），此前测得的穿透曲线失效，请重新从 STEP 1 开始','bad');
+    setSts('⚠️ 工况已变，需重测','sbad');
+    warn('⚠️ 工况变了，之前那条穿透曲线不能用了——现场也这样：风量或浓度一变，换炭周期必须重测。');
+    hardReset();
+    return;
+  }
+  render();
+}
+
+function step1(){
+  if(S.s1)return;
+  const p=params();
+  S.s1=true;$('p1').classList.add('on');$('p2').disabled=false;
+  setSts('🟡 已装填称重','sa');
+  log('活性炭装填完成：M = <b>'+p.m+' g</b>（床层高度与堆积密度已同步记录）',true);
+  warn('');
+}
+function step2(){
+  if(!S.s1){warn('请先完成 STEP 1 装填与称重');return;}
+  if(S.s2)return;
+  const p=params();
+  S.s2=true;$('p2').classList.add('on');$('p3').disabled=false;
+  log('进口浓度标定：C₀ = <b>'+p.c0+' mg/m³</b>（纵轴 C/C₀ 的分母已确定）',true);
+  setSts('🟡 进口浓度已标定','sa');
+}
+function step3(){
+  if(!S.s2){warn('⚠️ 必须先标定进口浓度——没有 C₀ 就没有穿透曲线的纵轴');log('顺序错误：跳过进口浓度直接稳定流量，已阻断',false);return;}
+  if(S.s3)return;
+  const p=params();
+  S.s3=true;$('p3').classList.add('on');$('p4').disabled=false;
+  log('气体流量稳定在 <b>'+p.q.toFixed(1)+' L/min</b>',true);
+  if(p.q>=18)warn('⚠️ 流量 '+p.q.toFixed(1)+' L/min 偏高——传质区会被拉宽，有效吸附容量下降，换炭周期明显缩短。');
+  setSts('🟡 流量已稳定','sa');
+}
+function step4(){
+  if(!S.s3){warn('⚠️ 请先按顺序完成 STEP 3 稳定气体流量');log('顺序错误：跳过流量稳定直接通气记录，已阻断',false);return;}
+  if(S.s4)return;
+  const p=params(), mm=makeModel(p);
+  S.s4=true;$('p4').classList.add('on');$('p5').disabled=false;
+  tag=key(p);
+  sim={model:mm,t:0,cumOut:0,running:true,stoppedT:null,speed:mm.total/RUN_MS};
+  $('btnStop').disabled=false;
+  setSts('🔵 通气中，正在记录','sa');
+  log('开始通气并连续记录出口浓度。进料速率 = <b>'+(p.c0*mm.Qm3).toFixed(1)+' mg/min</b>，床层总容量 ≈ <b>'+(QCAP*p.m).toFixed(0)+' mg</b>',true);
+  warn('');
+  if(timer)clearInterval(timer);
+  timer=setInterval(tick,50);
+  updateReadout();draw();
+}
+function stopSim(){
+  if(!sim||!sim.running){warn('尚未开始通气，或模拟已结束。');return;}
+  const p=params(), mm=sim.model;
+  const cc=mm.cc(sim.t);
+  sim.running=false;sim.stoppedT=sim.t;
+  $('btnStop').disabled=true;
+  if(timer)clearInterval(timer);
+  const q=Math.max(0,(p.c0*mm.Qm3*sim.t-sim.cumOut)/p.m);
+  const pct=(cc*100).toFixed(1);
+  if(cc<0.03){
+    setSts('🟠 换炭过早','sbad');
+    log('在 t='+sim.t.toFixed(0)+' min、C/C₀='+pct+'% 时换炭','bad');
+    warn('⚠️ 换炭过早：C/C₀ 才 '+pct+'%，床层远没有穿透，此时已吸附量只有 '+q.toFixed(0)+' mg/g（约为容量的 '+(q/QCAP*100).toFixed(0)+'%）——大部分吸附容量被浪费掉了，等于白花钱。');
+  }else if(cc<=0.15){
+    setSts('🟢 换炭时机合理','sok');
+    log('在 t='+sim.t.toFixed(0)+' min、C/C₀='+pct+'% 时换炭，已吸附量 q = <b>'+q.toFixed(1)+' mg/g</b>（占容量 '+(q/QCAP*100).toFixed(0)+'%）',true);
+    log('判断正确：在穿透点附近换炭，既没有浪费容量，也没有让出口明显超标。',true);
+    warn('');
+  }else if(cc<=0.5){
+    setSts('🟠 换炭偏晚','sbad');
+    log('在 t='+sim.t.toFixed(0)+' min、C/C₀='+pct+'% 时换炭','bad');
+    warn('⚠️ 换炭偏晚：C/C₀ 已到 '+pct+'%，早已越过 5% 的穿透点。从穿透到你换炭这段时间，出口浓度一直在上升，排出去的都是超标废气。');
+  }else{
+    setSts('⛔ 换炭严重过晚','sbad');
+    log('在 t='+sim.t.toFixed(0)+' min、C/C₀='+pct+'% 时换炭','bad');
+    warn('⛔ 换炭严重过晚：C/C₀ 已到 '+pct+'%，床层接近饱和——此时设备几乎等同于直排，这段时间的排放是明确超标。');
+  }
+  $('oCc').textContent=pct;$('oQ').textContent=Math.min(q,QCAP).toFixed(1);
+  draw();
+}
+function step5(){
+  if(!S.s4||!sim){warn('⚠️ 请先完成 STEP 4 通气并连续记录');return;}
+  if(sim.running){warn('⚠️ 记录仍在进行中——请等曲线跑完，或先点「停止并准备换炭」再判定。');return;}
+  if(S.s5)return;
+  S.s5=true;$('p5').classList.add('on');
+  setSts('🟢 实验完成','sok');
+  const mm=sim.model, p=params();
+  const q=Math.max(0,(p.c0*mm.Qm3*sim.t-sim.cumOut)/p.m);
+  log('穿透曲线判定完成：理论半穿透时间 τ = <b>'+mm.tau.toFixed(0)+' min</b>，传质区宽度 Δ = <b>'+mm.del.toFixed(0)+' min</b>',true);
+  log('本次结论：M='+p.m+' g，Q='+p.q.toFixed(1)+' L/min，C₀='+p.c0+' mg/m³，动态有效吸附容量 ≈ <b>'+Math.min(q,QCAP).toFixed(0)+' mg/g</b>，预计换炭周期 ≈ '+(mm.tau-mm.del).toFixed(0)+' min');
+  warn('');
+}
+function hardReset(){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false};tag=null;sim=null;
+  if(timer){clearInterval(timer);timer=null;}
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('btnStop').disabled=true;
+  $('log').innerHTML='';
+  render();
+}
+function resetAll(){
+  $('mIn').value=15;$('qIn').value=8;$('c0In').value='1500';
+  hardReset();
+  setSts('⏳ 未开始','si');warn('');
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>draw());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 16157-1996</td><td>固定污染源排气中颗粒物测定与气态污染物采样方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 734-2014</td><td>固定污染源废气 挥发性有机物的测定 固相吸附-热脱附／气相色谱-质谱法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 GB/T 16157-1996。请注意其 <b>2018-03-01 实施的修改单</b>：颗粒物浓度 ≤20 mg/m³ 时应适用 HJ 836，&gt;20 且 ≤50 mg/m³ 时两者同时适用；用本标准测 ≤20 mg/m³ 时结果表述为「&lt;20 mg/m³」。涉及超低排放／低浓度判定的页面须按修改单处理。</li></ul></div></div></div></details>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>粉尘分散度测定·自然沉降法 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f59e0b;--glow:#fbbf24;--abg:rgba(245,158,11,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2b1a05 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(245,158,11,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(245,158,11,.13),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(245,158,11,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:640px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:25px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:760px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(245,158,11,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#2b1a05);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#f59e0b;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:190px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:330px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+#cv2{width:100%;height:220px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.legend span i.dot{width:9px;height:9px;border-radius:50%}
+.note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#fcd34d;line-height:1.7;margin:16px 0}
+.note b{color:#fde68a}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.note.green{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.18);border-left-color:var(--green);color:#a7f3d0}
+.note.green b{color:#d1fae5}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:var(--accent)}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:rgba(245,158,11,.08);color:var(--glow);font-weight:700;font-size:11.5px}
+.tbl td{color:#94a3b8;line-height:1.6}
+.tbl td b{color:#e2e8f0}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">粉尘分散度测定<br><em>自然沉降法</em></h1>
+  <div class="hs">它不用一滴溶剂，靠的只是重力。<br>但也正因为靠重力，<b style="color:#fcd34d">时间够不够，直接决定细颗粒有没有被采到</b>。</div>
+  <div class="hst">
+    <div><span class="n">v∝d²</span><span class="l">Stokes 沉降</span></div>
+    <div><span class="n">18×18</span><span class="l">盖玻片 (mm)</span></div>
+    <div><span class="n">≥3 h</span><span class="l">水平静置时间</span></div>
+    <div><span class="n">4</span><span class="l">粒径分组</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">什么时候<br>必须用沉降法</div>
+  <div class="sd">前一种方法（滤膜溶解涂片法）快，但它有个死穴：<b>要用乙酸丁酯把滤膜溶掉</b>。如果粉尘自己也溶于乙酸丁酯，那粉尘和滤膜一起被溶掉，镜下什么都测不到；如果粉尘是<b>纤维状</b>的（石棉、玻璃纤维），推片时的剪切力会把纤维折断，测出来的长度全错。</div>
+  <div class="sd">这两种情况，只能改用<b>自然沉降法</b>——不用溶剂、不用推片，让含尘空气在封闭的沉降器里静置，粉尘靠自身重力慢慢落到盖玻片上。<b>颗粒的原始形态被完整保留下来</b>，这是它最大的价值。代价是慢：国标要求水平静置 <b>不少于 3 小时</b>。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🧪</div><div class="in">样品可溶于乙酸丁酯</div><div class="id">涂片法会把粉尘一起溶掉，无法测量；沉降法不接触溶剂，是<b>唯一可行</b>的方法。</div><span class="it">必选场景</span></div>
+    <div class="ic"><div class="ii">🧵</div><div class="in">纤维状粉尘</div><div class="id">石棉、玻璃纤维等在推片时会被折断，长度失真；沉降法保留完整纤维形态。</div><span class="it">必选场景</span></div>
+    <div class="ic"><div class="ii">⏳</div><div class="in">时间成本高</div><div class="id">至少 3 小时静置，现场不可能当天出结果。这是它被"能不用就不用"的原因。</div><span class="it">代价</span></div>
+  </div>
+  <div class="note blue">
+    <b>两种方法测的是同一个东西</b>：都测颗粒的 <b>投影直径</b>，都按 <b>&lt;2 / 2～5 / 5～10 / ≥10 μm</b> 四组统计数量百分比。区别只在<b>怎么把粉尘弄到载玻片上</b>——一个靠溶剂溶解滤膜，一个靠重力自然沉降。
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">重力会挑颗粒</div>
+  <div class="sd">沉降法的全部关键，都在这一个物理事实里：<b>颗粒越大落得越快，而且快得多</b>。这决定了沉降时间不足时，丢失的恰好是最细的那部分。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">⬇️</div><div class="in">① Stokes 沉降定律</div>
+      <div class="id">在静止空气中，颗粒的终端沉降速度与<b>直径的平方</b>成正比，与密度差成正比。直径减半，沉降速度只剩 <b>四分之一</b>——不是线性，是平方。这就是"沉降法天然挑颗粒"的根源。</div>
+      <div class="fx">v = (ρp − ρg) · g · d² / (18 μ)</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🧮</div><div class="in">② 落到底要多久</div>
+      <div class="id">把沉降速度倒过来就是所需时间：<b>t = 18μh / ((ρp−ρg)g d²)</b>。h 是沉降距离（本页取 5 cm）。直径越小，所需时间按平方增长——0.5 μm 的颗粒要落完 5 cm，需要 30 分钟以上。</div>
+      <div class="fx">t = 18μh / ((ρp − ρg) · g · d²)</div>
+    </div>
+    <div class="ic">
+      <div class="ii">⏱️</div><div class="in">③ 时间不足 → 细颗粒缺失</div>
+      <div class="id">静置时间 t 决定了"能不能落完"的最小粒径 d_min。凡比 d_min 更细的颗粒都还在空中，<b>不会出现在盖玻片上</b>。结果就是：测得的分布<b>假性偏粗</b>，而且这个偏差<b>无法事后修正</b>。</div>
+      <div class="fx">d_min = √( 18μh / ((ρp − ρg) · g · t) )</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🧾</div><div class="in">④ 器材与制片</div>
+      <div class="id">在沉降器底部平放 <b>18×18 mm 盖玻片</b>；上下移动活塞数次，把含尘空气引入并混匀；水平静置 ≥3 h 后取出盖玻片，把<b>采尘面向下</b>扣在载玻片上封固，再上镜测量。<b>"采尘面向下"是关键</b>——颗粒要贴着载玻片，才在显微镜物镜的焦平面上。</div>
+      <div class="fx">盖玻片 18×18 mm → 采尘面向下贴载玻片 → 封固 → 镜检</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>为什么标准写"不少于 3 小时"而不是"2 小时"</b>：3 小时是一个留足余量的经验值——它同时覆盖了更细的颗粒、不规则形状带来的阻力增大、以及环境温度偏低使空气黏度上升的情况。<b>时间只会宁多勿少</b>，多静置不会让大颗粒"消失"，只会让细颗粒更完整地被采到。
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">方法依据：<b>GBZ/T 192.3《工作场所空气中粉尘测定 第3部分：粉尘分散度》</b>，自然沉降法。<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">装备沉降器与盖玻片</div><div class="rd">把 18×18 mm 盖玻片平放在沉降器底部（务必水平、无翘曲），检查各接口密封。盖玻片放歪或沉降器倾斜，粉尘会堆积到一侧，视场就不均匀。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">引入含尘空气</div><div class="rd">上下移动活塞数次，把工作场所的含尘空气抽入沉降器，并使粉尘在其中混匀。<b>这一步必须在静置之前</b>——先静置再进气，等于把已经沉好的颗粒重新吹散。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">水平静置沉降 ≥3 h</div><div class="rd">静置期间不得振动、不得倾斜、不得开盖。<b>时间不少于 3 h</b>。这一步是整个过程的核心变量：时间不够，细颗粒还在空中没落下来，测出的分布就会假性偏粗。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">取出盖玻片制片封固</div><div class="rd">轻轻取出盖玻片，把<b>采尘面向下</b>贴到载玻片上，用中性树胶（或专用封固剂）封固。方向不能反——粉层朝上会脱离物镜的工作距离，也无法清晰成像。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">镜检测量与分组统计</div><div class="rd">与滤膜溶解涂片法完全一致：标定目镜测微尺后，按"遇长径量长径，遇短径量短径"随机测量 ≥200 粒的投影直径，按四组统计数量百分比。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">⬇️ 粉尘分散度测定·自然沉降法 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">装沉降器与盖玻片<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>引入含尘空气<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>水平静置沉降<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>取片制片封固<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>镜检分组统计<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>样品性质（决定方法是否适用）</label>
+          <select id="nature" onchange="onParam()">
+            <option value="inert" selected>一般矿物性粉尘（不溶于乙酸丁酯）</option>
+            <option value="soluble">可溶于乙酸丁酯的粉尘</option>
+            <option value="fiber">纤维状粉尘（石棉／玻璃纤维）</option>
+          </select>
+          <div class="hint" id="natHint">—</div>
+        </div>
+        <div class="fld">
+          <label>粉尘真密度 ρp</label>
+          <select id="rho" onchange="onParam()">
+            <option value="2650" selected>石英／矽尘（2650 kg/m³）</option>
+            <option value="2100">水泥／矿粉（2100 kg/m³）</option>
+            <option value="1400">煤尘（1400 kg/m³）</option>
+          </select>
+          <div class="hint">密度越小，沉降越慢，需要的静置时间越长。</div>
+        </div>
+        <div class="fld">
+          <label>水平静置时间 t　<b style="color:#fbbf24" id="tTxt">180 min</b></label>
+          <input type="range" id="tIn" min="5" max="360" step="5" value="180" oninput="onParam()">
+          <div class="hint">国标要求 <b style="color:#fcd34d">≥180 min（3 h）</b>。把它调小，看细颗粒如何在分布里消失。</div>
+        </div>
+        <div class="fld">
+          <label>沉降距离 h</label>
+          <div style="padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#94a3b8;font-size:13px">5.0 cm（沉降器内粉尘下落高度，固定）</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv"><div class="dl">完全沉降所需时间</div><div class="dd" id="oFull">—</div><div class="du">min</div></div>
+          <div class="dv" id="dvMin"><div class="dl">当前可沉降最小粒径</div><div class="dd" id="oMin">—</div><div class="du">μm</div></div>
+          <div class="dv" id="dvSet"><div class="dl">已沉降颗粒</div><div class="dd" id="oSet">—</div><div class="du">/ 40 粒</div></div>
+          <div class="dv"><div class="dl">静置合规</div><div class="dd" id="oComp" style="font-size:13px">—</div><div class="du">&nbsp;</div></div>
+        </div>
+        <div style="font-size:10.5px;color:#475569;margin:6px 0 4px">沉降器剖面（颗粒随时间下落，落到盖玻片即被采到）</div>
+        <canvas id="cv" width="900" height="660"></canvas>
+        <div class="legend">
+          <span><i class="dot" style="background:#94a3b8"></i>仍在空气中（未被采到）</span>
+          <span><i class="dot" style="background:#34d399"></i>已落到盖玻片（被采到）</span>
+          <span><i style="background:#fbbf24;height:8px;width:26px;display:inline-block;vertical-align:middle;margin-right:5px"></i>盖玻片</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:10.5px;color:#475569;margin-bottom:4px">分布对比：本样品真实分布 vs 本次沉降后测得的分布（STEP 5 绘出）</div>
+      <canvas id="cv2" width="900" height="440"></canvas>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b1" id="animBtn" onclick="playSettle()" disabled>▶ 播放沉降过程</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与红线</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">先进气，后静置</div><div class="id">引入含尘空气必须发生在静置之前。顺序颠倒，等于把正在沉降的颗粒重新搅起来，采样面分布彻底失真。这是顺序红线。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">静置时间不得少于 3 小时</div><div class="id">由 Stokes 定律，细颗粒沉降时间按直径平方增长。时间不足时，还在空中没落下来的恰好是最细的那部分——分布必然<b>假性偏粗</b>，而且无法事后修正。</div><span class="it">时间红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">盖玻片必须水平，采尘面向下</div><div class="id">盖玻片倾斜会让粉尘堆到一侧，视场不均匀；采尘面朝上则脱离物镜工作距离，无法清晰成像。<b>方向与水平，都是硬要求。</b></div><span class="it">操作红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">方法选择先于操作</div><div class="id">拿到样品先问一句"粉尘溶不溶于乙酸丁酯、是不是纤维状"。选错方法，后面做得再规范也是无效数据——这是比操作更靠前的一道判断。</div><span class="it">判断红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：是理解"<b>采样过程本身会改变结果</b>"。沉降法最典型——它不是被动地把粉尘收集起来，而是用重力做了一次<b>粒径筛选</b>。同样一份空气，静置 30 分钟和静置 3 小时，测出来的分散度可以完全不同，而你从数据表面看不出任何异常。<span style="color:#fde68a">知道数据是怎么"长"出来的，才知道它什么时候不可信。</span>
+  </div>
+  <div class="note green">
+    <b>方法对照一览</b>
+    <table class="tbl">
+      <tr><th style="width:30%">对比项</th><th>滤膜溶解涂片法（显微镜法）</th><th>自然沉降法</th></tr>
+      <tr><td><b>粉尘怎么上玻片</b></td><td>乙酸丁酯溶解过氯乙烯滤膜，45° 推片</td><td>重力自然沉降到盖玻片上</td></tr>
+      <tr><td><b>耗时</b></td><td>约数十分钟，当天可出</td><td>静置 ≥3 h，跨班次</td></tr>
+      <tr><td><b>适用范围</b></td><td>一般粉尘；<b>不可用于</b>可溶于乙酸丁酯或纤维状粉尘</td><td>可溶粉尘、纤维状粉尘的<b>唯一选择</b></td></tr>
+      <tr><td><b>颗粒形态</b></td><td>经溶剂与推片，可能受影响</td><td>原始形态完整保留</td></tr>
+      <tr><td><b>主要风险</b></td><td>溶解不完全／推片拖尾／涂片过厚</td><td>时间不足导致细颗粒缺失</td></tr>
+      <tr><td><b>测量对象</b></td><td colspan="2" style="color:#fcd34d">两者相同：投影直径（遇长径量长径，遇短径量短径），四组数量百分比</td></tr>
+    </table>
+  </div>
+  <div class="fw">
+    <a href="粉尘分散度测定-显微镜法-交互版.html"><div class="t">→ 粉尘分散度测定 · 显微镜法（滤膜溶解涂片法）</div><div class="d">更常用、更快的方法。看标定、制样与分组统计的完整链路。</div></a>
+    <a href="00-大气污染控制工程实验-课程对照总览.html"><div class="t">→ 大气污染控制工程实验 · 课程对照总览</div><div class="d">返回总览，查看本页对应的课程大纲位置与实验项目覆盖情况。</div></a>
+  </div>
+  <div class="sd" style="margin-top:18px">
+    方法依据：GBZ/T 192.3《工作场所空气中粉尘测定 第3部分：粉尘分散度》，自然沉降法。<br>
+    本页示例样品含 40 粒颗粒并预置了一组粒径分布；沉降过程按 Stokes 定律计算，沉降距离取 5 cm、空气黏度取 20℃ 下的 1.81×10⁻⁵ Pa·s，<b>为简化模型</b>（未计入颗粒形状系数、布朗扩散与对流扰动）。<b>曲线与数值用于教学演示，不作为检测报告数据。</b>
+  </div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3<br>
+  <span style="font-size:11px;color:#334155">配套总览：<a href="00-大气污染控制工程实验-课程对照总览.html" style="color:#475569">大气污染控制工程实验 · 课程对照总览</a></span>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+/* 与本页方法无关的同一组示例颗粒（投影直径 μm） */
+const DIAMS=[0.55,0.62,0.70,0.80,0.90,1.00,1.10,1.25,1.40,1.55,1.70,1.90,
+             2.10,2.30,2.50,2.70,2.90,3.10,3.30,3.50,3.70,4.00,4.20,4.50,4.70,4.90,
+             5.20,5.60,6.00,6.50,7.00,7.60,8.30,9.10,
+             10.5,11.8,13.2,15.0,17.5,21.0];
+const GROUPS=['<2 μm','2～5 μm','5～10 μm','≥10 μm'];
+const GCOL=['#38bdf8','#34d399','#fbbf24','#fb7185'];
+const MU=1.81e-5, G=9.81, RHOG=1.2, H=0.05;   /* h = 5 cm */
+const NATURE={
+  inert:{ok:false,tag:'可用但非最优',note:'一般矿物性粉尘两种方法都可以。滤膜溶解涂片法约数十分钟出结果；沉降法要 ≥3 h，但保留颗粒原始形态。'},
+  soluble:{ok:true,tag:'方法正确',note:'粉尘可溶于乙酸丁酯——滤膜溶解涂片法会把粉尘一起溶掉，无法测量。自然沉降法是本样品的正确选择。'},
+  fiber:{ok:true,tag:'方法正确',note:'纤维状粉尘在推片时会被折断、长度失真。自然沉降法不推片、不溶膜，是唯一能保留完整纤维形态的方法。'}
+};
+let _sd=20260907;
+function rnd(){_sd=(_sd*1103515245+12345)&0x7fffffff;return _sd/0x7fffffff;}
+const PARTS=DIAMS.map((d,i)=>({
+  d, cx:(i+0.5+(rnd()-0.5)*0.7)/40, off:rnd(),
+  treq:0, settled:false
+}));
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let curKey=null, animTimer=null, shownT=180;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},7000);}
+function grp(d){return d<2?0:d<5?1:d<10?2:3;}
+function rho(){return +$('rho').value;}
+function natObj(){return NATURE[$('nature').value];}
+function tMin(){return +$('tIn').value;}
+/* Stokes：h 距离所需秒数 */
+function tReqSec(d){ return 18*MU*H/((rho()-RHOG)*G*Math.pow(d*1e-6,2)); }
+function dMinAt(tsec){ return Math.sqrt(18*MU*H/((rho()-RHOG)*G*tsec))*1e6; }
+function applySettle(tsec){
+  PARTS.forEach(p=>{ p.treq=tReqSec(p.d); p.settled=(tsec>=p.treq); });
+}
+function params(){return {nature:$('nature').value,rho:$('rho').value};}
+function key(p){return p.nature+'|'+p.rho;}
+
+function render(){
+  const p=params(), no=natObj();
+  $('tTxt').textContent=tMin()+' min';
+  $('natHint').innerHTML=no.note;
+  $('natHint').style.color=no.ok?'#34d399':(no.inert?'#94a3b8':'#fb7185');
+  const tsec=(S.s3? shownT:tMin())*60;
+  applySettle(tsec);
+  const settled=PARTS.filter(x=>x.settled).length;
+  const full=Math.max(...PARTS.map(x=>x.treq))/60;
+  const dmin=dMinAt(Math.max(tsec,1));
+  $('oFull').textContent=(S.s2||S.s1)?full.toFixed(0):'—';
+  $('oMin').textContent=S.s2?dmin.toFixed(2):'—';
+  $('dvMin').className='dv'+(S.s2?((S.s3&&tMin()<180)?' bad':''):'');
+  $('oSet').textContent=S.s3?settled+' / 40':'—';
+  $('dvSet').className='dv'+(S.s3?(settled<40?' bad':' good'):'');
+  const comp=S.s3? (tMin()>=180?'≥3 h 合规':'不足 3 h') : '—';
+  $('oComp').textContent=comp;
+  $('oComp').style.color=S.s3?(tMin()>=180?'#34d399':'#fb7185'):'#fbbf24';
+  drawChamber(); drawCompare();
+}
+
+function drawChamber(){
+  const cv=$('cv'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,Hh=330;
+  cv.width=W*dpr; cv.height=Hh*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,Hh);
+  const PL=54,PR=18,PT=18,PB=42;
+  const bx=PL,by=PT,bw=W-PL-PR,bh=Hh-PT-PB;
+  /* 沉降器壁 */
+  ctx.fillStyle='rgba(255,255,255,.02)'; ctx.fillRect(bx,by,bw,bh);
+  ctx.strokeStyle='rgba(148,163,184,.35)'; ctx.lineWidth=1.4; ctx.strokeRect(bx,by,bw,bh);
+  /* 高度标注 */
+  ctx.strokeStyle='rgba(148,163,184,.5)'; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(bx-14,by); ctx.lineTo(bx,by); ctx.moveTo(bx-14,by+bh); ctx.lineTo(bx,by+bh); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx-9,by); ctx.lineTo(bx-9,by+bh); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+  ctx.fillText('h',bx-14,by+bh/2);
+  ctx.save(); ctx.translate(14,by+bh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.fillStyle='#475569'; ctx.fillText('沉降距离 5.0 cm',0,0); ctx.restore();
+  /* 盖玻片 */
+  const gy=by+bh;
+  ctx.fillStyle='rgba(245,158,11,.85)'; ctx.fillRect(bx,gy-6,bw,6);
+  ctx.fillStyle='#fbbf24'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('盖玻片 18×18 mm（采尘面向上接收沉降）',bx,gy+6);
+  /* 颗粒 */
+  const tsec=(S.s3?shownT:tMin())*60;
+  PARTS.forEach(p=>{
+    const x=bx+p.cx*bw;
+    const f=p.treq>0?Math.min(1,tsec/p.treq):0;
+    const y0=by+10+p.off*(bh-34);
+    const y=Math.min(gy-10, y0+f*(bh));
+    const r=Math.max(2.2, 2+0.72*p.d);
+    ctx.beginPath(); ctx.arc(x,y,r,0,7);
+    if(p.settled){ ctx.fillStyle='rgba(52,211,153,.92)'; }
+    else { ctx.fillStyle='rgba(148,163,184,.72)'; }
+    ctx.fill();
+    if(p.settled){ ctx.strokeStyle='rgba(52,211,153,.5)'; ctx.lineWidth=1; ctx.stroke(); }
+  });
+  /* 左上角信息 */
+  const settled=PARTS.filter(x=>x.settled).length;
+  ctx.fillStyle='#94a3b8'; ctx.font='10.5px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='top';
+  const dmin=dMinAt(Math.max(tsec,1));
+  ctx.fillText('静置 t = '+(S.s3?shownT:tMin())+' min　｜　已沉降 '+settled+' / 40 粒　｜　d_min = '+dmin.toFixed(2)+' μm',bx+6,by+6);
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif';
+  ctx.fillText('（圆点大小按比例表示颗粒直径，便于观察粗细分选）',bx+6,by+20);
+  if(!S.s3){
+    ctx.fillStyle='rgba(10,14,23,.5)'; ctx.fillRect(bx,by,bw,bh);
+    ctx.fillStyle='#94a3b8'; ctx.font='bold 13px Inter,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('完成 STEP 3「水平静置沉降」后，这里显示沉降进程',bx+bw/2,by+bh/2);
+  }
+}
+
+function statOf(list){
+  const c=[0,0,0,0];
+  list.forEach(p=>{c[grp(p.d)]++;});
+  const tot=list.length||1;
+  return {c,tot,pct:c.map(v=>v/tot*100)};
+}
+function drawCompare(){
+  const cv=$('cv2'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,Hh=220;
+  cv.width=W*dpr; cv.height=Hh*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,Hh);
+  const PL=46,PR=16,PT=18,PB=38, gw=W-PL-PR, gh=Hh-PT-PB;
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(f=>{ctx.beginPath();ctx.moveTo(PL,PT+(1-f)*gh);ctx.lineTo(PL+gw,PT+(1-f)*gh);ctx.stroke();});
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+  [0,.25,.5,.75,1].forEach(f=>ctx.fillText(Math.round(f*100)+'%',PL-7,PT+(1-f)*gh));
+  const all=statOf(PARTS);
+  const set=statOf(PARTS.filter(p=>p.settled));
+  const cellW=gw/4, bw=Math.min(46,cellW*0.32);
+  for(let i=0;i<4;i++){
+    const c0=PL+cellW*(i+0.5);
+    const va=all.pct[i]/100, vs=set.pct[i]/100;
+    const ya=PT+(1-va)*gh, ys=PT+(1-vs)*gh;
+    /* 真实分布（灰） */
+    ctx.fillStyle='rgba(148,163,184,.45)';
+    ctx.fillRect(c0-bw-3,ya,bw,PT+gh-ya);
+    /* 沉降后（琥珀） */
+    ctx.fillStyle=GCOL[i];
+    ctx.fillRect(c0+3,ys,bw,PT+gh-ys);
+    ctx.font='9.5px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillStyle='#94a3b8'; ctx.fillText(all.pct[i].toFixed(0)+'%',c0-bw/2-3,ya-3);
+    ctx.fillStyle=GCOL[i]; ctx.fillText(set.pct[i].toFixed(0)+'%',c0+bw/2+3,ys-3);
+    ctx.fillStyle='#94a3b8'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(GROUPS[i],c0,PT+gh+7);
+  }
+  ctx.fillStyle='#475569'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('粒径组　（左柱＝真实分布，右柱＝本次沉降后测得）',PL+gw/2,PT+gh+22);
+  if(!S.s3){
+    ctx.fillStyle='rgba(10,14,23,.55)'; ctx.fillRect(PL,PT,gw,gh);
+    ctx.fillStyle='#475569'; ctx.font='12px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('完成 STEP 5 后对比两种分布',PL+gw/2,PT+gh/2);
+  }
+}
+
+function onParam(){
+  const p=params();
+  if(S.s2 && curKey!==null && key(p)!==curKey){
+    log('样品性质／粉尘密度已改变（等于换了样品），此前数据失效，请从 STEP 1 重新开始','bad');
+    setSts('⚠️ 样品已变，需重做','sbad');
+    warn('⚠️ 样品性质或密度变了——不同样品的数据不能混用，现场必须重取样。');
+    hardReset(false);
+  }
+  if(S.s1&&!S.s2) curKey=key(p);
+  if(S.s3){
+    shownT=tMin();
+    const settled=PARTS.filter(x=>x.settled).length;
+    if(tMin()<180) log('静置时间调整为 '+tMin()+' min —— <b>低于国标要求的 180 min</b>，未沉降颗粒 '+ (40-settled) +' 粒将不出现在结果中', false);
+  }
+  render();
+}
+function lockP2(){ $('nature').disabled=true; $('rho').disabled=true; }
+
+function step1(){
+  if(S.s1) return;
+  S.s1=true; curKey=key(params());
+  $('p1').classList.add('on'); $('p2').disabled=false;
+  setSts('🟡 已装片','sa');
+  log('沉降器装备完成：18×18 mm 盖玻片水平置于底部，接口密封检查通过',true);
+  warn('');
+  render();
+}
+function step2(){
+  if(!S.s1){ warn('请先完成 STEP 1 装备沉降器与盖玻片'); return; }
+  if(S.s2) return;
+  const no=natObj();
+  S.s2=true; $('p2').classList.add('on'); $('p3').disabled=false; lockP2();
+  log('引入含尘空气：上下移动活塞数次，含尘空气已进入沉降器并混匀',true);
+  if(no.ok){ log('方法适配：<b>'+no.tag+'</b>——'+no.note,true); }
+  else if(no.inert){ log('方法适配：一般矿物性粉尘用两种方法都可以；沉降法耗时 ≥3 h，滤膜溶解涂片法更快（数十分钟）。',true); }
+  const full=(Math.max(...PARTS.map(x=>tReqSec(x.d)))/60);
+  log('按当前粉尘密度（'+rho()+' kg/m³）估算：最细的 0.55 μm 颗粒<b>完全沉降约需 '+full.toFixed(0)+' min</b>。',false);
+  setSts('🟡 已进气','sa');
+  warn('');
+  render();
+}
+function step3(){
+  if(!S.s2){ warn('⚠️ 请先完成 STEP 2 引入含尘空气——先静置再进气等于把沉好的粉尘重新吹散'); log('顺序错误：跳过进气直接静置，已阻断',false); return; }
+  if(S.s3) return;
+  S.s3=true; shownT=tMin();
+  applySettle(shownT*60);
+  $('p3').classList.add('on'); $('p4').disabled=false; $('animBtn').disabled=false;
+  const settled=PARTS.filter(x=>x.settled).length;
+  const dmin=dMinAt(shownT*60);
+  log('水平静置沉降 '+shownT+' min：可沉降最小粒径 d_min = <b>'+dmin.toFixed(2)+' μm</b>，已沉降 <b>'+settled+' / 40 粒</b>',true);
+  if(shownT<180){
+    log('⚠️ 静置时间 '+shownT+' min <b>低于国标要求的 180 min（3 h）</b>——'+ (40-settled) +' 粒细颗粒仍在空气中，本次分布将<b>假性偏粗</b>',false);
+    setSts('⚠️ 静置时间不足','sbad');
+    warn('⚠️ 静置 '+shownT+' min 不足 3 h：有 '+(40-settled)+' 粒细颗粒还没落下来，它们不会出现在结果里——分布会假性偏粗。把时间调到 ≥180 min 再继续。');
+  }else{
+    setSts('🟡 沉降完成','sa');
+    warn('');
+  }
+  render();
+}
+function step4(){
+  if(!S.s3){ warn('⚠️ 请先完成 STEP 3 水平静置沉降'); log('顺序错误：未静置直接取片，已阻断',false); return; }
+  if(S.s4) return;
+  S.s4=true; $('p4').classList.add('on'); $('p5').disabled=false;
+  setSts('🟡 已制片','sa');
+  log('取出盖玻片，<b>采尘面向下</b>贴载玻片，中性树胶封固完成',true);
+  warn('');
+  render();
+}
+function step5(){
+  if(!S.s4){ warn('⚠️ 请先完成 STEP 4 取片制片封固'); log('顺序错误：跳过制片直接统计，已阻断',false); return; }
+  if(S.s5) return;
+  S.s5=true; $('p5').classList.add('on');
+  const settled=PARTS.filter(x=>x.settled).length;
+  const all=statOf(PARTS), set=statOf(PARTS.filter(x=>x.settled));
+  log('分组统计完成（本次采到 n='+settled+' 粒）：<b>&lt;2 μm '+set.pct[0].toFixed(1)+'%</b>　2～5 μm '+set.pct[1].toFixed(1)+'%　5～10 μm '+set.pct[2].toFixed(1)+'%　≥10 μm '+set.pct[3].toFixed(1)+'%',true);
+  log('样品真实分布（n=40）：&lt;2 μm '+all.pct[0].toFixed(1)+'%　2～5 μm '+all.pct[1].toFixed(1)+'%　5～10 μm '+all.pct[2].toFixed(1)+'%　≥10 μm '+all.pct[3].toFixed(1)+'%');
+  const d0=set.pct[0]-all.pct[0], d3=set.pct[3]-all.pct[3];
+  if(settled<40){
+    setSts('🔴 数据无效，需重做','sbad');
+    log('⚠️ 缺失 '+(40-settled)+' 粒：&lt;2 μm 组偏低 <b>'+Math.abs(d0).toFixed(1)+' 个百分点</b>，≥10 μm 组偏高 <b>'+d3.toFixed(1)+' 个百分点</b>——<b>分布被系统性推向偏粗，本次数据判定为无效</b>。',false);
+    warn('⚠️ 沉降时间不足导致细颗粒缺失，分布假性偏粗——必须把静置时间提到 ≥180 min 后重做。');
+  }else{
+    setSts('🟢 实验完成','sok');
+    log('静置时间充足，全部 40 粒均已沉降到盖玻片，本次分散度数据有效。',true);
+    warn('');
+  }
+  drawCompare();
+}
+function playSettle(){
+  if(!S.s3){ warn('请先完成 STEP 3 启动静置沉降'); return; }
+  if(animTimer) return;
+  log('播放沉降过程动画（时间从 0 推进到 '+tMin()+' min）……');
+  let t=0; const end=tMin();
+  animTimer=setInterval(()=>{
+    t+=Math.max(1,end/60);
+    if(t>=end){ t=end; clearInterval(animTimer); animTimer=null; }
+    shownT=Math.round(t);
+    applySettle(shownT*60);
+    $('tTxt').textContent=shownT+' min';
+    $('oSet').textContent=PARTS.filter(x=>x.settled).length+' / 40';
+    drawChamber();
+  },40);
+}
+function hardReset(clearLog){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false};
+  curKey=null;
+  if(animTimer){ clearInterval(animTimer); animTimer=null; }
+  shownT=tMin();
+  applySettle(0);
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('animBtn').disabled=true;
+  $('nature').disabled=false; $('rho').disabled=false;
+  if(clearLog){ $('log').innerHTML=''; setSts('⏳ 未开始','si'); }
+  render();
+}
+function resetAll(){
+  $('nature').value='inert'; $('rho').value='2650'; $('tIn').value=180;
+  hardReset(true); warn('');
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+resetAllInit();
+function resetAllInit(){ shownT=180; applySettle(0); render(); }
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GBZ/T 192.3-2007</td><td>工作场所空气中粉尘测定 第3部分：粉尘分散度</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">自然沉降法全流程，及「可溶／纤维状粉尘应改用本法」的方法选择依据</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

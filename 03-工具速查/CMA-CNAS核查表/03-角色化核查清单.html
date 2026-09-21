@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>角色化核查清单 · CMA/CNAS 评审</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Source Han Sans SC","Microsoft YaHei",-apple-system,sans-serif;background:#f6f3ec;color:#2b2b2b;line-height:1.75;font-size:14px}
+.cover{background:#14365c;padding:28px 24px 20px;text-align:center;border-bottom:3px solid #9e2b25}
+.cover .tag{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#e8eef4;padding:3px 12px;border-radius:4px;font-size:11px;letter-spacing:1px}
+.cover h1{font-family:"Source Han Serif SC","Songti SC","SimSun",serif;font-size:22px;margin:10px 0 4px;color:#fff;font-weight:700}
+.cover .sub{color:#c9d4de;font-size:13px}
+.cover .meta{margin-top:8px;color:#9fb0bf;font-size:11px}
+.wrap{max-width:960px;margin:0 auto;padding:16px 20px 60px}
+.progress-bar{background:#fff;border:1px solid #d8d0c0;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.progress-bar .info{display:flex;justify-content:space-between;font-size:13px;color:#14365c;font-weight:600;margin-bottom:6px}
+.progress-bar .track{height:8px;background:#e8eef4;border-radius:4px;overflow:hidden}
+.progress-bar .fill{height:100%;background:#2e6b3e;border-radius:4px;transition:width .4s;width:0%}
+.progress-bar .fill.warn{background:#a8761b}
+.progress-bar .fill.good{background:#2e6b3e}
+.role{margin-bottom:10px;border:1px solid #d8d0c0;border-radius:8px;overflow:hidden;background:#fff}
+.role-header{display:flex;align-items:center;padding:13px 16px;cursor:pointer;background:#faf8f3;user-select:none}
+.role-header:hover{background:#f0ede4}
+.role-header .num{width:30px;height:30px;border-radius:50%;background:#9e2b25;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.role-header .title{flex:1;margin:0 12px;font-weight:700;font-size:15px;color:#14365c}
+.role-header .count{font-size:12px;color:#888;white-space:nowrap;margin-right:10px}
+.role-header .arrow{transition:transform .3s;font-size:14px;color:#888}
+.role-header.open .arrow{transform:rotate(180deg)}
+.role-body{display:none;padding:0 16px 14px;border-top:1px solid #e8eef4}
+.role-body.open{display:block}
+.item{margin:8px 0;border:1px solid #e8eef4;border-radius:6px;overflow:hidden}
+.item-head{display:flex;align-items:flex-start;padding:10px 12px;cursor:pointer;gap:8px}
+.item-head:hover{background:#f8f6f0}
+.item-head .cb{width:18px;height:18px;border:2px solid #b8b0a0;border-radius:3px;flex-shrink:0;margin-top:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;background:#fff}
+.item-head .cb.checked{background:#2e6b3e;border-color:#2e6b3e;color:#fff}
+.item-head .cb.checked::after{content:"✓"}
+.item-head .item-area{flex:1;min-width:0}
+.item-head .txt{font-size:13.5px;color:#333;font-weight:500}
+.item-head .item-key{font-size:12px;color:#2f5e8a;margin-top:4px;line-height:1.55;padding:4px 8px;background:#e8eef4;border-radius:4px}
+.item-head .expand{font-size:11px;color:#b8b0a0;transition:transform .3s;flex-shrink:0;margin-top:4px}
+.item-head.open .expand{transform:rotate(180deg)}
+.item-detail{display:none;padding:0 12px 10px;margin-left:28px;border-top:1px solid #f0ede4;background:#faf8f3}
+.item-detail.open{display:block}
+.item-detail .lab{font-size:11.5px;font-weight:600;color:#2f5e8a;margin-top:8px}
+.item-detail .txt{font-size:12.5px;color:#444;line-height:1.6;margin:2px 0 0}
+.item-detail .note-lab{font-size:11.5px;font-weight:600;color:#7a5c12;margin-top:10px}
+.item-detail .note{width:100%;box-sizing:border-box;min-height:46px;margin-top:3px;padding:7px 9px;font-family:inherit;font-size:12.5px;color:#333;line-height:1.55;border:1px solid #d8d0c0;border-radius:6px;background:#fffdf6;resize:vertical}
+.item-detail .note:focus{outline:none;border-color:#a8761b;box-shadow:0 0 0 2px rgba(168,118,27,.15)}
+.item-detail .rect-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.item-detail .rect-row .rl{font-size:11.5px;font-weight:600;color:#7a5c12;white-space:nowrap}
+.item-detail .rect{font-family:inherit;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #d8d0c0;background:#fff;color:#333;cursor:pointer}
+.item-detail .rect.s-none{background:#f0ede4;color:#888}
+.item-detail .rect.s-todo{background:#f3e7e6;color:#9e2b25;border-color:#e3c0bd}
+.item-detail .rect.s-doing{background:#fbf0dc;color:#a8761b;border-color:#ecd9a8}
+.item-detail .rect.s-done{background:#e7f0e8;color:#2e6b3e;border-color:#bfe0c6}
+.foot{margin-top:24px;border-top:1px solid #d8d0c0;padding-top:12px;color:#888;font-size:11px;text-align:right}
+@media print{body{background:#fff}.role-header{background:#f5f3ee}.role-body{display:block!important}}
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="tag">环境实验 · 评审工具 · 角色视角</div>
+  <h1>角色化核查清单</h1>
+  <div class="sub">按「评审当天各岗位该准备什么」重组 · 覆盖 CMA / CNAS 双体系</div>
+  <div class="meta">2026/07 版 · 勾选 + 备注 + 整改跟踪，进度自动保存</div>
+</div>
+<div class="wrap">
+<div class="progress-bar" id="progressBar">
+  <div class="info"><span id="progText">已核查 0 / 0 项</span><span id="progPct">0%</span></div>
+  <div class="track"><div class="fill" id="progFill"></div></div>
+</div>
+<div id="app"></div>
+<div class="foot">核查进度自动保存至本机、关闭后不丢失 · 打印时可展开全部角色</div>
+</div>
+<script>
+const DATA=[
+ {role:"质量负责人",items:[
+  {id:"qm1",t:"公正性程序 + 全员承诺 + 年度风险评估",key:"查公正性声明、全员签署的承诺书、年度公正性风险评估记录",guide:"制定《公正性和独立性管理程序》，每年做一次公正性风险评估并保留记录"},
+  {id:"qm2",t:"保密性程序 + 数据访问权限分级",key:"查保密制度、客户信息保护措施、权限分级",guide:"制定《保护客户机密信息和所有权程序》，样品/数据/报告按密级管理"},
+  {id:"qm3",t:"质量手册要素对照表覆盖全部要素（含 2023 新增风险）",key:"查质量手册要素对照表是否覆盖准则全部要素",guide:"编制准则条款→手册章节→程序文件对照矩阵，勿遗漏 2023 版新增的风险识别要素"},
+  {id:"qm4",t:"程序文件清单受控、版本现行有效",key:"查程序文件清单与现场使用版本是否一致",guide:"建立文件控制程序，作废文件须从现场撤除，外来标准须查新受控"},
+  {id:"qm5",t:"年度内审计划 + 检查表 + 不符合项整改闭环",key:"查内审计划/记录/不符合项整改/内审报告",guide:"每年至少一次完整内审覆盖全部要素部门，内审员须培训授权且独立"},
+  {id:"qm6",t:"管理评审 12 项输入 + 输出改进跟踪",key:"查管理评审输入材料完整性、输出决议跟踪",guide:"输入含内审/质控/客户反馈/投诉/能力验证/风险评估等；输出改进措施须有责任人+时限+验证"},
+  {id:"qm7",t:"投诉处理程序 + 记录闭环",key:"查投诉处理记录是否按时效答复并引发纠正措施",guide:"建立投诉处理程序，明确接收/调查/答复/记录职责与时限"},
+  {id:"qm8",t:"不符合工作控制 + 纠正措施验证",key:"查不符合是否根因分析→措施→验证→关闭",guide:"建立不符合工作控制程序，纠正措施效果须验证后方可关闭"},
+  {id:"qm9",t:"人员监督计划统筹 + 记录抽查",key:"查年度监督计划覆盖新员工/转岗/在培人员",guide:"统筹监督计划，抽查监督记录是否含具体观察与评价（非仅写「合格」）"},
+  {id:"qm10",t:"能力验证 / 比对计划 + 不满意结果整改",key:"查近 2-3 年能力验证记录与不满意整改",guide:"组织参加能力验证，不满意结果须有根因分析+纠正+验证报告"},
+  {id:"qm11",t:"风险识别与管控程序 + 评估记录",key:"查风险评估记录、应对措施、风险跟踪",guide:"制定风险识别与管控程序，至少每年一次全面评估（技术/管理/公正性/安全）"},
+  {id:"qm12",t:"文件与记录控制 + 保存期限合规",key:"查记录保存期限（环境领域≥6 年）、归档与借阅",guide:"建立记录控制程序，技术记录采用电子+纸质双重备份"}
+ ]},
+ {role:"技术负责人",items:[
+  {id:"th1",t:"技术负责人任职条件证明（学历 / 经历）",key:"查技术负责人学历、职称、从业年限是否满足",guide:"备齐学历证书+职称证书+工作经历证明（本科5年/专科8年相关经历）"},
+  {id:"th2",t:"授权签字人能力确认 + 领域匹配",key:"查授权签字人领域范围与能力确认记录是否一致",guide:"授权签字人领域不得超出能力确认范围；授权在能力确认之后"},
+  {id:"th3",t:"方法验证报告（检出限/精密度/准确度/线性）",key:"查方法验证数据是否达标、基体一致",guide:"每个标准方法首次使用前做验证，记录含检出限/RSD%/回收率/线性方程"},
+  {id:"th4",t:"非标方法确认（特性参数 + 比对数据）",key:"查非标/自制/超范围方法的确认完整性",guide:"确认须含方法特性参数+与标准方法的比对数据，切勿仅单浓度点验证"},
+  {id:"th5",t:"标准查新机制 + 能力表现行有效",key:"查标准查新记录，能力表版本是否现行",guide:"至少每半年查新一次，发现换版评估影响并更新能力表（最高频不符合项之一）"},
+  {id:"th6",t:"设备校准周期表 + 量程覆盖 + 期间核查",key:"查校准证书参数/量程是否覆盖方法要求",guide:"建立校准周期表，关键设备每两次校准间至少一次期间核查（用有证标准物质）"},
+  {id:"th7",t:"测量不确定度评定（每项目至少 1 份）",key:"查不确定度评定报告是否覆盖全部检测项目",guide:"制定评定程序，每个检测项目至少一份有效评定报告（GUM 法或精密度数据）"},
+  {id:"th8",t:"年度质控计划覆盖全部领域",key:"查质控计划是否覆盖全部检测项目",guide:"每个项目至少一种质控方式；空白每批≥1、平行≥10%、加标5-10%"},
+  {id:"th9",t:"方法偏离 / 分包技术审核",key:"查偏离是否获批、分包是否告知客户",guide:"方法偏离须技术审核与客户同意；分包项目在合同与报告中提前标注"},
+  {id:"th10",t:"技术记录规范性抽查",key:"查原始记录是否含计算过程/仪器信息/可复现",guide:"原始记录须含样品/方法/仪器/环境/原始数据/计算/签名，修改须杠改签名"},
+  {id:"th11",t:"新项目 / 扩项方法评审",key:"查扩项评审记录与能力确认",guide:"扩项前做方法评审+人员能力确认+设备确认，形成评审报告"},
+  {id:"th12",t:"技术人员能力确认统筹",key:"查全员能力确认记录完整",guide:"入职→培训→监督→能力确认→授权→持续监控，档案含全部记录"}
+ ]},
+ {role:"授权签字人",items:[
+  {id:"as1",t:"签字领域与能力确认范围一致",key:"查授权签字人领域是否超出能力确认范围",guide:"授权领域须与学历/经历/能力确认严格对应（如环境检测须相关背景）"},
+  {id:"as2",t:"熟悉授权领域标准方法",key:"现场可能被问及方法原理与限制",guide:"复习授权领域方法标准、适用范围与限制条件"},
+  {id:"as3",t:"报告审核（信息完整 / 数据 / 结论）",key:"查报告审核记录与签字规范性",guide:"报告上岗前经审核确保信息完整，CMA章/CNAS标识使用须授权"},
+  {id:"as4",t:"理解测量不确定度",key:"可能被要求解释不确定度来源与评定",guide:"掌握授权项目的不确定度评定方法与结果含义"},
+  {id:"as5",t:"能力验证 / 比对结果知晓",key:"查是否了解本机构参与的能力验证结果",guide:"熟悉近年能力验证项目、结果与整改情况"},
+  {id:"as6",t:"报告修改 / 替代规则",key:"查报告修改程序与替代编号规则",guide:"重新出具报告须标注「替代报告编号」并说明原因，保留原报告"},
+  {id:"as7",t:"分包项目标注",key:"查分包是否在报告中明确标注",guide:"分包项目须在报告正文中标注，不得隐瞒"},
+  {id:"as8",t:"CMA 章 / CNAS 标识使用授权",key:"查印章使用授权书与登记",guide:"明确印章保管人/使用范围/批准流程，使用须登记"}
+ ]},
+ {role:"设备 / 试剂管理员",items:[
+  {id:"eq1",t:"设备台账一机一档",key:"查设备登记表与实物一致性",guide:"建立设备台账，每台设备编号规则统一，含名称/型号/厂家/状态/位置"},
+  {id:"eq2",t:"校准周期表 + 证书覆盖方法要求",key:"查校准证书参数/量程是否覆盖方法",guide:"校准证书须经确认（结果是否符合方法要求），关键参数须覆盖量程"},
+  {id:"eq3",t:"期间核查计划 + 记录",key:"查关键设备期间核查执行情况",guide:"制定期间核查程序，用有证标准物质，保留核查记录"},
+  {id:"eq4",t:"标准物质验收 + 溯源",key:"查标准物质证书与验收记录",guide:"标准物质须有证书与溯源信息，购入后验收登记，按要求保存"},
+  {id:"eq5",t:"试剂耗材验收记录",key:"查关键试剂/耗材验收",guide:"建立验收记录，关键试剂核对批号/纯度/有效期"},
+  {id:"eq6",t:"合格供应商名录 + 复评",key:"查供应商评价与复评",guide:"建立合格供应商名录，定期复评，关键服务须评价"},
+  {id:"eq7",t:"故障维修记录",key:"查设备故障时是否记录与处置",guide:"设备故障须有维修记录与期间核查/验证，影响结果须评估"},
+  {id:"eq8",t:"计量溯源性（CNAS 强调）",key:"查校准机构是否具 CNAS 认可（带标识）",guide:"优先选用 CNAS 认可校准实验室；无法溯源 SI 须有其他证明"}
+ ]},
+ {role:"样品管理员",items:[
+  {id:"sm1",t:"样品编码唯一规则",key:"现场抽查样品编号是否唯一可追溯",guide:"建立编码规则（项目编号+类型+流水号），避免重号"},
+  {id:"sm2",t:"样品流转单全路径",key:"查流转记录是否覆盖接样→流转→分析→处置",guide:"流转单须记录各环节交接人与时间，确保全链条可追溯"},
+  {id:"sm3",t:"保存条件（冷藏 / 冷冻）连续记录",key:"查保存区域温湿度连续记录与报警",guide:"冷藏/冷冻箱配连续记录仪，超范围须有报警与处置记录"},
+  {id:"sm4",t:"留样管理",key:"查留样期限与处置",guide:"按方法/合同约定留样，留样期满规范处置并记录"},
+  {id:"sm5",t:"废弃样品处置记录",key:"查废弃样品处置是否符合要求",guide:"建立处置程序， hazardous 废物按危废管理，记录完整"},
+  {id:"sm6",t:"样品交接签字",key:"查送样/接样/流转交接签字",guide:"每环节交接双方签字确认，状态清晰"}
+ ]},
+ {role:"检测员（当天可能被考）",items:[
+  {id:"op1",t:"原始记录规范（可复现 / 杠改）",key:"查原始记录是否含计算过程、可复现",guide:"记录须含样品/方法/仪器/环境/原始数据/计算/签名；修改须杠改签名"},
+  {id:"op2",t:"方法标准操作熟练",key:"现场可能被要求演示操作",guide:"复习授权项目方法标准与作业指导书，熟悉关键步骤"},
+  {id:"op3",t:"质控样插入（空白 / 平行 / 加标）",key:"查质控样是否按频次插入",guide:"每批空白≥1、平行≥10%、加标5-10%，结果异常须分析"},
+  {id:"op4",t:"仪器使用 + 期间核查",key:"查仪器使用记录与期间核查",guide:"仪器使用前检查状态，关键设备做期间核查并记录"},
+  {id:"op5",t:"环境条件监控记录",key:"查检测时环境条件是否满足方法",guide:"恒温恒湿/通风等按要求监控，记录连续无间断"},
+  {id:"op6",t:"样品前处理规范",key:"查前处理是否与标准一致",guide:"有机/无机区域分离，交叉污染防控措施到位"},
+  {id:"op7",t:"数据复核自校",key:"查数据计算与单位是否正确",guide:"结果出具前自行复核计算、单位、有效数字"},
+  {id:"op8",t:"安全 / 防护符合要求",key:"查个人防护与试剂安全",guide:"穿戴防护用品，危化品按规定存放与使用"}
+ ]}
+];
+function getState(id){return localStorage.getItem('role_'+id)==='1'}
+function setState(id,v){if(v)localStorage.setItem('role_'+id,'1');else localStorage.removeItem('role_'+id)}
+function getNote(id){return localStorage.getItem('role_note_'+id)||''}
+function setNote(id,v){if(v&&v.trim())localStorage.setItem('role_note_'+id,v);else localStorage.removeItem('role_note_'+id)}
+function getRect(id){return localStorage.getItem('role_rect_'+id)||'none'}
+function setRect(id,v){if(v&&v!=='none')localStorage.setItem('role_rect_'+id,v);else localStorage.removeItem('role_rect_'+id)}
+function render(){
+  const app=document.getElementById('app');let html='';
+  DATA.forEach((r,i)=>{
+    const n=r.items.length;const done=r.items.filter(it=>getState(it.id)).length;
+    html+=`<div class="role" data-idx="${i}"><div class="role-header">
+      <div class="num">${i+1}</div><span class="title">${r.role}</span>
+      <span class="count">${done}/${n}</span><span class="arrow">▾</span></div>
+      <div class="role-body" id="roleBody${i}">`;
+    r.items.forEach(it=>{
+      const s=getState(it.id);
+      html+=`<div class="item" data-itemid="${it.id}"><div class="item-head">
+        <div class="cb ${s?'checked':''}"></div>
+        <div class="item-area"><div class="txt">${it.t}</div>
+        <div class="item-key">🔍 核查要点：${it.key}</div></div>
+        <span class="expand">▾</span></div>
+        <div class="item-detail">
+          <div class="lab">📋 准备指引</div><div class="txt">${it.guide}</div>
+          <div class="note-lab">📝 我的备注 / 现场记录</div>
+          <textarea class="note" data-nid="${it.id}" placeholder="记录本岗位现状、待办、缺口…（自动保存到本机）"></textarea>
+          <div class="rect-row"><span class="rl">整改状态</span>
+            <select class="rect s-none" data-rid="${it.id}">
+              <option value="none">无</option><option value="todo">待整改</option>
+              <option value="doing">整改中</option><option value="done">已关闭</option>
+            </select></div>
+        </div></div>`;
+    });
+    html+=`</div></div>`;
+  });
+  app.innerHTML=html;
+  app.querySelectorAll('.note').forEach(ta=>{ta.value=getNote(ta.dataset.nid);});
+  app.querySelectorAll('.rect').forEach(sel=>{const v=getRect(sel.dataset.rid);sel.value=v;sel.className='rect s-'+v;});
+  updateProgress();
+}
+document.addEventListener('input',function(e){const ta=e.target.closest('.note');if(ta)setNote(ta.dataset.nid,ta.value);});
+document.addEventListener('change',function(e){const sel=e.target.closest('.rect');if(sel){const v=sel.value;setRect(sel.dataset.rid,v);sel.className='rect s-'+v;}});
+document.addEventListener('click',function(e){
+  const cb=e.target.closest('.item-head .cb');
+  if(cb){const item=cb.closest('.item');const id=item.dataset.itemid;const v=!getState(id);setState(id,v);cb.classList.toggle('checked',v);updateProgress();
+    const role=item.closest('.role');const idx=parseInt(role.dataset.idx);
+    const did=DATA[idx].items.filter(it=>getState(it.id)).length;
+    role.querySelector('.count').textContent=did+'/'+DATA[idx].items.length;return;}
+  const head=e.target.closest('.item-head');
+  if(head){head.classList.toggle('open');const det=head.nextElementSibling;if(det&&det.classList.contains('item-detail'))det.classList.toggle('open');return;}
+  const rh=e.target.closest('.role-header');
+  if(rh){rh.classList.toggle('open');rh.nextElementSibling.classList.toggle('open');}
+});
+function updateProgress(){
+  let total=0,done=0;DATA.forEach(r=>r.items.forEach(it=>{total++;if(getState(it.id))done++}));
+  document.getElementById('progText').textContent='已核查 '+done+' / '+total+' 项';
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progPct').textContent=pct+'%';
+  const fill=document.getElementById('progFill');fill.style.width=pct+'%';
+  fill.className='fill'+(pct<30?' warn':pct<80?'':' good');
+}
+render();
+</script>
+</body>
+</html>

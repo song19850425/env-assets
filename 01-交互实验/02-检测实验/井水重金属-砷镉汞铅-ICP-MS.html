@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>井水重金属检测 · ICP-MS 砷镉汞铅</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#0a1628,#1a2a4a);color:#fff;padding:20px;text-align:center}
+        .header h1{font-size:18px;font-weight:700}.header .sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}
+        .header .badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(74,222,128,0.2);border-radius:10px;font-size:10px;color:#4ade80}
+        .container{max-width:720px;margin:0 auto;padding:16px}
+        .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}.card h2 .std{font-size:11px;color:#999;font-weight:400;margin-left:8px}.card p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+        .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:12px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:2px;transition:width .5s}
+        .step-indicator{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+        .step-dot{flex:1;text-align:center;padding:6px 4px;border-radius:6px;font-size:10px;color:#999;background:#f5f5f5;cursor:pointer;min-width:56px;border:1px solid transparent}
+        .step-dot .num{font-size:13px;font-weight:700;display:block}
+        .step-dot.active{background:#f0fdf4;border-color:#4ade80;color:#166534;font-weight:600}.step-dot.done{background:#f0fdf4;border-color:#4ade80;color:#4ade80}
+        .lab-bench{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:10px;padding:20px;margin:12px 0;border:1px solid #e2e8f0;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .lab-bench .equip-icon{font-size:48px;margin-bottom:6px}.lab-bench .desc{font-size:13px;color:#475569;line-height:1.7}.lab-bench .status{padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;margin-top:6px}
+        .st-wait{background:#f1f5f9;color:#64748b}.st-run{background:#fef3c7;color:#ca8a04}.st-ok{background:#f0fdf4;color:#166534}
+        .step-btn{padding:8px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:linear-gradient(135deg,#4ade80,#22c55e);margin-top:8px}
+        .step-btn:hover{box-shadow:0 4px 12px rgba(74,222,128,0.3)}.step-btn:disabled{opacity:.4;cursor:default}.step-btn.purple{background:linear-gradient(135deg,#6366f1,#8b5cf6)}.step-btn.orange{background:linear-gradient(135deg,#f59e0b,#d97706)}
+        .info-box{padding:10px 14px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#166534;border:1px solid #bbf7d0;margin:8px 0}
+        .safety-box{padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:#92400e;border:1px solid #fde68a;margin:8px 0}
+        .data-table{width:100%;font-size:12px;border-collapse:collapse;margin:8px 0}
+        .data-table th{background:#0a1628;color:#fff;padding:6px;text-align:left}.data-table td{padding:5px 6px;border-bottom:1px solid #e0e0e0}
+        .result-box{padding:20px;border-radius:10px;text-align:center;margin-top:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:none}
+        .result-box .big{font-size:40px;font-weight:800;color:#1e293b}.result-box .lbl{font-size:13px;color:#666;margin-top:4px}
+        .spec-meter{background:linear-gradient(to right,#1e293b,#334155,#1e293b);border-radius:8px;padding:12px 16px;margin:8px 0}
+        .spec-meter .row{display:flex;justify-content:space-around;align-items:center}
+        .spec-meter .item{text-align:center}
+        .spec-meter .item .el{font-size:12px;color:#94a3b8}.spec-meter .item .val{font-size:16px;font-weight:700;color:#4ade80;font-family:monospace}
+        .sample-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;margin-bottom:12px}
+        .bottle-row{display:flex;gap:10px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+        .btl{width:50px;height:70px;border-radius:4px 4px 30% 30%;position:relative;text-align:center;padding-top:10px;font-size:20px}
+        .btl .lbl{font-size:9px;color:#475569;position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);white-space:nowrap}
+        .btl-raw{background:linear-gradient(180deg,#dbeafe 40%,#93c5fd 90%)}
+        .btl-hcl{background:linear-gradient(180deg,#fef3c7 40%,#fcd34d 90%)}
+        .btl-hno3{background:linear-gradient(180deg,#fce7f3 40%,#f9a8d4 90%)}
+        @media (max-width:600px){.sample-info{grid-template-columns:1fr}.data-table{font-size:11px}}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 井水重金属检测 · ICP-MS法 砷镉汞铅</h1>
+        <div class="sub">HJ 700-2014 · 生活饮用水/地下水质量检测</div>
+        <div class="badge">🔬 场景：农村饮用水井 水质安全监测</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>📋 样品信息</h2>
+            <div class="sample-info">
+                <span><strong>样品编号：</strong>GW-2026-0622-001</span><span><strong>采样地点：</strong>某农村饮用水井</span>
+                <span><strong>采样日期：</strong>2026-06-22</span><span><strong>检测方法：</strong>HJ 700-2014 ICP-MS</span>
+                <span><strong>分析仪器：</strong>ICP-MS CCT模式</span><span><strong>评价标准：</strong>GB 5749-2022</span>
+                <span><strong>前处理：</strong>HNO₃消解</span><span><strong>内标：</strong>¹⁰³Rh + ¹⁸⁷Re</span>
+            </div>
+        </div>
+
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active"><span class="num">①</span>采样保存</div>
+            <div class="step-dot"><span class="num">②</span>前处理</div>
+            <div class="step-dot"><span class="num">③</span>标曲</div>
+            <div class="step-dot"><span class="num">④</span>上机</div>
+            <div class="step-dot"><span class="num">⑤</span>计算</div>
+            <div class="step-dot"><span class="num">⑥</span>报告</div>
+        </div>
+
+        <!-- ===== 步骤0：采样保存 ===== -->
+        <div class="card step-panel active" id="step0">
+            <h2>① 水样采集与保存 <span class="std">现场加酸固定</span></h2>
+            <p>用聚乙烯瓶采集井水样品，现场加酸固定后4℃保存。</p>
+            <div class="bottle-row">
+                <div class="btl btl-raw"><div>💧</div><div class="lbl">原水样1L</div></div>
+                <div class="btl btl-hno3" style="margin-left:8px;"><div>🧪</div><div class="lbl">+HNO₃ pH≤2</div></div>
+                <div class="btl btl-hcl" style="margin-left:8px;"><div>⚗️</div><div class="lbl">+HCl Hg专用</div></div>
+            </div>
+            <div class="lab-bench">
+                <div class="equip-icon">💧</div>
+                <div class="desc">
+                    <strong>采集井水样品 1.0 L</strong><br>
+                    聚乙烯瓶 · 采样前用井水荡洗3次<br>
+                    As/Cd/Pb：加HNO₃调pH≤2<br>
+                    Hg：加HCl至1%或K₂Cr₂O₇+HNO₃<br>
+                    4℃冷藏保存，14天内完成分析
+                </div>
+                <div class="status st-wait" id="s0Status">⏳ 待采样</div>
+            </div>
+            <div class="safety-box">
+                ⚠️ Hg极易吸附于容器壁！Hg样品必须单独加固定剂，不可与As/Cd/Pb共用一瓶。
+            </div>
+            <button class="step-btn" onclick="goStep(1)">✅ 采样完成 → 样品消解</button>
+        </div>
+
+        <!-- ===== 步骤1：前处理 ===== -->
+        <div class="card step-panel" id="step1">
+            <h2>② 样品前处理 <span class="std">HNO₃消解 + 赶酸定容</span></h2>
+            <p>取适量水样于消解罐中，加硝酸加热消解后定容。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">⚗️</div>
+                <div class="desc" id="digestDesc">
+                    <strong>取50.0 mL水样于消解罐</strong><br>
+                    加入2.5 mL优级纯HNO₃<br>
+                    电热板140℃消解至近干（<1mL）<br>
+                    冷却后转移至25mL比色管定容
+                </div>
+                <div class="status st-wait" id="s1Status">⏳ 待消解</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;font-size:12px;">
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">取样体积</div><div style="font-weight:700;">50.0 mL</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">定容体积</div><div style="font-weight:700;">25.0 mL</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">浓缩倍数</div><div style="font-weight:700;color:#166534;">2.0</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">内标加入</div><div style="font-weight:700;">Rh/Re 10ppb</div>
+                </div>
+            </div>
+
+            <div class="info-box" id="digestInfo" style="display:none;">
+                ✅ 消解完成！样品已定容至25.0mL，加入内标待测
+            </div>
+
+            <button class="step-btn" id="digestBtn" onclick="startDigest()">▶ 开始消解（模拟）</button>
+        </div>
+
+        <!-- ===== 步骤2：标曲 ===== -->
+        <div class="card step-panel" id="step2">
+            <h2>③ 标准曲线 <span class="std">外标法+内标校正</span></h2>
+            <p>配制系列混合标准溶液，建立4元素的标准曲线。</p>
+            <table class="data-table">
+                <thead><tr><th>标准点</th><th>As(ppb)</th><th>Cd(ppb)</th><th>Hg(ppb)</th><th>Pb(ppb)</th></tr></thead>
+                <tbody>
+                    <tr><td>空白</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+                    <tr><td>标1</td><td>0.5</td><td>0.1</td><td>0.1</td><td>0.5</td></tr>
+                    <tr><td>标2</td><td>2.0</td><td>0.5</td><td>0.5</td><td>2.0</td></tr>
+                    <tr><td>标3</td><td>10.0</td><td>2.0</td><td>2.0</td><td>10.0</td></tr>
+                    <tr><td>标4</td><td>50.0</td><td>10.0</td><td>10.0</td><td>50.0</td></tr>
+                    <tr><td>标5</td><td>100.0</td><td>20.0</td><td>20.0</td><td>100.0</td></tr>
+                </tbody>
+            </table>
+            <div class="info-box">
+                📊 各元素标准曲线R²均≥0.9995 · 内标RSD＜5%<br>
+                内标校正消除基体干扰 · CCT模式消除ArCl对As的干扰
+            </div>
+            <button class="step-btn" onclick="goStep(3)">✅ 标曲建立完成 → 上机测试</button>
+        </div>
+
+        <!-- ===== 步骤3：上机 ===== -->
+        <div class="card step-panel" id="step3">
+            <h2>④ ICP-MS上机测定 <span class="std">CCT模式干扰消除</span></h2>
+            <p>依次测定空白→标准→样品→质控，记录各元素信号值。</p>
+
+            <div class="spec-meter">
+                <div style="display:flex;justify-content:space-around;align-items:center;">
+                    <div class="item"><div class="el">⁷⁵As (CCT)</div><div class="val" id="cpsAs">0</div></div>
+                    <div class="item"><div class="el">¹¹¹Cd</div><div class="val" id="cpsCd">0</div></div>
+                    <div class="item"><div class="el">²⁰²Hg</div><div class="val" id="cpsHg">0</div></div>
+                    <div class="item"><div class="el">²⁰⁸Pb</div><div class="val" id="cpsPb">0</div></div>
+                </div>
+            </div>
+
+            <div style="text-align:center;margin:8px 0;">
+                <span style="display:inline-block;padding:4px 14px;background:#f0fdf4;border-radius:12px;font-size:12px;color:#166534;" id="scanStatus">⏳ 待测</span>
+            </div>
+
+            <button class="step-btn" id="scanBtn" onclick="startScan()">▶ 开始ICP-MS测定</button>
+
+            <div class="info-box" id="scanInfo" style="display:none;">
+                ✅ 样品测定完成 · 内标回收率均在90-110% ✅
+            </div>
+        </div>
+
+        <!-- ===== 步骤4：计算 ===== -->
+        <div class="card step-panel" id="step4">
+            <h2>⑤ 浓度计算 <span class="std">由cps转化为水中浓度</span></h2>
+
+            <table class="data-table">
+                <thead><tr><th>元素</th><th>同位素</th><th>CPS</th><th>溶液浓度(ppb)</th><th>浓缩倍数</th><th>水样浓度(μg/L)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>As</strong></td><td>⁷⁵As</td><td>48652</td><td>3.16</td><td>2.0</td><td style="font-weight:700;">6.32</td></tr>
+                    <tr><td><strong>Cd</strong></td><td>¹¹¹Cd</td><td>8923</td><td>0.28</td><td>2.0</td><td style="font-weight:700;">0.56</td></tr>
+                    <tr><td><strong>Hg</strong></td><td>²⁰²Hg</td><td>32410</td><td>0.52</td><td>2.0</td><td style="font-weight:700;">1.04</td></tr>
+                    <tr><td><strong>Pb</strong></td><td>²⁰⁸Pb</td><td>128450</td><td>8.15</td><td>2.0</td><td style="font-weight:700;">16.30</td></tr>
+                </tbody>
+            </table>
+
+            <div style="padding:10px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <strong>计算公式：</strong>水样浓度(μg/L) = 溶液浓度(ppb) × 定容体积(mL) / 取样体积(mL)<br>
+                例：As = 3.16 × 25 / 50 × 2 = <strong>3.16 μg/L</strong>
+            </div>
+
+            <button class="step-btn" onclick="goStep(5)">✅ 计算完成 → 出报告</button>
+        </div>
+
+        <!-- ===== 步骤5：报告 ===== -->
+        <div class="card step-panel" id="step5">
+            <h2>⑥ 检测报告 <span class="std">对照GB 5749-2022限值</span></h2>
+
+            <table class="data-table">
+                <thead><tr><th>元素</th><th>检测值(μg/L)</th><th>GB 5749限值</th><th>判定</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>As</strong></td><td style="font-weight:700;">3.16</td><td>≤10</td><td style="color:#166534;font-weight:700;">✅</td></tr>
+                    <tr><td><strong>Cd</strong></td><td style="font-weight:700;">0.56</td><td>≤5</td><td style="color:#166534;font-weight:700;">✅</td></tr>
+                    <tr><td><strong>Hg</strong></td><td style="font-weight:700;">1.04</td><td>≤1</td><td style="color:#dc2626;font-weight:700;background:#fee2e2;">❌ 超标</td></tr>
+                    <tr><td><strong>Pb</strong></td><td style="font-weight:700;">16.30</td><td>≤10</td><td style="color:#dc2626;font-weight:700;background:#fee2e2;">❌ 超标</td></tr>
+                </tbody>
+            </table>
+
+            <div style="padding:14px;background:#fff6f0;border-radius:8px;margin:12px 0;font-size:13px;color:#c2410c;border:1px solid #fed7aa;">
+                ⚠️ <strong>超标提示</strong><br>
+                · Hg 1.04 μg/L 超出GB 5749-2022限值(≤1μg/L) <strong style="color:#dc2626;">0.04 μg/L</strong><br>
+                · Pb 16.30 μg/L 超出GB 5749-2022限值(≤10μg/L) <strong style="color:#dc2626;">6.30 μg/L</strong><br>
+                · As、Cd达标<br><br>
+                <strong>建议：</strong>立即复测确认，排查水源周边污染源（铅蓄电池/含汞农药/工业废水）。在确认结果前建议暂停饮用该井水。
+            </div>
+
+            <div style="padding:10px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <strong>质控总结</strong><br>
+                · 方法空白：均＜MDL ✅<br>
+                · 平行样RPD：As 5.2%, Cd 4.8%, Hg 6.1%, Pb 7.3%（均≤15% ✅）<br>
+                · 加标回收率：As 98.5%, Cd 101.2%, Hg 95.8%, Pb 97.3% ✅<br>
+                · 质控样(GBW08607)测定值均在不确定度范围内 ✅
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="step-btn purple" onclick="resetAll()">🔄 重做实验</button>
+                <button class="step-btn orange" onclick='alert(`井水重金属检测报告\n───────────────\n样品编号：GW-2026-0622-001\n水源：某农村饮用水井\n\nAs：3.16 μg/L  ✅ (≤10)\nCd：0.56 μg/L  ✅ (≤5)\nHg：1.04 μg/L  ❌ (≤1)\nPb：16.30 μg/L ❌ (≤10)\n\n结论：Hg、Pb超标，建议暂停饮用并排查污染源。`)'>📄 导出报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+
+        function goStep(n) { currentStep = n; updateUI(); }
+
+        function updateUI() {
+            document.querySelectorAll('.step-dot').forEach((d,i) => {
+                d.classList.remove('active','done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            document.querySelectorAll('.step-panel').forEach((p,i) => {
+                p.style.display = i === currentStep ? 'block' : 'none';
+            });
+            document.getElementById('progressFill').style.width = (currentStep / 5 * 100) + '%';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        // 消解
+        function startDigest() {
+            const btn = document.getElementById('digestBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 消解中…';
+            document.getElementById('s1Status').textContent = '🔥 加热消解中';
+            document.getElementById('s1Status').className = 'status st-run';
+            document.getElementById('digestDesc').innerHTML = '电热板140℃加热赶酸<br>溶液由浑浊→澄清→近干';
+            let sec = 6;
+            const timer = setInterval(() => {
+                sec--;
+                if (sec <= 3) document.getElementById('digestDesc').innerHTML = '消解至近干（约1mL）<br>关闭电热板冷却';
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('digestInfo').style.display = 'block';
+                    document.getElementById('s1Status').textContent = '✅ 消解完成';
+                    document.getElementById('s1Status').className = 'status st-ok';
+                    document.getElementById('digestDesc').innerHTML = '消解完成！<br>转移至25mL比色管，超纯水定容至标线<br>加入Rh/Re内标，摇匀待测';
+                    btn.textContent = '✅ 消解完成 → 标准曲线';
+                    btn.onclick = () => goStep(2);
+                    btn.disabled = false;
+                }
+            }, 300);
+        }
+
+        // ICP-MS扫描
+        function startScan() {
+            const btn = document.getElementById('scanBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 扫描中…';
+            document.getElementById('scanStatus').textContent = '📊 数据采集进行中';
+            document.getElementById('scanStatus').style.background = '#fef3c7';
+            document.getElementById('scanStatus').style.color = '#ca8a04';
+
+            const targets = [
+                { as:2100, cd:420, hg:1800, pb:5600 },
+                { as:15200, cd:3120, hg:11500, pb:42500 },
+                { as:48652, cd:8923, hg:32410, pb:128450 },
+            ];
+            let i = 0;
+            const names = ['空白样测定…','质控样测定…','✅ 样品测定'];
+            const timer = setInterval(() => {
+                if (i >= targets.length) {
+                    clearInterval(timer);
+                    document.getElementById('scanInfo').style.display = 'block';
+                    document.getElementById('scanStatus').textContent = '✅ 测定完成';
+                    document.getElementById('scanStatus').style.background = '#f0fdf4';
+                    document.getElementById('scanStatus').style.color = '#166534';
+                    btn.textContent = '✅ 测定完成 → 计算';
+                    btn.onclick = () => goStep(4);
+                    btn.disabled = false;
+                    return;
+                }
+                const t = targets[i];
+                document.getElementById('cpsAs').textContent = t.as.toLocaleString();
+                document.getElementById('cpsCd').textContent = t.cd.toLocaleString();
+                document.getElementById('cpsHg').textContent = t.hg.toLocaleString();
+                document.getElementById('cpsPb').textContent = t.pb.toLocaleString();
+                document.getElementById('scanStatus').textContent = '📊 ' + names[i];
+                i++;
+            }, 600);
+        }
+
+        function resetAll() {
+            currentStep = 0;
+            document.getElementById('digestInfo').style.display = 'none';
+            document.getElementById('scanInfo').style.display = 'none';
+            document.getElementById('cpsAs').textContent = '0';
+            document.getElementById('cpsCd').textContent = '0';
+            document.getElementById('cpsHg').textContent = '0';
+            document.getElementById('cpsPb').textContent = '0';
+            document.getElementById('digestDesc').innerHTML = '<strong>取50.0 mL水样于消解罐</strong><br>加入2.5 mL优级纯HNO₃<br>电热板140℃消解至近干（<1mL）<br>冷却后转移至25mL比色管定容';
+            document.getElementById('s0Status').textContent = '⏳ 待采样';
+            document.getElementById('s0Status').className = 'status st-wait';
+            document.getElementById('s1Status').textContent = '⏳ 待消解';
+            document.getElementById('s1Status').className = 'status st-wait';
+            document.getElementById('scanStatus').textContent = '⏳ 待测';
+            document.getElementById('scanStatus').style.background = '#f0fdf4';
+            document.getElementById('scanStatus').style.color = '#166534';
+
+            ['digestBtn','scanBtn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) { b.disabled = false; b.textContent = id === 'digestBtn' ? '▶ 开始消解（模拟）' : '▶ 开始ICP-MS测定'; }
+            });
+            goStep(0);
+        }
+
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 5749-2022</td><td>生活饮用水卫生标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 700-2014</td><td>水质 65 种元素的测定 电感耦合等离子体质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

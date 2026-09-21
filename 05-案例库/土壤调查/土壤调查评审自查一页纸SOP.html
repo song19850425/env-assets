@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>土壤调查评审自查一页纸 SOP · 某地土壤污染状况调查专项</title>
+<style>
+  :root{
+    --paper:#f6f3ec; --card:#fffdf8; --ink:#1f2933; --ink-soft:#4a5563;
+    --navy:#16284a; --navy-2:#2a3d5f; --rose:#d6336c; --green:#10b981;
+    --line:rgba(22,40,74,0.14); --line-strong:rgba(22,40,74,0.30);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    font-size:16px; line-height:1.7; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:18px 16px 60px;}
+
+  /* Header */
+  header{
+    border-bottom:3px solid var(--navy); padding-bottom:14px; margin-bottom:18px;
+  }
+  header h1{
+    font-family:"Noto Serif SC",serif; font-size:27px; margin:0 0 6px;
+    color:var(--navy); letter-spacing:1px;
+  }
+  header .sub{font-size:14px; color:var(--ink-soft);}
+  header .meta{
+    margin-top:8px; font-size:12.5px; color:var(--ink-soft);
+    display:flex; flex-wrap:wrap; gap:6px 14px;
+  }
+  header .meta span{border:1px solid var(--line); padding:2px 9px; border-radius:20px;}
+
+  /* Quick reference cards */
+  .qr-title{
+    font-family:"Noto Serif SC",serif; font-size:18px; color:var(--navy);
+    margin:22px 0 10px; display:flex; align-items:center; gap:8px;
+  }
+  .qr-title::before{content:""; width:6px; height:20px; background:var(--rose); border-radius:2px;}
+  .qr-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  .qr{
+    background:var(--card); border:1px solid var(--line); border-top:4px solid var(--rose);
+    border-radius:8px; padding:12px 13px; box-shadow:0 1px 0 var(--line);
+  }
+  .qr .code{font-size:13px; font-weight:700; color:var(--rose); letter-spacing:1px;}
+  .qr .name{font-size:14.5px; font-weight:700; color:var(--navy); margin:2px 0 8px; line-height:1.4;}
+  .qr ul{margin:0; padding-left:16px; font-size:12.8px; color:var(--ink-soft);}
+  .qr ul li{margin:3px 0;}
+  .qr b{color:var(--ink);}
+
+  /* Standard reference note */
+  .std-note{
+    font-size:12.8px; color:var(--ink-soft); background:var(--card);
+    border:1px solid var(--line); border-left:4px solid var(--navy);
+    border-radius:0 6px 6px 0; padding:8px 12px; margin-bottom:12px;
+  }
+
+  /* Checklist categories */
+  .cat{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    margin:16px 0; overflow:hidden;
+  }
+  .cat > .cat-h{
+    background:var(--navy); color:#fff; padding:11px 15px;
+    display:flex; align-items:center; gap:10px; font-family:"Noto Serif SC",serif;
+    font-size:17px;
+  }
+  .cat-h .num{
+    flex:0 0 auto; width:30px; height:30px; border:1.5px solid #fff; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700;
+  }
+  .cat-h .tag{
+    margin-left:auto; font-family:"Noto Sans SC",sans-serif; font-size:11.5px;
+    background:rgba(255,255,255,0.15); padding:2px 9px; border-radius:20px;
+  }
+  .cat-body{padding:12px 15px 14px;}
+
+  .item{
+    display:flex; gap:11px; align-items:flex-start; padding:8px 4px;
+    border-bottom:1px dashed var(--line); cursor:pointer;
+  }
+  .item:last-child{border-bottom:none;}
+  .item input{width:21px; height:21px; flex:0 0 auto; margin-top:3px; accent-color:var(--green); cursor:pointer;}
+  .item label{flex:1; cursor:pointer;}
+  .item .txt{font-size:15px;}
+  .item .lnk{
+    display:inline-block; margin-top:3px; font-size:12px; color:var(--rose); font-weight:600;
+  }
+  .item .red{
+    display:inline-block; margin-top:3px; margin-left:6px; font-size:11.5px;
+    color:#fff; background:var(--rose); padding:1px 8px; border-radius:20px; font-weight:600;
+  }
+  .item.checked .txt{color:var(--ink-soft); text-decoration:line-through; text-decoration-color:var(--line-strong);}
+
+  .hint{
+    background:#fff7f9; border:1px solid var(--line); border-left:4px solid var(--rose);
+    border-radius:0 6px 6px 0; padding:9px 12px; margin-top:10px; font-size:13px; color:var(--ink-soft);
+  }
+  .hint b{color:var(--rose);}
+
+  /* Record area */
+  .rec{
+    margin-top:18px; background:var(--card); border:1px solid var(--line-strong); border-radius:10px; padding:14px 15px;
+  }
+  .rec h3{font-family:"Noto Serif SC",serif; color:var(--navy); margin:0 0 10px; font-size:17px;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px 14px;}
+  .fld label{display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:3px;}
+  .fld input,.fld textarea,.fld select{
+    width:100%; font-size:15px; padding:8px 10px; border:1px solid var(--line-strong);
+    border-radius:7px; background:#fff; color:var(--ink); font-family:inherit;
+  }
+  .fld textarea{resize:vertical; min-height:90px;}
+  .pat-pick{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;}
+  .pat-pick span{
+    border:1px solid var(--line-strong); border-radius:20px; padding:4px 12px; font-size:13px; cursor:pointer; user-select:none;
+  }
+  .pat-pick span.on{background:var(--navy); color:#fff; border-color:var(--navy);}
+
+  .bar{
+    position:sticky; bottom:0; background:var(--navy); padding:11px 14px; display:flex; gap:10px;
+    margin:22px -16px -60px; justify-content:center;
+  }
+  .bar button{
+    background:#fff; color:var(--navy); border:none; padding:10px 18px; border-radius:8px;
+    font-size:15px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .bar button.alt{background:var(--rose); color:#fff;}
+
+  footer{margin-top:26px; text-align:center; font-size:12px; color:var(--ink-soft);}
+
+  @media(max-width:640px){
+    .qr-grid{grid-template-columns:1fr;}
+    .grid2{grid-template-columns:1fr;}
+    header h1{font-size:23px;}
+  }
+  @media print{
+    body{background:#fff; font-size:12px;}
+    .wrap{max-width:100%; padding:0;}
+    .bar{display:none;}
+    .cat,.qr,.rec{break-inside:avoid;}
+    .qr-grid{grid-template-columns:repeat(3,1fr);}
+    header{border-bottom:2px solid #000;}
+    .cat > .cat-h{background:#16284a !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .qr{border-top:3px solid #d6336c !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>土壤调查评审自查一页纸 SOP</h1>
+    <div class="sub">某地土壤污染状况调查专项 · 六大类核查清单 + S01–S05 判据速查卡 + 现行标准依据</div>
+    <div class="meta">
+      <span>脱敏工作版</span>
+      <span>2026 / 07</span>
+      <span>平板可勾选 · 本地留存</span>
+      <span>环境实验 案例库</span>
+    </div>
+  </header>
+
+  <!-- 判据速查卡 -->
+  <div class="qr-title">判据速查卡（写报告 / 迎评审前扫一眼）</div>
+  <div class="qr-grid">
+    <div class="qr">
+      <div class="code">S01</div>
+      <div class="name">石油烃/苯并芘检出即判"生产影响"</div>
+      <ul>
+        <li>石油烃(C10-C40)、苯并[a]芘<b>一旦检出</b> = 生产活动影响（不依赖浓度）</li>
+        <li>定性句<b>不能省</b>（即使未超筛选值，结论写"风险可接受"）</li>
+        <li>重金属（锰/锌等）<b>不适用</b>此口径 → 走 S02</li>
+        <li>定性后须结合<b>工艺环节</b>说明来源路径</li>
+      </ul>
+    </div>
+    <div class="qr">
+      <div class="code">S02</div>
+      <div class="name">超筛选值但源于高背景值</div>
+      <ul>
+        <li>重金属超标 + 周边<b>同步超标</b> + 梯度不衰减 = 高背景值</li>
+        <li>评价须参照<b>区域背景值/对照值</b>，非单看 GB 36600</li>
+        <li>关键判据：<b>内外浓度梯度</b>（周边已高、企业内无抬升=高背景）</li>
+        <li>缺高背景值论证 = 报告被退回（红线）</li>
+      </ul>
+    </div>
+    <div class="qr">
+      <div class="code">S05</div>
+      <div class="name">特征污染物识别与因子筛选</div>
+      <ul>
+        <li>土壤 = GB 36600 表1 <b>45 项 + pH + 行业特征项</b></li>
+        <li>周边土壤 = GB 15618-2018 <b>8 项 + 行业特征项</b>（保证可比）</li>
+        <li>地下水 = <b>与土壤特征污染物对应</b>（土壤有苯系物→地下水必测同组）</li>
+        <li>样品量：土壤约 <b>24–45 件/地块</b>（按规模取，宁多勿少）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 标准依据速查 -->
+  <div class="qr-title">标准依据速查（现行有效 · 评审口径溯源）</div>
+  <div class="std-note">说明：下列均为公开现行国家 / 行业标准，本 SOP 的判据与清单条目均可在其中找到出处。部分地方项目会另文要求引用本系列标准。所有标准号均为公开信息，非涉密。</div>
+  <div class="qr-grid">
+    <div class="qr">
+      <div class="code">HJ 25 系列</div>
+      <div class="name">建设用地土壤污染调查与修复（2019）</div>
+      <ul>
+        <li><b>HJ 25.1—2019</b> 状况调查：调查原则、内容、程序、技术要求</li>
+        <li><b>HJ 25.2—2019</b> 风险管控 / 修复监测：监测工作规范</li>
+        <li><b>HJ 25.3—2019</b> 风险评估：健康风险评估技术要求</li>
+        <li><b>HJ 25.4—2019</b> 修复：修复方案编制</li>
+        <li><b>HJ 682—2019</b> 术语：统一术语定义</li>
+      </ul>
+    </div>
+    <div class="qr">
+      <div class="code">HJ 166—2026</div>
+      <div class="name">土壤环境监测技术规范（2026 新修订）</div>
+      <ul>
+        <li>2026-06-01 实施，替代 HJ/T 166—2004</li>
+        <li>新增：监测方案编制、饮用水源周边布点</li>
+        <li>新增：<b>点位现场核查</b>、有机物检测样品采样</li>
+        <li>完善：质量保证与质量控制（QA/QC）</li>
+        <li>删除：土壤环境质量评价内容</li>
+      </ul>
+    </div>
+    <div class="qr">
+      <div class="code">风险管控标准</div>
+      <div class="name">GB 36600 / GB 15618（2018）</div>
+      <ul>
+        <li><b>GB 36600—2018</b> 建设用地：45 项基本项目 + 筛选值 + 管制值</li>
+        <li><b>GB 15618—2018</b> 农用地：8 项基本项目 + 风险筛查分类</li>
+        <li>建设用地调查评估必备依据</li>
+        <li>周边土壤可比性参照 GB 15618</li>
+      </ul>
+    </div>
+  </div>
+  <div class="qr-grid" style="margin-top:12px;">
+    <div class="qr">
+      <div class="code">专题 / 地方引用</div>
+      <div class="name">盐碱地专题与其他地方项目</div>
+      <ul>
+        <li>盐碱地：第三次全国土壤普查外业调查与采样规范（修订版）</li>
+        <li>内业化验：pH、水溶性盐总量、电导率、盐分组成</li>
+        <li>部分地方项目会明确要求引用 HJ 25.1-2019 / GB 36600-2018 / HJ 166-2026</li>
+      </ul>
+    </div>
+    <div class="qr">
+      <div class="code">标准 → 清单映射</div>
+      <div class="name">本 SOP 与标准对应</div>
+      <ul>
+        <li>特征污染物 / 因子筛选 → HJ 25.1 + GB 36600/15618</li>
+        <li>监测方案 / 采样 → HJ 25.2 + HJ 166-2026</li>
+        <li>数据分析 / 评估 → HJ 25.1 + HJ 25.3</li>
+        <li>报告规范 / 术语 → HJ 25.1 + HJ 682</li>
+      </ul>
+    </div>
+    <div class="qr">
+      <div class="code">替代关系</div>
+      <div class="name">2014 版已废止</div>
+      <ul>
+        <li>HJ 25.1~25.4-2019 替代 2014 版（原标准同时废止）</li>
+        <li>HJ 682-2019 替代 2014 版</li>
+        <li>HJ/T 166-2004 由 HJ 166-2026 替代</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 六大类核查清单 -->
+  <div class="qr-title">六大类评审自查清单（土壤报告红线主分类）</div>
+
+  <!-- ① -->
+  <div class="cat">
+    <div class="cat-h"><div class="num">壹</div>特征污染物识别类<span class="tag">HJ 25.1 · GB 36600/15618 · S05</span></div>
+    <div class="cat-body">
+      <div class="item"><input type="checkbox" data-k="s1"><label><span class="txt">监测因子含行业特征项（非只 GB 36600 基本项）</span><span class="lnk">↳ S05</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s2"><label><span class="txt">周边土壤同步特征污染物（保证内外可比）</span><span class="lnk">↳ S05</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s3"><label><span class="txt">地下水与土壤特征污染物对应（土壤有苯系物→地下水必测同组）</span><span class="lnk">↳ S05</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s4"><label><span class="txt">以"原辅料–工艺–产污环节"逆推，非照搬别的项目因子表</span><span class="lnk">↳ S05</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s5"><label><span class="txt">因子漏项 = 数据无法支撑结论已被规避</span></label></div>
+      <div class="hint"><b>S05 整改要点：</b>布点前先做产污环节核查（机加工→石油烃、涂装→苯系物、热处理→氰化物/重金属）；土壤/周边/地下水特征因子三表一致，否则内外关联性分析(S03)做不了。</div>
+    </div>
+  </div>
+
+  <!-- ② -->
+  <div class="cat">
+    <div class="cat-h"><div class="num">贰</div>监测方案类<span class="tag">HJ 25.2 · HJ 166-2026 · S05</span></div>
+    <div class="cat-body">
+      <div class="item"><input type="checkbox" data-k="s6"><label><span class="txt">布点代表性（覆盖生产区/危废区/周边/农田）</span><span class="lnk">↳ S05</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s7"><label><span class="txt">采样深度分层合理（土壤一般 4–15 个层位）</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s8"><label><span class="txt">功能区全覆盖（生产区/一般固废/废水处理/货物贮存）</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s9"><label><span class="txt">样品量充足（留分位数/占标统计余量，土壤约 24–45 件/地块）</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s10"><label><span class="txt">地下水监测层位/频次与土壤协调</span></label></div>
+      <div class="hint"><b>核查口径：</b>样品量宁多勿少——后续分位数统计、占标率排序都依赖样本量；层位过浅会漏掉深层污染信号。</div>
+    </div>
+  </div>
+
+  <!-- ③ -->
+  <div class="cat">
+    <div class="cat-h"><div class="num">叁</div>数据分析评价类<span class="tag">HJ 25.1/25.3 · S01/S03</span></div>
+    <div class="cat-body">
+      <div class="item"><input type="checkbox" data-k="s11"><label><span class="txt">石油烃/苯并[a]芘检出即定性生产影响（不依赖浓度）</span><span class="lnk">↳ S01</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s12"><label><span class="txt">重金属检出走"高背景值论证"逻辑，未误用 S01 口径</span><span class="lnk">↳ S02</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s13"><label><span class="txt">已做地块内外关联性分析（同一污染物内外浓度比较）</span><span class="lnk">↳ S03</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s14"><label><span class="txt">按检出率/占标率排序，前列列重点监管污染物</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s15"><label><span class="txt">超标原因结合水文地质+工艺+产污环节深度分析</span></label></div>
+      <div class="hint"><b>S01/S02 判断顺序：</b>先看污染物种类——石油烃/苯并芘走 S01，重金属走 S02（除非有强工艺来源证据）。两者非此即彼，混用必被专家退回。</div>
+    </div>
+  </div>
+
+  <!-- ④ -->
+  <div class="cat">
+    <div class="cat-h"><div class="num">肆</div>超标原因论证类<span class="tag">GB 36600 · S02</span></div>
+    <div class="cat-body">
+      <div class="item"><input type="checkbox" data-k="s16"><label><span class="txt">重金属超标附"高背景值分析 + 证明资料"</span><span class="lnk">↳ S02</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s17"><label><span class="txt">评价参照区域背景值/对照值，非单看筛选值</span><span class="lnk">↳ S02</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s18"><label><span class="txt">内外浓度梯度比较支撑"非本厂"论证</span><span class="lnk">↳ S02/S03</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s19"><label><span class="txt">给出"风险可接受"结论 + 不确定性说明</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s20"><label><span class="txt">所有背景值来源资料入附件备查</span></label></div>
+      <div class="hint"><b>S02 论证路径：</b>调区域对照值/背景值 → 做内外关联性分析(S03) → 引地质成因/成土母岩资料证自然高背景 → 附不确定性说明。缺任一步=报告不完整。</div>
+    </div>
+  </div>
+
+  <!-- ⑤ -->
+  <div class="cat">
+    <div class="cat-h"><div class="num">伍</div>报告规范性类<span class="tag">HJ 25.1/682 · S03/S04</span></div>
+    <div class="cat-body">
+      <div class="item"><input type="checkbox" data-k="s21"><label><span class="txt">背景值/区域对照值正确引用（非随意取值）</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s22"><label><span class="txt">含"不确定性分析"章节（布点密度/资料完整/背景值代表/检出限局限）</span><span class="lnk">↳ S04</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s23"><label><span class="txt">含"针对性管理对策"章节</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s24"><label><span class="txt">"地块内外关联性分析"章节单列（非散落表述）</span><span class="lnk">↳ S03</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s25"><label><span class="txt">全文"检出即影响"等口径表述已统一</span><span class="lnk">↳ S01</span></label></div>
+      <div class="hint"><b>专家高频退回项：</b>缺不确定性分析(S04)、缺内外关联章节(S03)、口径不统一(S01)——这三条是省级评审必卡，初稿最常漏。</div>
+    </div>
+  </div>
+
+  <!-- ⑥ -->
+  <div class="cat">
+    <div class="cat-h"><div class="num">陆</div>样品追溯类<span class="tag">HJ 166-2026 QA/QC · S06</span></div>
+    <div class="cat-body">
+      <div class="item"><input type="checkbox" data-k="s26"><label><span class="txt">原始数据以"附件（盖 CMA 章）"形式归档</span><span class="lnk">↳ S06</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s27"><label><span class="txt">样品链完整（采样→交接→分析可回溯）</span><span class="lnk">↳ S06</span><span class="red">红线</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s28"><label><span class="txt">可接 环境实验「一码到底」扫码追溯（推荐）</span><span class="lnk">↳ S06</span></label></div>
+      <div class="item"><input type="checkbox" data-k="s29"><label><span class="txt">分析测试方法/检出限与因子匹配</span></label></div>
+      <div class="hint"><b>S06 信号：</b>原始数据无 CMA 章、样品链断点 = 数据不可采信 = 报告科学性被否。与 环境实验 一码到底同源思路，建议项目级直接上。</div>
+    </div>
+  </div>
+
+  <!-- 现场记录区 -->
+  <div class="rec">
+    <h3>现场记录区</h3>
+    <div class="grid2">
+      <div class="fld"><label>地块（脱敏代号）</label><input id="f_ent" type="text" placeholder="如：某地-汽车零部件-01"></div>
+      <div class="fld"><label>地块类型</label>
+        <select id="f_ind"><option value="">—</option><option>机动车零部件</option><option>通用机械制造</option><option>表面处理相关</option><option>其他</option></select>
+      </div>
+      <div class="fld"><label>调查阶段</label>
+        <select id="f_lv"><option value="">—</option><option>布点方案</option><option>现场采样</option><option>报告编制</option><option>专家评审</option><option>终验</option></select>
+      </div>
+      <div class="fld"><label>核查日期</label><input id="f_dt" type="date"></div>
+      <div class="fld"><label>核查人</label><input id="f_by" type="text" placeholder="姓名 / 团队"></div>
+      <div class="fld"><label>关联模式</label>
+        <div class="pat-pick" id="patpick">
+          <span data-p="S01">S01</span><span data-p="S02">S02</span><span data-p="S03">S03</span>
+          <span data-p="S04">S04</span><span data-p="S05">S05</span><span data-p="S06">S06</span>
+        </div>
+      </div>
+    </div>
+    <div class="fld" style="margin-top:12px;"><label>发现问题速记（脱敏）</label>
+      <textarea id="f_note" placeholder="记录红线疑点、特征污染物判定、超标论证缺口、整改建议要点…"></textarea>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button onclick="window.print()">🖨 打印 / 导出 PDF</button>
+    <button class="alt" onclick="resetAll()">清空本页</button>
+  </div>
+
+  <footer>环境实验 · 土壤调查评审自查一页纸 SOP · 某地土壤污染状况调查专项 · 数据本地留存不外传</footer>
+
+</div>
+
+<script>
+  const KEY='环境实验_soil_sop_v1';
+  function load(){
+    try{
+      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+      document.querySelectorAll('input[type=checkbox]').forEach(c=>{ if(s.checks&&s.checks[c.dataset.k]) c.checked=true; });
+      ['f_ent','f_ind','f_lv','f_dt','f_by','f_note'].forEach(id=>{ if(s[id]!==undefined) document.getElementById(id).value=s[id]; });
+      if(s.pats) s.pats.forEach(p=>{ const el=document.querySelector('#patpick span[data-p="'+p+'"]'); if(el) el.classList.add('on'); });
+    }catch(e){}
+    refresh();
+  }
+  function save(){
+    const s={checks:{},pats:[]};
+    document.querySelectorAll('input[type=checkbox]').forEach(c=>{ if(c.checked) s.checks[c.dataset.k]=1; });
+    ['f_ent','f_ind','f_lv','f_dt','f_by','f_note'].forEach(id=>{ s[id]=document.getElementById(id).value; });
+    document.querySelectorAll('#patpick span.on').forEach(el=>s.pats.push(el.dataset.p));
+    localStorage.setItem(KEY,JSON.stringify(s));
+  }
+  function refresh(){
+    document.querySelectorAll('.item').forEach(it=>{
+      const cb=it.querySelector('input'); it.classList.toggle('checked',cb.checked);
+    });
+  }
+  document.querySelectorAll('input[type=checkbox]').forEach(c=>{
+    c.addEventListener('change',()=>{ refresh(); save(); });
+  });
+  ['f_ent','f_ind','f_lv','f_dt','f_by','f_note'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',save);
+  });
+  document.querySelectorAll('#patpick span').forEach(el=>{
+    el.addEventListener('click',()=>{ el.classList.toggle('on'); save(); });
+  });
+  function resetAll(){
+    if(!confirm('确认清空本页所有勾选与记录？')) return;
+    localStorage.removeItem(KEY);
+    document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);
+    ['f_ent','f_ind','f_lv','f_dt','f_by','f_note'].forEach(id=>document.getElementById(id).value='');
+    document.querySelectorAll('#patpick span').forEach(el=>el.classList.remove('on'));
+    refresh();
+  }
+  load();
+</script>
+</body>
+</html>

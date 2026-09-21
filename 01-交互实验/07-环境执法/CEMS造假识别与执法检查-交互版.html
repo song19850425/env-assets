@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEMS 造假识别与执法检查 · 环境实验 交互实验</title>
+<meta name="description" content="CEMS（烟气排放连续监测系统）造假识别与执法检查交互实训：扮演执法方突击站房，识别三通阀旁路稀释、标气作弊、参数篡改等造假手段，按标准链路取证并完成标准气体盲测，形成完整证据链。">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f97316;--glow:#fb923c;--abg:rgba(249,115,22,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#f97316,#fb923c);z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1e1308 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(249,115,22,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(249,115,22,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(26px,5vw,46px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:#fb923c;font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:rgba(249,115,22,.12);color:#fb923c;font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(249,115,22,.22);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#94a3b8;z-index:1;max-width:680px;line-height:1.8}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:#fb923c}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:#f97316}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:760px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:rgba(249,115,22,.10);color:#fb923c}
+.lb{background:linear-gradient(180deg,#0a0e17,#1e1308);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:#fb923c;letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:rgba(249,115,22,.12);color:#fb923c}.sok{background:rgba(52,211,153,.1);color:#34d399}.sbad{background:rgba(251,113,133,.12);color:#fb7185}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f97316,#fb923c);color:#1a0a02}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:#f97316;color:#fb923c}
+.b3{background:linear-gradient(135deg,#ef4444,#fb7185);color:#1a0308}.b3:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.3)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:#f97316}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:rgba(249,115,22,.12);color:#fb923c;border-color:#f97316}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#f97316;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:#fb923c}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:190px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:#fb923c}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:#f97316;color:#fb923c}
+.ft .nav a.cur{border-color:#f97316;color:#fb923c;background:rgba(249,115,22,.12)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:280px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-left:3px solid #f97316;border-radius:8px;padding:14px 16px;font-size:12.5px;color:#ffedd5;line-height:1.7;margin:16px 0}
+.note b{color:#fff7ed}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:#fb923c;background:rgba(249,115,22,.12);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:rgba(249,115,22,.08);color:#fb923c;font-weight:700;font-size:11.5px}
+.tbl td{color:#94a3b8;line-height:1.6}
+.tbl td b{color:#e2e8f0}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:#f97316}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0}
+.chnode{flex:1 1 150px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:#94a3b8}
+.chnode b{color:#e2e8f0;display:block;margin-bottom:2px}
+.ar{color:#f97316;font-weight:800;padding:0 2px;font-size:16px}
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}@media(max-width:700px){.ledger{grid-template-columns:1fr}}
+.chk{display:flex;align-items:flex-start;gap:8px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:#94a3b8;cursor:pointer;line-height:1.4}
+.chk input{margin-top:2px;accent-color:#f97316;flex-shrink:0}
+.chk .tg{font-size:9px;color:#64748b;display:block;margin-top:2px}
+.zone{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:#94a3b8;cursor:pointer;line-height:1.45;transition:.2s;position:relative}
+.zone:hover{border-color:#f97316}
+.zone.found{border-color:var(--rose);background:rgba(251,113,133,.08)}
+.zone.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.zone .zb{font-size:9px;font-weight:700;position:absolute;top:8px;right:10px}
+.zone.found .zb{color:#fb7185}.zone.ok .zb{color:#34d399}
+.sub{font-size:12px;font-weight:700;color:#fb923c;letter-spacing:1px;margin:18px 0 8px}
+.cstd{background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.25);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#bae6fd;line-height:1.7;margin:8px 0}
+.cstd b{color:#e0f2fe}
+.hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:8px 0}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 环境执法实训 · 剧本八（CEMS 造假）</div>
+  <h1 class="h1">🚨 CEMS（Continuous Emission Monitoring System，烟气排放连续监测系统）造假识别<br><em>与执法检查</em> · 交互模拟台</h1>
+  <div class="hs">环境执法 · 你站在<b style="color:#fed7aa">执法方</b>的位置<br>从站房勘察到标准气体盲测，把一条证据链一步步坐实</div>
+  <div class="hst">
+    <div><span class="n">4 类</span><span class="l">造假手段</span></div>
+    <div><span class="n">8 步</span><span class="l">检查标准链路</span></div>
+    <div><span class="n">4 关</span><span class="l">顺序解锁实训</span></div>
+    <div><span class="n">6 项</span><span class="l">依据标准</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">数据不会自己撒谎，是有人在替它撒谎</div>
+  <div class="sd">某钢铁企业排口的在线数据"稳得可疑"——连续几个月曲线漂亮地贴在限值之下，甚至低到几乎没有波动；可厂区下风向总有股说不清的味道。执法人员夜里突击进站房，开门第一眼就看见：采样管线旁边多了一根不该存在的旁路管，管上装着一个三通阀。</div>
+  <div class="sd">本实训让你站在<b>执法方</b>的位置：先看清烟气数据是怎么"走"出来的、哪些位置能动手脚，再按标准链路突击检查、识别并手工拆除伪装的旁路三通阀、让采样管线复位，最后用执法方自带的标准气体做质控盲测，把"怀疑"变成"证据链"。</div>
+  <div class="note">CEMS（Continuous Emission Monitoring System，烟气排放连续监测系统）把烟气浓度变成平台上的一条条读数——而这条采样链路上<b>每一段</b>都可能被动手脚。本页所有企业、地点、参数均为<b>脱敏教学设定</b>。</div>
+  <div class="note warnbox">⚠️ 红线声明：本页是<b>教学演示与执法流程实训</b>，所有企业、地点、数据为脱敏设定。不承诺任何执法结论必然成立，也不替代正式的现场检查、采样与司法鉴定程序。</div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">三个问题，决定你做的是不是真的能取证</div>
+  <div class="sd">把下面的三个问题想清楚，交互台里每一条红线你都能提前说出它会怎么拦你。</div>
+
+  <div class="sub">问题一：数据是怎么"走"出来的？</div>
+  <div class="chain">
+    <div class="chnode"><b>采样探头</b>烟道内直接抽取</div><span class="ar">→</span>
+    <div class="chnode"><b>伴热采样管线</b>防冷凝、保真传输</div><span class="ar">→</span>
+    <div class="chnode"><b>预处理</b>除水 / 除尘 / 除湿</div><span class="ar">→</span>
+    <div class="chnode"><b>气体分析仪</b>定量测定</div><span class="ar">→</span>
+    <div class="chnode"><b>DAS（Data Acquisition System，数据采集传输仪）</b>上传平台</div>
+  </div>
+  <div class="note blue">每一个<b>箭头</b>处，都是可以动手脚的位置：旁路稀释、标气作弊、参数篡改、采样系统失真，分别发生在管线、预处理/分析仪、仪表参数与探头环节。</div>
+
+  <div class="sub">问题二：什么让"合格数据"变成"造假数据"？</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔀</div><div class="in">① 稀释 / 旁路</div><div class="id">三通阀把部分烟气放空，掺入空气或低浓度气，实测值被人为拉低——最典型的"物理伪装"。</div><span class="it">链路：管线 / 探头</span></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">② 标气作弊</div><div class="id">用无证或低浓度标气（标准物质，浓度须可溯源）校准，把整条曲线整体压低；证书缺失或标签被撕是常见破绽。</div><span class="it">链路：预处理 / 分析仪</span></div>
+    <div class="ic"><div class="ii">🎚️</div><div class="in">③ 参数篡改</div><div class="id">改斜率、截距、量程，或设置"输出下限"把低值截断为 0；备案值（斜率 1.000、截距 0）被改即报警。</div><span class="it">链路：分析仪参数</span></div>
+    <div class="ic"><div class="ii">💨</div><div class="in">④ 采样系统失真</div><div class="id">探头堵塞 / 短路、伴热温度不足导致冷凝吸收、气密性破坏——系统本身"失真"，并非真实达标。</div><span class="it">链路：探头 / 管线</span></div>
+  </div>
+
+  <div class="sub">问题三：靠什么把"怀疑"变成"证据链"？</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔧</div><div class="in">物理痕迹</div><div class="id">多出的阀门 / 管路、被撕的钢瓶标签——<b>一次性、不可逆</b>，必须最先固定。</div><span class="it">物证</span></div>
+    <div class="ic"><div class="ii">🕒</div><div class="in">时间线</div><div class="id">数据异常起止点与阀门安装 / 参数改动时间吻合，互相印证。</div><span class="it">时序</span></div>
+    <div class="ic"><div class="ii">🧾</div><div class="in">后台日志</div><div class="id">DAS / 仪表操作日志与参数修改记录，能还原"谁、何时、改了什么"。</div><span class="it">数据</span></div>
+    <div class="ic"><div class="ii">🎯</div><div class="in">比对与盲测</div><div class="id">手工比对监测 + 执法方自带标准气体的盲测结果，把怀疑坐实为结论。</div><span class="it">结论</span></div>
+  </div>
+  <div class="note">把三条连起来看：<b>先取证（物理痕迹），后动手（拆阀 / 复位）</b>——物理痕迹一旦破坏就不可恢复。时间线、后台日志、盲测，是让证据彼此印证的"三脚架"。</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 操作规程</div>
+  <div class="st">八步走完，顺序就是证据链</div>
+  <div class="sd">执法检查（CEMS）的标准链路如下，<b>顺序错了，证据可能不被采信</b>——交互台里会直接拦你。</div>
+  <div id="stepList"></div>
+  <div class="note warnbox">顺序红线：<b>先动手拆阀 = 现场原始状态灭失</b>（物证没了）；<b>不复核气密性就出笔录 / 做盲测 = 数据仍不可信</b>。每一步都必须在上一步完成之后。</div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 CEMS 造假识别与执法检查 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div class="sub">站房世界模型（烟气采样链路）</div>
+    <div class="hint">下方 HUD 实时显示：烟气真值 C_true、CEMS 实测 C_meas、稀释比 k、伴热温度、阀门状态。三通阀开启时，部分烟气被分流到旁路，C_meas 明显低于 C_true。</div>
+    <canvas id="cv" width="900" height="560"></canvas>
+    <div class="legend">
+      <span><i style="background:#f97316"></i>正常管路</span>
+      <span><i style="background:#fb7185"></i>旁路 / 异常</span>
+      <span><i style="background:#34d399"></i>已复位 / 合规</span>
+      <span><i style="background:#38bdf8"></i>DAS</span>
+    </div>
+    <div class="hud">
+      <div class="dv"><div class="dl">烟气真值 C_true</div><div class="dd" id="hudTrue">—</div><div class="du">μmol/mol</div></div>
+      <div class="dv"><div class="dl">CEMS 实测 C_meas</div><div class="dd" id="hudMeas">—</div><div class="du">μmol/mol</div></div>
+      <div class="dv"><div class="dl">稀释比 k</div><div class="dd" id="hudK">—</div><div class="du">0–0.60</div></div>
+      <div class="dv"><div class="dl">伴热温度</div><div class="dd" id="hudHeat">—</div><div class="du">℃（≥120 规范）</div></div>
+      <div class="dv"><div class="dl">阀门状态</div><div class="dd" id="hudValve" style="font-size:13px">—</div><div class="du">三通阀</div></div>
+    </div>
+    <div class="fld">
+      <label>稀释比 k（仅三通阀开启时生效，模拟旁路放空比例）</label>
+      <input type="range" id="kSlider" min="0" max="0.60" step="0.01" value="0.45" oninput="S.k=parseFloat(this.value);updateHud();draw();">
+    </div>
+
+    <div class="note blue" style="margin-top:8px">关卡说明：四关<b>顺序解锁</b>。完成上一关才能进入下一关；关卡 1–3 未过关时，关卡 4（盲测）不响应并提示。关卡 2 顺序错会被拦截并解释原因。</div>
+
+    <!-- 关卡1 -->
+    <div class="sub">关卡 1 · 站房勘察（点选 4 处异常）</div>
+    <div class="hint">点击你认为<b>异常</b>的勘察点。共 4 处异常，找全即过关；点错正常项会扣分。日志区逐条记录你的判断。</div>
+    <div class="ledger" id="zoneBox"></div>
+
+    <!-- 关卡2 -->
+    <div class="sub">关卡 2 · 拆除伪装与管线复位（按正确顺序）</div>
+    <div class="hint">把下方八步按"执法检查标准链路"的正确顺序依次点击。顺序错会被立即拦截并给出原因。全部排对即过关（自动关闭旁路阀、拆除伪装三通阀、恢复伴热）。</div>
+    <div class="seq" id="seqBox"></div>
+
+    <!-- 关卡3 -->
+    <div class="sub">关卡 3 · 参数与备案一致性核对</div>
+    <div class="hint">勾选你判断为<b>被篡改</b>的项（现场值 vs 备案 / 验收值）。量程记作 FS（Full Scale，满量程）。判对全部 4 项篡改、且不误勾正常项即过关。</div>
+    <div class="ledger" id="chkBox"></div>
+    <div class="acts">
+      <button class="btn b1" id="btnChk" onclick="submitCheck()" disabled>提交参数核对</button>
+    </div>
+
+    <!-- 关卡4 -->
+    <div class="sub">关卡 4 · 标准气体盲测（质控盲测）</div>
+    <div class="cstd">
+      <b>执法方自带标准气体（不透题）</b>：企业事先不知道标气浓度。SO₂ 浓度 <b>C_std = 200 μmol/mol</b>，证书编号 <b>CEMS-STD-2025-200</b>（教学示例编号）。通入后读取 CEMS 示值，自动计算示值误差、响应时间与 24h 漂移，并按 HJ 76-2017 技术指标判定。
+    </div>
+    <div class="cstd" style="margin-top:8px;background:#fff7ed;border-color:#fed7aa">
+      <b>📐 判定档（HJ 76-2017 技术指标）</b><br>
+      · 示值误差：满量程较大（SO₂ 量程 ≥100 μmol/mol）时 ≤ <b>±5%</b>（相对标准气体标称值）；量程较小档 ≤ <b>±2.5% FS</b>。本页 SO₂ 量程 500 μmol/mol，<b>按 ±5%（相对 C_std 标称值）档判定</b>。<br>
+      · 响应时间：系统（含采样管线）响应时间 ≤ <b>200 s</b>（HJ 76-2017 §6.2.1.2，现场检测口径，本关按此判）；分析仪仪表响应时间（上升+下降）≤ <b>120 s</b>（§6.1.1.1，实验室/型式检验口径，本关不引用）。<br>
+      · 24h 漂移三档：分析仪 ≤ <b>±2% FS</b>；<b>CEMS（气态污染物）≤ ±2.5% FS</b>；颗粒物 CEMS ≤ <b>±2% FS</b>。本页按 <b>±2.5% FS（气态污染物 CEMS 档）</b>判定；另一档为 ±2% FS（分析仪 / 颗粒物）。
+    </div>
+    <div class="cstd" style="margin-top:8px">
+      <b>⚠ 模型边界与判定口径说明</b><br>
+      · 本关标准气体从<b>采样探头处通入</b>，检验含采样管线的<b>全系统响应特性</b>，故按 §6.2.1.2 系统响应时间 ≤200 s 判定（分析仪仪表 ≤120 s 属实验室口径，本关不引用）。<br>
+      · 真实执法亦应在采样探头处通入标准气体做全系统测试（含采样管线、预处理），此时不拆除旁路、不改动采样系统属正常程序，不构成造假；本页为教学简化，将"拆旁路"前置到解锁环节，请勿与真实全系统标气测试混淆。
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnResetParam" onclick="resetAnalyzerParams()" disabled>按备案值复位分析仪参数</button>
+      <button class="btn b1" id="btnBlind" onclick="runBlind()" disabled>通入标气（盲测）</button>
+    </div>
+    <div id="blindOut"></div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b1" onclick="exportCSV()">📥 导出实验记录（CSV）</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="results"></div>
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条黄金法则，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">先取证，后动手</div><div class="id">物理痕迹是<b>一次性、不可逆</b>的证据——多出的阀门 / 管路、被撕的钢瓶标签，拆了就没了。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">多出的阀门 = 直接物证</div><div class="id">旁路管、三通阀、稀释装置不是"设备故障"，而是<b>故意造假的直接物证</b>，优先固定。</div><span class="it">物证红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">盲测要用自带标气、不透题</div><div class="id">这是把"怀疑"变"结论"的那一步：用执法方自己的标准气体，避免企业预先调低量程 / 斜率应对检查。</div><span class="it">结论红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">造假不只是行政责任</div><div class="id">篡改自动监测数据涉嫌犯罪的，依法移送司法机关（见<b>法释〔2023〕7号</b>），可能承担刑事责任。</div><span class="it">责任红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实训真正要练的能力</b>：面对一间站房，能先<b>固定物理痕迹</b>（关卡 1），再按证据链顺序<b>拆除伪装、复位管线</b>（关卡 2），把现场值与<b>备案值</b>逐一对账识破参数篡改（关卡 3），最后用<b>自带标准气体盲测</b>把"疑似不合格"坐实为"不符合 HJ 76 技术要求"（关卡 4）。缺任何一环，结论都站不住。
+  </div>
+  <div class="sub">证据链清单（建议随案归档）</div>
+  <table class="tbl">
+    <tr><th style="width:22%">证据类别</th><th>内容</th></tr>
+    <tr><td><b>物证</b></td><td>站房与采样系统照片 / 录像、旁路管与三通阀、被撕标签的标气瓶</td></tr>
+    <tr><td><b>文书</b></td><td>现场检查（勘察）笔录、询问笔录、检查记录</td></tr>
+    <tr><td><b>数据</b></td><td>仪表参数记录（斜率 / 截距 / 量程 / 输出下限）、DAS 与仪表操作日志、数据传输率</td></tr>
+    <tr><td><b>比对</b></td><td>手工比对监测报告、执法方自带标准气体盲测记录与证书</td></tr>
+  </table>
+  <div class="note warnbox" style="margin-top:12px">
+    <b>模型边界声明</b>：本页烟气真值、稀释比、分析仪参数与盲测响应 / 漂移均为<b>教学设定值</b>，用于演示"识别—取证—盲测"的逻辑链路，不作为任何执法结论、检测报告或工程设计的依据。真实执法请以现行标准与正式程序为准。
+  </div>
+  <div class="fw">
+    <a href="CEMS执法检查-教学交付包.html"><div class="t">📦 教学交付包 · 按需索取（学生手册 / 教师指南 / 3 个现成作业）</div><div class="d">给老师用的那一层：90 分钟课堂流程、知识点映射、带评分量规的现成作业、LMS 嵌入代码。交付包不再公开分发，点此按需索取。</div></a>
+    <a href="../../index.html"><div class="t">→ 返回实验集总目录</div><div class="d">回到 环境实验 交互实验集，查看其他交互页。</div></a>
+    <a href="../../01-交互实验/06-大气污染控制/LDAR泄漏检测与修复-交互版.html"><div class="t">→ LDAR 泄漏检测与修复</div><div class="d">同属现场检查线：VOCs（Volatile Organic Compounds，挥发性有机物）无组织排放的建档—检测—判定。</div></a>
+  </div>
+</section>
+
+<footer class="ft">
+  <b>环境实验 环境执法实训</b> · 剧本八（CEMS 造假识别与执法检查）
+  <div class="nav">
+    <a href="../../index.html">实验集总目录</a>
+    <a class="cur" href="CEMS造假识别与执法检查-交互版.html">CEMS 造假识别与执法检查</a>
+    <a href="CEMS执法检查-教学交付包.html">教学交付包</a>
+  </div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* ---------- 常量：数值判据（集中一处，便于复核校准） ---------- */
+const LIM = {
+  responseMaxSec: 200,          // CEMS 系统响应时间（含采样管线，§6.2.1.2）上限（s）：本关按此判；实验室仪表口径 ≤120s 见 analyzerRespMaxSec
+  analyzerRespMaxSec: 120,      // 实验室口径（§6.1.1.1），本关不引用，勿与 responseMaxSec 混用
+  fsSo2Umol: 100,               // SO₂ 满量程分档阈值（μmol/mol）：≥ 此值用 errPctOfStd 档
+  fsNoxUmol: 200,               // NOx 满量程分档阈值（μmol/mol）：≥ 此值用 errPctOfStd 档
+  errPctOfStd: 5,              // 量程较大（SO₂≥fsSo2Umol / NOx≥fsNoxUmol）时，示值误差 ≤ ±5%（相对标准气体标称值）
+  errPctFs: 2.5,              // 量程较低时，示值误差 ≤ ±2.5% FS
+  driftAnalyzer24hPctFs: 2,    // 分析仪 24h 零点 / 量程漂移 ≤ ±2% FS
+  driftGasCemsPctFs: 2.5,      // CEMS（气态污染物）零点 / 量程漂移 ≤ ±2.5% FS（本页判定档）
+  driftPmCemsPctFs: 2,         // CEMS（颗粒物）零点 / 量程漂移 ≤ ±2% FS
+  heatMinC: 120,               // 伴热管线温度一般不低于 120 ℃（HJ 75-2017 §7.2.7）
+  heatAboveDewPtC: 10          // 伴热温度须高于烟气露点温度至少 10 ℃（防冷凝）
+};
+
+const MODEL = {
+  Ctrue: 350,           // 烟气 SO₂ 真值 μmol/mol（教学设定）
+  Cstd: 200,            // 执法方自带标准气体浓度 μmol/mol
+  certId: 'CEMS-STD-2025-200', // 标气证书编号（教学示例）
+  fs: 500,              // 分析仪量程 μmol/mol
+  baseRespSec: 90,      // 响应时间基线（s）
+  baseDrift: 1.0,       // 24h 漂移基线（%FS）
+  kDefault: 0.45,       // 默认稀释比
+  dewPointC: 60,        // 教学用烟气露点温度（℃）：本页演示值，用于 §7.2.7 第二条件判定
+  heatNormal: 120,      // 伴热正常温度（℃）
+  heatBad: 32           // 异常伴热温度（℃）
+};
+
+/* ---------- 数据：关卡1 勘察点 ---------- */
+const ZONES = [
+  {id:1, t:'采样探头旁多出一根旁路管 + 三通阀', ab:true,  why:'异常：采样探头与伴热管线之间不应存在旁路；多出的三通阀正是稀释 / 放空烟气的伪装件，属直接物证。'},
+  {id:2, t:'伴热管线温度仅 32 ℃', ab:true,  why:'异常：依 HJ 75-2017 §7.2.7，伴热管线须同时满足两条件——①温度一般 ≥120 ℃；②须高于烟气露点至少 10 ℃。本页教学烟气露点 60 ℃，所需下限 = 露点+10 = 70 ℃，故伴热温度须同时 ≥120 ℃ 且 ≥70 ℃。当前 32 ℃ 两个条件均不满足，冷凝水会吸收 SO₂，导致实测值系统性偏低。'},
+  {id:3, t:'标气瓶无检定 / 校准证书、标签被撕', ab:true,  why:'异常：标准气体须有在有效期内的检定 / 校准证书；标签被撕、无证书说明标气来源与浓度不可信。'},
+  {id:4, t:'分析仪参数被改（斜率 0.78 / 截距 −3.2 / 输出下限 15 mg/m³）', ab:true,  why:'异常：备案斜率应为 1.000、截距 0；被改为 0.78 / −3.2 且设输出下限，会系统性压低并截断读数。'},
+  {id:5, t:'分析仪散热风扇正常运转', ab:false, why:'正常：散热风扇运转是设备正常状态，不是异常，不应误判为物证。'},
+  {id:6, t:'站房内温湿度记录完整', ab:false, why:'正常：温湿度记录齐全是合规表现，不是异常。'},
+  {id:7, t:'采样探头加热正常', ab:false, why:'正常：探头加热正常有助于防止冷凝，非异常。'},
+  {id:8, t:'数据采集仪（DAS）网络指示灯正常', ab:false, why:'正常：DAS 联网指示灯正常说明传输链路在线，非异常。'}
+];
+
+/* ---------- 数据：关卡2 八步标准链路 ---------- */
+const STEPS = [
+  {n:1, short:'出示证件、告知事由', t:'出示执法证件、告知检查事由（开启检查记录 / 笔录）'},
+  {n:2, short:'原始状态勘察取证', t:'站房与采样系统原始状态勘察：拍照、录像，记录三通阀 / 旁路管 / 阀门开度'},
+  {n:3, short:'记录仪表显示值与参数', t:'记录仪表当前显示值与参数（拍照、截屏）'},
+  {n:4, short:'备份 DAS 与仪表日志', t:'调取并备份 DAS 与仪表后台日志（数据传输率、参数修改记录）'},
+  {n:5, short:'拆除伪装三通阀 / 旁路', t:'关闭旁路阀、拆除伪装三通阀与旁路管'},
+  {n:6, short:'恢复采样管线直连', t:'恢复采样管线直连（探头 → 伴热管线 → 预处理 → 分析仪）'},
+  {n:7, short:'气密性 / 伴热 / 吹扫检查', t:'气密性、伴热与吹扫检查（防漏气、防冷凝、防堵塞）'},
+  {n:8, short:'出笔录并视情盲测', t:'观察数据是否恢复合理，制作现场检查（勘察）笔录并签字；必要时手工比对监测 + 标准气体盲测'}
+];
+
+/* ---------- 数据：关卡3 参数核对 ---------- */
+const CHECKS = [
+  {id:'fs', name:'量程', onsite:'200 μmol/mol', filed:'500 μmol/mol', tampered:true,  basis:'HJ 76-2017 要求设备量程等技术指标与验收 / 备案一致；现场量程被改为 200，与备案 500 不符。'},
+  {id:'sl', name:'斜率', onsite:'0.78', filed:'1.000', tampered:true,  basis:'分析仪斜率备案 1.000，现场 0.78 会系统性压低测量值，属参数篡改。'},
+  {id:'ic', name:'截距', onsite:'−3.2', filed:'0', tampered:true,  basis:'截距备案 0，现场 −3.2 使读数整体下移，属参数篡改。'},
+  {id:'rt', name:'响应时间设置', onsite:'300 s', filed:'200 s', tampered:true,  basis:'HJ 76-2017 响应时间一般 ≤200 s；现场设为 300 s，放宽到超规范值。'},
+  {id:'cf', name:'单位 / 量纲换算系数', onsite:'1.000', filed:'1.000', tampered:false, basis:'换算系数现场与备案一致（均为 1.000），属正常项，不应勾选。'}
+];
+
+/* ---------- 状态 ---------- */
+let S = {Ctrue:MODEL.Ctrue, k:MODEL.kDefault, bypassOpen:true, heatTemp:MODEL.heatBad, slope:0.78, offset:-3.2, floor:15, fs:MODEL.fs};
+let G = {z1:false, z2:false, z3:false, z4:false};
+let score = 100;
+let foundZones = new Set();
+let seqExpected = 1;
+let seqPlaced = {};
+let blindPass = false;
+let tNow = 0;
+
+/* ---------- 工具 ---------- */
+function log(t, ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t, cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},8000);}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const x=a[i];a[i]=a[j];a[j]=x;}}
+
+/* ---------- 数值模型 ---------- */
+function currentCmeas(){
+  let c = S.Ctrue;
+  if(S.bypassOpen) c = S.Ctrue*(1 - S.k);
+  c = S.slope*c + S.offset;
+  if(c < S.floor) c = 0;
+  return c;
+}
+function blindCmeas(){
+  let c = S.slope*MODEL.Cstd + S.offset;
+  if(c < S.floor) c = 0;
+  return c;
+}
+function blindErr(){ return (blindCmeas() - MODEL.Cstd)/MODEL.Cstd*100; }
+function blindRespSec(){
+  let t = MODEL.baseRespSec;
+  if(S.bypassOpen) t += 220;
+  if(S.heatTemp < LIM.heatMinC) t += 60;
+  return Math.round(t + Math.random()*20);
+}
+function blindDrift(){
+  let d = MODEL.baseDrift;
+  if(S.bypassOpen) d += 1.8;
+  if(S.heatTemp < LIM.heatMinC) d += 0.8;
+  if(Math.abs(S.slope-1)>0.01 || Math.abs(S.offset)>0.01) d += 0.4;
+  return +(d + Math.random()*0.3).toFixed(2);
+}
+function heatBadZone2(){
+  // 关卡1 热区（ZONE id:2）异常判定：HJ 75-2017 §7.2.7 两条件需同时满足
+  // ① 伴热温度一般 ≥ heatMinC(120℃)；② 须高于烟气露点至少 heatAboveDewPtC(10℃)
+  return (S.heatTemp < LIM.heatMinC) || (S.heatTemp < MODEL.dewPointC + LIM.heatAboveDewPtC);
+}
+function errLimit(){ return S.fs >= LIM.fsSo2Umol ? LIM.errPctOfStd : LIM.errPctFs; }
+function judgeBlind(){
+  const cMeas = blindCmeas();
+  const err = blindErr();
+  const resp = blindRespSec();
+  const drift = blindDrift();
+  const limit = errLimit();
+  const errOk = Math.abs(err) <= limit;
+  const respOk = resp <= LIM.responseMaxSec;
+  const driftOk = drift <= LIM.driftGasCemsPctFs;
+  return {cMeas:cMeas, err:Math.round(err*10)/10, resp:resp, drift:drift, limit:limit, errOk:errOk, respOk:respOk, driftOk:driftOk, pass:errOk&&respOk&&driftOk};
+}
+
+/* ---------- 渲染：HUD / Canvas ---------- */
+function updateHud(){
+  $('hudTrue').textContent = Math.round(S.Ctrue);
+  $('hudMeas').textContent = Math.round(currentCmeas());
+  $('hudK').textContent = S.bypassOpen ? S.k.toFixed(2) : '—';
+  $('hudHeat').textContent = Math.round(S.heatTemp) + '℃';
+  $('hudValve').textContent = S.bypassOpen ? '开启(旁路放空)' : '关闭(已复位)';
+}
+function drawNode(ctx, label, x, y, col){
+  ctx.fillStyle = col;
+  ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.fill();
+  ctx.fillStyle = '#e2e8f0'; ctx.font = '10px Inter,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(label, x, y + 14);
+}
+function draw(){
+  const cv = $('cv'); if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = 280;
+  cv.width = W*dpr; cv.height = H*dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const pipeY = H*0.42;
+  const xProbe = W*0.06, xHeat = W*0.24, xTee = W*0.42, xPre = W*0.60, xAna = W*0.78, xDas = W*0.95;
+
+  ctx.fillStyle = 'rgba(249,115,22,.05)'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#94a3b8'; ctx.font = '11px Inter,sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText('站房采样链路示意（烟气走向：探头 → 伴热管线 → 三通阀 → 预处理 → 分析仪 → DAS）', 8, 8);
+
+  ctx.strokeStyle = 'rgba(249,115,22,.55)'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(xProbe, pipeY); ctx.lineTo(xTee, pipeY);
+  ctx.moveTo(xTee, pipeY); ctx.lineTo(xDas, pipeY);
+  ctx.stroke();
+
+  if(S.bypassOpen){
+    ctx.strokeStyle = 'rgba(251,113,133,.7)';
+    ctx.beginPath();
+    ctx.moveTo(xTee, pipeY); ctx.lineTo(xTee, pipeY + H*0.34); ctx.lineTo(W*0.30, pipeY + H*0.34);
+    ctx.stroke();
+    ctx.fillStyle = '#fb7185'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '10px Inter,sans-serif';
+    ctx.fillText('旁路放空（伪装三通阀分流）', W*0.20, pipeY + H*0.34);
+  }
+
+  drawNode(ctx, '采样探头', xProbe, pipeY, S.bypassOpen ? '#fb923c' : '#f97316');
+  drawNode(ctx, '伴热 ' + Math.round(S.heatTemp) + '℃', xHeat, pipeY, S.heatTemp < LIM.heatMinC ? '#fb7185' : '#34d399');
+  drawNode(ctx, '三通阀', xTee, pipeY, S.bypassOpen ? '#fb7185' : '#34d399');
+  drawNode(ctx, '预处理', xPre, pipeY, '#f97316');
+  drawNode(ctx, '分析仪', xAna, pipeY, '#f97316');
+  drawNode(ctx, 'DAS', xDas, pipeY, '#38bdf8');
+
+  const nP = 20;
+  for(let i=0;i<nP;i++){
+    const phase = i/nP;
+    let px = ((phase + tNow*0.06) % 1) * W;
+    const inMain = px >= xProbe && px <= xDas;
+    let py = pipeY;
+    let diverted = false;
+    if(S.bypassOpen && px > xTee-4 && px < xTee+10 && i%3===0){
+      py = pipeY + ((px - xTee) * 1.4); diverted = true;
+    }
+    if(inMain && !diverted){
+      ctx.fillStyle = S.bypassOpen ? 'rgba(251,113,133,.9)' : 'rgba(52,211,153,.9)';
+      ctx.beginPath(); ctx.arc(px, py, 3, 0, 7); ctx.fill();
+    } else if(diverted){
+      ctx.fillStyle = 'rgba(251,113,133,.9)'; ctx.beginPath(); ctx.arc(px, py, 3, 0, 7); ctx.fill();
+    }
+  }
+}
+
+/* ---------- 关卡1 勘察 ---------- */
+function buildZones(){
+  const box = $('zoneBox'); box.innerHTML = '';
+  ZONES.forEach(z=>{
+    const el = document.createElement('div'); el.className = 'zone'; el.id = 'z'+z.id;
+    el.innerHTML = '<span class="zb"></span>'+z.t;
+    el.onclick = ()=>clickZone(z);
+    box.appendChild(el);
+  });
+}
+function clickZone(z){
+  if(G.z1) return;
+  const el = $('z'+z.id);
+  if(el.classList.contains('found') || el.classList.contains('ok')) return;
+  if(z.ab){
+    foundZones.add(z.id); el.classList.add('found'); el.querySelector('.zb').textContent = '⚠ 异常';
+    log('发现异常 #'+z.id+'：'+z.t+' —— '+z.why, true);
+  } else {
+    score = Math.max(0, score - 5); el.classList.add('ok'); el.querySelector('.zb').textContent = '✓ 正常';
+    log('你点选了正常项 #'+z.id+'（'+z.t+'）：这是正常状态，误判已扣分。', false);
+    renderResults();   // 误判后立即刷新结算区，别让得分显示滞后到关卡1 结束
+  }
+  warn('');
+  if(foundZones.size === 4){
+    G.z1 = true; setSts('🟡 关卡1 勘察完成', 'sa');
+    log('关卡1 通过：已识别全部 4 处异常（旁路三通阀、伴热 32℃、标气无证、参数篡改）。', true);
+    refreshGates(); draw(); renderResults();
+  } else {
+    warn('已发现异常 '+foundZones.size+'/4，继续排查其余异常点。');
+  }
+}
+
+/* ---------- 关卡2 顺序红线段 ---------- */
+function buildSeq(){
+  const box = $('seqBox'); box.innerHTML = '';
+  const order = STEPS.map(s=>s.n); shuffle(order);
+  order.forEach(n=>{
+    const s = STEPS[n-1];
+    const b = document.createElement('button'); b.className = 'pb'; b.id = 'p'+n; b.disabled = true;
+    b.innerHTML = s.n + '. ' + s.short + '<span class="po">第'+n+'步</span>';
+    b.onclick = ()=>clickSeq(n);
+    box.appendChild(b);
+  });
+}
+function seqReason(clicked, expected){
+  if(clicked < expected) return '顺序错误：第 '+clicked+' 步不能在第 '+expected+' 步之前做——你跳步或重复点了已完成的步骤。';
+  if(clicked === 5 || clicked === 6) return '顺序红线：还没记录现场原始状态（第 2 步）就拆阀 / 恢复管线，现场物证灭失，证据可能不被采信。请先做第 '+expected+' 步。';
+  if(clicked === 7) return '顺序红线：气密性 / 伴热 / 吹扫检查（第 7 步）不能早于管线复位（第 6 步），否则检查对象都还没接好。';
+  if(clicked === 8) return '顺序红线：未复核气密性（第 7 步）就出笔录 / 做盲测（第 8 步），数据仍不可信。';
+  return '顺序错误：必须先完成「'+STEPS[expected-1].short+'」才能做第 '+clicked+' 步。';
+}
+function clickSeq(n){
+  if(G.z2) return;
+  if(!G.z1){ warn('请先完成关卡1 站房勘察'); return; }
+  if(seqPlaced[n]) return;
+  if(n === seqExpected){
+    seqPlaced[n] = true; const b = $('p'+n); b.disabled = true; b.classList.add('on');
+    log('第 '+n+' 步已完成：'+STEPS[n-1].t, true);
+    seqExpected++;
+    if(seqExpected > 8) passLevel2();
+    else warn('已就位 '+(seqExpected-1)+'/8，下一步：'+STEPS[seqExpected-1].short);
+  } else {
+    warn('⚠️ '+seqReason(n, seqExpected));
+    log('顺序红线：试图先执行第 '+n+' 步（'+STEPS[n-1].short+'），但应先完成第 '+seqExpected+' 步。', 'bad');
+  }
+}
+function passLevel2(){
+  G.z2 = true; setSts('🟡 关卡2 管线复位完成', 'sa');
+  S.bypassOpen = false; S.heatTemp = LIM.heatMinC;
+  const ks = $('kSlider'); if(ks){ ks.disabled = true; }
+  log('关卡2 通过：八步顺序正确。已关闭旁路阀 / 拆除伪装三通阀，伴热温度恢复至 '+LIM.heatMinC+'℃。', true);
+  warn(''); refreshGates(); updateHud(); draw(); renderResults();
+}
+
+/* ---------- 关卡3 参数核对 ---------- */
+function buildChecks(){
+  const box = $('chkBox'); box.innerHTML = '';
+  CHECKS.forEach(c=>{
+    const lab = document.createElement('label'); lab.className = 'chk';
+    lab.innerHTML = '<input type="checkbox" value="'+c.id+'"><span><b>'+c.name+'</b>：现场 '+c.onsite+' ｜ 备案 '+c.filed+'<span class="tg">勾选你认为被篡改的项</span></span>';
+    box.appendChild(lab);
+  });
+}
+function submitCheck(){
+  if(G.z3) return;
+  if(!G.z2){ warn('请先完成关卡2 管线复位'); return; }
+  const checked = [].slice.call(document.querySelectorAll('#chkBox input:checked')).map(i=>i.value).sort();
+  const correct = CHECKS.filter(c=>c.tampered).map(c=>c.id).sort();
+  const ok = JSON.stringify(checked) === JSON.stringify(correct);
+  if(ok){
+    G.z3 = true; setSts('🟡 关卡3 参数核对完成', 'sa');
+    log('关卡3 通过：正确识别 4 项篡改（量程 / 斜率 / 截距 / 响应时间），未误勾正常项。', true);
+    CHECKS.forEach(c=>{ if(c.tampered) log('  · '+c.name+' 篡改：现场 '+c.onsite+' vs 备案 '+c.filed+' —— '+c.basis, 'bad'); });
+    warn(''); refreshGates(); renderResults();
+  } else {
+    const wrong = checked.filter(x=>!correct.includes(x));
+    const miss = correct.filter(x=>!checked.includes(x));
+    let m = '核对错误：';
+    if(wrong.length) m += '误勾了正常项（'+wrong.join(',')+'）；';
+    if(miss.length) m += '漏勾了篡改项（'+miss.join(',')+'）。';
+    warn('⚠️ '+m+' 请对照备案 / 验收值重新判断。');
+    log('关卡3 未通过：多选或漏选。', 'bad');
+  }
+}
+
+/* ---------- 关卡4 标准气体盲测 ---------- */
+function resetAnalyzerParams(){
+  if(!G.z3){ warn('请先完成关卡1–3 解锁关卡4'); return; }
+  S.slope = 1.000; S.offset = 0; S.floor = 0;
+  log('已按备案值复位分析仪参数：斜率 1.000、截距 0、输出下限 0。', true);
+  warn(''); updateHud(); draw();
+}
+function statBox(label, val, sub, ok){
+  let cls = ''; if(ok === true) cls = ' good'; else if(ok === false) cls = ' bad';
+  return '<div class="dv'+cls+'"><div class="dl">'+label+'</div><div class="dd" style="font-size:14px">'+val+'</div><div class="du">'+(sub||'')+'</div></div>';
+}
+function runBlind(){
+  if(!G.z3){ warn('请先完成关卡1–3 解锁关卡4'); return; }
+  const r = judgeBlind();
+  const limit = r.limit;
+  let html = '<div class="dp">';
+  html += statBox('C_std (标气)', MODEL.Cstd + ' μmol/mol', '证书 '+MODEL.certId, null);
+  html += statBox('CEMS 示值', Math.round(r.cMeas) + ' μmol/mol', '', null);
+  html += statBox('示值误差', r.err.toFixed(1) + '%', (r.errOk ? '≤±'+limit+'% ✓' : '＞±'+limit+'% ✗'), r.errOk);
+  html += statBox('响应时间', r.resp + ' s', (r.respOk ? '≤'+LIM.responseMaxSec+'s ✓' : '＞'+LIM.responseMaxSec+'s ✗'), r.respOk);
+  html += statBox('24h 漂移', r.drift.toFixed(2) + '%FS', (r.driftOk ? '≤±'+LIM.driftGasCemsPctFs+'%FS（气态CEMS档）✓' : '＞±'+LIM.driftGasCemsPctFs+'%FS ✗'), r.driftOk);
+  html += '</div>';
+  if(r.pass){
+    blindPass = true; G.z4 = true; setSts('🟢 盲测通过', 'sok');
+    html += '<div class="note" style="border-left-color:#34d399">✅ 盲测结论：示值误差、响应时间、24h 漂移均满足 HJ 76-2017 技术指标，该设备本次盲测<b>通过</b>。结合现场已拆除的伪装三通阀与参数篡改记录，证据链完整。</div>';
+    log('关卡4 盲测通过：全部指标满足 HJ 76 要求。', true);
+  } else {
+    blindPass = false; G.z4 = true; setSts('🔴 盲测不通过', 'sbad');
+    const bad = [];
+    if(!r.errOk) bad.push('示值误差 '+r.err.toFixed(1)+'% 超限');
+    if(!r.respOk) bad.push('响应时间 '+r.resp+'s 超限');
+    if(!r.driftOk) bad.push('24h 漂移 '+r.drift.toFixed(2)+'%FS 超限');
+    html += '<div class="note warnbox">⛔ 盲测结论：'+bad.join('、')+' → 该自动监测设备<b>不符合 HJ 76-2017 技术要求</b>。结合现场伪装三通阀物证与参数篡改记录，形成造假证据链；涉嫌犯罪的，依法移送（法释〔2023〕7号）。</div>';
+    log('关卡4 盲测不通过：'+bad.join('、')+'。', 'bad');
+  }
+  $('blindOut').innerHTML = html;
+  warn(''); renderResults();
+}
+
+/* ---------- 结算区 ---------- */
+function renderResults(){
+  const abn = ZONES.filter(z=>z.ab).map(z=>'#'+z.id+' '+z.t).join('；');
+  let html = '<div class="note" style="border-left-color:#f97316"><b>📋 执法结算</b><br>';
+  html += '关卡得分：'+score+' / 100（误判正常项每次 −5）<br>';
+  html += '已发现异常项：'+foundZones.size+'/4 —— '+abn+'<br>';
+  html += '关卡进度：1'+(G.z1?'✓':'·')+' 2'+(G.z2?'✓':'·')+' 3'+(G.z3?'✓':'·')+' 4'+(G.z4?'✓':'·')+'<br>';
+  html += '盲测结论：'+(G.z4 ? (blindPass ? '通过 ✅' : '不通过 ⛔') : '未执行')+'<br>';
+  html += '证据链：物证照片 / 录像 · 现场笔录 · 仪表参数记录 · DAS 日志 · 比对监测报告 · 标气证书与盲测记录。';
+  html += '</div>';
+  $('results').innerHTML = html;
+}
+
+/* ---------- 解锁门控 ---------- */
+function refreshGates(){
+  const seqBtns = document.querySelectorAll('#seqBox .pb');
+  // 关卡1 通过后必须把顺序按钮解禁（原来只置 true、从不置回 false，真实浏览器里点不动）；
+  // 已就位的步骤保持禁用，避免重复点击。
+  if(seqBtns.forEach) seqBtns.forEach(b=>{ b.disabled = !G.z1 || b.classList.contains('on'); });
+  $('btnChk').disabled = !G.z2;
+  $('btnResetParam').disabled = !G.z3;
+  $('btnBlind').disabled = !G.z3;
+}
+
+/* ---------- 总渲染 / 重置 ---------- */
+function render(){ updateHud(); draw(); }
+function buildSteps(){
+  const box = $('stepList'); if(!box) return; box.innerHTML = '';
+  STEPS.forEach(s=>{
+    const d = document.createElement('div'); d.className = 'rule';
+    d.innerHTML = '<div class="rn">STEP '+s.n+'</div><div><div class="rt">'+s.short+'</div><div class="rd">'+s.t+'</div></div>';
+    box.appendChild(d);
+  });
+}
+function onParam(){ render(); }
+function loop(){ tNow += 0.016; draw(); if(typeof requestAnimationFrame === 'function') requestAnimationFrame(loop); }
+function resetAll(){
+  S = {Ctrue:MODEL.Ctrue, k:MODEL.kDefault, bypassOpen:true, heatTemp:MODEL.heatBad, slope:0.78, offset:-3.2, floor:15, fs:MODEL.fs};
+  G = {z1:false, z2:false, z3:false, z4:false};
+  score = 100; foundZones = new Set(); seqExpected = 1; seqPlaced = {}; blindPass = false;
+  const ks = $('kSlider'); if(ks){ ks.value = MODEL.kDefault; ks.disabled = false; }
+  $('blindOut').innerHTML = ''; $('results').innerHTML = ''; $('log').innerHTML = '';
+  buildZones(); buildSeq(); buildChecks();
+  setSts('⏳ 未开始', 'si'); warn(''); refreshGates(); render();
+}
+
+/* ---------- 导出实验记录（CSV，纯前端） ---------- */
+function csvCell(v){
+  const s=(v===undefined||v===null)?'':String(v);
+  if(s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0||s.indexOf('\r')>=0){
+    return '"'+s.split('"').join('""')+'"';
+  }
+  return s;
+}
+function csvRow(){
+  let out='';
+  for(let i=0;i<arguments.length;i++){ if(i) out+=','; out+=csvCell(arguments[i]); }
+  return out;
+}
+function buildCSV(){
+  const r=judgeBlind();
+  const blindDone=G.z4;
+  const cMeas=Math.round(currentCmeas());
+  const blindC=Math.round(r.cMeas);
+  const L=[];
+  L.push(csvRow('CEMS（烟气排放连续监测系统）造假识别与执法检查 · 实验记录'));
+  L.push(csvRow('说明','本页数据为脱敏教学设定，不指向任何真实企业；不作为执法结论、检测报告或司法鉴定依据'));
+  L.push(csvRow('导出时间',new Date().toLocaleString()));
+  L.push('');
+  L.push(csvRow('一、四关结果'));
+  L.push(csvRow('关卡','结果'));
+  L.push(csvRow('关卡1 站房勘察',G.z1?'通过':'未通过'));
+  L.push(csvRow('关卡2 拆除伪装与管线复位',G.z2?'通过':'未通过'));
+  L.push(csvRow('关卡3 参数与备案一致性核对',G.z3?'通过':'未通过'));
+  L.push(csvRow('关卡4 标准气体盲测',G.z4?'通过':'未通过'));
+  L.push('');
+  L.push(csvRow('二、站房世界模型快照'));
+  L.push(csvRow('参数','数值','单位'));
+  L.push(csvRow('烟气真值 C_true',Math.round(S.Ctrue),'μmol/mol'));
+  L.push(csvRow('CEMS 实测 C_meas',cMeas,'μmol/mol'));
+  L.push(csvRow('稀释比 k',S.bypassOpen?S.k.toFixed(2):'—','0–0.60'));
+  L.push(csvRow('伴热温度',Math.round(S.heatTemp),'℃'));
+  L.push(csvRow('三通阀/旁路状态',S.bypassOpen?'开启(旁路放空)':'关闭(已复位)','三通阀'));
+  L.push(csvRow('分析仪斜率',S.slope,'—'));
+  L.push(csvRow('分析仪截距',S.offset,'—'));
+  L.push(csvRow('分析仪量程',S.fs,'μmol/mol'));
+  L.push(csvRow('输出下限',S.floor,'mg/m³'));
+  L.push('');
+  L.push(csvRow('三、盲测判定（HJ 76-2017）'));
+  L.push(csvRow('项目','数值','单位','判据'));
+  L.push(csvRow('标准气体 SO₂ 标称值',MODEL.Cstd,'μmol/mol','证书 '+MODEL.certId));
+  L.push(csvRow('CEMS 示值',blindDone?blindC:'未测','μmol/mol','通入标气后读取'));
+  L.push(csvRow('示值误差',blindDone?r.err.toFixed(1):'未测','%','≤ ±5%（相对标准气体标称值）'));
+  L.push(csvRow('系统响应时间',blindDone?r.resp:'未测','s','≤ 200 s（HJ 76-2017 §6.2.1.2 系统口径）'));
+  L.push(csvRow('24h 漂移',blindDone?r.drift.toFixed(2):'未测','%FS','≤ ±2.5% FS（气态污染物 CEMS）'));
+  L.push(csvRow('最终判定结论',blindDone?(r.pass?'通过（符合 HJ 76-2017）':'不通过（不符合 HJ 76-2017）'):'未测','—','结合物证与参数篡改记录综合判定'));
+  L.push('');
+  L.push(csvRow('四、依据标准'));
+  L.push(csvRow('标准','本页用途'));
+  L.push(csvRow('HJ 75-2017','校准周期分档、日常质控与运行维护要求'));
+  L.push(csvRow('HJ 76-2017','示值误差、响应时间、零点 / 量程漂移等技术指标'));
+  L.push(csvRow('HJ 212-2025','数据采集传输（DAS）与联网传输要求（2026-01-01 实施）'));
+  L.push(csvRow('环发〔2015〕175号','弄虚作假行为的判定情形与处理'));
+  L.push(csvRow('生态环境部公告 2022年第21号','自动监测数据标记与异常数据判定'));
+  L.push(csvRow('法释〔2023〕7号','自动监测数据造假的刑事责任'));
+  return L.join('\r\n');
+}
+function exportCSV(){
+  const name='CEMS执法检查-实验记录.csv';
+  try{
+    const csv=buildCSV();
+    if(typeof Blob!=='function'||typeof URL==='undefined'||typeof URL.createObjectURL!=='function'){
+      csvFallback(csv,name); return;
+    }
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=name;
+    if(document.body&&typeof document.body.appendChild==='function') document.body.appendChild(a);
+    if(typeof a.click==='function') a.click();
+    if(document.body&&typeof document.body.removeChild==='function') document.body.removeChild(a);
+    setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} },1500);
+    log('已导出实验记录：<b>'+name+'</b>（含四关结果、站房模型快照、盲测判定与依据标准，可用 Excel 直接打开）');
+  }catch(e){
+    warn('导出失败：'+(e&&e.message?e.message:String(e)));
+  }
+}
+function csvFallback(csv,name){
+  const w=(typeof window!=='undefined'&&typeof window.open==='function')?window.open('','_blank'):null;
+  if(w&&w.document){
+    w.document.write('<pre>'+csv.split('&').join('&amp;').split('<').join('&lt;')+'</pre>');
+    log('当前环境不支持直接下载，已在新窗口打开 CSV 内容：<b>'+name+'</b>');
+  }else{
+    warn('当前环境不支持导出，请更换现代浏览器后重试。');
+  }
+}
+
+/* ---------- 初始化 ---------- */
+const sp = $('sp');
+addEventListener('scroll', ()=>{const h=document.documentElement; sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible');}), {threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize', ()=>draw());
+buildSteps();
+buildZones(); buildSeq(); buildChecks();
+refreshGates(); render();
+if(typeof requestAnimationFrame === 'function') requestAnimationFrame(loop);
+</script>
+
+<!-- 标准溯源块（结构从 LDAR 页复制，仅改表内容） -->
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:40px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:13px 18px;border:1px solid rgba(56,189,248,.38);border-left:4px solid #38bdf8;border-radius:12px;background:linear-gradient(90deg,rgba(56,189,248,.13),rgba(56,189,248,.03));transition:background .18s,border-color .18s}.stdbasis .sb-hd:hover{background:rgba(56,189,248,.20)}.stdbasis .sb-hd:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}.stdbasis .sb-ic{font-size:16px;line-height:1;flex:none}.stdbasis .sb-tt{font-size:14px;font-weight:700;color:#f1f5f9;letter-spacing:.02em}.stdbasis .sb-sub{font-size:11.5px;color:#a8b6c8;letter-spacing:.02em}.stdbasis .sb-bgs{display:flex;gap:6px;flex-wrap:wrap;margin-left:4px}.stdbasis .sb-bg{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.5;white-space:nowrap}.stdbasis .sb-bg b{font-weight:800;font-size:12px}.stdbasis .sb-bg.ok{background:rgba(52,211,153,.15);color:#6ee7b7;border:1px solid rgba(52,211,153,.42)}.stdbasis .sb-bg.dep{background:rgba(251,113,133,.16);color:#fda4af;border:1px solid rgba(251,113,133,.45)}.stdbasis .sb-bg.pend{background:rgba(251,191,36,.16);color:#fcd34d;border:1px solid rgba(251,191,36,.45)}.stdbasis .sb-ar{margin-left:auto;flex:none;font-size:11px;color:#a8b6c8;transition:transform .2s;display:inline-block}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.14);border-top:none;border-radius:0 0 12px 12px;padding:16px 20px;margin-top:-1px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:700;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:700}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:12px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:12px;padding:11px 14px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.04);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis .sb-hd{padding:12px 14px;gap:8px}.stdbasis .sb-tt{font-size:13px}.stdbasis .sb-sub{display:none}.stdbasis .sb-ar{margin-left:0;order:9}.stdbasis .sb-cd{padding:14px}.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style>
+<summary class="sb-hd"><span class="sb-ic">&#128220;</span><span class="sb-tt">本页依据标准与现行状态</span><span class="sb-sub">6 项标准 &middot; 已回官方源核验</span><span class="sb-bgs"><span class="sb-bg ok">全部现行</span></span><span class="sb-ar">&#9654;</span></summary>
+<div class="sb-cd"><div class="sb-bd">
+<table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr>
+<tr><td class="sb-c">HJ 75-2017</td><td>固定污染源烟气（SO₂、NOx、颗粒物）排放连续监测技术规范</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">校准周期分档、日常质控与运行维护要求</td></tr>
+<tr><td class="sb-c">HJ 76-2017</td><td>固定污染源烟气（SO₂、NOx、颗粒物）排放连续监测系统技术要求及检测方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">示值误差、响应时间、零点 / 量程漂移等技术指标</td></tr>
+<tr><td class="sb-c">HJ 212-2025</td><td>污染物自动监测监控系统数据传输技术要求</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">数据采集传输（DAS）与联网传输要求（2026-01-01 实施）</td></tr>
+<tr><td class="sb-c">环发〔2015〕175号</td><td>环境监测数据弄虚作假行为判定及处理办法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">弄虚作假行为的判定情形与处理</td></tr>
+<tr><td class="sb-c">生态环境部公告 2022年第21号</td><td>污染物排放自动监测设备标记规则</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">自动监测数据标记与异常数据判定</td></tr>
+<tr><td class="sb-c">法释〔2023〕7号</td><td>关于办理环境污染刑事案件适用法律若干问题的解释</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">自动监测数据造假的刑事责任</td></tr>
+</table>
+<div class="sb-ft">本页共依据 <b>6</b> 项标准：<b>6</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div>
+<div style="margin-top:10px;font-size:11.5px;color:#fda4af;background:rgba(251,113,133,.08);border-left:3px solid #fb7185;padding:8px 10px;border-radius:6px">提示：HJ 212-2017《污染源在线自动监控（监测）系统数据传输标准》已由 <b>HJ 212-2025</b> 替代，自 2026-01-01 起实施，本页不再引用 2017 版作为现行依据。</div>
+</div></div></details>
+
+<style>#bk{position:fixed;right:22px;bottom:22px;z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 15px;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:.02em;text-decoration:none;line-height:1;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .22s,transform .22s,visibility .22s}#bk.on{opacity:1;visibility:visible;transform:translateY(0)}#bk:hover{transform:translateY(-2px)}#bk:focus-visible{outline:2px solid #fbbf24;outline-offset:3px}#bk .bk-a{font-size:15px;line-height:1}#bk .bk-t{font-size:13.5px}@media(max-width:720px){#bk{right:14px;bottom:14px;padding:10px 15px 10px 13px}#bk .bk-t{font-size:12.5px}}@media(prefers-reduced-motion:reduce){#bk{transition:none;transform:none}#bk.on{transform:none}}@media print{#bk{display:none!important}}#bk{background:rgba(19,26,46,.92);color:#e2e8f0;border:1px solid rgba(56,189,248,.42);box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}#bk:hover{background:rgba(23,33,58,.98);border-color:rgba(56,189,248,.75);box-shadow:0 8px 26px rgba(0,0,0,.5)}#bk .bk-a{color:#7dd3fc}#bk .bk-t{color:#e2e8f0}</style>
+<a id="bk" href="../../index.html" title="返回实验集总目录（Alt+Esc）"><span class="bk-a" aria-hidden="true">&#8592;</span><span class="bk-t">返回目录</span></a>
+<script>(function(){var b=document.getElementById("bk");if(!b)return;var f=function(){var y=window.pageYOffset||document.documentElement.scrollTop;if(y>260)b.classList.add("on");else b.classList.remove("on")};if(typeof window.addEventListener==='function')window.addEventListener("scroll",f,{passive:true});f();if(typeof document.addEventListener==='function')document.addEventListener("keydown",function(e){if(e.key==="Escape"&&e.altKey)location.href=b.getAttribute("href")});})();</script>
+</body>
+</html>

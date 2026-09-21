@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凯氏定氮仪 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#059669;--accent-glow:#10b981;--accent-bg:rgba(5,150,105,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#06281d 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(5,150,105,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(5,150,105,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(5,150,105,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:26px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#06281d);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#059669,#10b981);color:#fff}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(5,150,105,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr5{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr5{grid-template-columns:1fr 1fr}}
+.pwr3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr3{grid-template-columns:1fr}}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:150px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+.sub{font-size:11px;color:#94a3b8;margin:14px 0 4px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">凯氏定氮仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">FOSS-8100</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">消解 + 蒸馏 + 滴定 · 蛋白质/氮含量测定</div>
+  <div class="hst">
+    <div><span class="n">0.2g</span><span class="l">称样量</span></div>
+    <div><span class="n">300→400</span><span class="l">消化 ℃</span></div>
+    <div><span class="n">咖啡色</span><span class="l">加碱判定</span></div>
+    <div><span class="n">灰色</span><span class="l">滴定终点</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">凯氏定氮仪用<b>凯氏定氮法</b>测食品、土壤、农产品里的<b>氮（蛋白质）含量</b>。核心三步：浓硫酸+催化剂高温把有机物消化成铵盐 → 加碱蒸馏把氨蒸出来被硼酸吸收 → 盐酸标准液滴定，由消耗量反算氮含量。看似简单，但消化炉高温浓硫酸、蒸馏高压蒸汽，全是容易出事的环节。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔥</div><div class="in">消解</div><div class="id">样品 + 浓硫酸 + 催化剂，300℃ 1h 再升 400℃ 消化至无色，有机物转铵盐。</div><span class="it">浓硫酸高温</span></div>
+    <div class="ic"><div class="ii">♨️</div><div class="in">蒸馏</div><div class="id">加碱释放氨，蒸汽把氨带入硼酸吸收液。气路密闭、不得泄露是安全底线。</div><span class="it">高压蒸汽</span></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">滴定</div><div class="id">盐酸标准液滴定硼酸吸收液，甲基红-溴甲酚绿指示，终点灰色。</div><span class="it">酸碱滴定</span></div>
+    <div class="ic"><div class="ii">📊</div><div class="in">计算</div><div class="id">由盐酸消耗量算氮含量，乘换算系数得蛋白质含量。每样至少平行两次。</div><span class="it">外标定量</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>消化升温顺序错、加碱量不够、关机先断电源，系统都会直接提醒你</b>，这些正是把消煮管冲爆、把回收率做崩的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ FOSS-8100 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 待开始</span>
+      <span style="font-size:10px;color:#475569">FOSS-8100 凯氏定氮仪</span>
+    </div>
+
+    <div class="sub">① 消化（顺序：称样 → 加酸+催化剂 → 放漏斗 → 300℃×1h → 400℃×4h）</div>
+    <div class="pwr5">
+      <div class="pb" id="dg1" onclick="digest(1)">称样入管<span class="po">0.2g</span></div>
+      <div class="pb" id="dg2" onclick="digest(2)">加酸+催化剂<span class="po">10mL硫酸</span></div>
+      <div class="pb" id="dg3" onclick="digest(3)">管口放漏斗<span class="po">step 3</span></div>
+      <div class="pb" id="dg4" onclick="digest(4)">300℃×1h<span class="po">step 4</span></div>
+      <div class="pb" id="dg5" onclick="digest(5)">400℃×4h<span class="po">step 5</span></div>
+    </div>
+
+    <div class="sub">② 蒸馏准备：三桶加液（不得气泄露）→ 开冷凝水+电源 → 等2min查鼓胀</div>
+    <div class="acts">
+      <button class="btn b2" id="btnBucket" onclick="fillBuckets()">🪣 三桶加液（蒸馏水/碱/酸，不漏）</button>
+      <button class="btn b1" id="btnCond" onclick="turnOnCond()" disabled>💧 开冷凝水+电源</button>
+      <button class="btn b2" id="btnBulge" onclick="checkBulge()" disabled>🔍 等2min查鼓胀</button>
+    </div>
+
+    <div class="sub">③ 加碱量判定（加碱后消煮管液体应呈咖啡色/褐色）</div>
+    <div class="pwr">
+      <div class="pb" id="al1" onclick="alkaliCheck('ok')">咖啡色/褐色<span class="po">正常</span></div>
+      <div class="pb" id="al2" onclick="alkaliCheck('low')">乳白/浅蓝<span class="po">碱量不足</span></div>
+      <div class="pb" id="al3" onclick="manualAlkali()" disabled>手动补碱<span class="po">补救</span></div>
+    </div>
+
+    <div class="sub">④ 蒸馏：样品管与胶塞装紧 → 自动蒸馏（液量不超管 1/3）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnTube" onclick="loadTube()" disabled>🔩 样品管装紧</button>
+      <button class="btn b1" id="btnDist" onclick="distill()" disabled>♨️ 自动蒸馏</button>
+    </div>
+
+    <div class="sub">⑤ 滴定：取三角瓶加指示液 → 盐酸滴至灰色</div>
+    <div class="acts">
+      <button class="btn b1" id="btnTit" onclick="titrate()" disabled>🧪 滴定至灰色</button>
+    </div>
+
+    <div class="dp">
+      <div class="dv"><div class="dl">氮含量</div><div class="dd" id="dN">—</div></div>
+      <div class="dv"><div class="dl">蛋白质</div><div class="dd" id="dP">—</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+
+    <div class="sub">⑥ 关机：冲洗 → 关冷凝水 → 关电源拔插头</div>
+    <div class="pwr3">
+      <div class="pb" id="sh1" onclick="shut(1)">冲洗管路<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">关冷凝水<span class="po">step 2</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">关电源拔插头<span class="po">step 3</span></div>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌡️</div><div class="in">消化升温：先 300℃ 再 400℃</div><div class="id">必须 300℃ 消化 1h 后再升 400℃ 消化 4h。直接上 400℃ 或升温过快 → 暴沸喷溅、硫酸伤人、样品损失。</div><span class="it">温度红线</span></div>
+    <div class="ic"><div class="ii">🟤</div><div class="in">加碱后必须咖啡色</div><div class="id">加碱后消煮管内液体应变咖啡色/褐色；若仍乳白或浅蓝，说明碱量不够需手动补碱，否则氨释放不完全、回收率崩。</div><span class="it">碱量红线</span></div>
+    <div class="ic"><div class="ii">💨</div><div class="in">气路不漏 + 液量 ≤1/3</div><div class="id">蒸馏水桶/碱桶/酸桶不得有气泄露（高压蒸汽）；蒸馏完毕液量不超管体积 1/3，否则倒吸、喷溅。</div><span class="it">安全红线</span></div>
+    <div class="ic"><div class="ii">🔌</div><div class="in">关机先关冷凝水再关电源</div><div class="id">必须先关冷凝水、再关电源拔插头。先断电源 → 冷凝水中断、玻璃件炸裂、蒸汽烫伤。</div><span class="it">反序致命</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={dig:0, buckets:false, condOn:false, bulge:false, alkaline:null, tubeTight:false, distilled:false, titrated:false, shut:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function digest(n){
+  if(n!==S.dig+1){warn('消化顺序错误：称样 → 加酸+催化剂 → 放漏斗 → 300℃×1h → 400℃×4h');log('消化顺序错误，已阻断',false);return;}
+  if(n===5 && S.dig<4){warn('⚠️ 必须先 300℃ 消化 1h，再升 400℃！直接高温会暴沸喷溅');log('升温顺序错误，已阻断',false);return;}
+  S.dig=n;$('dg'+n).classList.add('on');
+  log('消化步骤 '+n+'：'+['称样 0.2g 入消煮管','加 0.33g 催化剂+10mL 硫酸','管口放小漏斗','300℃ 消化 1h','400℃ 消化 4h 至无色澄清'][n-1]);
+  if(n===4) log('✔ 低温消化完成，可升 400℃',true);
+  if(n===5){log('✔ 消化完成，冷却后加 10mL 水稀释、冷至室温',true);$('btnBucket').disabled=false;setSts('🟢 消化完成','sa');}
+}
+function fillBuckets(){
+  if(S.buckets){warn('已加液');return;}
+  S.buckets=true;$('btnBucket').classList.add('on');$('btnBucket').textContent='✅ 三桶已加液';
+  log('蒸馏水桶(10L)、35%NaOH 桶(3-5L)、2%硼酸桶(3-5L)加液，确认无气泄露',true);
+  $('btnCond').disabled=false;warn('');
+}
+function turnOnCond(){
+  if(S.condOn){warn('已开');return;}
+  S.condOn=true;$('btnCond').classList.add('on');log('开启冷凝水和电源',true);$('btnBulge').disabled=false;
+}
+function checkBulge(){
+  if(S.bulge){warn('已查');return;}
+  S.bulge=true;$('btnBulge').classList.add('on');$('btnBulge').textContent='✅ 鼓胀正常';
+  log('等待 2min，液桶鼓胀（气路密闭正常），可加碱判定',true);warn('');
+  [1,2,3].forEach(n=>$('al'+n).classList.add('on'));
+}
+function alkaliCheck(v){
+  if(S.alkaline){warn('已判定');return;}
+  if(v==='ok'){S.alkaline='ok';$('al1').classList.add('on');log('加碱后液体呈咖啡色/褐色，碱量充足',true);$('btnTube').disabled=false;}
+  else{S.alkaline='low';$('al2').classList.add('on');warn('⚠️ 加碱后仍为乳白/浅蓝 = 碱量不足，需手动补碱！');log('碱量不足，已提示手动补碱',false);$('al3').disabled=false;}
+}
+function manualAlkali(){
+  if(S.alkaline!=='low'){warn('无需补碱');return;}
+  S.alkaline='ok';$('al3').classList.add('on');log('手动补碱完成，液体转咖啡色',true);$('btnTube').disabled=false;warn('');
+}
+function loadTube(){
+  if(S.tubeTight){warn('已装紧');return;}
+  if(S.alkaline!=='ok'){warn('请先完成加碱量判定（碱量须充足）');return;}
+  S.tubeTight=true;$('btnTube').classList.add('on');$('btnTube').textContent='✅ 已装紧';
+  log('样品消煮管与上端橡胶塞装紧（防蒸汽泄漏）',true);$('btnDist').disabled=false;
+}
+function distill(){
+  if(S.distilled){warn('已蒸馏');return;}
+  S.distilled=true;$('btnDist').classList.add('on');$('btnDist').textContent='✅ 蒸馏完成';setSts('⏳ 蒸馏中…','sa');
+  log('自动蒸馏（一般 2-4min），蒸馏完毕液量不超过管体积 1/3',true);
+  setTimeout(()=>{setSts('🟢 蒸馏完成','sa');$('btnTit').disabled=false;},500);
+}
+function titrate(){
+  if(S.titrated){warn('已滴定');return;}
+  if(!S.distilled){warn('请先蒸馏');return;}
+  S.titrated=true;$('btnTit').classList.add('on');$('btnTit').textContent='✅ 已滴定';
+  const n=(Math.random()*20+10).toFixed(2), p=(n*6.25).toFixed(1);
+  $('dN').textContent=n+' g/100g';$('dP').textContent=p+' g/100g';
+  $('dState').textContent='完成';setSts('✅ 测定完成','sok');
+  log('滴定至灰色终点：氮 '+n+' g/100g，蛋白质 '+p+' g/100g（示例值）',true);
+  [1,2,3].forEach(n=>$('sh'+n).disabled=false);
+}
+function shut(n){
+  const order=['冲洗管路','关冷凝水','关电源拔插头'];
+  if(n!==S.shut+1){
+    if(n===3 && S.shut<2){warn('⚠️ 必须先关冷凝水、再关电源拔插头！先断电冷凝水中断会炸裂烫伤');}
+    else warn('关机顺序错误：冲洗 → 关冷凝水 → 关电源拔插头');
+    log('关机顺序错误，已阻断',false);return;
+  }
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){setSts('🚿 冲洗中…','sa');log('用去离子水冲洗橡胶塞、蒸馏管、硼酸管');setTimeout(()=>log('✔ 冲洗完成',true),500);}
+  else log('执行：'+order[n-1]);
+  if(n===2) log('✔ 冷凝水已关',true);
+  if(n===3){setSts('🔒 已关机','si');log('关机完成，拔下电源插头，清台面',true);warn('');}
+}
+function resetAll(){
+  S={dig:0,buckets:false,condOn:false,bulge:false,alkaline:null,tubeTight:false,distilled:false,titrated:false,shut:0};
+  [1,2,3,4,5].forEach(n=>$('dg'+n).classList.remove('on'));
+  [1,2,3].forEach(n=>{$('al'+n).classList.remove('on');$('sh'+n).classList.remove('on');});
+  $('btnBucket').disabled=false;$('btnBucket').classList.remove('on');$('btnBucket').textContent='🪣 三桶加液（蒸馏水/碱/酸，不漏）';
+  $('btnCond').disabled=true;$('btnCond').classList.remove('on');
+  $('btnBulge').disabled=true;$('btnBulge').classList.remove('on');$('btnBulge').textContent='🔍 等2min查鼓胀';
+  $('btnTube').disabled=true;$('btnTube').classList.remove('on');$('btnTube').textContent='🔩 样品管装紧';
+  $('btnDist').disabled=true;$('btnDist').classList.remove('on');$('btnDist').textContent='♨️ 自动蒸馏';
+  $('btnTit').disabled=true;$('btnTit').classList.remove('on');$('btnTit').textContent='🧪 滴定至灰色';
+  [1,2,3].forEach(n=>$('sh'+n).disabled=true);
+  $('dN').textContent='—';$('dP').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 待开始','si');$('log').innerHTML='';warn('');
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

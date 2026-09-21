@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>烟气参数测定 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#3b82f6;--glow:#60a5fa;--abg:rgba(59,130,246,.12);--green:#34d399;--rose:#fb7185;--cyan:#22d3ee}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#0a1c3a 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(59,130,246,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(59,130,246,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(59,130,246,.22);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:620px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:740px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(59,130,246,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#0a1c3a);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#03101f}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#3b82f6;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:170px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:var(--accent);color:var(--glow)}
+.ft .nav a.cur{border-color:var(--accent);color:var(--glow);background:var(--abg)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:250px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#bfdbfe;line-height:1.7;margin:16px 0}
+.note b{color:#dbeafe}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">烟气参数测定<br><em>前置测量与折算</em></h1>
+  <div class="hs">除尘效率、脱硫效率、脱硝效率——所有这些"效率"，分母都是同一组数：流量和浓度。<br>而流量来自一根皮托管，<b style="color:#bfdbfe">这里错 10%，后面全错 10%</b>。</div>
+  <div class="hst">
+    <div><span class="n">√Δp</span><span class="l">平方根关系</span></div>
+    <div><span class="n">K<sub>p</sub></span><span class="l">皮托管系数</span></div>
+    <div><span class="n">5</span><span class="l">测量步骤</span></div>
+    <div><span class="n">4</span><span class="l">红线</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">为什么它是所有实验的第一步</div>
+  <div class="sd">做任何污染控制性能实验，你都要先回答一个问题："这台设备每小时处理了多少烟气？" 流量算不出来，除尘效率的分母就没有，后面的浓度折算、达标判定、年排放量核算全都无从谈起。</div>
+  <div class="sd">而流量不能直接测——烟道那么大、烟气那么热，没有流量计能装上去。行业里的做法是：<b>用一根皮托管测出动压，再由动压反算流速，最后乘断面面积得到流量</b>。这个过程里有两处最容易出错：动压到流速是<b>平方根关系</b>（不是线性），以及从工况流量到标态干基流量的<b>折算</b>。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">📏</div><div class="in">皮托管测的是"差压"</div><div class="id">全压减去静压等于动压。动压正比于<b>流速的平方</b>——所以反过来算流速要开根号。<b>动压翻 4 倍，流速只翻 1 倍</b>，这是本实验最核心的一条。</div><span class="it">原理</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">温度改变密度</div><div class="id">烟气温度从 50 ℃ 升到 300 ℃，密度掉到原来的<b>六成左右</b>。同样是 120 Pa 的动压，算出的流速要高出三成——温度不测准，流速必然错。</div><span class="it">状态参数</span></div>
+    <div class="ic"><div class="ii">🔄</div><div class="in">要折到标态干基</div><div class="id">排放标准、浓度限值都是按<b>标准状态、干烟气</b>给的。所以工况流量必须同时扣掉温度和含湿量——少扣一项，浓度折算就系统性偏离。</div><span class="it">折算</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个式子，从一根皮托管到标准立方米</div>
+  <div class="sd">下面的式子就是模拟台的算法。看懂第四步，你就明白为什么"含湿量测漏了"是致命问题。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">🌀</div><div class="in">① 动压 → 流速（平方根关系）</div>
+      <div class="id">这是本实验的核心公式。<b>流速与动压的平方根成正比</b>——流速加倍，动压要翻四倍。反过来讲：动压测得不准，经过开方后误差会被压缩，但仍然是系统性偏差。</div>
+      <div class="fx">v = K_p · √( 2·Δp / ρ )<br>（Δp=动压 Pa　ρ=湿烟气密度 kg/m³）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📐</div><div class="in">② 皮托管系数 K<sub>p</sub></div>
+      <div class="id">标准型皮托管取 1.00，S 型（靠背式）因结构修正，通常取 <b>0.84</b>。用错系数会造成约 <b>16–19% 的系统性偏差</b>——而且这个偏差会一路传进效率计算里，非常隐蔽。</div>
+      <div class="fx">标准型 K_p = 1.00　｜　S 型 K_p ≈ 0.84</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🌡️</div><div class="in">③ 湿烟气密度</div>
+      <div class="id">按理想气体状态方程，分别算干烟气与水蒸气的实际密度再加权平均。<b>温度越高、含湿量越大，密度越小，同样动压下流速越高</b>。</div>
+      <div class="fx">ρ = (1−X_w)·ρ_dg + X_w·ρ_wv　（X_w = 含湿量体积分数）<br>ρ_dg = 1.34 · 273/(273+t)　ρ_wv = 0.804 · 273/(273+t)</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🔄</div><div class="in">④ 折算到标态干基</div>
+      <div class="id">工况流量乘断面面积得到体积流量；再同时扣掉<b>温度（273/(273+t)）</b>和<b>含湿量（1−X_w）</b>，才得到可以和排放标准比对的标态干基流量。这两项<b>一个都不能少</b>。</div>
+      <div class="fx">Q = v · A · 3600　（A = 烟道断面积 m²）<br>Q_nd = Q · (1−X_w) · 273/(273+t)</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把四条连起来看</b>：温度同时出现在密度（<b>决定流速</b>）和折算系数（<b>决定最终流量</b>）里，而且两次影响方向相反——温度升高，工况流速变大，但折算回标态时又被压回来。结果是：<b>同一根皮托管、同一个动压，高温烟气的标态干基流量反而更小</b>。这个反直觉的结论，是本实验最容易考也最容易错的地方。这也解释了为什么现场核查一定要核对温度与含湿量的原始记录——它们直接决定了排放量算多算少。
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">测点布设、采样与计算按固定污染源排气监测相关标准（GB/T 16157、HJ/T 397 等）执行。下面五步是标准链路，<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">测点布设与断面检查</div><div class="rd">按标准要求选取测量断面与测点数（一般在弯头下游足够长的直管段上，避开涡流与回流区），量取烟道断面尺寸。断面积是后面算流量的乘数，量错就直接等比错。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">测烟气温度与大气压</div><div class="rd"><b>温度必须最先测</b>——它决定了湿烟气密度，没有密度就无法把动压换算成流速。同时记录大气压，用于后续标态折算。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">测静压与全压，算动压</div><div class="rd">在同一测点、同一时刻读取静压与全压，两者之差即动压。皮托管<b>必须正对气流方向</b>，偏斜会显著低估动压。每个测点重复读数取平均。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">测含湿量，算湿烟气密度</div><div class="rd">用干湿球法或重量法测含湿量。<b>这一步最容易被跳过</b>——而它同时影响密度（流速）和干基折算（流量），漏测等于两个地方同时错。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">计算流速、工况流量与标态干基流量</div><div class="rd">按上述公式逐级换算：动压 → 流速 → 工况流量 → 标态干基流量。同时核对流速是否落在合理区间（固定污染源一般 5–30 m/s），偏离过大要回头检查测点与皮托管。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 烟气参数测定 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步测量（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">测点与断面检查<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>测温度与大气压<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>测静压/全压算动压<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>测含湿量算密度<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>折算标态干基流量<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>皮托管动压 Δp　<b id="dpTxt" style="color:#60a5fa">120 Pa</b></label>
+          <input type="range" id="dpIn" min="20" max="400" step="5" value="120" oninput="onParam()">
+          <div class="hint"><b>注意看曲线的形状</b>——动压翻 4 倍，流速才翻 1 倍。所以低动压区测不准的代价很大，高动压区反而不敏感。</div>
+        </div>
+        <div class="fld">
+          <label>烟气温度 t　<b id="tTxt" style="color:#60a5fa">140 ℃</b></label>
+          <input type="range" id="tIn" min="50" max="300" step="5" value="140" oninput="onParam()">
+          <div class="hint">温度升高 → 密度下降 → 同样动压下流速变高；但折算回标态时又被压回来，<b>标态干基流量反而更小</b>。</div>
+        </div>
+        <div class="fld">
+          <label>烟气含湿量 X<sub>w</sub>　<b id="xwTxt" style="color:#60a5fa">8.0 %</b></label>
+          <input type="range" id="xwIn" min="2" max="25" step="0.5" value="8" oninput="onParam()">
+          <div class="hint">含湿量同时影响密度和干基折算。<b>漏测这一项，两个环节一起错。</b></div>
+        </div>
+        <div class="fld">
+          <label>皮托管类型</label>
+          <select id="kpIn" onchange="onParam()">
+            <option value="1">标准型皮托管　K_p = 1.00</option>
+            <option value="0.84" selected>S 型（靠背式）　K_p = 0.84</option>
+          </select>
+          <div class="hint">用错系数会造成约 16–19% 的系统性偏差，而且会一路传进效率计算。</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数（烟道 φ1.2 m，断面积 1.131 m²，按常压计）</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv"><div class="dl">烟气流速 v</div><div class="dd" id="oV">—</div><div class="du">m/s</div></div>
+          <div class="dv"><div class="dl">湿烟气密度 ρ</div><div class="dd" id="oRho">—</div><div class="du">kg/m³</div></div>
+          <div class="dv"><div class="dl">工况流量 Q</div><div class="dd" id="oQ">—</div><div class="du">m³/h</div></div>
+          <div class="dv" id="dvQnd"><div class="dl">标态干基流量 Q<sub>nd</sub></div><div class="dd" id="oQnd">—</div><div class="du">m³/h</div></div>
+        </div>
+        <canvas id="cv" width="900" height="500"></canvas>
+        <div class="legend">
+          <span><i style="background:#60a5fa"></i>当前工况 v(Δp)</span>
+          <span><i style="background:#64748b;height:0;border-top:2px dashed #64748b"></i>参考工况（140℃／8% 含湿）</span>
+          <span><i style="background:#fb7185;height:0;border-top:2px dashed #fb7185"></i>当前动压</span>
+        </div>
+        <div class="hint">参考曲线固定为 140 ℃、含湿量 8% 的典型燃煤锅炉工况，用于对比"温度／含湿量一变，同一条曲线会整体平移"。</div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">动压要多点测量取平均</div><div class="id">烟道断面上速度分布不均匀，靠近管壁处明显偏低。只测中心一点，会把流量算高。<b>测点数量和位置按标准来，不是随便找一处插进去。</b></div><span class="it">测点红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">皮托管必须正对气流</div><div class="id">皮托管偏斜时读到的是"全压与静压的混合值"，动压被低估、流速算小、流量算少。<b>对着气流方向插到底，再回抽约 1/3，是标准动作。</b></div><span class="it">方向红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">含湿量不能漏测</div><div class="id">含湿量同时进入密度和干基折算两处。漏测或估错，等于<b>流速和流量一起系统性偏离</b>，而后面所有浓度折算都建立在这两个数上——错误会被完整地放大到排放量里。</div><span class="it">折算红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">温度与静压必须同步记录</div><div class="id">温度是密度和折算系数的输入，静压进入标态折算。它们随时间波动，<b>必须与动压同批次、同时间记录</b>，不能事后补、也不能拿别的时段的数据凑。</div><span class="it">同步红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：面对"实测排放浓度与在线监测数据对不上"，能分清是<b>测点问题</b>（断面位置不合规／测点太少／涡流区）、<b>操作问题</b>（皮托管偏斜／系数用错／漏测含湿量）、还是<b>折算问题</b>（基准氧含量未折算／湿基干基混用／标态换算错误）。<b>这三类里，折算类错误最隐蔽、也最常被忽略</b>——数据看起来每一步都对，只是基准不一致。看懂这一层，才算真正会读监测报告。
+  </div>
+  <div class="note warnbox">
+    <b>本页模型边界</b>：按理想气体状态方程计算湿烟气密度，干烟气与水的标准状态密度分别取 1.34 与 0.804 kg/m³；压力按常压 101325 Pa 近似（未计入烟道静压），烟道按 φ1.2 m 圆形断面。实测中静压、烟气组分（CO₂/O₂ 含量）、测点速度分布都会影响结果。<b>曲线用于教学演示，不作为工程设计或达标判定依据。</b>
+  </div>
+  <div class="sd" style="margin-top:18px">教材对应位置：第三部分「大气污染控制实验」的开篇前置测量，也是模块 1、2 所有监测实验的共用基础。</div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3
+  <div class="nav">
+    <a href="00-大气污染控制工程实验-课程对照总览.html">课程对照总览</a>
+    <a href="旋风除尘器性能测定-交互版.html">旋风除尘器</a>
+    <a href="填料塔吸收SO2性能测定-交互版.html">填料塔吸收 SO₂</a>
+    <a href="活性炭吸附VOCs性能测定-交互版.html">活性炭吸附 VOCs</a>
+    <a href="催化净化NOx性能测定-交互版.html">催化净化 NOx</a>
+    <a class="cur" href="烟气参数测定-交互版.html">烟气参数测定</a>
+  </div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+/* ---------- 模型常数（教学用）---------- */
+const RDG=1.34, RWV=0.804;          // 标准状态干烟气／水蒸气密度 kg/m³
+const PATM=101325;                  // 大气压 Pa
+const DIA=1.2, AREA=Math.PI/4*DIA*DIA;
+const REF_T=140, REF_XW=0.08;       // 参考工况
+const VMIN=5, VMAX=30;              // 固定污染源常见流速区间 m/s
+
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let measured=null, curParam=null;
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},8000);}
+
+function params(){return{dp:+$('dpIn').value, t:+$('tIn').value, xw:+$('xwIn').value/100, kp:+$('kpIn').value};}
+function key(p){return p.dp+'|'+p.t+'|'+p.xw+'|'+p.kp;}
+
+function rhoOf(t,xw){const f=273/(273+t);return (1-xw)*RDG*f + xw*RWV*f;}
+function velOf(dp,t,xw,kp){return kp*Math.sqrt(2*dp/rhoOf(t,xw));}
+function calc(p){
+  const rho=rhoOf(p.t,p.xw);
+  const v=velOf(p.dp,p.t,p.xw,p.kp);
+  const Q=v*AREA*3600;
+  const Qnd=Q*(1-p.xw)*273/(273+p.t);
+  return {rho,v,Q,Qnd};
+}
+
+function render(){
+  const p=params(), c=calc(p);
+  $('dpTxt').textContent=p.dp+' Pa';
+  $('tTxt').textContent=p.t+' ℃';
+  $('xwTxt').textContent=(p.xw*100).toFixed(1)+' %';
+  $('oV').textContent=c.v.toFixed(2);
+  $('oRho').textContent=c.rho.toFixed(3);
+  $('oQ').textContent=Math.round(c.Q).toLocaleString();
+  $('oQnd').textContent=Math.round(c.Qnd).toLocaleString();
+  $('dvQnd').className='dv'+(c.v<VMIN||c.v>VMAX?' bad':' good');
+  draw(p,c);
+}
+
+function draw(p,c){
+  const cv=$('cv'), ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=250;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=44, PR=18, PT=18, PB=34;
+  const gw=W-PL-PR, gh=H-PT-PB;
+  const DPMAX=400;
+  const vTop=Math.max(30,Math.ceil(velOf(DPMAX,p.t,p.xw,p.kp)*1.12/5)*5);
+  const X=dp=>PL+dp/DPMAX*gw;
+  const Y=v=>PT+(1-Math.min(v/vTop,1))*gh;
+
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){const v=vTop*i/5;ctx.beginPath();ctx.moveTo(PL,Y(v));ctx.lineTo(PL+gw,Y(v));ctx.stroke();}
+  [0,50,100,150,200,250,300,350,400].forEach(dp=>{ctx.beginPath();ctx.moveTo(X(dp),PT);ctx.lineTo(X(dp),PT+gh);ctx.stroke();});
+  ctx.fillStyle='#64748b';ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  for(let i=0;i<=5;i++)ctx.fillText((vTop*i/5).toFixed(0),PL-7,Y(vTop*i/5));
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='#475569';
+  [0,50,100,150,200,250,300,350,400].forEach(dp=>ctx.fillText(dp,X(dp),PT+gh+7));
+  ctx.fillText('皮托管动压 Δp (Pa)',PL+gw/2,PT+gh+20);
+  ctx.save();ctx.translate(11,PT+gh/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#475569';ctx.fillText('烟气流速 v (m/s)',0,0);ctx.restore();
+
+  // 参考工况曲线（虚灰）
+  ctx.strokeStyle='rgba(100,116,139,.75)';ctx.lineWidth=1.4;ctx.setLineDash([5,4]);ctx.beginPath();
+  for(let i=0;i<=200;i++){
+    const dp=DPMAX*i/200, y=Y(velOf(dp,REF_T,REF_XW,p.kp));
+    if(i===0)ctx.moveTo(X(dp),y);else ctx.lineTo(X(dp),y);
+  }
+  ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#64748b';ctx.font='10px Inter,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.fillText('参考工况 140℃ / 8%',PL+6,PT+6);
+
+  // 当前工况曲线
+  ctx.strokeStyle='#60a5fa';ctx.lineWidth=2.4;ctx.beginPath();
+  for(let i=0;i<=240;i++){
+    const dp=DPMAX*i/240, y=Y(velOf(dp,p.t,p.xw,p.kp));
+    if(i===0)ctx.moveTo(X(dp),y);else ctx.lineTo(X(dp),y);
+  }
+  ctx.stroke();
+
+  // 当前动压竖线
+  ctx.strokeStyle='#fb7185';ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(X(p.dp),PT);ctx.lineTo(X(p.dp),PT+gh);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#60a5fa';ctx.beginPath();ctx.arc(X(p.dp),Y(c.v),4,0,7);ctx.fill();
+  ctx.font='10.5px Inter,sans-serif';ctx.textAlign=X(p.dp)>PL+gw-90?'right':'left';ctx.textBaseline='bottom';
+  ctx.fillText('v='+c.v.toFixed(2)+' m/s',X(p.dp)+(X(p.dp)>PL+gw-90?-8:8),Y(c.v)-6);
+}
+
+function onParam(){
+  const p=params();
+  if(S.s3&&curParam&&key(p)!==curParam){
+    log('测量参数已改变（动压／温度／含湿量／皮托管类型），此前的测量数据失效，请重新从 STEP 1 开始','bad');
+    setSts('⚠️ 工况已变，需重测','sbad');
+    warn('⚠️ 工况变了，之前测的数据不能用了——温度、含湿量、静压必须与动压同批次同步记录，不能事后补。');
+    S={s1:false,s2:false,s3:false,s4:false,s5:false};
+    ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+    measured=null;curParam=null;
+  }
+  render();
+}
+
+function step1(){
+  if(S.s1)return;
+  S.s1=true;$('p1').classList.add('on');$('p2').disabled=false;
+  setSts('🟡 断面已检查','sa');
+  log('测点布设完成：圆形烟道 φ1.2 m，断面积 <b>'+AREA.toFixed(3)+' m²</b>；测量断面位于直管段，避开涡流区',true);
+  warn('');
+}
+function step2(){
+  if(!S.s1){warn('请先完成 STEP 1 测点布设与断面检查');return;}
+  if(S.s2)return;
+  const p=params(), c=calc(p);
+  S.s2=true;$('p2').classList.add('on');$('p3').disabled=false;
+  log('烟气温度 t = <b>'+p.t+' ℃</b>，大气压 '+PATM+' Pa；据此算出湿烟气密度 ρ = <b>'+c.rho.toFixed(3)+' kg/m³</b>',true);
+  if(p.t>=250)warn('⚠️ 烟气温度 '+p.t+' ℃ 偏高——密度只有常温的四成左右，同样的动压会算出更大的流速，温度必须测准。');
+  setSts('🟡 温度与密度已确定','sa');
+  render();
+}
+function step3(){
+  if(!S.s2){warn('⚠️ 必须先测温度——没有湿烟气密度就无法把动压换算成流速');log('顺序错误：跳过温度直接测动压，已阻断',false);return;}
+  if(S.s3)return;
+  const p=params();
+  S.s3=true;$('p3').classList.add('on');$('p4').disabled=false;
+  measured={dp:p.dp,t:p.t,xw:p.xw,kp:p.kp};curParam=key(p);
+  const type=p.kp===1?'标准型 K_p=1.00':'S 型 K_p=0.84';
+  log('动压测定（静压与全压同点同时读取）：Δp = <b>'+p.dp+' Pa</b>；皮托管类型：'+type,true);
+  if(p.dp<40)warn('⚠️ 动压仅 '+p.dp+' Pa，偏低——低动压区间测量误差被放大，建议增加重复读数次数并核对测点位置。');
+  setSts('🟡 动压已测','sa');
+}
+function step4(){
+  if(!S.s3){warn('⚠️ 请先按顺序完成 STEP 3 静压／全压测定');log('顺序错误：跳过动压测定直接测含湿量，已阻断',false);return;}
+  if(S.s4)return;
+  const p=params(), c=calc(p);
+  S.s4=true;$('p4').classList.add('on');$('p5').disabled=false;
+  log('含湿量测定：X<sub>w</sub> = <b>'+(p.xw*100).toFixed(1)+'%</b>；折算后流速 v = <b>'+c.v.toFixed(2)+' m/s</b>',true);
+  if(p.xw>=0.20)warn('⚠️ 含湿量 '+(p.xw*100).toFixed(1)+'% 偏高——常见于湿法脱硫后烟道，干基折算系数会被明显压小，务必核对。');
+  setSts('🟡 含湿量已测','sa');
+  render();
+}
+function step5(){
+  if(!S.s4){warn('⚠️ 请先按顺序完成 STEP 4 含湿量测定');log('顺序错误：跳过含湿量直接折算流量，已阻断',false);return;}
+  if(S.s5)return;
+  const p=params(), c=calc(p);
+  S.s5=true;$('p5').classList.add('on');
+  const ok=(c.v>=VMIN&&c.v<=VMAX);
+  setSts(ok?'🟢 实验完成':'🟠 实验完成（流速偏离）','sok');
+  log('工况流量 Q = <b>'+Math.round(c.Q).toLocaleString()+' m³/h</b>；标态干基流量 Q<sub>nd</sub> = <b>'+Math.round(c.Qnd).toLocaleString()+' m³/h</b>',true);
+  log('本次结论：Δp='+p.dp+' Pa，t='+p.t+' ℃，X<sub>w</sub>='+(p.xw*100).toFixed(1)+'%，ρ='+c.rho.toFixed(3)+' kg/m³，v='+c.v.toFixed(2)+' m/s');
+  if(!ok){
+    setSts('⛔ 流速超出合理区间','sbad');
+    warn('⛔ 流速 '+c.v.toFixed(2)+' m/s 超出固定污染源常见区间 '+VMIN+'–'+VMAX+' m/s——不要照抄这个数，回头检查测点位置、皮托管方向与系数、以及动压读数是否可靠。');
+  }else{
+    warn('');
+  }
+}
+function resetAll(){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false};measured=null;curParam=null;
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  $('dpIn').value=120;$('tIn').value=140;$('xwIn').value=8;$('kpIn').value='0.84';
+  setSts('⏳ 未开始','si');$('log').innerHTML='';warn('');
+  render();
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 16157-1996</td><td>固定污染源排气中颗粒物测定与气态污染物采样方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ/T 397-2007</td><td>固定源废气监测技术规范</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 GB/T 16157-1996。请注意其 <b>2018-03-01 实施的修改单</b>：颗粒物浓度 ≤20 mg/m³ 时应适用 HJ 836，&gt;20 且 ≤50 mg/m³ 时两者同时适用；用本标准测 ≤20 mg/m³ 时结果表述为「&lt;20 mg/m³」。涉及超低排放／低浓度判定的页面须按修改单处理。</li></ul></div></div></div></details>
+</body>
+</html>

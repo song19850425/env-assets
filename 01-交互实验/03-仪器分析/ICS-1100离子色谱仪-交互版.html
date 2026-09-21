@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>离子色谱仪 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#6366f1;--accent-glow:#818cf8;--accent-bg:rgba(99,102,241,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#161433 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(99,102,241,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(99,102,241,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:30px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#161433);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.pwr6{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr6{grid-template-columns:1fr 1fr}}
+.bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));transition:width .3s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:150px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+.sub{font-size:11px;color:#94a3b8;margin:14px 0 4px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">离子色谱仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">ICS-1100</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">抑制电导检测 · 阴离子/阳离子分析 · 环境与食品水质</div>
+  <div class="hst">
+    <div><span class="n">1.0</span><span class="l">流速 mL/min</span></div>
+    <div><span class="n">0.1-0.2</span><span class="l">氮气分压 MPa</span></div>
+    <div><span class="n">3-6</span><span class="l">淋洗液瓶 psi</span></div>
+    <div><span class="n">30min</span><span class="l">开机平衡</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">离子色谱仪（IC）用于测定水样、食品提取液中的<b>阴离子与阳离子</b>——氟、氯、硝酸根、硫酸根、钠、钾、铵……是环境检测和食品安全的常规主力。样品随淋洗液泵入分离柱，不同离子因对固定相亲和力不同被依次洗脱，再经抑制器降低背景电导，由电导检测器定量。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔀</div><div class="in">离子交换分离</div><div class="id">样品随淋洗液进入分离柱，各离子按亲和力差异被先后洗脱，实现分离。</div><span class="it">色谱分离</span></div>
+    <div class="ic"><div class="ii">🔻</div><div class="in">抑制器</div><div class="id">将高电导淋洗液转化为低电导背景，把待测离子信号放大，是灵敏度命门。</div><span class="it">背景压制</span></div>
+    <div class="ic"><div class="ii">📡</div><div class="in">电导检测</div><div class="id">检测器测溶液电导率，离子浓度与峰面积成正比，外标法定量。</div><span class="it">电导定量</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">淋洗液 + 氮气</div><div class="id">淋洗液靠氮气背压输送；换液、排气泡、压力顺序错都会毁柱或进气泡。</div><span class="it">流路是命门</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>顺序错了、压力错了、抑制器开反了，系统会直接提醒你</b>，这正是新人最容易把柱子冲坏、把抑制器烧掉的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ ICS-1100 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">ICS-1100 离子色谱仪</span>
+    </div>
+
+    <div class="sub">① 开机前准备：淋洗液连接（先液路后气路）+ 氮气压力</div>
+    <div class="pwr">
+      <div class="pb" id="lp1" onclick="connectLiquid()">连接液路<span class="po">step 1</span></div>
+      <div class="pb" id="lp2" onclick="connectGas()">连接气路<span class="po">step 2</span></div>
+      <div class="pb" id="lp3" onclick="activateSupp()" disabled>抑制器活化<span class="po">长期停用</span></div>
+    </div>
+    <div class="cols">
+      <div class="fld"><label>氮气钢瓶分压 (MPa，应 0.1-0.2)</label><input type="number" id="iN2" value="0.15" step="0.05"></div>
+      <div class="fld"><label>淋洗液瓶氮气 (psi，应 3-6)</label><input type="number" id="iPsi" value="4" step="1"></div>
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnPrep" onclick="confirmPrep()" disabled>⚙️ 确认开机前准备</button>
+    </div>
+
+    <div class="sub">② 开机顺序（AS-DV/RFC-30 → 主机电源 → 电脑+变色龙）</div>
+    <div class="pwr">
+      <div class="pb" id="bw1" onclick="boot(1)">AS-DV/RFC-30<span class="po">step 1</span></div>
+      <div class="pb" id="bw2" onclick="boot(2)">主机电源<span class="po">step 2</span></div>
+      <div class="pb" id="bw3" onclick="boot(3)">电脑+变色龙<span class="po">step 3</span></div>
+    </div>
+
+    <div class="sub">③ 运行：开泵头废液阀排气 3min → 关阀 → 开抑制器 → 平衡</div>
+    <div class="pwr6">
+      <div class="pb" id="rn1" onclick="ventValve()" disabled>开废液阀排气<span class="po">3 min</span></div>
+      <div class="pb" id="rn2" onclick="closeValve()" disabled>关闭废液阀<span class="po">step 2</span></div>
+      <div class="pb" id="rn3" onclick="openSuppressor()" disabled>开抑制器<span class="po">step 3</span></div>
+      <div class="pb" id="rn4" onclick="balance()" disabled>平衡 30min<span class="po">step 4</span></div>
+      <div class="pb" id="rn5" onclick="makeMethod()" disabled>建方法+序列<span class="po">step 5</span></div>
+      <div class="pb" id="rn6" onclick="measure()" disabled>开始测样<span class="po">step 6</span></div>
+    </div>
+
+    <div class="dp">
+      <div class="dv"><div class="dl">系统压力</div><div class="dd" id="dP">—</div></div>
+      <div class="dv"><div class="dl">电导基线</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+
+    <div class="sub">④ 关机顺序（后冲洗 → 关抑制器电流 → 关泵 → 关变色龙 → 关计算机 → 关仪器电源）</div>
+    <div class="pwr6">
+      <div class="pb" id="sh1" onclick="shut(1)">后开泵20-30min<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">关抑制器电流<span class="po">step 2</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">关泵<span class="po">step 3</span></div>
+      <div class="pb" id="sh4" onclick="shut(4)">关变色龙<span class="po">step 4</span></div>
+      <div class="pb" id="sh5" onclick="shut(5)">关计算机<span class="po">step 5</span></div>
+      <div class="pb" id="sh6" onclick="shut(6)">关仪器电源<span class="po">step 6</span></div>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔗</div><div class="in">淋洗液：先液路后气路</div><div class="id">更换淋洗液连接时必须 先连液路、再连气路（拆卸时反过来先气后液）。先通气路再连液路 → 管路进气泡、柱压不稳。</div><span class="it">连接红线</span></div>
+    <div class="ic"><div class="ii">🎯</div><div class="in">氮气压力 0.1-0.2MPa</div><div class="id">钢瓶总阀分压 0.1-0.2MPa、淋洗液瓶 3-6psi。压力过高顶漏、过低泵不上液；背压不对淋洗液会分层。</div><span class="it">压力红线</span></div>
+    <div class="ic"><div class="ii">💨</div><div class="in">开机先开废液阀排气 3min</div><div class="id">运行前必须松开泵头废液阀、灌注排气约 3 分钟再旋紧。不排气 → 系统中气泡进柱，基线疯跳、峰畸变。</div><span class="it">排气泡红线</span></div>
+    <div class="ic"><div class="ii">⚡</div><div class="in">抑制器：开泵后开、关机先关</div><div class="id">抑制器必须在泵运转后开；关机必须 先关抑制器电流、再关泵。顺序反了 → 抑制器电解膜干烧损坏，维修动辄上万。</div><span class="it">反序致命</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={liquid:false,gas:false,activ:false,prep:false,n2ok:false,boot:0,vented:false,valveClosed:false,supp:false,balanced:false,method:false,measuring:false,shut:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function connectLiquid(){
+  if(S.liquid){warn('液路已连接');return;}
+  S.liquid=true;$('lp1').classList.add('on');log('连接淋洗液液路（先液路）',true);
+  if(S.gas) checkConnect();
+}
+function connectGas(){
+  if(S.gas){warn('气路已连接');return;}
+  if(!S.liquid){warn('⚠️ 必须先连液路、再连气路！顺序反了管路会进气泡');log('淋洗液连接顺序错误（先气后液），已阻断',false);return;}
+  S.gas=true;$('lp2').classList.add('on');log('连接气路（后气路）',true);checkConnect();
+}
+function checkConnect(){ if(S.liquid&&S.gas){ if(!S.activ)$('lp3').disabled=false; } }
+function activateSupp(){
+  if(S.activ){warn('抑制器已活化');return;}
+  S.activ=true;$('lp3').classList.add('on');log('抑制器（ELUENT IN）注水活化完成（长期停用必做）',true);
+}
+function confirmPrep(){
+  if(S.prep){warn('准备已确认');return;}
+  if(!(S.liquid&&S.gas)){warn('请先按 先液路后气路 连接淋洗液');return;}
+  const n2=+$('iN2').value, psi=+$('iPsi').value;
+  if(n2<0.1||n2>0.2){warn('⚠️ 氮气分压应在 0.1-0.2 MPa（当前 '+n2+'）');return;}
+  if(psi<3||psi>6){warn('⚠️ 淋洗液瓶氮气应在 3-6 psi（当前 '+psi+'）');return;}
+  S.n2ok=true;S.prep=true;$('btnPrep').classList.add('on');$('btnPrep').textContent='✅ 准备已确认';
+  log('开机前准备确认：氮气 '+n2+' MPa / 瓶 '+psi+' psi，淋洗液已先液后气连接',true);
+  [1,2,3].forEach(n=>$('bw'+n).classList.add('on'));
+  $('btnPrep').disabled=true;warn('');
+  log('（准备就绪，开机三步已可直接点击）');
+}
+function boot(n){
+  if(S.measuring){warn('测量中不可操作电源');return;}
+  if(!S.prep){warn('请先完成开机前准备（淋洗液连接+氮气压力）');return;}
+  if(n!==S.boot+1){warn('开机顺序错误：必须 AS-DV/RFC-30 → 主机电源 → 电脑+变色龙 依次开启');log('开机顺序错误，已阻断',false);return;}
+  S.boot=n;$('bw'+n).classList.add('on');
+  log('开启：'+['AS-DV/RFC-30','主机电源','电脑 + 变色龙工作站'][n-1]);
+  if(n===3){setSts('🟢 工作站已联机','sa');$('rn1').disabled=false;warn('');}
+}
+function ventValve(){
+  if(S.vented){warn('已排气');return;}
+  if(S.boot<3){warn('请先完成开机三步');return;}
+  S.vented=true;$('rn1').classList.add('on');setSts('💨 排气泡中…','sa');
+  log('松开泵头废液阀，灌注排气约 3 分钟…');
+  setTimeout(()=>{log('✔ 气泡已排尽，可旋紧废液阀',true);$('rn2').disabled=false;},700);
+}
+function closeValve(){
+  if(S.valveClosed){warn('已关阀');return;}
+  if(!S.vented){warn('⚠️ 必须先开废液阀排气 3 分钟，再关阀！否则气泡进柱');log('未排气即关阀，已阻断',false);return;}
+  S.valveClosed=true;$('rn2').classList.add('on');log('旋紧泵头废液阀',true);$('rn3').disabled=false;warn('');
+}
+function openSuppressor(){
+  if(S.supp){warn('抑制器已开');return;}
+  if(!S.valveClosed){warn('⚠️ 必须先开泵（废液阀已关、泵运转）再开抑制器！');log('抑制器在泵前开启，已阻断',false);return;}
+  S.supp=true;$('rn3').classList.add('on');log('开启抑制器（按淋洗液浓度输入信号值）',true);
+  $('dP').textContent='≈稳定';$('rn4').disabled=false;warn('');
+}
+function balance(){
+  if(S.balanced){warn('已平衡');return;}
+  S.balanced=true;$('rn4').classList.add('on');setSts('⏳ 平衡中…','sa');
+  log('系统平衡 30 分钟（长期停用需基线稳定）…');
+  setTimeout(()=>{log('✔ 基线稳定，可建方法测样',true);$('rn5').disabled=false;setSts('🟢 就绪','sa');},700);
+}
+function makeMethod(){
+  if(S.method){warn('方法已建');return;}
+  S.method=true;$('rn5').classList.add('on');log('创建仪器方法 + 序列（设置泵限/进样量/抑制器信号）',true);$('rn6').disabled=false;
+}
+function measure(){
+  if(!S.supp){warn('请先开抑制器');return;}
+  if(!S.balanced){warn('请先平衡 30 分钟');return;}
+  if(!S.method){warn('请先建方法+序列');return;}
+  if(S.measuring)return;
+  S.measuring=true;setSts('📡 测量中…','sa');$('dState').textContent='测量中';
+  log('开始测样（模拟电导采集）');
+  let p=0;const iv=setInterval(()=>{p++;if(p>=8){clearInterval(iv);
+    const c=(Math.random()*5+0.2).toFixed(3);
+    $('dC').textContent=c+' μS';$('dState').textContent='完成';setSts('✅ 测量完成','sok');S.measuring=false;
+    log('测量完成：电导 '+c+' μS（示例值）',true);
+    [1,2,3,4,5,6].forEach(n=>$('sh'+n).disabled=false);
+  }},150);
+}
+function shut(n){
+  const order=['后开泵冲洗20-30min','关抑制器电流','关泵','关变色龙软件','关计算机','关仪器电源'];
+  if(n!==S.shut+1){
+    if(n===3 && S.shut<2){warn('⚠️ 必须先关抑制器电流、再关泵！顺序反了抑制器电解膜会干烧损坏');}
+    else if(n===5 && S.shut<4){warn('⚠️ 必须先关变色龙软件、再关计算机！');}
+    else {warn('关机顺序错误：后冲洗 → 关抑制器 → 关泵 → 关变色龙 → 关计算机 → 关电源');}
+    log('关机顺序错误，已阻断',false);return;
+  }
+  S.shut=n;$('sh'+n).classList.add('on');
+  if(n===1){setSts('💧 后冲洗中…','sa');log('做完实验再开泵 20-30 分钟冲洗系统');setTimeout(()=>log('✔ 后冲洗完成',true),600);}
+  else log('执行：'+order[n-1]);
+  if(n===2) log('✔ 抑制器电流已关（先于关泵，正确）',true);
+  if(n===3) log('✔ 泵已关闭',true);
+  if(n===6){setSts('🔒 已关机','si');log('关机完成。记得倒空废液桶、清台面',true);warn('');}
+}
+function resetAll(){
+  S={liquid:false,gas:false,activ:false,prep:false,n2ok:false,boot:0,vented:false,valveClosed:false,supp:false,balanced:false,method:false,measuring:false,shut:0};
+  [1,2,3].forEach(n=>{$('lp'+n).classList.remove('on');$('bw'+n).classList.remove('on');$('sh'+n).classList.remove('on');});
+  [1,2,3,4,5,6].forEach(n=>{$('rn'+n).classList.remove('on');$('sh'+n).classList.remove('on');});
+  $('rn1').disabled=true;$('rn2').disabled=true;$('rn3').disabled=true;$('rn4').disabled=true;$('rn5').disabled=true;$('rn6').disabled=true;
+  [1,2,3,4,5,6].forEach(n=>$('sh'+n).disabled=true);
+  $('lp3').disabled=true;$('btnPrep').disabled=false;$('btnPrep').classList.remove('on');$('btnPrep').textContent='⚙️ 确认开机前准备';
+  $('dP').textContent='—';$('dC').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>环境实验 环境采样字段模板</title>
+<style>
+:root{--bg:#0a0e17;--card:#121826;--line:#23304a;--ink:#e7eefc;--mut:#8aa0c0;--a:#2563eb;}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#16203a 0,var(--bg) 60%);color:var(--ink);font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 80px}
+header.hero{padding:30px 0 18px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.tag{display:inline-block;font-size:12px;letter-spacing:.12em;color:var(--mut);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+h1{font-size:30px;margin:14px 0 6px}
+.lead{color:var(--mut);max-width:760px}
+.chips{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.chip{padding:7px 13px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:13px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.chip:hover{border-color:var(--a)}
+h2{font-size:22px;margin:0}
+h3{font-size:17px;margin:34px 0 10px}
+.dom{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:22px 0;overflow:hidden}
+.dom-h{display:flex;align-items:center;gap:14px;border-left:5px solid var(--a);padding-left:14px;margin-bottom:14px}
+.dom-h .em{font-size:30px}
+.dom-h .sub{color:var(--mut);font-size:13px}
+.dom-h .cnt{margin-left:auto;font-size:12px;color:var(--mut);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+.callout{background:color-mix(in srgb,var(--a) 14%,#0b1020);border:1px solid color-mix(in srgb,var(--a) 40%,var(--line));border-radius:12px;padding:12px 16px;margin:6px 0 18px;font-size:14px}
+.callout b{color:var(--a)}
+.callout ul{margin:8px 0 0;padding-left:20px;color:var(--ink)}
+.callout li{margin:3px 0}
+.grp{margin:14px 0}
+.grp.qcgrp{border:1px dashed color-mix(in srgb,var(--a) 50%,var(--line));border-radius:12px;padding:10px 14px;background:rgba(255,255,255,.02)}
+.grp h4{margin:4px 0 8px;font-size:14px;color:var(--a)}
+table.ft{width:100%;border-collapse:collapse;font-size:13px}
+.ft th{text-align:left;color:var(--mut);font-weight:600;border-bottom:1px solid var(--line);padding:7px 8px}
+.ft td{border-bottom:1px solid #1a2236;padding:8px;vertical-align:top}
+.ft td.k{font-weight:600;min-width:130px}
+.ft td.o{color:var(--mut);max-width:240px}
+.ft td .qc{color:#cfe0ff;font-size:12px}
+.req{color:#ff6b8a;font-size:11px;border:1px solid #ff6b8a55;border-radius:6px;padding:1px 6px}
+.opt{color:var(--mut);font-size:11px;border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+section.common{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:22px 0}
+.cmp{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+.cmp th{text-align:left;color:var(--mut);border-bottom:1px solid var(--line);padding:8px}
+.cmp td{border-bottom:1px solid #1a2236;padding:9px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:12px;text-align:center}
+</style></head>
+<body><div class="wrap">
+<header class="hero">
+  <span class="tag">环境实验 · 采样字段模板 v1.0</span>
+  <h1>环境采样原始记录 · 字段清单 / 模板</h1>
+  <p class="lead">依据真实「环境检测机构采样原始记录空白表」抽取整理，覆盖 <b>水 / 气 / 土 / 噪声</b> 四大域。机构标识已脱敏，字段可直接映射为 LIMS 采样模块录入表单；标注「必填」为关键项，标注质控要点为红线项。</p>
+  <div class="chips">
+    <a class="chip" href="#water">💧 水和废水</a>
+    <a class="chip" href="#air">🌬️ 大气</a>
+    <a class="chip" href="#soil">🌱 土壤</a>
+    <a class="chip" href="#noise">🔊 噪声</a>
+    <a class="chip" href="#common">📋 公共字段</a>
+  </div>
+</header>
+
+<section class="common" id="common">
+  <h3>📋 跨域公共字段（四域通用）</h3>
+  <table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">委托编号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">任务溯源主键，必填</div></td></tr>
+<tr><td class="k">方法依据</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">填标准/规范号，如 HJ/T 166、GB 3096</div></td></tr>
+<tr><td class="k">采样/监测日期</td><td>日期</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">年-月-日，必填</div></td></tr>
+<tr><td class="k">天气状况</td><td>单选</td><td><span class="req">必填</span></td><td class="o">晴、多云、阴、小雨、中雨、雷阵雨、雪、雾</td><td><div class="qc">现场必填，影响样品保存与工况判断</div></td></tr>
+<tr><td class="k">样品编号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">唯一编号，串联采样-交接-分析全链</div></td></tr>
+<tr><td class="k">仪器型号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">设备溯源，必填</div></td></tr>
+<tr><td class="k">采样/监测人</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">责任人签字</div></td></tr>
+<tr><td class="k">校核</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">二级审核签字</div></td></tr></tbody></table>
+</section>
+
+
+<section class="dom" id="water" style="--a:#2563eb">
+  <div class="dom-h"><span class="em">💧</span><div><h2>水和废水采样</h2><div class="sub">依据空白表：水和废水采样原始记录表</div></div><span class="cnt">15 字段</span></div>
+  <div class="callout"><b>样品保存与固定（核心质控）</b><ul><li>按分析项目加固定剂：加硫酸(COD/磷酸盐/总磷/总氮/氨氮/TOC)、加盐酸(油类)、加氢氧化钠(六价铬)、加硝酸(金属类 B/Na/K/Cu/Zn/Be/Mg/Ca/Mn/Fe/Ni/As/Cd/Pb/Ag)</li><li>溶解氧 DO：现场加硫酸锰+碱性碘化钾固定，盖严颠倒混合</li><li>挥发酚：磷酸调 pH 后加 0.2g 抗坏血酸除去残余氯</li><li>样品性状必记：气味(微弱/明显)、浮油(少量/大量)、臭和味、肉眼可见物</li></ul></div>
+  <div class="grp"><h4>现场时空与环境</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样日期</td><td>日期</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">含年/月/日</div></td></tr>
+<tr><td class="k">天气状况</td><td>单选</td><td><span class="req">必填</span></td><td class="o">晴、多云、阴、雨</td><td></td></tr>
+<tr><td class="k">采样时间</td><td>时段</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">记录起止时间</div></td></tr></tbody></table></div><div class="grp"><h4>仪器与校准溯源</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">仪器编号及型号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">溯源</div></td></tr></tbody></table></div><div class="grp"><h4>样品与检测项目</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样容器及固定剂</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">容器材质+固定剂对应项目</div></td></tr>
+<tr><td class="k">分析项目</td><td>多选</td><td><span class="req">必填</span></td><td class="o">pH、SS、CODCr、BOD5、色度、氨氮、磷酸盐、总磷、总氮、石油类、动植物油、DO、CODMn、LAS …</td><td><div class="qc">勾选项目，决定固定剂与容器</div></td></tr>
+<tr><td class="k">现场测定项目</td><td>多选</td><td><span class="opt">选填</span></td><td class="o">pH、水温、DO、电导率、透明度(塞氏盘)、余氯</td><td><div class="qc">现场即时测定</div></td></tr></tbody></table></div><div class="grp"><h4>现场性状/记录</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">样品性状</td><td>多选</td><td><span class="req">必填</span></td><td class="o">微弱气味、明显气味、少量浮油、大量浮油、臭和味、肉眼可见物</td><td><div class="qc">描述性必填</div></td></tr>
+<tr><td class="k">采样现场情况简述</td><td>长文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">采样布点示意图</td><td>附件</td><td><span class="opt">选填</span></td><td class="o">—</td><td><div class="qc">附图</div></td></tr></tbody></table></div><div class="grp" class="qcgrp"><h4>样品保存与固定(QC)</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">加硫酸项目</td><td>多选</td><td><span class="opt">选填</span></td><td class="o">COD、磷酸盐、总磷、总氮、氨氮、TOC</td><td><div class="qc">硫酸固定 pH≤2</div></td></tr>
+<tr><td class="k">加盐酸项目</td><td>多选</td><td><span class="opt">选填</span></td><td class="o">油类</td><td><div class="qc">盐酸固定</div></td></tr>
+<tr><td class="k">加氢氧化钠项目</td><td>多选</td><td><span class="opt">选填</span></td><td class="o">六价铬</td><td><div class="qc">NaOH 固定</div></td></tr>
+<tr><td class="k">加硝酸项目</td><td>多选</td><td><span class="opt">选填</span></td><td class="o">硼、钠、钾、铜、锌、铍、镁、钙、锰、铁、镍、砷、镉、铅 …</td><td><div class="qc">硝酸固定 pH≤2</div></td></tr>
+<tr><td class="k">溶解氧固定</td><td>文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td><div class="qc">硫酸锰+碱性碘化钾，现场固定</div></td></tr></tbody></table></div>
+</section>
+
+<section class="dom" id="air" style="--a:#06b6d4">
+  <div class="dom-h"><span class="em">🌬️</span><div><h2>大气采样及现场检测</h2><div class="sub">依据空白表：大气采样及现场检测原始记录表</div></div><span class="cnt">18 字段</span></div>
+  <div class="callout"><b>采样体积与吸收液（核心质控）</b><ul><li>采样体积 = 吸收液体积 × 采样流量(L/min) × 采样时间(min)，三项须同时记录且可追溯</li><li>环境条件必记：晴/阴、风速(m/s)、风向、气压(kPa)、气温 —— 用于标况体积换算</li><li>多台采样仪器按 A/B/C/D 分别编号溯源</li><li>采样布点示意图 + 现场情况简述必附</li></ul></div>
+  <div class="grp"><h4>委托与任务信息</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">委托单位</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">申请单号</td><td>文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">受检单位</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr></tbody></table></div><div class="grp"><h4>现场时空与环境</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样地点</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">具体点位</div></td></tr>
+<tr><td class="k">环境条件</td><td>复合</td><td><span class="req">必填</span></td><td class="o">晴、阴</td><td><div class="qc">含风速(m/s)/风向/气压(kPa)/气温</div></td></tr>
+<tr><td class="k">风速 <i>(m/s)</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">风向</td><td>文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">气压 <i>(kPa)</i></td><td>数值</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">气温 <i>(℃)</i></td><td>数值</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">采样时段</td><td>时段</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">起止时间</div></td></tr></tbody></table></div><div class="grp"><h4>仪器与校准溯源</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样仪器</td><td>文本</td><td><span class="req">必填</span></td><td class="o">A、B、C、D</td><td><div class="qc">多台分编号</div></td></tr></tbody></table></div><div class="grp"><h4>样品与检测项目</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">测量项目</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">采样位置</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">吸收液体积 <i>(mL)</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">计算采样体积三要素之一</div></td></tr>
+<tr><td class="k">采样流量 <i>(L/min)</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">现场流量计读数</div></td></tr>
+<tr><td class="k">采样时间 <i>(min)</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">累计采样时长</div></td></tr></tbody></table></div><div class="grp"><h4>现场性状/记录</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样现场情况简述</td><td>长文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">采样布点示意图</td><td>附件</td><td><span class="opt">选填</span></td><td class="o">—</td><td><div class="qc">附图</div></td></tr></tbody></table></div>
+</section>
+
+<section class="dom" id="soil" style="--a:#d97706">
+  <div class="dom-h"><span class="em">🌱</span><div><h2>土壤采样</h2><div class="sub">依据空白表：土壤采样原始记录表</div></div><span class="cnt">13 字段</span></div>
+  <div class="callout"><b>土壤性状描述（核心质控）</b><ul><li>方法依据：土壤环境监测技术规范 HJ/T 166-2004</li><li>土壤性状必填四项：颜色 / 湿度 / 植物根系 / 土壤质地（均有标准选项）</li><li>采样点及所在区域污染源、敏感人群、水域分布须画示意图</li><li>样品编号 + 检测项目逐点对应，避免混样</li></ul></div>
+  <div class="grp"><h4>现场时空与环境</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样日期</td><td>日期</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">采样时段</td><td>时段</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">天气状况</td><td>单选</td><td><span class="req">必填</span></td><td class="o">晴、多云、阴、雨</td><td></td></tr>
+<tr><td class="k">气温 <i>(℃)</i></td><td>数值</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">气压 <i>(kPa)</i></td><td>数值</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr></tbody></table></div><div class="grp"><h4>样品与检测项目</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">采样序号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">逐点序号</div></td></tr>
+<tr><td class="k">采样点名称</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">检测项目</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr></tbody></table></div><div class="grp"><h4>土壤性状描述</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">颜色</td><td>单选</td><td><span class="req">必填</span></td><td class="o">红棕、黄棕、浅棕、暗栗、暗棕、暗灰、黑</td><td><div class="qc">性状四要素之一</div></td></tr>
+<tr><td class="k">湿度</td><td>单选</td><td><span class="req">必填</span></td><td class="o">干、潮、湿、重潮、极潮</td><td><div class="qc">性状四要素之一</div></td></tr>
+<tr><td class="k">植物根系</td><td>单选</td><td><span class="req">必填</span></td><td class="o">无根系、少量、中量、多量、根密集</td><td><div class="qc">性状四要素之一</div></td></tr>
+<tr><td class="k">土壤质地</td><td>单选</td><td><span class="req">必填</span></td><td class="o">砂土、沙壤土、轻壤土、中壤土、重壤土、粘土</td><td><div class="qc">性状四要素之一</div></td></tr></tbody></table></div><div class="grp"><h4>现场性状/记录</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">污染源/敏感点/水域分布示意图</td><td>附件</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">必附</div></td></tr></tbody></table></div>
+</section>
+
+<section class="dom" id="noise" style="--a:#8b5cf6">
+  <div class="dom-h"><span class="em">🔊</span><div><h2>环境噪声监测</h2><div class="sub">依据空白表：环境噪声监测原始记录表</div></div><span class="cnt">17 字段</span></div>
+  <div class="callout"><b>声级计前后校准（核心质控红线）</b><ul><li>监测前后均须用校准器校准声级计，记录前后校准值(dB(A))，LIMS 应校验两者一致（一般偏差≤0.5dB）</li><li>方法依据：GB 3096-2008 声环境质量标准</li><li>监测目的二选一：声环境功能区监测 / 敏感建筑物监测</li><li>声源及运行工况须说明（防止工况不符导致数据无效）</li></ul></div>
+  <div class="grp"><h4>现场时空与环境</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">监测日期</td><td>日期</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">天气</td><td>单选</td><td><span class="req">必填</span></td><td class="o">晴、多云、阴、雨、雪、雾</td><td></td></tr>
+<tr><td class="k">风向</td><td>文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">风速 <i>(m/s)</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">采样时段</td><td>时段</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr></tbody></table></div><div class="grp"><h4>委托与任务信息</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">监测目的</td><td>单选</td><td><span class="req">必填</span></td><td class="o">声环境功能区监测、敏感建筑物监测</td><td></td></tr></tbody></table></div><div class="grp"><h4>样品与检测项目</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">监测点名称</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">主要声源</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr></tbody></table></div><div class="grp"><h4>仪器与校准溯源</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">声级计型号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">设备溯源</div></td></tr>
+<tr><td class="k">校准器型号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">校准器编号</td><td>文本</td><td><span class="req">必填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">监测前校准值 <i>(dB(A))</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">前后比对红线</div></td></tr>
+<tr><td class="k">监测后校准值 <i>(dB(A))</i></td><td>数值</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">前后比对红线</div></td></tr>
+<tr><td class="k">风向风速仪型号</td><td>文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">风向风速仪编号</td><td>文本</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr></tbody></table></div><div class="grp"><h4>现场性状/记录</h4><table class="ft"><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>选项/单位</th><th>质控要点</th></tr></thead><tbody><tr><td class="k">测点分布示意图</td><td>附件</td><td><span class="opt">选填</span></td><td class="o">—</td><td></td></tr>
+<tr><td class="k">声源及运行工况说明</td><td>长文本</td><td><span class="req">必填</span></td><td class="o">—</td><td><div class="qc">工况必说明</div></td></tr></tbody></table></div>
+</section>
+
+<h3>四域质控红线速览</h3>
+<table class="cmp"><thead><tr><th>域</th><th>核心动作</th><th>质控主题</th></tr></thead><tbody><tr><td><span class="dot" style="background:#2563eb"></span>水和废水采样</td><td>样品保存与固定（固定剂按项目添加）</td><td>样品保存与固定（核心质控）</td></tr><tr><td><span class="dot" style="background:#06b6d4"></span>大气采样及现场检测</td><td>采样体积三要素（吸收液/流量/时间）</td><td>采样体积与吸收液（核心质控）</td></tr><tr><td><span class="dot" style="background:#d97706"></span>土壤采样</td><td>土壤性状四要素（颜色/湿度/根系/质地）</td><td>土壤性状描述（核心质控）</td></tr><tr><td><span class="dot" style="background:#8b5cf6"></span>环境噪声监测</td><td>声级计监测前后校准值比对</td><td>声级计前后校准（核心质控红线）</td></tr></tbody></table>
+
+<footer>环境实验 采样字段模板 · 依据真实空白表脱敏整理 · 配套 sampling_fields.json 可导入 LIMS</footer>
+</div></body></html>

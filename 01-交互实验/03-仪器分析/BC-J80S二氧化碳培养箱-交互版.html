@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二氧化碳培养箱 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#a78bfa;--accent-glow:#c4b5fd;--accent-bg:rgba(167,139,250,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1a1230 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(167,139,250,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(167,139,250,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(167,139,250,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#1a1230);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#a78bfa,#c4b5fd);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(167,139,250,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));transition:width .3s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:150px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">二氧化碳培养箱</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">BC-J80S</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">细胞培养 · 恒温恒湿 · 5% CO₂ 环境</div>
+  <div class="hst">
+    <div><span class="n">37 ℃</span><span class="l">培养温度</span></div>
+    <div><span class="n">5 %</span><span class="l">CO₂ 浓度</span></div>
+    <div><span class="n">0.5~1</span><span class="l">供气压力 bar</span></div>
+    <div><span class="n">2~3 L</span><span class="l">蒸馏水</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在养什么，怎么养</div>
+  <div class="sd">二氧化碳培养箱是细胞、组织、微生物培养的"人工体内环境"——把温度钉在 <b>37℃</b>、相对湿度拉高、CO₂ 维持在 <b>5%</b>，让培养液的 pH 稳定在 7.2~7.4。环境检测里常用于生物毒性测试（如发光菌、藻类）、微生物增殖等需要活体培养的环节。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🌡️</div><div class="in">恒温恒湿</div><div class="id">箱底水盘/湿化系统提供高相对湿度，加热体维持 37℃。水少了湿度掉、温度波动大。</div><span class="it">水是命门</span></div>
+    <div class="ic"><div class="ii">💨</div><div class="in">CO₂ 与 pH</div><div class="id">5% CO₂ 支撑培养液碳酸氢盐缓冲体系，使 pH 恒定。CO₂ 浓度漂移 → pH 漂移 → 细胞状态垮。</div><span class="it">缓冲体系</span></div>
+    <div class="ic"><div class="ii">📡</div><div class="in">红外传感补气</div><div class="id">CO₂ 浓度由红外（IR）传感器实时监测，低了自动补气。供气压力异常会直接损坏自动感应控制开关。</div><span class="it">气路是红线</span></div>
+    <div class="ic"><div class="ii">🔄</div><div class="in">N₂/CO₂ 稳压供给</div><div class="id">钢瓶气体必经减压阀稳定到 0.5~1 bar 再进箱，箱体内循环混匀，浓度才稳。</div><span class="it">减压阀不可省</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>顺序错了、压力错了、水加多了，系统会直接提醒你</b>，这正是真实操作里最容易把箱子搞坏、把样品养废的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ BC-J80S 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未准备</span>
+      <span style="font-size:10px;color:#475569">BC-J80S 二氧化碳培养箱</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 开机准备序列（加底水 → 通电 → 补蒸馏水 → 开 N₂/CO₂ 阀）</div>
+    <div class="pwr">
+      <div class="pb" id="pw1" onclick="prep(1)">加底水 300ml<span class="po">step 1</span></div>
+      <div class="pb" id="pw2" onclick="prep(2)">通电自检<span class="po">step 2</span></div>
+      <div class="pb" id="pw3" onclick="prep(3)">补蒸馏水<span class="po">step 3</span></div>
+      <div class="pb" id="pw4" onclick="prep(4)">开 N₂/CO₂ 阀<span class="po">step 4</span></div>
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnSter" onclick="sterilize()" disabled>🔥 高温消毒程序（可选 · ~25h）</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 补蒸馏水到总水量（程序后补足 2~3 升，<b style="color:var(--rose)">不能超过 3 升</b>）</div>
+    <div class="cols">
+      <div class="fld"><label>底水已加 (L)</label><input type="number" id="iBase" value="0.3" step="0.1"></div>
+      <div class="fld"><label>补到总水量 (L)</label><input type="number" id="iTop" value="2.5" step="0.1"></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 设 CO₂ 减压阀压力（必须走减压阀，<b style="color:var(--rose)">0.5~1 bar，超过 1 bar 损坏控制开关</b>）</div>
+    <div class="cols">
+      <div class="fld"><label>CO₂ 减压阀压力 (bar)</label><input type="number" id="iBar" value="0.8" step="0.1"></div>
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnP" onclick="setPressure()" disabled>⚙️ 确认供气压力</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 设培养参数（37℃ / 5% CO₂）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnSet" onclick="setSetpoint()" disabled>🌡️ 设定 37℃ / 5% CO₂</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑤ 等待温/CO₂ 稳定（<b style="color:var(--rose)">未稳定不放样品，否则培养条件崩溃</b>）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnStab" onclick="stabilize()" disabled>⏳ 等待稳定</button>
+      <button class="btn b1" id="btnLoad" onclick="loadSample()" disabled>🧫 放入样品</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">箱内状态</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">温度 ℃</div><div class="dd" id="dT">—</div></div>
+      <div class="dv"><div class="dl">CO₂ %</div><div class="dd" id="dC">—</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 取放培养物（<b style="color:var(--rose)">按操作规程应只开小门，频繁开大门致浓度/温/湿度波动</b>）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnDoor" onclick="toggleDoor()">🚪 开玻璃门（取放）</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🚰</div><div class="in">先加水再通电</div><div class="id">操作规程 4.1 先往箱底加 300ml 蒸馏水，再开总电源。颠倒顺序 → 加热体/水盘空烧损坏，且自检读不到水位。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">⚠️</div><div class="in">CO₂ 压力 ≤ 1 bar</div><div class="id">供气必须经减压阀，压力维持 0.5~1 bar。超过 1 bar → 直接损坏自动感应控制开关（操作规程 5.1 致命红线）；低于 0.5 bar 供气不足、浓度不稳。</div><span class="it">致命红线</span></div>
+    <div class="ic"><div class="ii">💧</div><div class="in">补水量不超 3 升</div><div class="id">程序结束后补足蒸馏水到 2~3 升，绝不能超 3 升。超量会溢出浸泡腔体、损坏电路与传感器。</div><span class="it">容量红线</span></div>
+    <div class="ic"><div class="ii">🚪</div><div class="in">只开小门 / 少开门</div><div class="id">平时拿放培养物应只开小门，频繁开大门使 CO₂ 浓度、温度、相对湿度大幅波动（操作规程 5.3）。未稳定就放样品 → 培养条件直接崩。</div><span class="it">操作红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={prep:0,sterile:false,waterTop:false,gas:false,pressureSet:false,setpoint:false,stable:false,sample:false,doorOpen:false,doorOpens:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4000);}
+
+function prep(n){
+  if(n===1){
+    if(S.prep>=1){warn('底水已加过');return;}
+    if(S.prep!==0){warn('顺序错误：必须先加底水，再通电');return;}
+    S.prep=1;$('pw1').classList.add('on');log('箱底已加 300ml 蒸馏水',true);
+    $('pw2').disabled=false;$('btnSter').disabled=false;warn('');
+    return;
+  }
+  if(n===2){
+    if(S.prep>=2){warn('已通电');return;}
+    if(S.prep<1){warn('⚠️ 必须先加底水再通电！空烧会损坏水盘/加热体');log('通电顺序错误（未加水），已阻断',false);return;}
+    S.prep=2;$('pw2').classList.add('on');setSts('🟢 已通电自检','sa');
+    log('总电源已开，显示屏进入自检',true);
+    $('pw3').disabled=false;warn('');
+    return;
+  }
+  if(n===3){
+    if(S.waterTop){warn('已补蒸馏水');return;}
+    if(S.prep<2){warn('请先通电自检');return;}
+    const base=+$('iBase').value, top=+$('iTop').value;
+    if(!(base>0)){warn('底水量读取异常');return;}
+    if(!(top>0)){warn('请填写补到总水量');return;}
+    if(top>3){warn('⚠️ 总水量超过 3 升！操作规程规定不能超过 3 升，溢出会损坏腔体/电路');log('补水量超 3 升，已阻断',false);return;}
+    if(top<2){warn('补水量偏少（应补足到 2~3 升），湿度不足');return;}
+    S.waterTop=true;S.prep=3;$('pw3').classList.add('on');
+    log('蒸馏水已补足至 '+top+' 升（2~3 升合规）',true);
+    $('pw4').disabled=false;warn('');
+    return;
+  }
+  if(n===4){
+    if(S.gas){warn('气阀已开');return;}
+    if(S.prep<3){warn('请先补蒸馏水');return;}
+    S.gas=true;S.prep=4;$('pw4').classList.add('on');
+    log('N₂ / CO₂ 供气阀已开（均经减压阀）',true);
+    $('btnP').disabled=false;warn('');
+    return;
+  }
+}
+function sterilize(){
+  if(!S.prep||S.prep<2){warn('请先通电自检，再做高温消毒');return;}
+  if(S.sterile){warn('已执行过消毒程序');return;}
+  S.sterile=true;log('高温消毒程序启动（~25h，结束后进入 auto-start 自动校零）',true);
+}
+function setPressure(){
+  if(S.pressureSet){warn('压力已确认');return;}
+  if(!S.gas){warn('请先开 N₂/CO₂ 供气阀');return;}
+  const bar=+$('iBar').value;
+  if(!(bar>0)){warn('请填写减压阀压力');return;}
+  if(bar>1){warn('⚠️ CO₂ 供气压力超过 1 bar！会损坏自动感应控制开关（操作规程红线 5.1）');log('供气压力超 1 bar，已阻断',false);return;}
+  if(bar<0.5){warn('CO₂ 供气压力过低（应 0.5~1 bar），供气不足、浓度不稳');return;}
+  S.pressureSet=true;$('btnP').classList.add('on');$('btnP').textContent='✅ 压力已确认';
+  log('减压阀压力 '+bar+' bar（0.5~1 bar 正常）',true);
+  $('btnSet').disabled=false;warn('');
+}
+function setSetpoint(){
+  if(S.setpoint){warn('参数已设定');return;}
+  if(!S.pressureSet){warn('请先确认供气压力');return;}
+  S.setpoint=true;$('btnSet').classList.add('on');$('btnSet').textContent='✅ 已设定 37℃/5%';
+  log('设定 37℃ / 5% CO₂',true);
+  $('btnStab').disabled=false;warn('');
+}
+function stabilize(){
+  if(S.stable){warn('已稳定');return;}
+  if(!S.setpoint){warn('请先设定培养参数');return;}
+  S.stable=true;$('btnStab').classList.add('on');$('btnStab').textContent='✅ 已稳定';
+  setSts('⏳ 稳定中…','sa');$('dState').textContent='稳定中';
+  log('温/CO₂ 稳定中（实际约需数十分钟）',true);
+  $('btnLoad').disabled=false;warn('');
+}
+function loadSample(){
+  if(S.sample){warn('样品已放入');return;}
+  if(!S.stable){warn('⚠️ 温度/CO₂ 未稳定，放入样品会破坏培养条件（操作规程：稳定后方可放入）');log('未稳定就放样，已阻断',false);return;}
+  S.sample=true;$('btnLoad').classList.add('on');$('btnLoad').textContent='✅ 样品已放入';
+  setSts('🧫 培养中','sok');$('dT').textContent='37.0';$('dC').textContent='5.0';$('dState').textContent='培养中';
+  log('样品已放入，开始培养（37℃ / 5% CO₂）',true);warn('');
+}
+function toggleDoor(){
+  if(S.doorOpen){
+    S.doorOpen=false;$('btnDoor').textContent='🚪 开玻璃门（取放）';
+    log('关玻璃门');warn('');return;
+  }
+  if(!S.prep){warn('请先完成基本准备再开门');return;}
+  S.doorOpen=true;S.doorOpens++;$('btnDoor').textContent='🚪 关门';
+  if(S.doorOpens>1){
+    warn('⚠️ 频繁开大门会使 CO₂ 浓度 / 温度 / 相对湿度大幅波动！应按操作规程 5.3 只开小门取放');
+    log('开玻璃门（已第'+S.doorOpens+'次，频繁开门致环境波动）',false);
+  }else{
+    log('开玻璃门取放培养物（应只开小门）');warn('');
+  }
+}
+function resetAll(){
+  S={prep:0,sterile:false,waterTop:false,gas:false,pressureSet:false,setpoint:false,stable:false,sample:false,doorOpen:false,doorOpens:0};
+  [1,2,3,4].forEach(n=>{$('pw'+n).classList.remove('on');});
+  $('pw2').disabled=true;$('pw3').disabled=true;$('pw4').disabled=true;
+  $('btnSter').disabled=true;$('btnP').disabled=true;$('btnSet').disabled=true;$('btnStab').disabled=true;$('btnLoad').disabled=true;
+  $('pw1').classList.add('on');
+  $('btnSter').textContent='🔥 高温消毒程序（可选 · ~25h）';
+  $('btnP').textContent='⚙️ 确认供气压力';$('btnSet').textContent='🌡️ 设定 37℃ / 5% CO₂';
+  $('btnStab').textContent='⏳ 等待稳定';$('btnLoad').textContent='🧫 放入样品';
+  $('btnDoor').textContent='🚪 开玻璃门（取放）';
+  $('dT').textContent='—';$('dC').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未准备','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

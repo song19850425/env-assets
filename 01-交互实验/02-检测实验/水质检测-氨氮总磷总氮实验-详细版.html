@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水质检测实验 · 氨氮 · 总磷 · 总氮</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system,'PingFang SC','Microsoft YaHei',sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg,#0a1628,#1a2a4a); color:#fff; padding:20px; text-align:center; }
+        .header h1 { font-size:18px; font-weight:700; }
+        .header .sub { font-size:12px; color:rgba(255,255,255,0.6); margin-top:4px; }
+        .container { max-width:680px; margin:0 auto; padding:16px; }
+
+        .tabs { display:flex; gap:6px; margin-bottom:16px; }
+        .tab { flex:1; padding:10px 6px; text-align:center; border-radius:10px; background:#fff; cursor:pointer; font-size:12px; font-weight:600; color:#666; border:1px solid #e0e0e0; transition:all .2s; }
+        .tab .tab-icon { display:block; font-size:20px; margin-bottom:2px; }
+        .tab.active { border-color:#4ade80; background:#f0fdf4; color:#166534; }
+        .tab:hover { transform:translateY(-1px); }
+
+        .panel { display:none; }
+        .panel.active { display:block; }
+
+        .card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.06); margin-bottom:14px; }
+        .card h2 { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
+        .card h2 .std { font-size:11px; color:#999; font-weight:400; margin-left:8px; }
+        .card p { font-size:13px; color:#555; line-height:1.7; margin-bottom:8px; }
+
+        /* 进度条 */
+        .progress-bar { height:4px; background:#e0e0e0; border-radius:2px; margin-bottom:12px; overflow:hidden; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,#4ade80,#22c55e); border-radius:2px; transition:width .5s; }
+
+        /* 步骤点 */
+        .step-indicator { display:flex; gap:4px; margin-bottom:12px; overflow-x:auto; }
+        .step-dot { flex:1; text-align:center; padding:6px 4px; border-radius:6px; font-size:10px; color:#999; background:#f5f5f5; cursor:pointer; min-width:50px; border:1px solid transparent; }
+        .step-dot .num { font-size:13px; font-weight:700; display:block; }
+        .step-dot.active { background:#f0fdf4; border-color:#4ade80; color:#166534; font-weight:600; }
+        .step-dot.done { background:#f0fdf4; border-color:#4ade80; color:#4ade80; }
+
+        .lab-bench {
+            background:linear-gradient(135deg,#f8fafc,#f1f5f9); border-radius:10px; padding:20px; margin:12px 0;
+            border:1px solid #e2e8f0; min-height:180px; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; text-align:center;
+        }
+        .lab-bench .equip-icon { font-size:56px; margin-bottom:8px; transition:all .3s; }
+        .lab-bench .desc { font-size:13px; color:#475569; line-height:1.7; }
+        .lab-bench .status { padding:4px 12px; border-radius:10px; font-size:11px; font-weight:600; margin-top:8px; }
+        .st-wait { background:#f1f5f9; color:#64748b; }
+        .st-run { background:#fef3c7; color:#ca8a04; }
+        .st-ok { background:#f0fdf4; color:#166534; }
+
+        .reagent-list { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:8px 0; }
+        .rl-item { padding:6px 10px; background:#f9fafb; border-radius:6px; border-left:3px solid #4ade80; }
+        .rl-item .n { font-size:12px; font-weight:600; color:#333; }
+        .rl-item .v { font-size:10px; color:#999; }
+
+        .step-btn { padding:8px 24px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; color:#fff; background:linear-gradient(135deg,#4ade80,#22c55e); margin-top:8px; }
+        .step-btn:hover { box-shadow:0 4px 12px rgba(74,222,128,0.3); }
+        .step-btn:disabled { opacity:.4; cursor:default; }
+        .step-btn.done { background:#94a3b8; }
+
+        .safety-box { padding:10px 14px; background:#fffbeb; border-radius:8px; font-size:12px; color:#92400e; border:1px solid #fde68a; margin:8px 0; }
+        .info-box { padding:10px 14px; background:#f0fdf4; border-radius:8px; font-size:12px; color:#166534; border:1px solid #bbf7d0; margin:8px 0; }
+
+        .spec-meter {
+            background:linear-gradient(to right,#1e293b,#334155,#1e293b); border-radius:8px;
+            padding:12px 20px; display:flex; align-items:center; justify-content:center; gap:16px; margin:12px 0;
+        }
+        .spec-meter .display { background:#0f172a; padding:8px 20px; border-radius:4px; color:#4ade80; font-size:28px; font-weight:700; font-family:monospace; }
+        .spec-meter .label { color:#94a3b8; font-size:12px; }
+        .spec-meter .unit { color:#94a3b8; font-size:12px; }
+
+        .result-box {
+            padding:20px; border-radius:10px; text-align:center; margin-top:12px;
+            background:linear-gradient(135deg,#f0fdf4,#dcfce7); display:none;
+        }
+        .result-box .big { font-size:40px; font-weight:800; color:#166534; }
+        .result-box .lbl { font-size:13px; color:#666; margin-top:4px; }
+        .result-box .detail { font-size:12px; color:#999; margin-top:10px; line-height:1.6; text-align:left; }
+
+        .qc-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0; }
+        .qc-item { padding:8px; background:#f9fafb; border-radius:6px; }
+        .qc-item .l { font-size:10px; color:#999; }
+        .qc-item .v { font-size:14px; font-weight:700; color:#333; }
+        .qc-item .v.pass { color:#166534; }
+        .qc-item .v.fail { color:#dc2626; }
+
+        .color-row { display:flex; gap:16px; justify-content:center; margin:12px 0; align-items:end; }
+        .color-swatch { text-align:center; }
+        .color-swatch .circle { width:32px; height:32px; border-radius:50%; margin:0 auto 4px; border:1px solid #e0e0e0; transition:all .5s; }
+        .color-swatch .label { font-size:10px; color:#999; }
+
+        @media (max-width:600px) {
+            .reagent-list { grid-template-columns:1fr; }
+            .qc-grid { grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 水质检测实验 · 氨氮 · 总磷 · 总氮</h1>
+        <div class="sub">逐步骤操作 · 与COD实验同等细致</div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('nh3')"><span class="tab-icon">🧬</span>氨氮 NH₃-N</div>
+            <div class="tab" onclick="switchTab('tp')"><span class="tab-icon">⚗️</span>总磷 TP</div>
+            <div class="tab" onclick="switchTab('tn')"><span class="tab-icon">🔬</span>总氮 TN</div>
+        </div>
+
+        <!-- ============================================================
+             氨氮 NH₃-N
+             ============================================================ -->
+        <div class="panel active" id="panel-nh3">
+            <div class="card">
+                <h2>🧬 氨氮 NH₃-N <span class="std">HJ 535-2009 · 纳氏试剂分光光度法</span></h2>
+                <p>样品编号：<strong>WQ-2026-0615-008</strong> · 检测依据：HJ 535-2009</p>
+                <p style="font-size:12px;color:#999;">原理：氨与纳氏试剂（K₂HgI₄）在碱性条件下反应生成黄棕色络合物，在420nm处测定吸光度，通过标准曲线定量。</p>
+
+                <div class="progress-bar"><div class="progress-fill" id="nh3Progress" style="width:0%"></div></div>
+
+                <div class="step-indicator" id="nh3Dots">
+                    <div class="step-dot active" data-step="0"><span class="num">①</span>取样</div>
+                    <div class="step-dot" data-step="1"><span class="num">②</span>加试剂</div>
+                    <div class="step-dot" data-step="2"><span class="num">③</span>显色</div>
+                    <div class="step-dot" data-step="3"><span class="num">④</span>比色</div>
+                    <div class="step-dot" data-step="4"><span class="num">⑤</span>算结果</div>
+                </div>
+
+                <div class="lab-bench" id="nh3Bench">
+                    <div class="equip-icon" id="nh3Icon">🧪</div>
+                    <div class="desc" id="nh3Desc">
+                        <strong>取50.0 mL水样</strong><br>
+                        于50 mL比色管中<br>
+                        （水样采集后加H₂SO₄调pH≤2, 4℃保存，48h内分析）
+                    </div>
+                    <div class="status st-wait" id="nh3Status">⏳ 等待操作</div>
+                </div>
+
+                <!-- 显色过程颜色变化 -->
+                <div class="color-row" id="nh3Colors" style="display:none;">
+                    <div class="color-swatch"><div class="circle" id="nh3Blank" style="background:#fefce8;"></div><div class="label">空白</div></div>
+                    <div class="color-swatch"><div class="circle" id="nh3Std" style="background:#fef9c3;"></div><div class="label">标准</div></div>
+                    <div class="color-swatch"><div class="circle" id="nh3Sample" style="background:#fefce8;"></div><div class="label">样品</div></div>
+                    <div class="color-swatch"><div class="circle" style="background:#fde047;" id="nh3Final"></div><div class="label">显色后</div></div>
+                </div>
+
+                <!-- 分光光度计 -->
+                <div id="nh3Spec" style="display:none;">
+                    <div class="spec-meter">
+                        <span class="label">λ = 420 nm</span>
+                        <span class="display" id="nh3Abs">0.158</span>
+                        <span class="unit">Abs</span>
+                    </div>
+                    <div class="info-box">
+                        📊 标准曲线：y = 0.214x + 0.008, R² = 0.9997<br>
+                        取样品吸光度A=0.158代入，计算得 NH₃-N = 0.86 mg/L
+                    </div>
+                </div>
+
+                <button class="step-btn" id="nh3Btn" onclick="nh3Next()">▶ 下一步</button>
+
+                <div class="result-box" id="nh3Result">
+                    <div class="big">0.86</div>
+                    <div class="lbl">NH₃-N (mg/L)</div>
+                    <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;">
+                        <span style="padding:2px 10px;border-radius:8px;background:#f0fdf4;color:#166534;font-size:12px;">Ⅲ类水（≤1.0）✅</span>
+                        <span style="padding:2px 10px;border-radius:8px;background:#f0fdf4;color:#166534;font-size:12px;">加标回收 98.5% ✅</span>
+                    </div>
+                    <div class="detail">
+                        <strong>质控数据</strong><br>
+                        · 空白样A=0.003（≤0.030 ✅）<br>
+                        · 平行样 RPD=4.5%（≤20% ✅）<br>
+                        · 加标回收率=98.5%（90%-110% ✅）<br>
+                        · 标准曲线线性 R²=0.9997（≥0.999 ✅）
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             总磷 TP
+             ============================================================ -->
+        <div class="panel" id="panel-tp">
+            <div class="card">
+                <h2>⚗️ 总磷 TP <span class="std">GB 11893-89 · 钼酸铵分光光度法</span></h2>
+                <p>样品编号：<strong>WQ-2026-0615-008</strong> · 检测依据：GB 11893-89</p>
+                <p style="font-size:12px;color:#999;">原理：水样经过硫酸钾消解后，正磷酸盐在酸性条件下与钼酸铵反应生成磷钼杂多酸，被抗坏血酸还原为磷钼蓝，在700nm处测定吸光度。</p>
+
+                <div class="progress-bar"><div class="progress-fill" id="tpProgress" style="width:0%"></div></div>
+
+                <div class="step-indicator" id="tpDots">
+                    <div class="step-dot active" data-step="0"><span class="num">①</span>取样</div>
+                    <div class="step-dot" data-step="1"><span class="num">②</span>消解</div>
+                    <div class="step-dot" data-step="2"><span class="num">③</span>调pH</div>
+                    <div class="step-dot" data-step="3"><span class="num">④</span>显色</div>
+                    <div class="step-dot" data-step="4"><span class="num">⑤</span>比色</div>
+                    <div class="step-dot" data-step="5"><span class="num">⑥</span>算结果</div>
+                </div>
+
+                <div class="lab-bench" id="tpBench">
+                    <div class="equip-icon" id="tpIcon">⚗️</div>
+                    <div class="desc" id="tpDesc">
+                        <strong>取25.0 mL水样</strong><br>
+                        于50 mL比色管中<br>
+                        （取样前需将水样充分摇匀）
+                    </div>
+                    <div class="status st-wait" id="tpStatus">⏳ 等待操作</div>
+                </div>
+
+                <!-- 消解过程 -->
+                <div id="tpDigestDisplay" style="display:none;">
+                    <div style="text-align:center;padding:12px;background:#fffbeb;border-radius:8px;margin:8px 0;">
+                        <div style="font-size:28px;" id="tpDigestIcon">🔥</div>
+                        <div style="font-size:13px;color:#92400e;margin-top:4px;" id="tpDigestText">高压锅120℃消解30分钟</div>
+                        <div style="font-size:24px;font-weight:700;color:#ca8a04;" id="tpTimer">30:00</div>
+                    </div>
+                </div>
+
+                <!-- 显色 -->
+                <div id="tpColorDisplay" style="display:none;">
+                    <div style="background:linear-gradient(135deg,#f0fdf4,#fff);border-radius:8px;padding:16px;margin:8px 0;text-align:center;">
+                        <div style="font-size:13px;color:#333;margin-bottom:8px;">显色后颜色对比</div>
+                        <div class="color-row">
+                            <div class="color-swatch"><div class="circle" style="background:#f0fdf4;border-color:#bbf7d0;"></div><div class="label">空白</div></div>
+                            <div class="color-swatch"><div class="circle" id="tpStdColor" style="background:#60a5fa;"></div><div class="label">标准</div></div>
+                            <div class="color-swatch"><div class="circle" id="tpSampleColor" style="background:#dbeafe;"></div><div class="label">样品→</div></div>
+                            <div class="color-swatch"><div class="circle" id="tpFinalColor" style="background:#3b82f6;"></div><div class="label">显色后</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分光光度计 -->
+                <div id="tpSpec" style="display:none;">
+                    <div class="spec-meter">
+                        <span class="label">λ = 700 nm</span>
+                        <span class="display" id="tpAbs">0.124</span>
+                        <span class="unit">Abs</span>
+                    </div>
+                    <div class="info-box">
+                        📊 标准曲线：y = 0.432x + 0.003, R² = 0.9995<br>
+                        取样品吸光度A=0.124代入，计算得 总磷 = 0.18 mg/L
+                    </div>
+                </div>
+
+                <button class="step-btn" id="tpBtn" onclick="tpNext()">▶ 下一步</button>
+
+                <div class="result-box" id="tpResult">
+                    <div class="big">0.18</div>
+                    <div class="lbl">总磷 TP (mg/L)</div>
+                    <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;">
+                        <span style="padding:2px 10px;border-radius:8px;background:#f0fdf4;color:#166534;font-size:12px;">Ⅲ类水（≤0.2）✅</span>
+                        <span style="padding:2px 10px;border-radius:8px;background:#f0fdf4;color:#166534;font-size:12px;">加标回收 97.2% ✅</span>
+                    </div>
+                    <div class="detail">
+                        <strong>质控数据</strong><br>
+                        · 空白样A=0.002（≤0.010 ✅）<br>
+                        · 平行样 RPD=3.8%（≤15% ✅）<br>
+                        · 加标回收率=97.2%（90%-110% ✅）<br>
+                        · 标准曲线线性 R²=0.9995（≥0.999 ✅）
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             总氮 TN
+             ============================================================ -->
+        <div class="panel" id="panel-tn">
+            <div class="card">
+                <h2>🔬 总氮 TN <span class="std">HJ 636-2012 · 碱性过硫酸钾消解紫外分光光度法</span></h2>
+                <p>样品编号：<strong>WQ-2026-0615-008</strong> · 检测依据：HJ 636-2012</p>
+                <p style="font-size:12px;color:#999;">原理：水样在碱性条件下过硫酸钾消解，使含氮化合物转化为硝酸盐。在220nm和275nm处测定吸光度，A校正=A₂₂₀-2A₂₇₅进行定量。</p>
+
+                <div class="progress-bar"><div class="progress-fill" id="tnProgress" style="width:0%"></div></div>
+
+                <div class="step-indicator" id="tnDots">
+                    <div class="step-dot active" data-step="0"><span class="num">①</span>取样</div>
+                    <div class="step-dot" data-step="1"><span class="num">②</span>加试剂</div>
+                    <div class="step-dot" data-step="2"><span class="num">③</span>消解</div>
+                    <div class="step-dot" data-step="3"><span class="num">④</span>中和</div>
+                    <div class="step-dot" data-step="4"><span class="num">⑤</span>比色</div>
+                    <div class="step-dot" data-step="5"><span class="num">⑥</span>算结果</div>
+                </div>
+
+                <div class="lab-bench" id="tnBench">
+                    <div class="equip-icon" id="tnIcon">🔬</div>
+                    <div class="desc" id="tnDesc">
+                        <strong>取10.00 mL水样</strong><br>
+                        于25 mL比色管中<br>
+                        （水样采集后加H₂SO₄调pH≤2, 4℃保存）
+                    </div>
+                    <div class="status st-wait" id="tnStatus">⏳ 等待操作</div>
+                </div>
+
+                <!-- 消解过程 -->
+                <div id="tnDigestDisplay" style="display:none;">
+                    <div style="text-align:center;padding:12px;background:#fffbeb;border-radius:8px;margin:8px 0;">
+                        <div style="font-size:28px;" id="tnDigestIcon">🔥</div>
+                        <div style="font-size:13px;color:#92400e;margin-top:4px;" id="tnDigestText">高压锅120℃消解30分钟</div>
+                        <div style="font-size:24px;font-weight:700;color:#ca8a04;" id="tnTimer">30:00</div>
+                    </div>
+                </div>
+
+                <!-- 分光光度计 双波长 -->
+                <div id="tnSpec" style="display:none;">
+                    <div class="spec-meter" style="flex-direction:column;padding:16px;gap:8px;">
+                        <div style="display:flex;gap:24px;">
+                            <div>
+                                <div class="label">λ₂₂₀</div>
+                                <div class="display" id="tnA220" style="font-size:22px;">0.412</div>
+                            </div>
+                            <div>
+                                <div class="label">λ₂₇₅</div>
+                                <div class="display" id="tnA275" style="font-size:22px;">0.008</div>
+                            </div>
+                            <div>
+                                <div class="label">A校正</div>
+                                <div class="display" id="tnAcorr" style="font-size:22px;color:#f59e0b;">0.396</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        📊 A校正 = A₂₂₀ - 2×A₂₇₅ = 0.412 - 2×0.008 = <strong>0.396</strong><br>
+                        标准曲线：y = 0.198x - 0.006, R² = 0.9998<br>
+                        代入计算得 总氮 = 1.52 mg/L
+                    </div>
+                </div>
+
+                <button class="step-btn" id="tnBtn" onclick="tnNext()">▶ 下一步</button>
+
+                <div class="result-box" id="tnResult">
+                    <div class="big">1.52</div>
+                    <div class="lbl">总氮 TN (mg/L)</div>
+                    <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;">
+                        <span style="padding:2px 10px;border-radius:8px;background:#fef3c7;color:#ca8a04;font-size:12px;">Ⅳ类水（≤1.5）⚠️</span>
+                        <span style="padding:2px 10px;border-radius:8px;background:#f0fdf4;color:#166534;font-size:12px;">加标回收 96.1% ✅</span>
+                    </div>
+                    <div class="detail">
+                        <strong>质控数据</strong><br>
+                        · 空白样A校正=0.008（≤0.030 ✅）<br>
+                        · 平行样 RPD=5.2%（≤20% ✅）<br>
+                        · 加标回收率=96.1%（90%-110% ✅）<br>
+                        · 标准曲线线性 R²=0.9998（≥0.999 ✅）
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeTab = 'nh3';
+
+        function switchTab(name) {
+            activeTab = name;
+            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+            document.querySelector(`.tab[onclick*="'${name}'"]`).classList.add('active');
+            document.getElementById('panel-'+name).classList.add('active');
+        }
+
+        // ================================================================
+        //  氨氮实验
+        // ================================================================
+        const nh3Steps = [
+            { icon:'🧪', desc:'取50.0 mL水样于50 mL比色管中', status:'⏳ 等待操作', st:'st-wait', wait:false },
+            { icon:'🧬', desc:'加入1.0 mL酒石酸钾钠溶液（掩蔽Ca²⁺/Mg²⁺干扰）\n再加入1.5 mL纳氏试剂，盖塞摇匀', status:'⏳ 加入试剂中', st:'st-run', wait:false },
+            { icon:'🟡', desc:'静置显色10分钟\n溶液逐渐变为黄棕色', status:'🟡 显色中…', st:'st-run', wait:true, waitTime:1500 },
+            { icon:'📊', desc:'在420nm处测定吸光度\n使用1cm比色皿，以空白样调零', status:'📊 比色中', st:'st-run', wait:false },
+            { icon:'✅', desc:'实验完成', status:'✅ 完成', st:'st-ok', wait:false }
+        ];
+        let nh3Idx = 0;
+        let nh3Running = false;
+
+        function nh3Next() {
+            if (nh3Running) return;
+            nh3Idx++;
+            if (nh3Idx >= nh3Steps.length) {
+                document.getElementById('nh3Btn').style.display = 'none';
+                document.getElementById('nh3Result').style.display = 'block';
+                document.getElementById('nh3Colors').style.display = 'flex';
+                document.getElementById('nh3Final').style.background = '#fde047';
+                return;
+            }
+            const s = nh3Steps[nh3Idx];
+            updateStep('nh3', nh3Idx, s);
+            if (s.wait) {
+                nh3Running = true;
+                document.getElementById('nh3Btn').disabled = true;
+                setTimeout(() => {
+                    document.getElementById('nh3Colors').style.display = 'flex';
+                    document.getElementById('nh3Spec').style.display = 'block';
+                    nh3Running = false;
+                    document.getElementById('nh3Btn').disabled = false;
+                    document.getElementById('nh3Icon').textContent = '📊';
+                    document.getElementById('nh3Desc').innerHTML = '显色完成！<br>溶液呈黄棕色，可以上机测定了';
+                    document.getElementById('nh3Status').textContent = '✅ 显色完成';
+                    document.getElementById('nh3Status').className = 'status st-ok';
+                }, s.waitTime || 1000);
+            }
+            if (nh3Idx === 3) {
+                document.getElementById('nh3Colors').style.display = 'flex';
+                document.getElementById('nh3Spec').style.display = 'block';
+                document.getElementById('nh3Icon').textContent = '📊';
+            }
+        }
+
+        // ================================================================
+        //  总磷实验
+        // ================================================================
+        const tpSteps = [
+            { icon:'⚗️', desc:'取25.0 mL水样于50 mL比色管中', status:'⏳ 等待操作', st:'st-wait', wait:false },
+            { icon:'🔥', desc:'加入4.0 mL过硫酸钾溶液\n放入高压锅120℃消解30分钟', status:'🔥 消解中…', st:'st-run', wait:true, waitTime:2000 },
+            { icon:'🧪', desc:'消解完毕，冷却\n加入1.0 mL氢氧化钠调pH至中性（用pH试纸检验）', status:'⏳ 调pH中', st:'st-run', wait:false },
+            { icon:'🔵', desc:'加入1.0 mL钼酸铵溶液 + 1.0 mL抗坏血酸溶液\n沸水浴加热显色15分钟 → 溶液变蓝色', status:'🔵 显色中…', st:'st-run', wait:true, waitTime:1500 },
+            { icon:'📊', desc:'在700nm处测定吸光度\n使用2cm比色皿，以空白样调零', status:'📊 比色中', st:'st-run', wait:false },
+            { icon:'✅', desc:'实验完成', status:'✅ 完成', st:'st-ok', wait:false }
+        ];
+        let tpIdx = 0;
+        let tpRunning = false;
+
+        function tpNext() {
+            if (tpRunning) return;
+            tpIdx++;
+            if (tpIdx >= tpSteps.length) {
+                document.getElementById('tpBtn').style.display = 'none';
+                document.getElementById('tpResult').style.display = 'block';
+                document.getElementById('tpColorDisplay').style.display = 'block';
+                document.getElementById('tpSpec').style.display = 'block';
+                document.getElementById('tpFinalColor').style.background = '#3b82f6';
+                return;
+            }
+            const s = tpSteps[tpIdx];
+            updateStep('tp', tpIdx, s);
+            
+            if (tpIdx === 1) {
+                document.getElementById('tpDigestDisplay').style.display = 'block';
+                tpRunning = true;
+                document.getElementById('tpBtn').disabled = true;
+                let sec = 30;
+                const timer = setInterval(() => {
+                    sec--;
+                    document.getElementById('tpTimer').textContent = `00:${String(sec).padStart(2,'0')}`;
+                    if (sec <= 0) {
+                        clearInterval(timer);
+                        document.getElementById('tpDigestIcon').textContent = '✅';
+                        document.getElementById('tpDigestText').textContent = '消解完成！';
+                        document.getElementById('tpTimer').textContent = '✅';
+                        tpRunning = false;
+                        document.getElementById('tpBtn').disabled = false;
+                        document.getElementById('tpIcon').textContent = '🧪';
+                        document.getElementById('tpDesc').innerHTML = '消解完成，冷却至室温<br>加入NaOH调pH至中性';
+                        document.getElementById('tpStatus').textContent = '✅ 消解完成';
+                        document.getElementById('tpStatus').className = 'status st-ok';
+                    }
+                }, 100);
+            }
+            if (tpIdx === 3) {
+                tpRunning = true;
+                document.getElementById('tpBtn').disabled = true;
+                setTimeout(() => {
+                    document.getElementById('tpColorDisplay').style.display = 'block';
+                    document.getElementById('tpSampleColor').style.background = '#3b82f6';
+                    document.getElementById('tpFinalColor').style.background = '#2563eb';
+                    tpRunning = false;
+                    document.getElementById('tpBtn').disabled = false;
+                    document.getElementById('tpIcon').textContent = '🔵';
+                    document.getElementById('tpDesc').innerHTML = '显色完成！溶液呈蓝色<br>可以上机测定';
+                    document.getElementById('tpStatus').textContent = '✅ 显色完成';
+                    document.getElementById('tpStatus').className = 'status st-ok';
+                }, 1000);
+            }
+            if (tpIdx === 4) {
+                document.getElementById('tpColorDisplay').style.display = 'block';
+                document.getElementById('tpSpec').style.display = 'block';
+                document.getElementById('tpIcon').textContent = '📊';
+            }
+        }
+
+        // ================================================================
+        //  总氮实验
+        // ================================================================
+        const tnSteps = [
+            { icon:'🔬', desc:'取10.00 mL水样于25 mL比色管中', status:'⏳ 等待操作', st:'st-wait', wait:false },
+            { icon:'🧪', desc:'加入5.0 mL碱性过硫酸钾溶液\n盖塞摇匀，用纱布扎紧管塞', status:'⏳ 加试剂中', st:'st-run', wait:false },
+            { icon:'🔥', desc:'放入高压锅120℃消解30分钟\n（消解后冷却至室温）', status:'🔥 消解中…', st:'st-run', wait:true, waitTime:2000 },
+            { icon:'🧪', desc:'加入1.0 mL (1+9)盐酸溶液\n用无氨水定容至25mL标线', status:'⏳ 中和中', st:'st-run', wait:false },
+            { icon:'📊', desc:'在220nm和275nm处测定吸光度\n使用1cm石英比色皿', status:'📊 双波长测定', st:'st-run', wait:false },
+            { icon:'✅', desc:'实验完成', status:'✅ 完成', st:'st-ok', wait:false }
+        ];
+        let tnIdx = 0;
+        let tnRunning = false;
+
+        function tnNext() {
+            if (tnRunning) return;
+            tnIdx++;
+            if (tnIdx >= tnSteps.length) {
+                document.getElementById('tnBtn').style.display = 'none';
+                document.getElementById('tnResult').style.display = 'block';
+                document.getElementById('tnSpec').style.display = 'block';
+                return;
+            }
+            const s = tnSteps[tnIdx];
+            updateStep('tn', tnIdx, s);
+
+            if (tnIdx === 2) {
+                document.getElementById('tnDigestDisplay').style.display = 'block';
+                tnRunning = true;
+                document.getElementById('tnBtn').disabled = true;
+                let sec = 30;
+                const timer = setInterval(() => {
+                    sec--;
+                    document.getElementById('tnTimer').textContent = `00:${String(sec).padStart(2,'0')}`;
+                    if (sec <= 0) {
+                        clearInterval(timer);
+                        document.getElementById('tnDigestIcon').textContent = '✅';
+                        document.getElementById('tnDigestText').textContent = '消解完成！';
+                        document.getElementById('tnTimer').textContent = '✅';
+                        tnRunning = false;
+                        document.getElementById('tnBtn').disabled = false;
+                        document.getElementById('tnIcon').textContent = '🧪';
+                        document.getElementById('tnDesc').innerHTML = '消解完成，冷却至室温<br>准备加入盐酸中和';
+                        document.getElementById('tnStatus').textContent = '✅ 消解完成';
+                        document.getElementById('tnStatus').className = 'status st-ok';
+                    }
+                }, 100);
+            }
+            if (tnIdx === 4) {
+                document.getElementById('tnSpec').style.display = 'block';
+                document.getElementById('tnIcon').textContent = '📊';
+            }
+        }
+
+        // ===== 通用更新 =====
+        function updateStep(prefix, idx, data) {
+            const dots = document.querySelectorAll(`#${prefix}Dots .step-dot`);
+            dots.forEach((d, i) => {
+                d.classList.toggle('active', i === idx);
+                d.classList.toggle('done', i < idx);
+            });
+            document.getElementById(`${prefix}Icon`).textContent = data.icon;
+            document.getElementById(`${prefix}Desc`).innerHTML = data.desc.replace(/\n/g, '<br>');
+            document.getElementById(`${prefix}Status`).textContent = data.status;
+            document.getElementById(`${prefix}Status`).className = `status ${data.st}`;
+            document.getElementById(`${prefix}Progress`).style.width = `${(idx / (dots.length-1)) * 100}%`;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 11893-1989</td><td>水质 总磷的测定 钼酸铵分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 535-2009</td><td>水质 氨氮的测定 纳氏试剂分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 636-2012</td><td>水质 总氮的测定 碱性过硫酸钾消解紫外分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>3</b> 项标准：<b>3</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

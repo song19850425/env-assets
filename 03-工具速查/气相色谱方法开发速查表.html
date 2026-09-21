@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>气相色谱方法开发速查表</title>
+<style>
+@page{size:A4;margin:12mm}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:9pt;color:#1a1a2e;line-height:1.6;padding:20px;}
+h1{font-size:18pt;font-weight:900;letter-spacing:-.02em;border-bottom:2px solid #4c1d95;padding-bottom:8px;margin-bottom:4px;color:#4c1d95;}
+.sub{font-size:8pt;color:#6b7280;margin-bottom:20px;}
+h2{font-size:10pt;font-weight:700;margin:16px 0 6px;padding:4px 8px;background:#f5f3ff;color:#4c1d95;border-radius:4px;}
+table{width:100%;border-collapse:collapse;margin:4px 0 10px;font-size:8pt;}
+th{background:#4c1d95;color:#fff;padding:4px 8px;text-align:left;font-weight:600;font-size:7.5pt;}
+td{padding:4px 8px;border-bottom:0.5px solid #e5e5e0;}
+tr:nth-child(even) td{background:#fafaf8;}
+.hl{background:#f5f3ff;padding:6px 10px;border-radius:4px;font-size:7.5pt;color:#4c1d95;margin:6px 0;line-height:1.5;border-left:3px solid #7c3aed;}
+</style></head>
+<body>
+
+<h1>气相色谱方法开发 · 速查表</h1>
+<p class="sub">适用于HJ 38-2017非甲烷总烃测定 · GB/T 13610-2020 天然气组成分析</p>
+
+<h2>一、色谱条件参考</h2>
+<table>
+<tr><th>参数</th><th>推荐范围</th><th>说明</th></tr>
+<tr><td>色谱柱</td><td>毛细管柱 30m×0.32mm×0.25μm</td><td>非甲烷总烃：空柱+GDX-502填充柱</td></tr>
+<tr><td>载气</td><td>N₂ / He / H₂（纯度≥99.999%）</td><td>流速 1~3 mL/min</td></tr>
+<tr><td>进样口温度</td><td>150~250°C</td><td>高于最高沸点组分20°C</td></tr>
+<tr><td>柱温</td><td>50~120°C（等温或程序升温）</td><td>NMHC常用80°C等温</td></tr>
+<tr><td>FID温度</td><td>250~300°C</td><td>确保所有组分完全燃烧</td></tr>
+<tr><td>进样量</td><td>1~2 μL</td><td>分流比 10:1~50:1</td></tr>
+<tr><td>运行时间</td><td>10~30 min</td><td>以最后一个组分出完为准</td></tr>
+</table>
+
+<h2>二、方法开发六步流程</h2>
+<table>
+<tr><th>步骤</th><th>内容</th><th>关键点</th></tr>
+<tr><td>① 目标确定</td><td>明确待测组分、浓度范围、基质类型</td><td>极性/沸点/热稳定性</td></tr>
+<tr><td>② 色谱柱选型</td><td>非极性/中等极性/极性</td><td>"相似相溶"原则</td></tr>
+<tr><td>③ 温度条件优化</td><td>初温→升温速率→终温</td><td>宽沸程用程序升温</td></tr>
+<tr><td>④ 流速优化</td><td>范第姆特曲线找最佳流速</td><td>兼顾分离度与分析时间</td></tr>
+<tr><td>⑤ 标准曲线建立</td><td>5~7个浓度点，R²≥0.999</td><td>浓度范围覆盖样品预估值</td></tr>
+<tr><td>⑥ 方法验证</td><td>精密度/准确度/检出限/定量限</td><td>6次平行进样RSD≤5%</td></tr>
+</table>
+
+<h2>三、常见问题与排查</h2>
+<table>
+<tr><th>现象</th><th>可能原因</th><th>解决方法</th></tr>
+<tr><td>峰拖尾</td><td>柱头污染/活性位点/柱温过低</td><td>切割柱头/升温/更换衬管</td></tr>
+<tr><td>峰分叉</td><td>进样量过大/衬管过载</td><td>减小进样量/增大分流比</td></tr>
+<tr><td>基线漂移</td><td>柱温升温过快/检测器未稳定</td><td>延长平衡时间/程序升温后老化</td></tr>
+<tr><td>保留时间偏移</td><td>载气流速波动/柱温不稳</td><td>检查气路/控温精度</td></tr>
+<tr><td>响应值下降</td><td>FID喷嘴积碳/色谱柱失效</td><td>清洗检测器/老化或更换色谱柱</td></tr>
+<tr><td>THC&lt;CH₄</td><td>色谱柱异常/检测器故障</td><td>检查双通道一致性/重新校准</td></tr>
+</table>
+
+<h2>四、非甲烷总烃（NMHC）专用参数</h2>
+<table>
+<tr><th>参数</th><th>总烃通道</th><th>甲烷通道</th></tr>
+<tr><td>色谱柱</td><td>空柱/脱活石英管</td><td>GDX-502填充柱</td></tr>
+<tr><td>柱温</td><td>80°C</td><td>80°C</td></tr>
+<tr><td>检测器</td><td>FID</td><td>FID</td></tr>
+<tr><td>载气流速</td><td>30 mL/min</td><td>30 mL/min</td></tr>
+<tr><td>进样量</td><td>1 mL（气体进样阀）</td><td>1 mL（气体进样阀）</td></tr>
+</table>
+
+<div class="hl">
+<strong>NMHC = THC − CH₄</strong><br>
+数据有效性规则：THC ≥ CH₄，差值≥0.02 mg/m³（以碳计）。<br>
+标曲要求：甲烷标准气 5 个浓度点（0.5~50 μmol/mol），R²≥0.999。
+</div>
+
+<h2>五、质量保证</h2>
+<table>
+<tr><th>项目</th><th>要求</th></tr>
+<tr><td>保留时间 RSD（n=6）</td><td>≤1%</td></tr>
+<tr><td>峰面积 RSD（n=6）</td><td>≤5%</td></tr>
+<tr><td>标准曲线线性</td><td>R² ≥ 0.999</td></tr>
+<tr><td>方法检出限</td><td>≤0.02 mg/m³</td></tr>
+<tr><td>空白试验</td><td>低于检出限</td></tr>
+<tr><td>平行样偏差</td><td>≤10%</td></tr>
+</table>
+
+<p style="text-align:center;margin-top:24px;font-size:7pt;color:#9ca3af;">
+环境实验 · 气相色谱方法开发速查表 v2026 | HJ 38-2017 · GB/T 13610-2020<br>
+免费领取 · 关注公众号回复「色谱」
+</p>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB/T 13610-2020</td><td>天然气的组成分析 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 38-2017</td><td>固定污染源废气 总烃、甲烷和非甲烷总烃的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body></html>

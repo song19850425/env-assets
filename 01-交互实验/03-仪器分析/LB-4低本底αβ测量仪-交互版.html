@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>低本底αβ测量仪 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#22d3ee;--accent-glow:#67e8f9;--accent-bg:rgba(34,211,238,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#0a1f24 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(34,211,238,.05) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(34,211,238,.12),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(34,211,238,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:34px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#0a1f24);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#22d3ee,#67e8f9);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,211,238,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}@media(max-width:480px){.pwr{grid-template-columns:1fr 1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));transition:width .3s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:140px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">二路低本底α、β测量仪</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">LB-4</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">总α / 总β 放射性测量 · 铅室屏蔽 · 水样浓缩样</div>
+  <div class="hst">
+    <div><span class="n">2路</span><span class="l">同时测量</span></div>
+    <div><span class="n">铅室</span><span class="l">本底屏蔽</span></div>
+    <div><span class="n">≥30min</span><span class="l">开机预热</span></div>
+    <div><span class="n">400min</span><span class="l">推荐测量时长</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">低本底α、β测量仪用于测定水样中<b>总α、总β放射性活度</b>——这是饮用水、地表水放射性监测的标配项目。样品经浓缩、灼烧制成样品盘后放入铅室，核素衰变发射的α/β粒子被闪烁体俘获、光电倍增管计数。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔬</div><div class="in">闪烁体探测</div><div class="id">α用ZnS(Ag)闪烁体、β用塑料闪烁体。粒子入射→发光→光电倍增管转换为电脉冲计数。</div><span class="it">双闪烁体</span></div>
+    <div class="ic"><div class="ii">🛡️</div><div class="in">铅室屏蔽</div><div class="id">厚铅室屏蔽环境宇宙射线与本底辐射，把"本底计数率"压到极低，才能测准微弱样品信号。</div><span class="it">低本底关键</span></div>
+    <div class="ic"><div class="ii">🔀</div><div class="in">二路并行</div><div class="id">两路样品盘可同时测量，效率翻倍。每路独立计数，互不影响。</div><span class="it">双样品位</span></div>
+    <div class="ic"><div class="ii">📊</div><div class="in">活度定量</div><div class="id">先测本底、再测效率源、最后测样品，用效率刻度将计数率换算为 Bq/kg 或 Bq/L。</div><span class="it">本底+效率+样品</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>顺序错了、漏了步骤，系统会直接提醒你</b>，这正是真实实验里最容易翻车的地方。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ LB-4 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 未开机</span>
+      <span style="font-size:10px;color:#475569">二路低本底α、β测量仪</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 开机顺序（低压→高压→显示器→计算机）</div>
+    <div class="pwr">
+      <div class="pb" id="pw1" onclick="pwr(1)">低压电源<span class="po">step 1</span></div>
+      <div class="pb" id="pw2" onclick="pwr(2)">高压电源<span class="po">step 2</span></div>
+      <div class="pb" id="pw3" onclick="pwr(3)">显示器<span class="po">step 3</span></div>
+      <div class="pb" id="pw4" onclick="pwr(4)">计算机<span class="po">step 4</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 预热（开机后仪器稳定 ≥30min 方可测量）</div>
+    <div class="bar"><i id="warmBar"></i></div>
+    <div class="acts">
+      <button class="btn b2" id="btnWarm" onclick="warm()" disabled>🔥 开始预热（30min）</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 放入样品盘（浓缩水样制得的样品盘）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnSample" onclick="putSample()" disabled>🥏 放入样品盘</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 设置仪器参数（<b style="color:var(--rose)">任何测量前必须先设，否则结果无效</b>）</div>
+    <div class="cols">
+      <div class="fld"><label>测量次数</label><input type="number" id="iTimes" value="4" min="1" max="10"></div>
+      <div class="fld"><label>每次测量时长 (min)</label><input type="number" id="iMin" value="100" min="10" max="300"></div>
+      <div class="fld"><label>浓缩水样总升数 (L)</label><input type="number" id="iVol" value="50" step="0.1"></div>
+      <div class="fld"><label>总残渣量 (g)</label><input type="number" id="iRes" value="0.1" step="0.01"></div>
+    </div>
+    <div class="acts">
+      <button class="btn b2" id="btnParam" onclick="setParam()" disabled>⚙️ 确认仪器参数</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑤ 开始测量</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">总α 活度</div><div class="dd" id="dA">—</div></div>
+      <div class="dv"><div class="dl">总β 活度</div><div class="dd" id="dB">—</div></div>
+      <div class="dv"><div class="dl">测量状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnMeasure" onclick="measure()" disabled>▶ 开始测量</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 关机顺序（计算机→显示器→高压→低压，反向！）</div>
+    <div class="pwr">
+      <div class="pb" id="off1" onclick="off(1)">关计算机<span class="po">step 1</span></div>
+      <div class="pb" id="off2" onclick="off(2)">关显示器<span class="po">step 2</span></div>
+      <div class="pb" id="off3" onclick="off(3)">关高压<span class="po">step 3</span></div>
+      <div class="pb" id="off4" onclick="off(4)">关低压<span class="po">step 4</span></div>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照某机构真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔥</div><div class="in">预热 ≥30min</div><div class="id">开机后仪器工作状态才能稳定，未预热完毕直接测量 → 数据漂移、结果不可信。</div><span class="it">每次必做</span></div>
+    <div class="ic"><div class="ii">⚙️</div><div class="in">参数必须先设</div><div class="id">操作规程原文："进行任何样品测量首先都要先进行此项操作，否则将影响测量结果。"漏设参数测得再多也无效。</div><span class="it">前置条件</span></div>
+    <div class="ic"><div class="ii">⏱️</div><div class="in">测量 100min×4</div><div class="id">推荐每次100min、测量4次共400min。低活度样品计数统计涨落大，时间短 → 不确定度超标。</div><span class="it">时长底线</span></div>
+    <div class="ic"><div class="ii">🧹</div><div class="in">维护周期</div><div class="id">每3个月探頭酒精清洁；长期不用每30天开机1次（该机构实际每周1次）；托盘/铅室定期酒精擦洗并彻底挥发干燥。</div><span class="it">期间核查</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={pwr:0,sample:false,param:false,warm:0,measuring:false,off:0};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},3500);}
+
+function pwr(n){
+  if(S.measuring){warn('测量中，不可操作电源');return;}
+  if(n!==S.pwr+1){warn('顺序错误：必须按 低压→高压→显示器→计算机 依次开启');log('开机顺序错误，已阻断',false);return;}
+  S.pwr=n; $('pw'+n).classList.add('on');
+  log('开启：'+['低压电源','高压电源','显示器','计算机'][n-1]);
+  if(n===4){setSts('🟢 已开机','sa');$('btnWarm').disabled=false;warn('');}
+}
+function warm(){
+  if(S.warm>0)return;
+  setSts('🔥 预热中…','sa');log('开始预热（模拟30min）');
+  let t=0;const tot=30;
+  const iv=setInterval(()=>{t++;S.warm=t;$('warmBar').style.width=(t/tot*100)+'%';
+    if(t>=tot){clearInterval(iv);setSts('✅ 预热完成','sok');log('预热完成（≥30min），可进行测量',true);
+      $('btnSample').disabled=false;$('btnParam').disabled=false;$('btnMeasure').disabled=false;}},60);
+}
+function putSample(){
+  if(S.sample)return;S.sample=true;$('btnSample').classList.add('on');$('btnSample').textContent='✅ 样品已放入';
+  log('样品盘已放入铅室',true);
+}
+function setParam(){
+  if(S.param){warn('参数已确认');return;}
+  const times=+$('iTimes').value,min=+$('iMin').value;
+  if(times<1||min<10){warn('测量次数≥1、每次时长≥10min');return;}
+  S.param=true;$('btnParam').classList.add('on');$('btnParam').textContent='✅ 参数已确认';
+  log('仪器参数已确认：'+times+'次 × '+min+'min（共'+(times*min)+'min）',true);warn('');
+}
+function measure(){
+  if(!S.pwr===4){warn('请先按顺序开机');return;}
+  if(S.warm<30){warn('未预热完成（需≥30min）');return;}
+  if(!S.sample){warn('请先放入样品盘');return;}
+  if(!S.param){warn('请先确认仪器参数（操作规程红线：任何测量前必须先设）');return;}
+  if(S.measuring)return;
+  S.measuring=true;setSts('📡 测量中…','sa');$('dState').textContent='测量中';
+  const total=+$('iTimes').value*+$('iMin').value;
+  log('开始测量，预计 '+total+' min（模拟）');
+  let p=0;const iv=setInterval(()=>{p++;$('dState').textContent='测量 '+Math.min(p,total)+'/'+total+'min';
+    if(p>=Math.min(total,20)){clearInterval(iv);
+      // 模拟读数（基于随机但合理的低本底范围）
+      const a=(Math.random()*0.2+0.05).toFixed(3);
+      const b=(Math.random()*0.3+0.2).toFixed(3);
+      $('dA').textContent=a+' Bq/L';$('dB').textContent=b+' Bq/L';
+      $('dState').textContent='完成';setSts('✅ 测量完成','sok');S.measuring=false;
+      log('测量完成：总α '+a+' Bq/L，总β '+b+' Bq/L（示例值）',true);
+      $('off1').parentElement.querySelectorAll('.pb').forEach(b=>b.disabled=false);
+      enableOff();
+    }},120);
+}
+function enableOff(){$('off1').disabled=false;$('off2').disabled=false;$('off3').disabled=false;$('off4').disabled=false;}
+function off(n){
+  if(S.off===0&&n!==1){warn('关机顺序：计算机→显示器→高压→低压');log('关机顺序错误',false);return;}
+  if(n!==S.off+1){warn('关机顺序错误：必须 计算机→显示器→高压→低压');log('关机顺序错误',false);return;}
+  S.off=n;$('off'+n).classList.add('on');log('关闭：'+['计算机','显示器','高压','低压'][n-1]);
+  if(n===4){setSts('🔒 已关机','si');log('关机完成。记得取出样品、擦拭台面地面、检查水电门窗',true);warn('');}
+}
+function resetAll(){
+  S={pwr:0,sample:false,param:false,warm:0,measuring:false,off:0};
+  [1,2,3,4].forEach(n=>{$('pw'+n).classList.remove('on');$('off'+n).classList.remove('on');$('off'+n).disabled=true;});
+  $('btnWarm').disabled=true;$('btnSample').disabled=true;$('btnParam').disabled=true;$('btnMeasure').disabled=true;
+  $('btnSample').textContent='🥏 放入样品盘';$('btnParam').textContent='⚙️ 确认仪器参数';
+  $('warmBar').style.width='0%';$('dA').textContent='—';$('dB').textContent='—';$('dState').textContent='待机';
+  setSts('⏳ 未开机','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

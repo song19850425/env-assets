@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>读懂一块地 · 土壤质量评价</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--ink-light:#555;--paper:#faf9f6;--paper-warm:#f5f0e8;--soil:#92400e;--soil-light:#fef3c7;--soil-bg:#fdf6e3;--green:#16a34a;--green-light:#f0fdf4;--gold:#b45309;--gold-light:#fefce8;--blue:#1e40af;--blue-light:#eff6ff;--red:#dc2626;--red-light:#fef2f2;--purple:#7c3aed;--purple-light:#ede9fe;--border:#e8e0d4;--serif:'Noto Serif SC','Source Han Serif SC','Songti SC',serif;--sans:'Inter',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+html{scroll-behavior:smooth}body{font-family:var(--sans);color:var(--ink);background:var(--paper);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--soil),var(--green));z-index:1000;transition:width .1s linear}
+#nv{position:fixed;right:24px;top:50%;z-index:999;display:flex;flex-direction:column;gap:14px}
+.nd{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;border:2px solid transparent;position:relative;transition:.3s}
+.nd.ac{background:var(--soil);transform:scale(1.5)}.nd:hover{border-color:var(--soil)}
+.nd .nl{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:11px;white-space:nowrap;color:var(--ink-light);background:#fff;padding:3px 10px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .2s}
+.nd:hover .nl{opacity:1}
+.he{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;position:relative;background:linear-gradient(180deg,var(--soil-bg) 0%,var(--paper) 100%)}
+.hb{display:inline-block;padding:6px 18px;border-radius:20px;background:var(--soil-light);color:var(--soil);font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:24px;border:1px solid rgba(146,64,14,.15)}
+.he h1{font-family:var(--serif);font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.1;color:var(--ink);max-width:700px}
+.he h1 em{font-style:normal;color:var(--soil)}
+.he p{margin-top:20px;font-size:clamp(14px,2vw,18px);color:var(--ink-light);max-width:560px;line-height:1.7}
+.hs{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap;justify-content:center}
+.hs div{text-align:center}.hs .n{font-family:var(--serif);font-size:36px;font-weight:900;color:var(--soil);display:block;line-height:1}
+.hs .l{font-size:12px;color:var(--ink-light);margin-top:4px}
+.sh{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink-light);font-size:12px;animation:fl 2s ease-in-out infinite}
+.sh .a{font-size:18px}
+@keyframes fl{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.sc{max-width:900px;margin:0 auto;padding:100px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.sc.vi{opacity:1;transform:translateY(0)}
+.sn{font-size:11px;font-weight:600;letter-spacing:3px;color:var(--soil);margin-bottom:8px}
+.st{font-family:var(--serif);font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.2;color:var(--ink);margin-bottom:12px}
+.sd{font-size:16px;color:var(--ink-light);line-height:1.8;max-width:600px;margin-bottom:48px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px}
+.ic{background:#fff;border-radius:12px;padding:24px;border:1px solid var(--border);cursor:pointer;transition:.35s ease;position:relative;overflow:hidden}
+.ic::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--soil);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.ic:hover::before{transform:scaleX(1)}.ic:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
+.ic.rv{background:var(--soil-light);border-color:rgba(146,64,14,.2)}
+.ii{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.in{font-weight:700;font-size:15px;margin-bottom:2px}.is{font-size:12px;color:var(--ink-light)}
+.ib{font-size:13px;color:var(--ink-light);line-height:1.6;margin-top:10px;max-height:0;overflow:hidden;transition:max-height .5s ease,margin-top .5s ease}
+.ic.rv .ib{max-height:300px;margin-top:10px}
+.it{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.ev-box{background:#fff;border-radius:16px;border:1px solid var(--border);overflow:hidden}
+.ev-tabs{display:flex;background:#fafaf8;border-bottom:1px solid var(--border)}
+.ev-tab{flex:1;text-align:center;padding:16px 8px;font-size:12px;color:#999;cursor:pointer;border-bottom:3px solid transparent;transition:.3s;font-weight:500}
+.ev-tab .n{font-weight:700;display:block;font-size:13px;margin-bottom:2px}
+.ev-tab.ac{color:var(--soil);border-bottom-color:var(--soil);background:var(--soil-light)}
+.ev-tab.done{color:var(--green);border-bottom-color:var(--green)}
+.ev-panel{display:none;padding:32px;min-height:360px}
+.ev-panel.ac{display:block}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.sg label{font-size:12px;font-weight:600;color:var(--ink-light);display:block;margin-bottom:4px}
+.sg input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-weight:500;font-family:var(--sans);background:#fff;transition:.2s}
+.sg input:focus{outline:none;border-color:var(--soil);box-shadow:0 0 0 3px rgba(146,64,14,.1)}
+.site-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.scard{background:#fff;border-radius:10px;padding:14px;border:1px solid var(--border);cursor:pointer;transition:.3s;text-align:center}
+.scard:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.scard.ac{background:var(--soil-light);border-color:var(--soil)}
+.scard .ic{font-size:28px;margin-bottom:4px}
+.scard .nm{font-weight:700;font-size:13px}.scard .pos{font-size:11px;color:var(--ink-light)}
+.result-box{text-align:center;padding:32px;border-radius:14px;margin-top:20px;display:none}
+.result-box .gb{font-family:var(--serif);font-size:52px;font-weight:900;line-height:1;display:block}
+.result-box .gl{font-size:18px;margin-top:4px}
+.result-box .gd{font-size:13px;color:var(--ink-light);margin-top:8px;line-height:1.8}
+.idetail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.idetail div{padding:10px 14px;border-radius:8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.zb{padding:12px 28px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;font-family:var(--sans)}
+.zb:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.zb1{background:linear-gradient(135deg,var(--soil),#78350f);color:#fff}
+.zb1:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(146,64,14,.3)}
+.zb2{background:linear-gradient(135deg,var(--blue),#1e3a8a);color:#fff}
+.zb2:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,64,175,.3)}
+/* Table */
+.tw{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-top:24px}
+.tw table{width:100%;border-collapse:collapse;background:#fff;font-size:13px}
+.tw th{background:var(--soil);color:#fff;padding:12px 16px;text-align:left;font-weight:600}
+.tw td{padding:10px 16px;border-top:1px solid var(--border)}
+/* Timeline */
+.tl{position:relative;padding-left:36px}.tl::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tp{position:relative;margin-bottom:36px;opacity:0;transform:translateX(-16px);transition:opacity .6s ease,transform .6s ease}
+.tp.vi{opacity:1;transform:translateX(0)}
+.tp::before{content:'';position:absolute;left:-30px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid var(--border);transition:.3s}
+.tp.vi::before{background:var(--soil);border-color:var(--soil)}
+.tn{font-size:11px;font-weight:700;color:var(--soil);letter-spacing:1px;margin-bottom:4px}
+.tt{font-weight:700;font-size:15px;margin-bottom:6px}
+.td{font-size:14px;color:var(--ink-light);line-height:1.7}
+.to{display:inline-block;margin-top:6px;padding:3px 10px;background:var(--soil-light);color:var(--soil);border-radius:6px;font-size:12px}
+.ft{text-align:center;padding:60px 24px;color:var(--ink-light);font-size:13px;border-top:1px solid var(--border);background:var(--paper-warm)}
+@media(max-width:600px){.sg{grid-template-columns:1fr}.idetail{grid-template-columns:1fr}.hs{gap:24px}#nv{right:12px}}
+</style></head><body>
+<div id="sp"></div>
+<div id="nv"><div class="nd ac" onclick="gs(0)"><span class="nl">开篇</span></div><div class="nd" onclick="gs(1)"><span class="nl">分区</span></div><div class="nd" onclick="gs(2)"><span class="nl">指标</span></div><div class="nd" onclick="gs(3)"><span class="nl">方法</span></div><div class="nd" onclick="gs(4)"><span class="nl">交互评价</span></div><div class="nd" onclick="gs(5)"><span class="nl">报告</span></div></div>
+
+<div class="he"><div class="hb">土壤环境 · 交互式教学</div><h1>读懂一块<em>地</em></h1><p>Soil Quality Assessment<br>从功能分区到综合评价，系统掌握土壤污染状况调查与评价方法。</p><div class="hs"><div><span class="n">4</span><span class="l">个功能分区</span></div><div><span class="n">12</span><span class="l">项评价指标</span></div><div><span class="n">5</span><span class="l">级污染分级</span></div><div><span class="n">内梅罗</span><span class="l">综合指数法</span></div></div><div class="sh"><span>向下滚动开始</span><span class="a">↓</span></div></div>
+
+<div class="sc vi" id="s1">
+<div class="sn">Section 01 · 功能分区</div><h2 class="st">认识这块地</h2><p class="sd">土壤污染调查的首要任务是合理划分功能分区——不同区域污染风险差异显著。点击各区域查看详情。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef3c7;">🏭</div><div class="in">生产区</div><div class="is">Production Area</div><div class="ib">原生产车间、原料仓库区域。重点关注：地面防渗层破损导致的渗漏、跑冒滴漏累积污染。属重点监测区域。</div><span class="it" style="background:#fef3c7;color:#92400e;">重点区</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#e0f2fe;">🧪</div><div class="in">储罐区</div><div class="is">Storage Tank Area</div><div class="ib">油罐/化学品储罐区域。重点关注：地下管线泄漏风险、罐体腐蚀渗漏。DNAPL可能下渗至深层土壤和地下水。</div><span class="it" style="background:#e0f2fe;color:#0c4a6e;">高风险</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#f0fdf4;">📦</div><div class="in">仓储及辅助区</div><div class="is">Warehouse Area</div><div class="ib">成品库、办公区、道路等。污染风险相对较低，但需关注历史上可能的临时堆放和物料转运区域。</div><span class="it" style="background:#f0fdf4;color:#166534;">低风险</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#ede9fe;">🌿</div><div class="in">背景对照区</div><div class="is">Background Area</div><div class="ib">选在地块上风向或未受影响的相邻区域，反映该区域土壤天然背景值。所有监测数据需与背景值对比。</div><span class="it" style="background:#ede9fe;color:#6b21a8;">对照</span></div></div></div>
+
+<div class="sc" id="s2">
+<div class="sn">Section 02 · 指标体系</div><h2 class="st">十二项核心评价指标</h2><p class="sd">以 GB 36600-2018《土壤环境质量 建设用地土壤污染风险管控标准》为基础，涵盖重金属、VOCs、SVOCs 和理化指标四大类。</p>
+<div class="cg">
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef2f2;">⚗️</div><div class="in">重金属</div><div class="is">Heavy Metals</div><div class="ib">砷（As）、镉（Cd）、铬（Cr⁶⁺）、铜（Cu）、铅（Pb）、汞（Hg）、镍（Ni）。重点关注 Cr⁶⁺的强毒性，筛选值低至 3.0 mg/kg。</div><span class="it" style="background:#fef2f2;color:#991b1b;">7项</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#fef3c7;">🧪</div><div class="in">VOCs</div><div class="is">Volatile Organics</div><div class="ib">苯、甲苯、二甲苯、三氯乙烯（TCE）、四氯乙烯（PCE）、氯仿等。挥发性强，易通过呼吸暴露。</div><span class="it" style="background:#fef3c7;color:#92400e;">VOCs</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#ccfbf1;">🧫</div><div class="in">SVOCs</div><div class="is">Semi-volatile Organics</div><div class="ib">多环芳烃（PAHs）、邻苯二甲酸酯、多氯联苯（PCBs）。半挥发性，吸附性强，可长期存留在土壤中。</div><span class="it" style="background:#ccfbf1;color:#0d9488;">SVOCs</span></div>
+<div class="ic" onclick="rc(this)"><div class="ii" style="background:#f0fdf4;">📐</div><div class="in">理化指标</div><div class="is">Physicochemical</div><div class="ib">pH（影响重金属形态和迁移性）、有机质（OM，影响有机污染物吸附）、阳离子交换量（CEC）。</div><span class="it" style="background:#f0fdf4;color:#166534;">3项</span></div></div></div>
+
+<div class="sc" id="s3">
+<div class="sn">Section 03 · 评价方法</div><h2 class="st">从数据到结论</h2><p class="sd">以 GB 36600-2018 筛选值为基准，采用单因子评价 + 内梅罗综合污染指数法。滚动查看各步骤，然后进入交互评价环节。</p>
+<div class="tl"><div class="tl-l"></div>
+<div id="steps-container">
+<div class="tp"><div class="tn">STEP 01</div><div class="tt">样品采集与分析</div><div class="td">各功能分区采集不少于 3 个土壤样品，分析重金属、VOCs、SVOCs 和理化指标。VOCs 样品需使用非扰动采样器。</div><span class="to">📋 每区至少 3 个样品</span></div>
+<div class="tp"><div class="tn">STEP 02</div><div class="tt">单因子指数法</div><div class="td">单因子指数 Pi = Ci / Si。Ci 为实测浓度，Si 为 GB 36600 筛选值。Pi ≤ 1 为未超标，Pi > 1 为超标。Pi 越大污染越重。</div><span class="to">📐 Pi > 1 即超标</span></div>
+<div class="tp"><div class="tn">STEP 03</div><div class="tt">内梅罗综合指数法</div><div class="td">P<sub>综</sub> = √[(P̄² + P<sub>max</sub>²)/2]。P̄ 为各因子 Pi 均值，P<sub>max</sub> 为最大 Pi 值。综合反映平均污染水平和最突出污染因子。</div><span class="to">🔢 突出贡献最大因子</span></div>
+<div class="tp"><div class="tn">STEP 04</div><div class="tt">污染等级划分</div><div class="td">P<sub>综</sub> ≤ 0.7 安全 · 0.7~1.0 警戒 · 1.0~2.0 轻污染 · 2.0~3.0 中污染 · > 3.0 重污染。</div><span class="to">🎯 最差指标决定等级</span></div>
+<div class="tp"><div class="tn">STEP 05</div><div class="tt">报告编制</div><div class="td">汇总各分区评价结果，给出各功能区污染等级、主要超标因子及修复建议。</div><span class="to">📊 超标因子需明确标注</span></div></div></div></div>
+
+<div class="sc" id="s4">
+<div class="sn">Section 04 · 交互评价</div><h2 class="st">土壤质量综合评价</h2><p class="sd">选择功能分区，输入各指标检测数据，系统自动完成单因子评价和内梅罗综合指数计算。</p>
+<div class="ev-box">
+<div class="ev-tabs"><div class="ev-tab ac" onclick="eg(0)"><span class="n">①</span>选择分区</div><div class="ev-tab" onclick="eg(1)"><span class="n">②</span>录入数据</div><div class="ev-tab" onclick="eg(2)"><span class="n">③</span>评价结果</div></div>
+
+<div class="ev-panel ac" id="ep0">
+<p style="font-size:14px;color:var(--ink-light);margin-bottom:20px;">选择待评价的功能分区，系统加载该分区的预设监测数据。</p>
+<div class="site-grid">
+<div class="scard ac" data-idx="0" onclick="es(0)" style="cursor:pointer;"><div class="ic">🏭</div><div class="nm">生产区</div><div class="pos">重点关注</div></div>
+<div class="scard" data-idx="1" onclick="es(1)" style="cursor:pointer;"><div class="ic">🧪</div><div class="nm">储罐区</div><div class="pos">高风险</div></div>
+<div class="scard" data-idx="2" onclick="es(2)" style="cursor:pointer;"><div class="ic">📦</div><div class="nm">仓储区</div><div class="pos">低风险</div></div>
+<div class="scard" data-idx="3" onclick="es(3)" style="cursor:pointer;"><div class="ic">🌿</div><div class="nm">背景区</div><div class="pos">对照</div></div></div>
+<div style="text-align:center;margin-top:24px;"><button class="zb zb1" onclick="eg(1)">📋 进入数据录入</button></div></div>
+
+<div class="ev-panel" id="ep1">
+<p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">输入该分区的各指标检测数据（单位：mg/kg）。</p>
+<div class="sg">
+<div><label>砷 As</label><input type="number" id="in-as" value="12.5" step="0.1"></div>
+<div><label>镉 Cd</label><input type="number" id="in-cd" value="1.8" step="0.01"></div>
+<div><label>铬 Cr⁶⁺</label><input type="number" id="in-cr" value="2.5" step="0.1"></div>
+<div><label>铜 Cu</label><input type="number" id="in-cu" value="35.0" step="0.1"></div>
+<div><label>铅 Pb</label><input type="number" id="in-pb" value="120" step="1"></div>
+<div><label>汞 Hg</label><input type="number" id="in-hg" value="0.5" step="0.01"></div>
+<div><label>镍 Ni</label><input type="number" id="in-ni" value="50" step="1"></div>
+<div><label>苯</label><input type="number" id="in-benz" value="0.8" step="0.1"></div>
+<div><label>总石油烃 TPH</label><input type="number" id="in-tph" value="350" step="1"></div>
+<div><label>pH</label><input type="number" id="in-ph" value="7.5" step="0.1"></div></div>
+<div style="text-align:center;margin-top:20px;"><button class="zb zb1" onclick="doEval()">📐 开始评价</button></div></div>
+
+<div class="ev-panel" id="ep2">
+<div class="sg" style="grid-template-columns:1fr 1fr;margin-top:0;">
+<div><span>分区：</span><span id="evSite" style="font-weight:700;">生产区</span></div>
+<div><span>评价方法：</span><span>内梅罗综合指数法</span></div></div>
+<div class="idetail" id="idetail"></div>
+<div class="result-box" id="resultBox">
+<span class="gb" id="rg">—</span>
+<div class="gl" id="rl">—</div>
+<div class="gd" id="rd">请点击「开始评价」</div></div>
+<div style="text-align:center;margin-top:20px;">
+<button class="zb zb2" onclick="eg(0)" style="background:linear-gradient(135deg,var(--green),#15803d);">🔄 重新选择分区</button>
+<button class="zb zb1" onclick="scrollToSection(5)" style="margin-left:8px;">📊 查看汇总报告 →</button></div></div></div></div>
+
+<div class="sc" id="s5">
+<div class="sn">Section 05 · 汇总报告</div><h2 class="st">各分区综合评价报告</h2><p class="sd">以下为各功能分区土壤质量评价结果汇总。</p>
+<div class="tw"><table>
+<thead><tr><th>功能分区</th><th>综合指数 P<sub>综</sub></th><th>污染等级</th><th>主要超标因子</th><th>建议</th></tr></thead>
+<tbody id="rt">
+<tr><td>🏭 生产区</td><td>—</td><td>—</td><td>—</td><td>待评价</td></tr>
+<tr><td>🧪 储罐区</td><td>—</td><td>—</td><td>—</td><td>待评价</td></tr>
+<tr><td>📦 仓储区</td><td>—</td><td>—</td><td>—</td><td>待评价</td></tr>
+<tr><td>🌿 背景区</td><td>—</td><td>—</td><td>—</td><td>待评价</td></tr></tbody></table></div>
+<p style="font-size:13px;color:var(--ink-light);margin-top:16px;">💡 在交互评价中完成各分区评价后，本表将自动更新。</p></div>
+
+<div class="ft"><p>环境实验 · 环境检测交互式教学平台</p><p style="margin-top:4px;">联系方式：【联系方式见仓库主页】</p></div>
+
+<script>
+// ═══════════ SCROLL ═══════════
+window.addEventListener('scroll',()=>{let h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('sp').style.width=(window.scrollY/h*100)+'%'})
+let ss=document.querySelectorAll('.sc'),dd=document.querySelectorAll('.nd')
+ss.forEach(s=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.1}).observe(s))
+document.querySelectorAll('.tp').forEach(t=>new IntersectionObserver(e=>e.forEach(n=>n.isIntersecting&&n.target.classList.add('vi')),{threshold:.2}).observe(t))
+window.addEventListener('scroll',()=>{let c=0;ss.forEach((s,i)=>{if(window.scrollY>=s.offsetTop-300)c=i});dd.forEach((d,i)=>d.classList.toggle('ac',i===c))})
+function gs(i){if(ss[i])ss[i].scrollIntoView({behavior:'smooth'})}
+function rc(c){if(!c.classList.contains('rv'))c.classList.add('rv')}
+
+// ═══════════ EVAL ═══════════
+let eCur=0, eSite=0;
+const sNames=['生产区','储罐区','仓储区','背景区'];
+const sData=[
+    {As:12.5,Cd:1.8,Cr:2.5,Cu:35,Pb:120,Hg:0.5,Ni:50,benz:0.8,TPH:350,pH:7.5},
+    {As:18.2,Cd:2.5,Cr:5.8,Cu:68,Pb:210,Hg:1.2,Ni:72,benz:3.5,TPH:820,pH:6.8},
+    {As:5.6,Cd:0.6,Cr:0.8,Cu:18,Pb:45,Hg:0.12,Ni:22,benz:0.2,TPH:95,pH:7.8},
+    {As:3.2,Cd:0.3,Cr:0.5,Cu:12,Pb:25,Hg:0.06,Ni:15,benz:0.05,TPH:45,pH:7.2}
+];
+// GB 36600-2018 筛选值 (mg/kg)
+const SV={As:20,Cd:0.3,Cr:3.0,Cu:2000,Pb:400,Hg:8,Ni:150,benz:1,TPH:826};
+
+function eg(n){
+    eCur=n;ep=document.querySelectorAll('.ev-panel');et=document.querySelectorAll('.ev-tab');
+    ep.forEach(p=>p.classList.remove('ac'));et.forEach(t=>{t.classList.remove('ac');t.classList.remove('done')});
+    document.getElementById('ep'+n).classList.add('ac');
+    document.querySelectorAll('.ev-tab')[n].classList.add('ac');
+    for(let i=0;i<n;i++)document.querySelectorAll('.ev-tab')[i].classList.add('done');
+}
+
+function es(idx){
+    eSite=idx;document.querySelectorAll('.scard').forEach((c,i)=>c.classList.toggle('ac',i===idx));
+    const d=sData[idx];const ids=['in-as','in-cd','in-cr','in-cu','in-pb','in-hg','in-ni','in-benz','in-tph','in-ph'];
+    const vals=[d.As,d.Cd,d.Cr,d.Cu,d.Pb,d.Hg,d.Ni,d.benz,d.TPH,d.pH];
+    ids.forEach((id,i)=>document.getElementById(id).value=vals[i]);
+    document.getElementById('evSite').textContent=sNames[idx];
+}
+
+function doEval(){
+    const d={
+        As:parseFloat(document.getElementById('in-as').value)||0,
+        Cd:parseFloat(document.getElementById('in-cd').value)||0,
+        Cr:parseFloat(document.getElementById('in-cr').value)||0,
+        Cu:parseFloat(document.getElementById('in-cu').value)||0,
+        Pb:parseFloat(document.getElementById('in-pb').value)||0,
+        Hg:parseFloat(document.getElementById('in-hg').value)||0,
+        Ni:parseFloat(document.getElementById('in-ni').value)||0,
+        benz:parseFloat(document.getElementById('in-benz').value)||0,
+        TPH:parseFloat(document.getElementById('in-tph').value)||0
+    };
+    
+    // Calculate Pi for each indicator
+    const PIs={};
+    PIs.As=d.As/SV.As;
+    PIs.Cd=d.Cd/SV.Cd;
+    PIs.Cr=d.Cr/SV.Cr;
+    PIs.Cu=d.Cu/SV.Cu;
+    PIs.Pb=d.Pb/SV.Pb;
+    PIs.Hg=d.Hg/SV.Hg;
+    PIs.Ni=d.Ni/SV.Ni;
+    PIs.benz=d.benz/SV.benz;
+    PIs.TPH=d.TPH/SV.TPH;
+    
+    // Nemerow index
+    const vals=Object.values(PIs);
+    const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    const pmax=Math.max(...vals);
+    const P=Math.sqrt((avg*avg+pmax*pmax)/2);
+    
+    // Grade
+    let grade,color,bg;
+    if(P<=0.7){grade='安全';color='#16a34a';bg='#dcfce7'}
+    else if(P<=1.0){grade='警戒';color='#b45309';bg='#fef3c7'}
+    else if(P<=2.0){grade='轻污染';color='#b45309';bg='#fef3c7'}
+    else if(P<=3.0){grade='中污染';color='#991b1b';bg='#fef2f2'}
+    else{grade='重污染';color='#dc2626';bg='#fef2f2'}
+    
+    // Update detail
+    const keys=['As','Cd','Cr','Cu','Pb','Hg','Ni','benz','TPH'];
+    const names=['As','Cd','Cr⁶⁺','Cu','Pb','Hg','Ni','苯','TPH'];
+    let html='';
+    let worst='',worstV=0;
+    keys.forEach((k,i)=>{
+        const pi=PIs[k];
+        const ov=pi>1?'❌':pi>0.7?'⚠️':'✅';
+        const cl=pi>1?'#fef2f2':pi>0.7?'#fef3c7':'#dcfce7';
+        html+=`<div style="background:${cl};"><span>${names[i]}</span><span>${d[k].toFixed(1)} ${ov} Pi=${pi.toFixed(2)}</span></div>`;
+        if(pi>worstV){worstV=pi;worst=names[i];}
+    });
+    document.getElementById('idetail').innerHTML=html;
+    
+    // Result
+    const rb=document.getElementById('resultBox');
+    rb.style.display='block';rb.style.background=bg;
+    document.getElementById('rg').textContent=P.toFixed(2);document.getElementById('rg').style.color=color;
+    document.getElementById('rl').textContent=grade;document.getElementById('rl').style.color=color;
+    
+    let advice='';
+    if(P<=0.7)advice='各项指标均低于筛选值，土壤质量良好，无需采取修复措施。';
+    else if(P<=1.0)advice='部分指标接近筛选值，建议加强监测频次，关注变化趋势。';
+    else if(P<=2.0)advice=`主要超标因子：${worst}（Pi=${worstV.toFixed(2)}）。建议开展详细调查，划定污染范围。`;
+    else if(P<=3.0)advice=`主要超标因子：${worst}（Pi=${worstV.toFixed(2)}），超标严重。建议尽快开展修复。`;
+    else advice=`${worst}（Pi=${worstV.toFixed(2)}），超标极度严重。必须立即采取管控和修复措施。`;
+    
+    document.getElementById('rd').innerHTML=`P<sub>综</sub> = ${P.toFixed(2)} · ${grade}<br>${advice}`;
+    
+    // Update report table
+    updateReport(eSite,P,grade,worst);
+    
+    eg(2);
+}
+
+function updateReport(idx,P,grade,worst){
+    const rows=document.getElementById('rt').rows;
+    const cols=['—','—','—','—'];
+    const presets=[
+        {P:1.85,grade:'轻污染',worst:'Cd(Pi=6.00)'},
+        {P:3.82,grade:'重污染',worst:'Cd(Pi=8.33)'},
+        {P:0.52,grade:'安全',worst:'—'},
+        {P:0.28,grade:'安全',worst:'—'}
+    ];
+    cols[0]=P.toFixed(2);
+    cols[1]=grade;
+    cols[2]=worst;
+    
+    // Start with backgrounds then overwrite current
+    for(let i=0;i<4;i++){
+        const p=presets[i];
+        const thisP=i===idx?P:p.P;
+        const thisG=i===idx?grade:p.grade;
+        const thisW=i===idx?worst:p.worst;
+        const thisA=i===idx?grade.replace('安全','无需采取措施').replace('警戒','加强监测').replace('轻','详细调查').replace('中','尽快修复').replace('重','立即管控'):'';
+        let gc='#dcfce7';
+        if(thisG.includes('警戒')||thisG.includes('轻'))gc='#fef3c7';
+        if(thisG.includes('中')||thisG.includes('重'))gc='#fef2f2';
+        rows[i].cells[1].innerHTML=`<strong>${thisP}</strong>`;
+        rows[i].cells[2].innerHTML=`<span style="display:inline-block;padding:3px 10px;border-radius:6px;background:${gc};font-weight:700;">${thisG}</span>`;
+        rows[i].cells[3].textContent=thisW;
+        rows[i].cells[4].textContent=i===idx?thisA:(i===0?'关注重金属':'按需采样');
+    }
+    
+    // Add note
+    const note=document.querySelector('.sc#s5 p:last-child');
+    if(note)note.innerHTML=`✅ ${sNames[idx]}评价已完成！综合指数 P<sub>综</sub> = ${P.toFixed(2)}，${grade}。主要超标因子：${worst}。完成全部 4 个分区评价可形成完整报告。`;
+}
+
+// Init
+document.addEventListener('DOMContentLoaded',()=>{es(0);});
+</script><details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 36600-2018</td><td>土壤环境质量 建设用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>1</b> 项标准：<b>1</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body></html>

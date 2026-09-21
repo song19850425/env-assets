@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02-土壤地下水初步调查-操作规范</title>
+<style>
+:root{--brand:#6b4a2b;--accent:#c9a86a;--ink:#2b2b2e;--soft:#6b6f76;--page:#f5f3ee;--card:#fffdf8;--line:#e4e1da;--kpi-bg:#f0f4f8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;background:var(--page);color:var(--ink);line-height:1.8;padding:0;}
+.wrap{max-width:860px;margin:0 auto;background:var(--card);min-height:100vh;}
+header{background:var(--brand);color:#fff;padding:34px 28px 28px;}
+header .tag{display:inline-block;font-size:11px;letter-spacing:2px;color:var(--accent);border:1px solid rgba(201,169,106,.5);padding:3px 10px;border-radius:20px;margin-bottom:12px;font-weight:600;}
+header h1{font-size:22px;font-weight:800;line-height:1.4;margin-bottom:8px;}
+header .sub{font-size:13px;color:rgba(255,255,255,.7);}
+.main{padding:24px 26px 40px;}
+h2{font-size:16px;color:var(--brand);margin:28px 0 12px;padding-left:12px;border-left:4px solid var(--accent);line-height:1.4;}
+h2:first-child{margin-top:0;}
+h3{font-size:14px;color:var(--ink);margin:16px 0 8px;}
+p{font-size:13.5px;color:var(--ink);margin-bottom:8px;}
+b{color:var(--brand);}
+table{width:100%;border-collapse:collapse;margin:10px 0 6px;font-size:12.5px;}
+th{background:var(--brand);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:12px;}
+td{padding:8px 10px;border:1px solid #e0dcd4;color:var(--ink);vertical-align:top;line-height:1.65;}
+tr:nth-child(even){background:var(--card);}
+tr:nth-child(odd){background:#faf9f6;}
+.kpi{background:var(--kpi-bg);border:1px solid #d8e2ec;border-radius:8px;padding:12px 16px;margin:8px 0;}
+.kpi b{color:var(--brand);}
+.step{display:flex;gap:14px;margin:12px 0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+.step .no{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.step .bd .t{font-size:14px;font-weight:700;color:var(--brand);margin-bottom:3px;}
+.step .bd .d{font-size:13px;color:var(--soft);}
+.box{border-left:3px solid var(--accent);background:#faf8f3;border-radius:0 8px 8px 0;padding:12px 16px;margin:10px 0;font-size:13px;}
+.box b{color:var(--brand);}
+.note{font-size:12px;color:var(--soft);margin-top:6px;}
+.tag-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+.tag-list span{background:#f0ede6;border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--ink);}
+footer{background:var(--brand);color:rgba(255,255,255,.65);text-align:center;padding:18px;font-size:12px;margin-top:30px;}
+@media(max-width:640px){.main{padding:18px 16px 30px;}header{padding:26px 20px 22px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<span class="tag">服务操作规范 · 02</span>
+<h1>疑似污染地块土壤和地下水<br>初步调查 · 标准化服务包</h1>
+<p class="sub">第一阶段调查 → 布点采样 → 实验室检测 → 调查报告 · 全流程标准化交付</p>
+</header>
+
+<div class="main">
+
+<h2>服务定位</h2>
+<p>为<b>疑似污染地块</b>（工业企业关停搬迁地块、用途变更为住宅/公共管理与公共服务用地地块、历史遗留工业地块等）提供<b>土壤和地下水污染状况初步调查</b>，回答一个核心问题：<b>"这个地块是不是污染地块？污染物是什么？超没超标？"</b></p>
+<p>法定依据：《土壤污染防治法》+ 环保部令第42号《污染地块土壤环境管理办法》——<b>土地使用权人接到通知后6个月内完成初步调查</b>，调查报告上传全国土壤环境信息平台并向社会公开。</p>
+<p>技术依据：<b>HJ 25.1-2019</b>（状况调查技术导则）、<b>HJ 25.2-2019</b>（风险管控和修复监测技术导则）、<b>GB 36600-2018</b>（建设用地土壤风险管控标准）、<b>GB/T 14848-2017</b>（地下水质量标准）、《建设用地土壤环境调查评估技术指南》（环保部公告2017年72号）、<b>《建设用地土壤污染状况调查质量控制技术规定（试行）》</b>（2021年）。</p>
+<div class="box"><b>一句话逻辑：</b>这是"地块体检"——先问病史（资料+踏勘+访谈），再化验（布点采样+检测），最后出结论（是否污染、是否超标）。标准流程国标全定了，可标准化的部分占比极高。</div>
+<div class="box"><b>官方参考范本（建议直接研读，全部政府/机构官网公开全文）：</b>①东莞市南城街道地块初步调查报告（eiacloud.com 公示）——<b>最完整范本</b>：16土壤点+4地下水井、123样品，第一阶段→第二阶段→检出明细→明确结论"非污染地块"，完整走完本服务全部7步；②抚州东乡区东磷路地块报告（jxfzdx.gov.cn）——13土壤点+7地下水点、45项+特征因子（氟化物/石油烃/二噁英）；③南安石井镇地块报告（fjhb.org）——20土壤点88样品，含<b>采样方案专家函审</b>环节；④广州增城9.904亩地块（gdpepe.edu.cn）——农用地转建设用"干净地块"，仅第一阶段即结束的典型写法。</div>
+
+<h2>模块一 · 企业/政府需要给我们什么（输入）</h2>
+<table>
+<tr><th style="width:34%">材料</th><th style="width:24%">格式</th><th>用途</th></tr>
+<tr><td>① 地块基本信息：位置、四至、面积、规划用途（现状/规划）</td><td>文本/图纸</td><td>布点密度与工作范围判定</td></tr>
+<tr><td>② 地块历史使用资料：用地历史沿革、企业生产工艺、原辅材料、产品、建（构）筑物布局</td><td>文字/平面图/历史影像</td><td>第一阶段调查"污染识别"核心素材</td></tr>
+<tr><td>③ 潜在污染源信息：储罐/池体/管线/危废堆放点/事故记录</td><td>清单/照片</td><td>判断污染物可能分布</td></tr>
+<tr><td>④ 区域环境资料：周边企业、地下水流向、水文地质资料（如有）</td><td>报告/图件</td><td>地下水布点与对照点选择</td></tr>
+<tr><td>⑤ 环评/验收/排污许可等历史文件（如有）</td><td>PDF/Word</td><td>补充污染识别依据</td></tr>
+<tr><td>⑥ 委托单位名称、联系人、地块权属证明</td><td>文本</td><td>合同与报告署名</td></tr>
+</table>
+<p class="note">原则：第一阶段调查（资料收集+现场踏勘+人员访谈）是布点的前提，素材越全，布点越准，返工越少。</p>
+
+<h2>模块二 · 我们做什么（操作步骤）</h2>
+
+<div class="step"><div class="no">1</div><div class="bd"><div class="t">第一阶段调查（污染识别）</div><div class="d">资料收集（历史沿革/工艺/原辅料）+ 现场踏勘（现状/异味/痕迹）+ 人员访谈（老员工/周边居民）。输出《第一阶段调查报告》：地块是否疑似污染、关注污染物初判。</div></div></div>
+
+<div class="step"><div class="no">2</div><div class="bd"><div class="t">编制布点采样方案</div><div class="d">按《建设用地土壤污染状况调查布点采样方案编制大纲》编写。布点规则（见下表）：面积≤5000m²不少于3个点，>5000m²不少于6个点；地下水按地下水流向三角形/四边形布3-4个，上游设对照井。</div></div></div>
+
+<div class="step"><div class="no">3</div><div class="bd"><div class="t">方案质控自查 + 平台告知</div><div class="d">内部质控人员填《布点采样方案检查记录表》，检查不过重新布点。现场采样前<b>15个工作日</b>在全国土壤环境信息平台告知市级生态环境部门并提交采样计划。</div></div></div>
+
+<div class="step"><div class="no">4</div><div class="bd"><div class="t">现场采样（土壤+地下水）</div><div class="d">土孔钻探（钻至粘土层或判定深度）、地下水监测井建设（洗井后稳定24h再采样）、样品采集保存流转。同步采集质控样：<b>密码平行样≥10%</b>（每个2份）、运输空白、清洗空白。调查质控APP记录点位/深度/时间，拍照上传。</div></div></div>
+
+<div class="step"><div class="no">5</div><div class="bd"><div class="t">实验室检测</div><div class="d">土壤按 GB 36600 表1基本项（45项）+特征污染物；地下水按 GB/T 14848 指标。优选标准推荐方法，检出限须低于限值。内部质控（空白/校准/精密度/正确度）+外部质控（密码平行样比对）。</div></div></div>
+
+<div class="step"><div class="no">6</div><div class="bd"><div class="t">数据分析与评价</div><div class="d">对照 GB 36600 第一类/第二类用地筛选值、GB/T 14848 Ⅳ类标准评价。明确结论：<b>是否污染地块、超标因子、超标点位/深度、是否需详细调查</b>。</div></div></div>
+
+<div class="step"><div class="no">7</div><div class="bd"><div class="t">编制调查报告 + 质控报告 + 公开</div><div class="d">按 HJ 25.1 编制报告（附采样信息+检测报告+质量控制篇章）。提交评审前<b>7日</b>公开主要内容，评审通过后上传全国土壤环境信息平台。</div></div></div>
+
+<h2>布点采样核心参数（标准化基准）</h2>
+<table>
+<tr><th>环节</th><th>规则</th><th>依据</th></tr>
+<tr><td>初步调查布点数（土壤）</td><td>≤5000m² 不少于<b>3个</b>；&gt;5000m² 不少于<b>6个</b>（可酌情增加）</td><td>环保部公告2017年72号</td></tr>
+<tr><td>详细调查布点数（土壤）</td><td>涉嫌污染区每<b>400m²≥1个</b>；其他区域每<b>1600m²≥1个</b></td><td>环保部公告2017年72号</td></tr>
+<tr><td>详细调查布点数（地下水）</td><td>每 <b>6400m²≥1个</b></td><td>环保部公告2017年72号</td></tr>
+<tr><td>地下水监测井</td><td>按流向三角形/四边形布<b>3-4个</b>；上游设对照井</td><td>HJ 25.2-2019</td></tr>
+<tr><td>土壤采样深度</td><td>表层 <b>0-0.5m</b>；下层 0.5m 以下按判断采集，<b>0.5-6m 间隔≤2m</b>；不同性质土层至少1个样</td><td>HJ 25.2-2019</td></tr>
+<tr><td>地下水采样深度</td><td>监测井水面下 <b>0.5m 以下</b></td><td>HJ 25.2-2019</td></tr>
+<tr><td>质控样比例</td><td>密码平行样 <b>≥10%</b>（每样2份）；空白样/运输样按规范</td><td>质控技术规定（2021）</td></tr>
+<tr><td>平台告知时限</td><td>现场采样前 <b>15个工作日</b>告知市级生态环境部门</td><td>质控技术规定（2021）</td></tr>
+<tr><td>报告公开时限</td><td>提交评审前 <b>7日</b>公开主要内容</td><td>质控技术规定（2021）</td></tr>
+</table>
+
+<h2>模块三 · 常见问题 / 雷区</h2>
+<table>
+<tr><th style="width:40%">雷区</th><th>正确做法</th></tr>
+<tr><td>跳过/压缩第一阶段调查，直接布点</td><td>污染识别不到位，布点就是"盲人摸象"——第一阶段的结论决定第二阶段所有工作质量，省这一步后面全返工</td></tr>
+<tr><td>布点数量卡下限"凑数"</td><td>布点数按面积+污染源分布综合定，重点疑似区域加密。质控检查第一条就看点位合理性</td></tr>
+<tr><td>采测不分离</td><td>质控技术规定明确：<b>检测机构不得参与现场采样</b>。自己采样自己检测=质控硬伤</td></tr>
+<tr><td>漏密码平行样/空白样</td><td>密码平行样≥10%、每个2份；运输空白、清洗空白一个都不能少——现场检查表逐项勾</td></tr>
+<tr><td>地下水洗井不足24h就采样</td><td>建井洗井后须稳定24h方可采样，这是 HJ 25.2 硬性要求</td></tr>
+<tr><td>忘平台告知/超时限</td><td>采样前15个工作日告知市级生态环境部门，倒排进场时间；报告提交评审前7日公开</td></tr>
+<tr><td>检出限高于标准限值</td><td>选用方法检出限必须低于 GB 36600 / GB/T 14848 限值，否则数据无评价意义</td></tr>
+<tr><td>结论含糊"建议进一步调查"到底要不要</td><td>必须明确：超标→污染地块→建议详细调查；不超标但有痕迹→按需；干净→明确"非污染地块"</td></tr>
+</table>
+
+<h2>模块四 · 评价指标（KPI）</h2>
+<div class="kpi"><b>布点采样方案一次质控通过率 ≥ 85%</b><br>内部《布点采样方案检查记录表》一次通过，减少返工轮次。</div>
+<div class="kpi"><b>现场质控合格率 100%</b><br>采样点位/深度/质控样/影像记录全部符合检查表要求，无"不合格需重采"项。</div>
+<div class="kpi"><b>实验室精密度合格率 ≥ 95%</b><br>平行样合格率低于95%须查明原因并追加平行双样。</div>
+<div class="kpi"><b>报告按期交付率 100%</b><br>按合同节点完成调查、出具报告，配合平台告知与公开时限。</div>
+<div class="kpi"><b>报告一次评审通过率 ≥ 80%</b><br>报告完整性、技术合理性、结论明确性满足评审要求。</div>
+<div class="kpi"><b>结论明确率 100%</b><br>每份报告必须给出"是否污染地块、是否超标、下一步建议"的明确结论。</div>
+
+<h2>服务分层与报价逻辑</h2>
+<table>
+<tr><th>档位</th><th>服务范围</th><th>适合场景</th></tr>
+<tr><td><b>第一阶段档</b></td><td>资料收集+踏勘+访谈，输出《第一阶段调查报告》与布点建议</td><td>地块情况简单/想先摸底的地块</td></tr>
+<tr><td><b>初步调查档（主推）</b></td><td>第一+第二阶段：污染识别→布点→采样→检测→调查报告（含质控）</td><td>疑似污染地块标准需求</td></tr>
+<tr><td><b>全流程档</b></td><td>初步调查 + 详细调查（如需）衔接，覆盖到是否需风险评估的结论</td><td>重点疑似地块/政府委托</td></tr>
+</table>
+<p class="note">报价按地块面积（影响布点数）+ 检测项目数（45项基本项+特征污染物按因子加价）+ 是否含地下水监测井建井费核算。检测部分可分包（需 CMA 资质实验室，采测分离合规前提）。</p>
+
+<h2>政策与技术依据清单</h2>
+<div class="tag-list">
+<span>《中华人民共和国土壤污染防治法》</span>
+<span>《污染地块土壤环境管理办法》（环保部令第42号）</span>
+<span>HJ 25.1-2019 建设用地土壤污染状况调查技术导则</span>
+<span>HJ 25.2-2019 建设用地土壤污染风险管控和修复监测技术导则</span>
+<span>GB 36600-2018 建设用地土壤污染风险管控标准</span>
+<span>GB/T 14848-2017 地下水质量标准</span>
+<span>《建设用地土壤环境调查评估技术指南》（环保部公告2017年72号）</span>
+<span>《建设用地土壤污染状况调查质量控制技术规定（试行）》（2021）</span>
+<span>HJ 25.3-2019 风险评估 / HJ 25.4-2019 修复技术导则 / HJ 25.5-2018 效果评估（衔接）</span>
+</div>
+
+<div class="box"><b>关键流程速记：</b>第一阶段（资料+踏勘+访谈）→ 布点采样方案（≤5000m²≥3点，>5000m²≥6点）→ 质控自查+采样前15工作日平台告知 → 现场采样（密码平行样≥10%，地下水洗井稳定24h）→ 实验室检测（检出限低于限值）→ 数据分析评价（GB 36600/GB/T 14848）→ 调查报告（评审前7日公开）→ 上传全国土壤环境信息平台。</div>
+
+<div class="note" style="margin-top:18px">免责声明：本规范基于国家公开技术导则与管理规定整理，具体参数以最新有效版本标准为准。检测环节须由具备 CMA 资质的检验检测机构承担，采测分离。</div>
+
+</div>
+<footer>小宋 · 环保咨询 · 土壤地下水初步调查标准化服务包 v1.0 · 2026-08</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电热恒温培养箱 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#fb923c;--accent-glow:#fdba74;--accent-bg:rgba(251,146,60,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2a1808 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(251,146,60,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(251,146,60,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(251,146,60,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#2a1808);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#fb923c,#fdba74);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(251,146,60,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input,.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">电热恒温培养箱</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">BPX-272</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">微生物培养 · 恒温孵育 · 菌落总数等</div>
+  <div class="hst">
+    <div><span class="n">220V</span><span class="l">拨到 I 开机</span></div>
+    <div><span class="n">1–999</span><span class="l">定时 min</span></div>
+    <div><span class="n">留空间</span><span class="l">对流前提</span></div>
+    <div><span class="n">降温</span><span class="l">取物防烫</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">电热恒温培养箱给微生物一个<b>恒定温度</b>的孵育环境——菌落总数 36℃、粪大肠菌群 44.5℃、霉菌 25℃……靠电热丝加热 + 风扇/自然对流把温度拉平。红线在<b>留空间保证对流、设好温度定时、培养完降温再取防烫</b>。看着简单，做错轻则温度不均长歪、重则烫着手。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔌</div><div class="in">220V 拨 I 开机</div><div class="id">接 220V 电源，把开关拨到 I 位开机。没通电就放样 = 常温孵育，菌不长或长杂。</div><span class="it">开机红线</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">SET 设温度/定时</div><div class="id">按 SET 设温度与定时（1–999 min）。温度设错 → 该长的没长、不该长的乱长。</div><span class="it">设定红线</span></div>
+    <div class="ic"><div class="ii">📦</div><div class="in">物品留空间</div><div class="id">培养物之间留空隙保证空气对流。塞太满 → 局部温度不均，结果不可比。</div><span class="it">放置红线</span></div>
+    <div class="ic"><div class="ii">🧤</div><div class="in">降温后取防烫</div><div class="id">培养完先降温再取物，防烫伤。长期不用涂油防锈、套罩防尘。</div><span class="it">取物红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>没开机就设温/放物、塞太满、没降温就取，系统都会直接提醒你</b>。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ BPX-272 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 待机</span>
+      <span style="font-size:10px;color:#475569">BPX-272 电热恒温培养箱</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 接 220V 电源，开关拨到 I</div>
+    <div class="acts"><button class="btn b1" id="btnPower" onclick="power()">🔌 通电开机（拨 I）</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② SET 设温度与定时（1–999 min）</div>
+    <div class="fld"><label>培养温度 (℃)</label><input type="number" id="iTemp" value="36" step="0.5"></div>
+    <div class="fld"><label>定时 (min)</label><input type="number" id="iTime" value="48" step="1"></div>
+    <div class="acts"><button class="btn b2" id="btnSet" onclick="setParam()" disabled>🌡️ 设定温度/定时</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 放入培养物（物品须留空间保证对流）</div>
+    <div class="fld"><label>放置方式</label><select id="iSpace"><option value="ok">物品间留空隙（正确）</option><option value="bad">塞满不留空间</option></select></div>
+    <div class="acts"><button class="btn b2" id="btnItem" onclick="putItem()" disabled>📦 放入培养物</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 培养完成 → 降温后取出</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">温度 ℃</div><div class="dd" id="dTemp">—</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+      <div class="dv"><div class="dl">箱内</div><div class="dd" id="dCool" style="font-size:13px">—</div></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="btnFinish" onclick="finish()" disabled>✔ 培养完成</button>
+      <button class="btn b2" id="btnTake" onclick="takeOut()" disabled>🧤 降温后取出</button>
+      <button class="btn b2" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">📦</div><div class="in">物品留空间对流</div><div class="id">培养物之间必须留空隙。塞太满 → 局部温度不均，菌落长势不一致，数据不可比。</div><span class="it">放置红线</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">温度/定时设准</div><div class="id">按 SET 设对温度与定时（1–999 min）。设错温度 → 目标菌不长或杂菌超标。</div><span class="it">设定红线</span></div>
+    <div class="ic"><div class="ii">🧤</div><div class="in">降温后取防烫</div><div class="id">培养完先降温再取物，防烫伤。长期不用涂油防锈、套罩。</div><span class="it">取物红线</span></div>
+    <div class="ic"><div class="ii">🔧</div><div class="in">维护与保养</div><div class="id">运行中除检验需要外避免频繁开箱门，保持温度稳定；长期不用防锈防尘。</div><span class="it">期间核查</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={power:false,set:false,item:false,finish:false,take:false};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function power(){
+  if(S.power){warn('已开机');return;}
+  S.power=true;$('btnPower').classList.add('on');$('btnPower').textContent='✅ 已通电开机';
+  setSts('🟢 已开机','sa');log('接220V电源，开关拨到 I，开机',true);
+  $('btnSet').disabled=false;warn('');
+}
+function setParam(){
+  if(!S.power){warn('请先通电开机');return;}
+  const t=+$('iTemp').value,time=+$('iTime').value;
+  if(t<=0||t>70){warn('⚠️ 培养温度不合理（常规≤70℃）');log('温度异常，已提醒',false);return;}
+  if(time<1||time>999){warn('⚠️ 定时须 1–999 min');log('定时超范围，已阻断',false);return;}
+  S.set=true;$('btnSet').classList.add('on');$('btnSet').textContent='✅ '+t+'℃ / '+time+'min';
+  $('dTemp').textContent=t;log('设定温度 '+t+'℃、定时 '+time+' min',true);
+  $('btnItem').disabled=false;warn('');
+}
+function putItem(){
+  if(!S.set){warn('请先设温度/定时');return;}
+  if($('iSpace').value==='bad'){warn('⚠️ 物品塞满不留空间 → 空气对流受阻、温度不均！');log('放置过挤，已阻断',false);return;}
+  if(S.item){warn('已放');return;}
+  S.item=true;$('btnItem').classList.add('on');$('btnItem').textContent='✅ 已放置（留空间）';
+  setSts('🟢 培养中','sa');$('dState').textContent='培养中';$('dCool').textContent='高温';
+  log('放入培养物，物品间留空隙保证对流，开始恒温培养',true);
+  $('btnFinish').disabled=false;warn('');
+}
+function finish(){
+  if(!S.item){warn('请先放入培养物');return;}
+  if(S.finish){warn('已完成');return;}
+  S.finish=true;$('btnFinish').classList.add('on');$('btnFinish').textContent='✅ 培养完成';
+  setSts('🟢 培养完成','sok');$('dState').textContent='完成';$('dCool').textContent='高温';
+  log('培养完成，开始降温',true);warn('');
+  setTimeout(()=>{$('dCool').textContent='已降温';log('✔ 箱内已降温，可取出',true);$('btnTake').disabled=false;},2500);
+}
+function takeOut(){
+  if(!S.finish){warn('培养未完成');return;}
+  if($('dCool').textContent!=='已降温'){warn('⚠️ 请先降温再取物，防烫伤！');log('未降温就取物，已阻断',false);return;}
+  if(S.take){warn('已取');return;}
+  S.take=true;$('btnTake').classList.add('on');$('btnTake').textContent='✅ 已取出';
+  setSts('🔒 完成','si');log('降温后取出培养物，流程结束',true);warn('');
+}
+function resetAll(){
+  S={power:false,set:false,item:false,finish:false,take:false};
+  $('btnPower').classList.remove('on');$('btnPower').textContent='🔌 通电开机（拨 I）';
+  $('btnSet').classList.remove('on');$('btnSet').textContent='🌡️ 设定温度/定时';$('btnSet').disabled=true;
+  $('btnItem').classList.remove('on');$('btnItem').textContent='📦 放入培养物';$('btnItem').disabled=true;
+  $('btnFinish').classList.remove('on');$('btnFinish').textContent='✔ 培养完成';$('btnFinish').disabled=true;
+  $('btnTake').classList.remove('on');$('btnTake').textContent='🧤 降温后取出';$('btnTake').disabled=true;
+  $('dTemp').textContent='—';$('dState').textContent='待机';$('dCool').textContent='—';
+  setSts('⏳ 待机','si');$('log').innerHTML='';warn('');
+}
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

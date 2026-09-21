@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工业废气甲烷检测 · 吸附管/热脱附-GC-FID</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5}
+        .header{background:linear-gradient(135deg,#0a1628,#1a2a4a);color:#fff;padding:20px;text-align:center}
+        .header h1{font-size:18px;font-weight:700}.header .sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px}
+        .header .badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(74,222,128,0.2);border-radius:10px;font-size:10px;color:#4ade80}
+        .container{max-width:720px;margin:0 auto;padding:16px}
+        .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}.card h2 .std{font-size:11px;color:#999;font-weight:400;margin-left:8px}.card p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+        .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:12px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:2px;transition:width .5s}
+        .step-indicator{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto}
+        .step-dot{flex:1;text-align:center;padding:6px 4px;border-radius:6px;font-size:10px;color:#999;background:#f5f5f5;cursor:pointer;min-width:56px;border:1px solid transparent}
+        .step-dot .num{font-size:13px;font-weight:700;display:block}
+        .step-dot.active{background:#f0fdf4;border-color:#4ade80;color:#166534;font-weight:600}.step-dot.done{background:#f0fdf4;border-color:#4ade80;color:#4ade80}
+        .lab-bench{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:10px;padding:20px;margin:12px 0;border:1px solid #e2e8f0;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .lab-bench .equip-icon{font-size:48px;margin-bottom:8px}.lab-bench .desc{font-size:13px;color:#475569;line-height:1.7}.lab-bench .status{padding:4px 12px;border-radius:10px;font-size:11px;font-weight:600;margin-top:8px}
+        .st-wait{background:#f1f5f9;color:#64748b}.st-run{background:#fef3c7;color:#ca8a04}.st-ok{background:#f0fdf4;color:#166534}.st-cool{background:#dbeafe;color:#1d4ed8}
+        .step-btn{padding:8px 24px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:linear-gradient(135deg,#4ade80,#22c55e);margin-top:8px}
+        .step-btn:hover{box-shadow:0 4px 12px rgba(74,222,128,0.3)}.step-btn:disabled{opacity:.4;cursor:default}.step-btn.purple{background:linear-gradient(135deg,#6366f1,#8b5cf6)}.step-btn.orange{background:linear-gradient(135deg,#f59e0b,#d97706)}
+        .info-box{padding:10px 14px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#166534;border:1px solid #bbf7d0;margin:8px 0}
+        .safety-box{padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:#92400e;border:1px solid #fde68a;margin:8px 0}
+        .data-table{width:100%;font-size:12px;border-collapse:collapse;margin:8px 0}
+        .data-table th{background:#0a1628;color:#fff;padding:6px;text-align:left}.data-table td{padding:5px 6px;border-bottom:1px solid #e0e0e0}
+        .result-box{padding:20px;border-radius:10px;text-align:center;margin-top:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:none}
+        .result-box .big{font-size:40px;font-weight:800;color:#1e293b}.result-box .lbl{font-size:13px;color:#666;margin-top:4px}
+
+        .tube-visual{width:30px;height:140px;margin:0 auto 8px;position:relative;background:linear-gradient(to right,#94a3b8,#cbd5e1,#94a3b8);border-radius:4px;overflow:hidden;border:2px solid #64748b}
+        .tube-visual .sorbent{position:absolute;left:2px;right:2px;background:linear-gradient(to bottom,#1e293b,#0f172a);border-radius:2px;transition:height .5s}
+        .tube-visual .sorbent-top{position:absolute;left:2px;right:2px;background:linear-gradient(to bottom,#334155,#1e293b);border-radius:2px;top:20%;height:60%;transition:opacity .5s}
+        .tube-visual .label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:#999;white-space:nowrap}
+        .tube-visual .arrow{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:12px;color:#ca8a04}
+
+        .td-box{background:linear-gradient(135deg,#1e293b,#334155);border-radius:10px;padding:16px;margin:8px 0;text-align:center}
+        .td-box .temp{font-size:28px;font-weight:700;color:#f59e0b}.td-box .lbl2{font-size:11px;color:#94a3b8;margin-top:2px}
+        .gc-chart{height:80px;background:#0f172a;border-radius:6px;margin:8px 0;position:relative;overflow:hidden}
+        .gc-chart .ch4-peak{position:absolute;bottom:0;left:20%;width:12px;height:70px;background:#4ade80;border-radius:2px 2px 0 0;transition:height .5s}
+        .gc-chart .air-peak{position:absolute;bottom:0;left:5%;width:8px;height:25px;background:#f59e0b;border-radius:2px 2px 0 0}
+
+        .td-animation{display:flex;gap:16px;justify-content:center;align-items:center;margin:12px 0}
+        .td-trap{width:36px;height:60px;border-radius:4px;position:relative;transition:background .5s}
+        .td-trap .lbl{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:#94a3b8;white-space:nowrap}
+        .td-trap.cold{background:linear-gradient(to bottom,#60a5fa,#3b82f6)}
+        .td-trap.hot{background:linear-gradient(to bottom,#fbbf24,#f59e0b)}
+
+        .flow-path{display:flex;gap:4px;align-items:center;justify-content:center;margin:8px 0;flex-wrap:wrap}
+        .fp-item{padding:6px 10px;background:#f1f5f9;border-radius:6px;font-size:11px;color:#475569}
+        .fp-arrow{font-size:14px;color:#94a3b8}
+
+        @media (max-width:600px){.data-table{font-size:11px}}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔥 工业废气甲烷检测 · 吸附管/热脱附-GC-FID</h1>
+        <div class="sub">Carboxen-1000吸附管采样 · 二级热脱附 · 气相色谱FID测定</div>
+        <div class="badge">🔬 场景：某化工厂排气筒VOCs治理设施出口监测</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>📋 监测信息</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;font-size:12px;color:#555;">
+                <span><strong>样品编号：</strong>CH₄-2026-0622-001</span><span><strong>监测点位：</strong>排气筒出口 采样口</span>
+                <span><strong>吸附管：</strong>Carboxen-1000 不锈钢管</span><span><strong>方法参考：</strong>HJ 38-2017 / EPA 25A</span>
+                <span><strong>采样流速：</strong>50 mL/min</span><span><strong>采样时长：</strong>30 min</span>
+                <span><strong>热脱附：</strong>二级冷阱聚焦</span><span><strong>检测器：</strong>FID 氢火焰离子化</span>
+            </div>
+        </div>
+
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="step-indicator" id="stepDots">
+            <div class="step-dot active"><span class="num">①</span>装管</div>
+            <div class="step-dot"><span class="num">②</span>采样</div>
+            <div class="step-dot"><span class="num">③</span>热脱附</div>
+            <div class="step-dot"><span class="num">④</span>GC-FID</div>
+            <div class="step-dot"><span class="num">⑤</span>定量</div>
+            <div class="step-dot"><span class="num">⑥</span>报告</div>
+        </div>
+
+        <!-- ===== 步骤0：装管准备 ===== -->
+        <div class="card step-panel active" id="step0">
+            <h2>① 吸附管准备 <span class="std">老化·冷却·密封</span></h2>
+            <p>Carboxen-1000吸附管使用前需高温老化去除残留。</p>
+            <div class="lab-bench">
+                <div class="equip-icon">🧪</div>
+                <div class="desc">
+                    <strong>吸附管老化</strong><br>
+                    Carboxen-1000 不锈钢管<br>
+                    350℃氮气吹扫老化60分钟<br>
+                    冷却后两端密封，4℃保存
+                </div>
+                <div class="status st-wait" id="s0Status">⏳ 待老化</div>
+            </div>
+
+            <div class="flow-path">
+                <div class="fp-item" style="background:#e2e8f0;"><strong>N₂</strong> 50mL/min</div>
+                <span class="fp-arrow">→</span>
+                <div class="fp-item" style="background:#cbd5e1;"><strong>吸附管</strong></div>
+                <span class="fp-arrow">→</span>
+                <div class="fp-item" style="background:#fef3c7;"><strong>350℃</strong></div>
+                <span class="fp-arrow">→</span>
+                <div class="fp-item" style="background:#94a3b8;">废气</div>
+            </div>
+
+            <button class="step-btn" onclick="goStep(1)">✅ 吸附管已老化 → 现场采样</button>
+        </div>
+
+        <!-- ===== 步骤1：采样 ===== -->
+        <div class="card step-panel" id="step1">
+            <h2>② 现场采样 <span class="std">排气筒出口 30min</span></h2>
+            <p>将老化好的吸附管连接便携式采样泵，以50mL/min采样30min。</p>
+
+            <div style="display:flex;gap:16px;align-items:center;justify-content:center;margin:12px 0;">
+                <div style="text-align:center;">
+                    <div class="tube-visual">
+                        <div class="arrow">⬇</div>
+                        <div class="sorbent" id="tubeSorb" style="bottom:5%;height:80%;"></div>
+                        <div class="label">Carboxen管</div>
+                    </div>
+                </div>
+                <div style="font-size:24px;color:#94a3b8;">←</div>
+                <div style="text-align:center;padding:10px 16px;background:#e8f5e9;border-radius:8px;">
+                    <div style="font-size:14px;font-weight:700;color:#166534;">采样泵</div>
+                    <div style="font-size:11px;color:#666;">50 mL/min</div>
+                </div>
+                <div style="font-size:24px;color:#94a3b8;">←</div>
+                <div style="text-align:center;padding:10px;background:#fffbeb;border-radius:8px;">
+                    <div style="font-size:12px;color:#92400e;">排气筒</div>
+                    <div style="font-size:10px;color:#999;">工业废气</div>
+                </div>
+            </div>
+
+            <div style="text-align:center;padding:16px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:10px;margin:8px 0;">
+                <div style="font-size:24px;font-weight:700;color:#166534;">50 mL/min</div>
+                <div style="font-size:11px;color:#666;">采样流量 · 30分钟</div>
+                <div style="font-size:36px;font-weight:700;color:#ca8a04;margin:8px 0;" id="sampTimer">30:00</div>
+                <div id="sampStatus" style="font-size:12px;color:#666;">⏳ 待采样</div>
+                <div style="margin-top:4px;font-size:12px;color:#555;">采样体积：<strong id="sampVol">0.0</strong> L</div>
+            </div>
+
+            <div class="safety-box">
+                ⚠️ 采样前检查管路气密性！排气筒温度较高时需用不锈钢探针引流冷却后再接吸附管。
+            </div>
+
+            <button class="step-btn" id="sampBtn" onclick="startSampling()">▶ 开始采样</button>
+        </div>
+
+        <!-- ===== 步骤2：热脱附 ===== -->
+        <div class="card step-panel" id="step2">
+            <h2>③ 二级热脱附 <span class="std">捕集→聚焦→进样</span></h2>
+            <p>采样管装入热脱附仪，二级冷阱富集后进样GC-FID。</p>
+
+            <div class="td-animation" id="tdAnim">
+                <div style="text-align:center;"><div class="td-trap hot"><div class="lbl">一级脱附</div></div><div style="font-size:10px;color:#94a3b8;margin-top:16px;">350℃</div></div>
+                <div style="font-size:24px;color:#94a3b8;">→</div>
+                <div style="text-align:center;"><div class="td-trap cold"><div class="lbl">冷阱聚焦</div></div><div style="font-size:10px;color:#94a3b8;margin-top:16px;">-30℃</div></div>
+                <div style="font-size:24px;color:#94a3b8;">→</div>
+                <div style="text-align:center;"><div class="td-trap cold"><div class="lbl">二级脱附</div></div><div style="font-size:10px;color:#94a3b8;margin-top:16px;">300℃→GC</div></div>
+            </div>
+
+            <div class="lab-bench" style="min-height:80px;">
+                <div class="desc" id="tdDesc">点击"开始热脱附"启动三级程序</div>
+                <div class="status st-wait" id="tdStatus">⏳ 待开始</div>
+            </div>
+
+            <div class="info-box" id="tdInfo" style="display:none;">
+                ✅ 热脱附完成 · 甲烷已进入GC-FID系统
+            </div>
+
+            <button class="step-btn" id="tdBtn" onclick="startTD()">▶ 开始热脱附</button>
+        </div>
+
+        <!-- ===== 步骤3：GC-FID ===== -->
+        <div class="card step-panel" id="step3">
+            <h2>④ GC-FID分析 <span class="std">色谱分离+FID检测</span></h2>
+            <p>甲烷经色谱柱分离后进入FID检测器，产生电信号。</p>
+
+            <div class="gc-chart" id="gcChart">
+                <!-- 基线 -->
+                <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:#4ade80;opacity:0.2;"></div>
+                <!-- 空气峰 -->
+                <div class="air-peak" style="left:5%;height:20px;animation:peakUp 0.5s forwards;"></div>
+                <!-- 甲烷峰 -->
+                <div class="ch4-peak" id="ch4Peak" style="left:15%;height:5px;"></div>
+                <!-- 时间轴 -->
+                <div style="position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:space-between;font-size:8px;color:#94a3b8;padding:0 4px;">
+                    <span>0.5 min 空气</span>
+                    <span id="gcRt">1.2 min 甲烷</span>
+                    <span>3.0 min</span>
+                </div>
+            </div>
+
+            <div class="info-box" id="gcInfo" style="display:none;">
+                📊 甲烷保留时间：1.52min · 峰面积：<strong id="peakArea">185420</strong> μV·s<br>
+                峰形对称因子0.98 · 分离度R＞1.5（与空气峰完全分离 ✅）
+            </div>
+
+            <button class="step-btn" id="gcBtn" onclick="startGC()">▶ 开始GC-FID分析</button>
+        </div>
+
+        <!-- ===== 步骤4：定量 ===== -->
+        <div class="card step-panel" id="step4">
+            <h2>⑤ 定量计算 <span class="std">外标法 · 标准气体</span></h2>
+            <p>用甲烷标准气体建立标准曲线，外标法定量。</p>
+
+            <div style="margin:12px 0;">
+                <table class="data-table">
+                    <thead><tr><th>标准点</th><th>CH₄浓度(ppm)</th><th>峰面积(μV·s)</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>5.0</td><td>15420</td></tr>
+                        <tr><td>2</td><td>10.0</td><td>30850</td></tr>
+                        <tr><td>3</td><td>50.0</td><td>154800</td></tr>
+                        <tr><td>4</td><td>100.0</td><td>309600</td></tr>
+                        <tr><td>5</td><td>500.0</td><td>1548500</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box">
+                    📊 标准曲线：y = 3094x + 285, R² = 0.9999 · 样品峰面积：185420 → CH₄ = <strong>59.8 ppm</strong>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;font-size:12px;">
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">采样体积</div><div style="font-weight:700;">1.50 L</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">标况体积</div><div style="font-weight:700;color:#166534;">1.38 L</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">CH₄ (ppm)</div><div style="font-weight:700;color:#166534;">59.8 ppm</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:6px;">
+                    <div style="color:#999;">CH₄ (mg/m³)</div><div style="font-weight:700;color:#166534;">39.2 mg/m³</div>
+                </div>
+            </div>
+
+            <button class="step-btn" onclick="goStep(5)">✅ 定量完成 → 出报告</button>
+        </div>
+
+        <!-- ===== 步骤5：报告 ===== -->
+        <div class="card step-panel" id="step5">
+            <h2>⑥ 检测报告 <span class="std">排气筒甲烷排放浓度</span></h2>
+
+            <div class="result-box" id="finalResult" style="display:block;">
+                <div class="big">59.8 <span style="font-size:20px;">ppm</span> / 39.2 <span style="font-size:20px;">mg/m³</span></div>
+                <div class="lbl">甲烷排放浓度 · 以CH₄计</div>
+                <div style="margin-top:8px;">
+                    <span style="display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#fff;background:#00e400;">达标 ✅</span>
+                </div>
+            </div>
+
+            <table class="data-table" style="margin-top:12px;">
+                <thead><tr><th>参数</th><th>结果</th><th>限值</th><th>判定</th></tr></thead>
+                <tbody>
+                    <tr><td>甲烷 (ppm)</td><td>59.8</td><td>—</td><td>—</td></tr>
+                    <tr><td>甲烷 (mg/m³)</td><td>39.2</td><td>地方标准 DB41 系列 ≤100</td><td style="color:#166534;">✅ 达标</td></tr>
+                    <tr><td>总烃 (以CH₄计)</td><td>72.5</td><td>HJ 604 ≤120</td><td style="color:#166534;">✅ 达标</td></tr>
+                </tbody>
+            </table>
+
+            <div style="padding:12px;background:#f8fafc;border-radius:8px;margin:8px 0;font-size:12px;color:#555;">
+                <strong>质控数据</strong><br>
+                · 方法空白：＜MDL (0.1ppm) ✅<br>
+                · 平行样RPD：4.5%（≤15% ✅）<br>
+                · 标准曲线R²=0.9999 ✅<br>
+                · 标气验证(50.0ppm)：结果49.2ppm，误差-1.6%（≤±5% ✅）
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="step-btn purple" onclick="resetAll()">🔄 重做实验</button>
+                <button class="step-btn orange" onclick='alert(`甲烷检测报告\n─────────────\n样品编号：CH₄-2026-0622-001\n监测点位：排气筒出口\n采样体积：1.50L 标况\n\nCH₄浓度：59.8 ppm / 39.2 mg/m³\n\n结论：符合排放标准 ✅`)'>📄 导出报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let samplingDone = false;
+        let tdDone = false;
+        let gcDone = false;
+
+        function goStep(n) { currentStep = n; updateUI(); }
+
+        function updateUI() {
+            document.querySelectorAll('.step-dot').forEach((d,i) => {
+                d.classList.remove('active','done');
+                if (i < currentStep) d.classList.add('done');
+                else if (i === currentStep) d.classList.add('active');
+            });
+            document.querySelectorAll('.step-panel').forEach((p,i) => {
+                p.style.display = i === currentStep ? 'block' : 'none';
+            });
+            document.getElementById('progressFill').style.width = (currentStep / 5 * 100) + '%';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        // 采样
+        function startSampling() {
+            const btn = document.getElementById('sampBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 采样中…';
+            document.getElementById('sampStatus').textContent = '🌫️ 采样中';
+            let sec = 30;
+            const timer = setInterval(() => {
+                sec--;
+                document.getElementById('sampTimer').textContent = `00:${String(sec).padStart(2,'0')}`;
+                const vol = (30 - sec) * 0.05;
+                document.getElementById('sampVol').textContent = vol.toFixed(2);
+                document.getElementById('tubeSorb').style.height = Math.max(5, 80 - (30-sec)*2.5) + '%';
+                if (sec <= 0) {
+                    clearInterval(timer);
+                    btn.textContent = '✅ 采样完成';
+                    document.getElementById('sampStatus').textContent = '✅ 采样完成(1.50L)';
+                    document.getElementById('sampVol').textContent = '1.50';
+                    samplingDone = true;
+                    const nxt = document.querySelector('#step1 .step-btn');
+                    nxt.textContent = '✅ 采样完成 → 热脱附';
+                    nxt.onclick = () => goStep(2);
+                    goStep(2);
+                }
+            }, 300);
+        }
+
+        // 热脱附
+        function startTD() {
+            const btn = document.getElementById('tdBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 热脱附中…';
+            document.getElementById('tdStatus').textContent = '🔥 热脱附运行中';
+            document.getElementById('tdStatus').className = 'status st-run';
+
+            const phases = [
+                { t1:'hot', t2:'cold', t3:'cold', d:'一级脱附：350℃ 氮气吹扫10min → 甲烷释放' },
+                { t1:'hot', t2:'cold', t3:'cold', d:'冷阱聚焦：-30℃捕集甲烷' },
+                { t1:'hot', t2:'hot', t3:'hot', d:'二级脱附：300℃快速升温 → 注入GC' },
+            ];
+            let i = 0;
+            const descEl = document.getElementById('tdDesc');
+            const timer = setInterval(() => {
+                if (i >= phases.length) {
+                    clearInterval(timer);
+                    document.getElementById('tdInfo').style.display = 'block';
+                    btn.textContent = '✅ 脱附完成 → GC-FID分析';
+                    btn.onclick = () => goStep(3);
+                    btn.disabled = false;
+                    tdDone = true;
+                    document.getElementById('tdStatus').textContent = '✅ 热脱附完成';
+                    document.getElementById('tdStatus').className = 'status st-ok';
+                    return;
+                }
+                const p = phases[i];
+                if (descEl) descEl.textContent = p.d;
+                i++;
+            }, 400); // 400ms × 3步 ≈ 1.2秒快速完成
+        }
+
+        // GC-FID
+        function startGC() {
+            const btn = document.getElementById('gcBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ GC分析中…';
+            let progress = 0;
+            const timer = setInterval(() => {
+                progress += 0.08;
+                document.getElementById('gcRt').textContent = `${progress.toFixed(2)} min 甲烷`;
+                const peakH = Math.min(70, progress * 50);
+                document.getElementById('ch4Peak').style.height = peakH + 'px';
+                if (progress >= 1.6) {
+                    clearInterval(timer);
+                    document.getElementById('gcInfo').style.display = 'block';
+                    btn.textContent = '✅ 分析完成 → 定量';
+                    btn.onclick = () => goStep(4);
+                    btn.disabled = false;
+                    gcDone = true;
+                    document.getElementById('ch4Peak').style.height = '70px';
+                }
+            }, 80);
+        }
+
+        function resetAll() {
+            currentStep = 0;
+            samplingDone = false; tdDone = false; gcDone = false;
+            document.getElementById('sampTimer').textContent = '30:00';
+            document.getElementById('sampStatus').textContent = '⏳ 待采样';
+            document.getElementById('sampVol').textContent = '0.0';
+            document.getElementById('tubeSorb').style.height = '80%';
+            document.getElementById('tdInfo').style.display = 'none';
+            document.getElementById('gcInfo').style.display = 'none';
+            document.getElementById('ch4Peak').style.height = '5px';
+            document.getElementById('tdDesc').textContent = '点击"开始热脱附"启动三级程序';
+            document.getElementById('tdStatus').textContent = '⏳ 待开始';
+            document.getElementById('tdStatus').className = 'status st-wait';
+
+            ['sampBtn','tdBtn','gcBtn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) { b.disabled = false; b.textContent = id==='sampBtn'?'▶ 开始采样':id==='tdBtn'?'▶ 开始热脱附':'▶ 开始GC-FID分析'; }
+            });
+            document.getElementById('s0Status').textContent = '⏳ 待老化';
+            document.getElementById('s0Status').className = 'status st-wait';
+
+            // 重置TD显示
+            document.querySelector('#tdAnim').innerHTML = 
+                ['<div style="text-align:center;"><div class="td-trap" style="background:linear-gradient(to bottom,#fbbf24,#f59e0b);"><div class="lbl">一级脱附</div></div></div>',
+                 '<div style="font-size:24px;color:#94a3b8;">→</div>',
+                 '<div style="text-align:center;"><div class="td-trap cold"><div class="lbl">冷阱聚焦</div></div></div>',
+                 '<div style="font-size:24px;color:#94a3b8;">→</div>',
+                 '<div style="text-align:center;"><div class="td-trap cold"><div class="lbl">二级脱附</div></div></div>'].join('');
+
+            goStep(0);
+        }
+
+        updateUI();
+    </script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 38-2017</td><td>固定污染源废气 总烃、甲烷和非甲烷总烃的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 604-2017</td><td>环境空气 总烃、甲烷和非甲烷总烃的测定 直接进样-气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>2</b> 项标准：<b>2</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
+</body>
+</html>

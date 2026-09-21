@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水和废水采样原始记录表 · 填表向导</title>
+<style>
+  :root{
+    --bg:#0a0e17; --bg2:#0f1626; --card:#141d33; --card2:#1b2742;
+    --line:#243456; --txt:#e6edf7; --mut:#8aa0c4; --accent:#06b6d4; --accent2:#22d3ee;
+    --warn:#f59e0b; --bad:#ef4444; --ok:#22c55e; --chip:#16233f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;line-height:1.6}
+  a{color:var(--accent2)}
+  .hr{background:linear-gradient(135deg,#062a33,#0a0e17 70%);border-bottom:1px solid var(--line);padding:34px 22px 26px}
+  .hr .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid var(--accent);border-radius:20px;padding:3px 12px;margin-bottom:12px}
+  .hr h1{margin:0 0 8px;font-size:26px;font-weight:800}
+  .hr p{margin:4px 0;color:var(--mut);max-width:820px}
+  #sp{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;z-index:50;transition:width .3s}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
+  .sec{margin:26px 0}
+  .sec h2{font-size:18px;color:var(--accent2);border-left:4px solid var(--accent);padding-left:10px;margin:0 0 12px}
+  .why{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .why .c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .why .c b{color:var(--accent2)}
+  /* 向导布局 */
+  .wiz{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  @media(max-width:880px){.wiz{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;min-height:420px}
+  .panel.r{background:var(--card2)}
+  .pstep{font-size:13px;color:var(--accent2);font-weight:700;letter-spacing:1px}
+  .ptitle{font-size:21px;font-weight:800;margin:6px 0 12px}
+  /* 白话卡 */
+  .hint{background:#0c1726;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:14px}
+  .hint .row{margin:5px 0}
+  .hint .k{color:var(--accent2);font-weight:700;margin-right:6px}
+  .hint .pit{color:var(--warn);background:rgba(245,158,11,.08);border-radius:6px;padding:2px 6px;display:inline-block;margin-top:2px}
+  /* 表单 */
+  .fld{margin:12px 0}
+  .fld label{display:block;font-size:13px;color:var(--mut);margin-bottom:5px}
+  .fld label .req{color:var(--bad);margin-left:3px}
+  .fld input,.fld select,.fld textarea{width:100%;background:#0a1220;border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:10px 12px;font-size:15px;font-family:inherit}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--accent)}
+  .fld textarea{resize:vertical;min-height:64px}
+  .chk{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .chk label{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;color:var(--txt);cursor:pointer;margin:0}
+  .chk label.on{background:rgba(6,182,212,.18);border-color:var(--accent);color:#fff}
+  .chk input{width:auto;margin:0}
+  .btns{display:flex;gap:10px;margin-top:16px}
+  .btn{flex:1;border:none;border-radius:9px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+  .btn.p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04222a}
+  .btn.s{background:#1b2742;color:var(--txt);border:1px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  /* 右侧模拟表 */
+  .sheet{border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:12.5px}
+  .sheet .srow{display:grid;grid-template-columns:96px 1fr;border-bottom:1px solid var(--line)}
+  .sheet .srow:last-child{border-bottom:none}
+  .sheet .sl{background:#0c1726;padding:8px 10px;color:var(--mut);border-right:1px solid var(--line)}
+  .sheet .sv{padding:8px 10px;color:var(--txt);min-height:34px;word-break:break-all}
+  .sheet .sv.empty{color:#46587d}
+  .sheet .srow.active{background:rgba(6,182,212,.12);box-shadow:inset 3px 0 0 var(--accent)}
+  .sheet .srow.active .sl{color:var(--accent2);font-weight:700}
+  .sheet .srow.done .sv{color:#bfe9f2}
+  .sheet .srow.done .sv::after{content:" ✓";color:var(--ok)}
+  /* 日志 */
+  #log{margin-top:14px;font-size:13px;max-height:150px;overflow:auto}
+  #log .l{padding:5px 9px;border-radius:7px;margin:4px 0}
+  #log .ok{background:rgba(34,197,94,.12);color:#9af0bf}
+  #log .err{background:rgba(239,68,68,.14);color:#ffb4b4}
+  #log .info{background:#0c1726;color:var(--mut)}
+  /* 红线卡 */
+  .red{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.4);border-radius:12px;padding:16px;margin-top:8px}
+  .red h3{margin:0 0 10px;color:#ff9a9a;font-size:15px}
+  .red li{margin:7px 0;font-size:14px}
+  .red b{color:#ffd0a0}
+  /* 生成结果 */
+  #result{display:none;background:#0c1726;border:1px solid var(--accent);border-radius:12px;padding:16px;margin-top:16px;white-space:pre-wrap;font-family:"Consolas",monospace;font-size:13px;line-height:1.7}
+  .foot{text-align:center;color:var(--mut);font-size:12.5px;padding:30px 10px;border-top:1px solid var(--line);margin-top:30px}
+  .hl{color:var(--accent2);font-weight:700}
+  .skip{font-size:12px;color:var(--mut);margin-top:8px;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<header class="hr">
+  <span class="tag">ENV LAB · 采样填表向导</span>
+  <h1>水和废水采样原始记录表 · 一步步填</h1>
+  <p>给现场采样新人的引导式填表。不用懂专业，<span class="hl">照着每一步的提示填</span>，填错了系统会当场拦你并告诉你为什么——保证交上去的表不出错。</p>
+  <p style="font-size:12.5px;opacity:.75">本向导依据真实环境检测机构《水和废水采样原始记录表》结构整理，已做脱敏处理，作为通用培训模板使用。</p>
+</header>
+
+<div class="wrap">
+
+  <section class="sec">
+    <h2>为什么这张表不能瞎填</h2>
+    <div class="why">
+      <div class="c"><b>① 样品靠编号找</b><br>实验室不认识你，只认样品编号。编号写错/重复，样品就找不回来了。</div>
+      <div class="c"><b>② 固定剂加错=白跑</b><br>该加硫酸的没加，水样里的指标会变质，这瓶水直接作废，你得再跑一趟。</div>
+      <div class="c"><b>③ 它是法律证据</b><br>原始记录要存档，乱填后面核查说不清，责任算采样人的。</div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>填表向导（共 15 步）</h2>
+    <div class="wiz">
+      <!-- 左：表单向导 -->
+      <div class="panel">
+        <div class="pstep" id="pstep">第 1 / 15 步</div>
+        <div class="ptitle" id="ptitle">—</div>
+        <div class="hint" id="hint"></div>
+        <div id="fields"></div>
+        <div class="btns">
+          <button class="btn s" id="btnPrev" onclick="prev()">上一步</button>
+          <button class="btn p" id="btnNext" onclick="next()">验证并下一步</button>
+        </div>
+        <div class="skip" onclick="skip()">这一步我不填，先跳过 →</div>
+        <div id="log"></div>
+      </div>
+      <!-- 右：模拟表格 -->
+      <div class="panel r">
+        <div style="font-size:13px;color:var(--mut);margin-bottom:8px">📋 你的原始记录表（填了什么实时显示在这里）</div>
+        <div class="sheet" id="sheet"></div>
+        <div style="margin-top:14px">
+          <button class="btn p" id="btnGen" onclick="generate()" style="display:none;width:100%">✅ 全部填完，生成原始记录</button>
+        </div>
+        <div id="result"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>⚠️ 四条红线（固定剂，错一处样品就废）</h2>
+    <div class="red">
+      <h3>样品保存与固定 · 核心质控</h3>
+      <ul>
+        <li><b>加硫酸</b>（pH≤2）：测 <b>COD、磷酸盐、总磷、总氮、氨氮、TOC</b> 时必须加。</li>
+        <li><b>加盐酸</b>：测 <b>石油类、动植物油</b> 时加。</li>
+        <li><b>加氢氧化钠</b>：测 <b>六价铬、氰化物</b> 时加。</li>
+        <li><b>加硝酸</b>（pH≤2）：测 <b>硼、钠、钾、铜、锌、铍、镁、钙、锰、铁、镍、砷、镉、铅、银</b> 等金属时加。</li>
+        <li><b>溶解氧 DO</b>：现场加 <b>1ml 硫酸锰 + 2ml 碱性碘化钾</b>，盖严颠倒混合——回实验室再加就没用了。</li>
+        <li><b>挥发酚</b>：先用磷酸调到合适 pH，再加 <b>0.2g 抗坏血酸</b> 除去水里残余的氯。</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="foot">和小宋一起玩科学 · 环境实验 采样培训 · 依据真实受控空白表构建（已脱敏）</div>
+</div>
+
+<script>
+/* ====== 固定剂映射（依据真实空白表） ====== */
+const FIX = {
+  sulfuric:["COD","磷酸盐","总磷","总氮","氨氮","TOC"],
+  hcl:["石油类","动植物油"],
+  naoh:["六价铬","氰化物"],
+  hno3:["硼","钠","钾","铜","锌","铍","镁","钙","锰","铁","镍","砷","镉","铅","银"],
+  doFix:["DO"]
+};
+const ALL_ITEMS = ["pH","SS","CODCr","BOD5","色度","氨氮","磷酸盐","总磷","总氮","石油类","动植物油","DO","CODMn","LAS","总铬","六价铬","铜","锌","铅","镉","镍","银","汞","砷","硼","铁","亚铁","锰","钾","钠","钙","镁","锡","硒","铝","铍","硅","氟化物","氰化物","苯系物","VOCs","硝酸盐","亚硝酸盐","挥发酚","硫化物","硫酸盐","甲醛","苯胺","氯化物","总硬度","总碱度","粪大肠菌群","总大肠菌群","大肠杆菌","菌落总数","臭和味","肉眼可见物","其他"];
+const ONSITE = ["pH","水温","DO","电导率","透明度(塞氏盘)","余氯"];
+const TRAIT = ["微弱气味","明显气味","少量浮油","大量浮油","臭和味","肉眼可见物"];
+
+const state = {};
+let cur = 0;
+
+/* ====== 步骤定义 ====== */
+const STEPS = [
+  { id:"entrust_no", title:"委托编号",
+    hint:{what:"任务单上给你的那个编号，相当于这批样品的“身份证号”。",from:"公司下发的《检测任务委托书》，照抄上面印的编号。",unit:"",example:"比如 WT-2026-0712",pit:"别自己编！必须和任务单一字不差，后面所有样品都挂在这个号下面。"},
+    fields:[{k:"entrust_no",l:"委托编号",t:"text",ph:"WT-2026-0712",req:true}],
+    validate:s=>req(s.entrust_no,"委托编号") },
+
+  { id:"sample_date", title:"采样日期",
+    hint:{what:"你今天去现场采样的日子，年-月-日。",from:"看手机/手表上的当天日期。",unit:"年-月-日",example:"2026-07-19",pit:"不能填未来的日期；一般就填今天。"},
+    fields:[{k:"sample_date",l:"采样日期",t:"date",req:true}],
+    validate:s=>{
+      if(!s.sample_date) return bad("日期必填");
+      if(s.sample_date>new Date().toISOString().slice(0,10)) return bad("日期不能晚于今天");
+      return ok();
+    } },
+
+  { id:"weather", title:"天气状况",
+    hint:{what:"采样当时外面的天气。",from:"抬头看天，如实选。",unit:"",example:"晴 / 多云 / 阴 / 雨",pit:"下雨会影响部分样品保存，别乱填，后续人要参考。"},
+    fields:[{k:"weather",l:"天气状况",t:"select",opts:["晴","多云","阴","雨"],req:true}],
+    validate:s=>req(s.weather,"天气状况") },
+
+  { id:"method_basis", title:"方法依据",
+    hint:{what:"按哪个标准方法测，通常固定填这一句。",from:"默认就抄下面这句，一般不用改。",unit:"",example:"《水和废水监测分析方法》（第四版）增补版；透明度用塞氏盘法",pit:"新手照抄默认内容即可，别留空。"},
+    fields:[{k:"method_basis",l:"方法依据",t:"text",ph:"《水和废水监测分析方法》（第四版）增补版",req:true}],
+    validate:s=>req(s.method_basis,"方法依据") },
+
+  { id:"instrument_no_w", title:"仪器编号及型号",
+    hint:{what:"你手里这台采水器/采样设备的编号和型号。",from:"设备身上的铭牌，照抄。",unit:"",example:"A-202 便携式采水器",pit:"抄错号，这台设备以后溯源就找不到了。"},
+    fields:[{k:"instrument_no_w",l:"仪器编号及型号",t:"text",ph:"如 A-202 便携式采水器",req:true}],
+    validate:s=>req(s.instrument_no_w,"仪器编号及型号") },
+
+  { id:"sample_time", title:"采样时间（起—止）",
+    hint:{what:"你从几点开始采、到几点采完这一段。",from:"看手机计时。",unit:"时:分 — 时:分",example:"09:00 — 09:15",pit:"要填“起”和“止”两个时间，别只填一个点。"},
+    fields:[{k:"sample_time",l:"采样时间（起—止）",t:"text",ph:"09:00 — 09:15",req:true}],
+    validate:s=>req(s.sample_time,"采样时间") },
+
+  { id:"sample_no", title:"样品编号",
+    hint:{what:"给你采的这瓶水贴的标签号，按顺序编。",from:"按采样顺序自己编。",unit:"",example:"S-001、S-002……",pit:"每个号唯一、别重复；标签要用防水笔写在瓶身上，实验室就靠这串号找样品。"},
+    fields:[{k:"sample_no",l:"样品编号",t:"text",ph:"S-001",req:true}],
+    validate:s=>req(s.sample_no,"样品编号") },
+
+  { id:"analysis_items", title:"分析项目（要测哪些指标）",
+    hint:{what:"这次这瓶水要化验哪些项目，从清单里勾。",from:"看任务单上写的要求测什么。",unit:"",example:"勾 pH、COD、氨氮、石油类……",pit:"你勾了什么，下一步“固定剂”就要对应加什么——系统会帮你核对。"},
+    fields:[{k:"analysis_items",l:"分析项目（可多选）",t:"multiselect",opts:ALL_ITEMS,req:true}],
+    validate:s=>(s.analysis_items&&s.analysis_items.length)?ok():bad("至少勾选 1 个分析项目") },
+
+  { id:"onsite_items", title:"现场测定项目（当场能测的）",
+    hint:{what:"有些指标现场就能测，当场测当场记。",from:"手里的便携仪器能测哪些就勾哪些。",unit:"",example:"pH、水温、DO、电导率、透明度、余氯",pit:"这部分是“现场测”的，别回实验室再补；本步可跳过不勾。"},
+    fields:[{k:"onsite_items",l:"现场测定项目（可多选，非必填）",t:"multiselect",opts:ONSITE,req:false}],
+    validate:()=>ok() },
+
+  { id:"sample_trait", title:"样品性状（水看起来咋样）",
+    hint:{what:"这瓶水表面上看起来什么状态，如实勾。",from:"眼睛看、鼻子闻。",unit:"",example:"微弱气味 / 少量浮油 / 肉眼可见物",pit:"这是样品状态的证据，别全空着；没异常也至少勾一个描述。"},
+    fields:[{k:"sample_trait",l:"样品性状（可多选）",t:"multiselect",opts:TRAIT,req:true}],
+    validate:s=>(s.sample_trait&&s.sample_trait.length)?ok():bad("至少勾选 1 项样品性状") },
+
+  { id:"container_fixative", title:"采样容器及固定剂 ★最重要",
+    hint:{what:"装水的瓶子 + 你往里加了什么“保存药水（固定剂）”。",from:"瓶子看标签；固定剂看你上一步勾的分析项目，系统已算出该加什么。",unit:"",example:"棕色玻璃瓶 + 加硫酸至 pH≤2",pit:"★固定剂加错或漏加=这瓶水直接作废！点“按分析项目自动生成”让它帮你写，再核对。"},
+    fields:[
+      {k:"container_fixative",l:"采样容器及固定剂",t:"text",ph:"如：棕色玻璃瓶 + 加硫酸至 pH≤2",req:true},
+    ],
+    auto:true,
+    validate:s=>{
+      if(!s.container_fixative) return bad("容器及固定剂必填");
+      const need = needFix(s.analysis_items||[]);
+      const txt = s.container_fixative;
+      for(const f of need){
+        if(!f.keywords.some(kw=>txt.includes(kw)))
+          return bad("你勾了【"+f.items.join("、")+"】，但固定剂里没写【"+f.fixName+"】——不加样品会作废！");
+      }
+      return ok();
+    } },
+
+  { id:"fix_group", title:"样品现场处理（固定剂勾选核对）",
+    hint:{what:"把“加了哪种固定剂、对应哪些项目”再勾一遍，和上面一致。",from:"系统已按你勾的分析项目预选好，你核对一下。",unit:"",example:"加硫酸：COD、氨氮、总磷…",pit:"和“容器及固定剂”那一格要对得上，错一对不上系统就拦。"},
+    fields:[
+      {k:"fix_sulfuric",l:"加硫酸项目",t:"multiselect",opts:FIX.sulfuric,req:false},
+      {k:"fix_hcl",l:"加盐酸项目",t:"multiselect",opts:FIX.hcl,req:false},
+      {k:"fix_naoh",l:"加氢氧化钠项目",t:"multiselect",opts:FIX.naoh,req:false},
+      {k:"fix_hno3",l:"加硝酸项目",t:"multiselect",opts:FIX.hno3,req:false},
+    ],
+    validate:s=>{
+      const ai=s.analysis_items||[];
+      const chk=(sel,map,name)=>{
+        const picked=s[sel]||[];
+        // 分析项目里需要该固定剂的，必须都在 picked 里
+        const should = ai.filter(it=>map.includes(it));
+        for(const it of should) if(!picked.includes(it)) return bad("分析项目含【"+it+"】，应在“"+name+"”里勾上");
+        // picked 里不能有不该项目
+        for(const it of picked) if(!map.includes(it)) return bad("【"+it+"】不属于"+name+"，请去掉");
+        return null;
+      };
+      let r;
+      r=chk("fix_sulfuric",FIX.sulfuric,"加硫酸项目"); if(r)return r;
+      r=chk("fix_hcl",FIX.hcl,"加盐酸项目"); if(r)return r;
+      r=chk("fix_naoh",FIX.naoh,"加氢氧化钠项目"); if(r)return r;
+      r=chk("fix_hno3",FIX.hno3,"加硝酸项目"); if(r)return r;
+      return ok();
+    } },
+
+  { id:"fix_do", title:"溶解氧(DO)固定",
+    hint:{what:"如果测溶解氧，必须“现场”往瓶里加两样药水并颠倒混匀。",from:"采样现场操作，看 SOP。",unit:"",example:"加 1ml 硫酸锰 + 2ml 碱性碘化钾，盖严颠倒混合，静置",pit:"★必须现场固定！回实验室再加就晚了，这瓶 DO 数据作废。"},
+    fields:[{k:"fix_do",l:"溶解氧固定操作",t:"text",ph:"加1ml硫酸锰+2ml碱性碘化钾，盖严颠倒混合",req:false}],
+    validate:s=>{
+      const ai=s.analysis_items||[];
+      if(ai.includes("DO") && !s.fix_do) return bad("你勾了 DO，必须填写现场固定操作");
+      return ok();
+    } },
+
+  { id:"sign", title:"采样人员 / 校核 签字",
+    hint:{what:"谁去采的、谁复核的，各签各的名。",from:"自己和复核人签字。",unit:"",example:"采样：张三　校核：李四",pit:"两人最好不是同一人；名字要能对应到人，以后溯源用。"},
+    fields:[
+      {k:"sampler",l:"采样人员",t:"text",ph:"你的名字",req:true},
+      {k:"reviewer",l:"校核",t:"text",ph:"复核人名字",req:true},
+    ],
+    validate:s=>{
+      if(!s.sampler) return bad("采样人员必填");
+      if(!s.reviewer) return bad("校核必填");
+      if(s.sampler===s.reviewer) return bad("采样和校核不能是同一个人");
+      return ok();
+    } },
+
+  { id:"situation", title:"采样现场情况简述（选填）",
+    hint:{what:"现场有什么特殊情况简单记一句，没有可跳过。",from:"现场观察。",unit:"",example:"上游 500m 有排污口，水面有少量油污",pit:"可跳过；但有明显异常建议写上，是数据背景。"},
+    fields:[{k:"situation",l:"采样现场情况简述",t:"textarea",ph:"可留空，或写现场异常情况",req:false}],
+    validate:()=>ok() },
+];
+
+/* ====== 工具 ====== */
+function ok(){return {ok:true};}
+function bad(m){return {ok:false,msg:m};}
+function req(v,name){return v&&String(v).trim()?ok():bad(name+"必填");}
+function needFix(items){
+  const out=[];
+  const push=(arr,name,kws)=>{
+    const hit=items.filter(it=>arr.includes(it));
+    if(hit.length) out.push({items:hit,fixName:name,keywords:kws});
+  };
+  push(FIX.sulfuric,"加硫酸",["硫酸"]);
+  push(FIX.hcl,"加盐酸",["盐酸"]);
+  push(FIX.naoh,"加氢氧化钠",["氢氧化钠","NaOH"]);
+  push(FIX.hno3,"加硝酸",["硝酸"]);
+  push(FIX.doFix,"硫酸锰+碱性碘化钾(DO固定)",["硫酸锰","碱性碘化钾","DO"]);
+  if(items.includes("挥发酚")) out.push({items:["挥发酚"],fixName:"磷酸调pH+抗坏血酸",keywords:["抗坏血酸","磷酸"]});
+  return out;
+}
+function autoFixText(items){
+  const n=needFix(items);
+  if(!n.length) return "（本项目无需加固定剂，洁净容器即可）";
+  return n.map(x=>"加"+x.fixName+"【"+x.items.join("、")+"】").join("；");
+}
+
+/* ====== 渲染 ====== */
+function renderStep(){
+  const st=STEPS[cur];
+  document.getElementById("pstep").textContent="第 "+(cur+1)+" / "+STEPS.length+" 步";
+  document.getElementById("ptitle").textContent=st.title;
+  const h=st.hint;
+  document.getElementById("hint").innerHTML=
+    `<div class="row"><span class="k">📝 这格填什么</span>${h.what}</div>`+
+    (h.from?`<div class="row"><span class="k">🔍 数据从哪来</span>${h.from}</div>`:"")+
+    (h.unit?`<div class="row"><span class="k">📏 单位</span>${h.unit}</div>`:"")+
+    (h.example?`<div class="row"><span class="k">💡 举个例子</span>${h.example}</div>`:"")+
+    (h.pit?`<div class="row"><span class="k">⚠️ 别踩坑</span><span class="pit">${h.pit}</span></div>`:"");
+  // 字段
+  const fc=document.getElementById("fields");
+  fc.innerHTML="";
+  st.fields.forEach(f=>{
+    const d=document.createElement("div");d.className="fld";
+    let inner=`<label>${f.l}<span class="req">${f.req?"*":""}</span></label>`;
+    if(f.t==="text"||f.t==="date"||f.t==="textarea"){
+      const v=state[f.k]||"";
+      if(f.t==="textarea") inner+=`<textarea id="in_${f.k}" placeholder="${f.ph||""}">${v}</textarea>`;
+      else inner+=`<input id="in_${f.k}" type="${f.t}" value="${v}" placeholder="${f.ph||""}">`;
+    }else if(f.t==="select"){
+      const v=state[f.k]||"";
+      inner+=`<select id="in_${f.k}"><option value="">— 请选择 —</option>`+
+        f.opts.map(o=>`<option ${o===v?"selected":""}>${o}</option>`).join("")+`</select>`;
+    }else if(f.t==="multiselect"){
+      const set=new Set(state[f.k]||[]);
+      inner+=`<div class="chk" id="chk_${f.k}">`+
+        f.opts.map(o=>`<label class="${set.has(o)?"on":""}"><input type="checkbox" value="${o}" ${set.has(o)?"checked":""}>${o}</label>`).join("")+`</div>`;
+    }
+    d.innerHTML=inner;fc.appendChild(d);
+    if(f.t==="multiselect"){
+      d.querySelectorAll("input").forEach(cb=>cb.onchange=()=>{
+        cb.closest("label").classList.toggle("on",cb.checked);
+        syncState();
+      });
+    }
+  });
+  // 自动生成固定剂按钮
+  if(st.auto){
+    const b=document.createElement("button");
+    b.className="btn s";b.style.marginTop="6px";b.textContent="✨ 按分析项目自动生成固定剂文案";
+    b.onclick=()=>{
+      const t=autoFixText(state.analysis_items||[]);
+      const el=document.getElementById("in_container_fixative");
+      if(el){el.value=t;syncState();log("已按分析项目生成："+t,"ok");}
+    };
+    fc.appendChild(b);
+  }
+  document.getElementById("btnPrev").disabled=(cur===0);
+  document.getElementById("btnNext").textContent=(cur===STEPS.length-1)?"完成 ✓":"验证并下一步";
+  document.getElementById("btnGen").style.display=(cur===STEPS.length-1)?"block":"none";
+  renderSheet();
+}
+function syncState(){
+  const st=STEPS[cur];
+  st.fields.forEach(f=>{
+    if(f.t==="multiselect"){
+      const vals=[...document.querySelectorAll("#chk_"+f.k+" input:checked")].map(c=>c.value);
+      state[f.k]=vals;
+    }else{
+      const el=document.getElementById("in_"+f.k);
+      if(el) state[f.k]=el.value;
+    }
+  });
+}
+function log(m,type){const box=document.getElementById("log");const d=document.createElement("div");d.className="l "+(type||"info");d.textContent=(type==="ok"?"✓ ":"✗ ")+(m||"");box.prepend(d);}
+
+function renderSheet(){
+  const map=[
+    ["委托编号","entrust_no"],["采样日期","sample_date"],["天气状况","weather"],
+    ["方法依据","method_basis"],["仪器编号及型号","instrument_no_w"],["采样时间","sample_time"],
+    ["样品编号","sample_no"],["分析项目",null,"analysis_items"],["现场测定项目",null,"onsite_items"],
+    ["样品性状",null,"sample_trait"],["采样容器及固定剂","container_fixative"],
+    ["加硫酸项目",null,"fix_sulfuric"],["加盐酸项目",null,"fix_hcl"],["加氢氧化钠项目",null,"fix_naoh"],["加硝酸项目",null,"fix_hno3"],
+    ["溶解氧固定","fix_do"],["采样人员","sampler"],["校核","reviewer"],["现场情况","situation"],
+  ];
+  const sh=document.getElementById("sheet");
+  sh.innerHTML="";
+  map.forEach(([label,key,arrKey])=>{
+    const row=document.createElement("div");row.className="srow";
+    let val="";
+    if(key&&state[key]) val=state[key];
+    if(arrKey&&state[arrKey]) val=(state[arrKey]||[]).join("、");
+    // 高亮当前步相关字段
+    const st=STEPS[cur];
+    const isActive = st.fields.some(f=>(f.k===key)||(f.k===arrKey));
+    if(isActive) row.classList.add("active");
+    const done = (key&&state[key]&&String(state[key]).trim())||(arrKey&&state[arrKey]&&state[arrKey].length);
+    if(done) row.classList.add("done");
+    row.innerHTML=`<div class="sl">${label}</div><div class="sv ${val?"":"empty"}">${val||"待填写"}</div>`;
+    sh.appendChild(row);
+  });
+}
+
+function validateCur(){
+  syncState();
+  const st=STEPS[cur];
+  const r=st.validate(state);
+  if(r.ok){ log(st.title+"：通过","ok"); return true; }
+  else { log(st.title+"："+r.msg,"err"); return false; }
+}
+function next(){
+  if(!validateCur()){ window.scrollTo({top:document.querySelector(".wrap").offsetTop,behavior:"smooth"}); return; }
+  if(cur<STEPS.length-1){ cur++; renderStep(); }
+}
+function prev(){ syncState(); if(cur>0){cur--;renderStep();} }
+function skip(){ syncState(); if(cur<STEPS.length-1){cur++;renderStep();} log("已跳过："+STEPS[cur-1].title,"info"); }
+
+function generate(){
+  syncState();
+  // 全量校验
+  let allOk=true;
+  for(let i=0;i<STEPS.length;i++){
+    const r=STEPS[i].validate(state);
+    if(!r.ok){ allOk=false; log("第"+(i+1)+"步【"+STEPS[i].title+"】未通过："+r.msg,"err"); }
+  }
+  if(!allOk){ log("有步骤未通过，请回到对应步骤修改","err"); return; }
+  const L=[];
+  L.push("════════════════════════════════════");
+  L.push("   水和废水采样原始记录表（填好的）");
+  L.push("════════════════════════════════════");
+  L.push("委托编号："+(state.entrust_no||""));
+  L.push("采样日期："+(state.sample_date||""));
+  L.push("天气状况："+(state.weather||""));
+  L.push("方法依据："+(state.method_basis||""));
+  L.push("仪器编号及型号："+(state.instrument_no_w||""));
+  L.push("采样时间："+(state.sample_time||""));
+  L.push("样品编号："+(state.sample_no||""));
+  L.push("分析项目："+(state.analysis_items||[]).join("、"));
+  L.push("现场测定项目："+((state.onsite_items||[]).join("、")||"（无）"));
+  L.push("样品性状："+(state.sample_trait||[]).join("、"));
+  L.push("采样容器及固定剂："+(state.container_fixative||""));
+  L.push("加硫酸项目："+((state.fix_sulfuric||[]).join("、")||"（无）"));
+  L.push("加盐酸项目："+((state.fix_hcl||[]).join("、")||"（无）"));
+  L.push("加氢氧化钠项目："+((state.fix_naoh||[]).join("、")||"（无）"));
+  L.push("加硝酸项目："+((state.fix_hno3||[]).join("、")||"（无）"));
+  L.push("溶解氧固定："+(state.fix_do||"（未测DO）"));
+  L.push("采样人员："+(state.sampler||"")+"　　校核："+(state.reviewer||""));
+  L.push("现场情况："+(state.situation||"（无）"));
+  L.push("════════════════════════════════════");
+  const box=document.getElementById("result");
+  box.style.display="block";box.textContent=L.join("\n");
+  log("🎉 全部通过！原始记录已生成，可复制存档","ok");
+}
+
+/* 滚动进度条 */
+window.addEventListener("scroll",()=>{
+  const h=document.documentElement;
+  const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+  document.getElementById("sp").style.width=p+"%";
+});
+
+renderStep();
+</script>
+</body>
+</html>

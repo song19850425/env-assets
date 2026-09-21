@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNAS-CL01 现场核查总表</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Source Han Sans SC","Microsoft YaHei",-apple-system,sans-serif;background:#f6f3ec;color:#2b2b2b;line-height:1.75;font-size:14px}
+.cover{background:#14365c;padding:28px 24px 20px;text-align:center;border-bottom:3px solid #9e2b25}
+.cover .tag{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#e8eef4;padding:3px 12px;border-radius:4px;font-size:11px;letter-spacing:1px}
+.cover h1{font-family:"Source Han Serif SC","Songti SC","SimSun",serif;font-size:22px;margin:10px 0 4px;color:#fff;font-weight:700}
+.cover .sub{color:#c9d4de;font-size:13px}
+.cover .meta{margin-top:8px;color:#9fb0bf;font-size:11px}
+.wrap{max-width:960px;margin:0 auto;padding:16px 20px 60px}
+.progress-bar{background:#fff;border:1px solid #d8d0c0;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.progress-bar .info{display:flex;justify-content:space-between;font-size:13px;color:#14365c;font-weight:600;margin-bottom:6px}
+.progress-bar .track{height:8px;background:#e8eef4;border-radius:4px;overflow:hidden}
+.progress-bar .fill{height:100%;background:#2e6b3e;border-radius:4px;transition:width .4s;width:0%}
+.progress-bar .fill.warn{background:#a8761b}
+.progress-bar .fill.good{background:#2e6b3e}
+.elem{margin-bottom:10px;border:1px solid #d8d0c0;border-radius:8px;overflow:hidden;background:#fff}
+.elem-header{display:flex;align-items:center;padding:12px 16px;cursor:pointer;background:#faf8f3;user-select:none;transition:background .2s}
+.elem-header:hover{background:#f0ede4}
+.elem-header .num{width:28px;height:28px;border-radius:50%;background:#14365c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.elem-header .title{flex:1;margin:0 12px;font-weight:600;font-size:14px;color:#14365c}
+.elem-header .count{font-size:12px;color:#888;white-space:nowrap;margin-right:10px}
+.elem-header .arrow{transition:transform .3s;font-size:14px;color:#888}
+.elem-header.open .arrow{transform:rotate(180deg)}
+.elem-body{display:none;padding:0 16px 14px;border-top:1px solid #e8eef4}
+.elem-body.open{display:block}
+.item{margin:8px 0;border:1px solid #e8eef4;border-radius:6px;overflow:hidden}
+.item-head{display:flex;align-items:flex-start;padding:10px 12px;cursor:pointer;gap:8px;transition:background .15s}
+.item-head:hover{background:#f8f6f0}
+.item-head .cb{width:18px;height:18px;border:2px solid #b8b0a0;border-radius:3px;flex-shrink:0;margin-top:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;transition:.2s;background:#fff}
+.item-head .cb.checked{background:#2e6b3e;border-color:#2e6b3e;color:#fff}
+.item-head .cb.checked::after{content:"\2713"}
+.item-head .item-area{flex:1;min-width:0}
+.item-head .txt{font-size:13.5px;color:#333;font-weight:500}
+.item-head .item-key{font-size:12px;color:#2f5e8a;margin-top:4px;line-height:1.55;padding:4px 8px;background:#e8eef4;border-radius:4px}
+.item-head .expand{font-size:11px;color:#b8b0a0;transition:transform .3s;flex-shrink:0;margin-top:4px}
+.item-head.open .expand{transform:rotate(180deg)}
+.item-detail{display:none;padding:0 12px 10px;margin-left:28px;border-top:1px solid #f0ede4;background:#faf8f3;border-radius:0 0 6px 6px}
+.item-detail.open{display:block}
+.item-detail .lab{font-size:11.5px;font-weight:600;color:#2f5e8a;margin-top:8px}
+.item-detail .txt{font-size:12.5px;color:#444;line-height:1.6;margin:2px 0 0}
+.item-detail .nc{background:#f3e7e6;border-left:3px solid #9e2b25;padding:6px 10px;margin:6px 0;border-radius:0 4px 4px 0;font-size:12px;color:#333}
+.item-detail .doc{font-size:12px;color:#2e6b3e;line-height:1.6;margin:2px 0 6px;padding:4px 8px;background:#e7f0e8;border-radius:4px}
+.item-detail .note-lab{font-size:11.5px;font-weight:600;color:#7a5c12;margin-top:10px}
+.item-detail .note{width:100%;box-sizing:border-box;min-height:48px;margin-top:3px;padding:7px 9px;font-family:inherit;font-size:12.5px;color:#333;line-height:1.55;border:1px solid #d8d0c0;border-radius:6px;background:#fffdf6;resize:vertical}
+.item-detail .note:focus{outline:none;border-color:#a8761b;box-shadow:0 0 0 2px rgba(168,118,27,.15)}
+.item-detail .rect-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.item-detail .rect-row .rl{font-size:11.5px;font-weight:600;color:#7a5c12;white-space:nowrap}
+.item-detail .rect{font-family:inherit;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #d8d0c0;background:#fff;color:#333;cursor:pointer}
+.item-detail .rect.s-none{background:#f0ede4;color:#888}
+.item-detail .rect.s-todo{background:#f3e7e6;color:#9e2b25;border-color:#e3c0bd}
+.item-detail .rect.s-doing{background:#fbf0dc;color:#a8761b;border-color:#ecd9a8}
+.item-detail .rect.s-done{background:#e7f0e8;color:#2e6b3e;border-color:#bfe0c6}
+.foot{margin-top:24px;border-top:1px solid #d8d0c0;padding-top:12px;color:#888;font-size:11px;text-align:right}
+@media print{body{background:#fff}.elem-header{background:#f5f3ee}.elem-body{display:block!important}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">环境实验 · 评审工具 · 内部自检</div>
+  <h1>CNAS-CL01 现场核查总表</h1>
+  <div class="sub">依据《检测和校准实验室能力认可准则》（CNAS-CL01:2018）</div>
+  <div class="meta">2026/07 版 · 含核查要点 + 准备指引 + 常见不符合项</div>
+</div>
+
+<div class="wrap">
+<div class="progress-bar" id="progressBar">
+  <div class="info"><span id="progText">已核查 0 / 0 项</span><span id="progPct">0%</span></div>
+  <div class="track"><div class="fill" id="progFill"></div></div>
+</div>
+<div id="app"></div>
+<div class="foot">核查进度自动保存至本机、关闭后不丢失 · 打印时可展开全部详情</div>
+</div>
+
+<script>
+const DATA = [
+  {
+    title:"结构要求（CL01 第5条）",
+    items:[
+      {id:"cn5-1",t:"实验室是否为法律实体或可独立承担责任",key:"核查营业执照/法人证书；确认实验室在法律上有能力承担检测活动的法律责任",guide:"备齐营业执照、法人授权文件、实验室负责人的任命文件",nc:"实验室不是独立法人但无法提供法人书面授权",doc:"营业执照 法人授权文件 实验室设立批文（示例：含统一社会信用代码/机构名称/法定代表人/有效期）"},
+      {id:"cn5-2",t:"是否建立并实施公正性和保密性管理",key:"查看公正性声明、保密性制度、利益冲突识别记录",guide:"制定公正性和保密性管理程序，全员签署承诺书，每年至少做一次公正性风险评估",nc:"未建立保密性程序、客户信息暴露在公共区域",doc:"公正性声明 保密程序文件 利益冲突识别表（示例：机构对外发布的公正性承诺，须盖章/负责人签字/发布日期）"},
+      {id:"cn5-3",t:"组织架构是否清晰且权责明确",key:"查看组织架构图、岗位职责描述、关键岗位（质量负责人/技术负责人）的授权",guide:"质量手册中附组织架构图，明确各岗位的职责和接口关系",nc:"组织架构图与实际不符、质量负责人职责描述不清晰",doc:"组织架构图 岗位职责描述 关键岗位授权书（示例：含管理层/技术/质量/各检测室的层级关系/职位名称）"},
+    ]
+  },
+  {
+    title:"资源要求（CL01 第6条）",
+    items:[
+      {id:"cn6-1",t:"人员能力是否满足要求且经过授权",key:"核查人员档案中的学历/培训/能力确认/授权记录；每个检测领域至少有一名授权人员",guide:"建立人员能力管理程序：入职→培训→监督→能力确认→授权→持续监控。关键岗位（授权签字人/技术负责人）须满足CNAS学历和工作年限要求",nc:"授权签字人的领域范围超出其能力确认记录、人员授权已过期未续",doc:"人员能力管理程序 学历/职称证书 人员授权书（示例：含授权岗位/领域范围/生效日期/有效期/批准人签字）"},
+      {id:"cn6-2",t:"是否实施人员监督并对新员工重点关注",key:"查看监督计划+监督记录，新员工/转岗人员/在培人员须有监督计划和阶段性评价",guide:"制定人员监督程序，监督周期至少覆盖6个月或直至能力确认通过。监督记录须含具体观察/评价/建议",nc:"有监督计划但监督记录内容空洞（仅写「合格」）、新员工监督期不足",doc:"人员监督程序 年度监督计划 人员监督记录表（示例：含被监督人/监督人/监督时段/监督内容/考核方式）"},
+      {id:"cn6-3",t:"设施和环境条件是否满足检测要求",key:"现场查看温湿度/洁净度/照明/通风等环境条件是否满足方法标准要求；查看环境监控记录",guide:"对照方法标准列出环境条件要求清单，按需配置温湿度/洁净度监控设备，监控记录须连续",nc:"环境监控记录间断（周末未记录）、特定区域未配置通风系统",doc:"环境条件监控记录(温湿度连续记录) 条件满足对照表（示例：含日期/时间/温度/湿度/记录人/异常备注）"},
+      {id:"cn6-4",t:"设备是否按期校准且量程覆盖方法要求",key:"抽查设备校准证书，校准参数/量程/不确定度是否满足检测方法要求；校准周期是否合理",guide:"建立设备校准周期表，校准证书须经确认（确认校准结果是否符合方法要求）。关键设备校准参数须覆盖方法需求的量程",nc:"校准证书的量程未覆盖检测方法所需范围、校准证书未经技术确认",doc:"设备校准周期表 校准证书 校准结果确认记录（示例：含设备信息/校准条件/校准结果/不确定度/有效期/CNAS章）"},
+      {id:"cn6-5",t:"是否实施设备期间核查",key:"查看期间核查计划+记录，关键设备（天平/GC/ICP等）是否在两次校准之间有效核查",guide:"制定期间核查程序，关键设备清单+核查方法+频次。期间核查用有证标准物质，并保留记录",nc:"期间核查计划遗漏关键设备（如天平的期间核查只做了外观检查未做重复性）",doc:"期间核查程序 期间核查计划 期间核查记录表（示例：含核查对象/频次/方法/判断标准/记录要求）"},
+      {id:"cn6-6",t:"计量溯源性是否满足要求",key:"核查校准证书的溯源性（是否由国家计量基准传递、校准实验室是否通过CNAS认可）",guide:"使用CNAS认可校准实验室的服务，校准证书须有CNAS认可标识。若无法溯源到SI单位，须有其他证明溯源性的方法",nc:"使用未获CNAS认可的校准机构出具的证书、校准证书无认可标识且无理由说明",doc:"校准证书(含CNAS认可标识) 溯源性声明（示例：含设备信息/校准条件/校准结果/不确定度/有效期/CNAS章）"},
+      {id:"cn6-7",t:"外部提供的产品和服务是否受控",key:"查看合格供应商名录、外部服务和产品的采购技术文件、验收记录",guide:"建立外部产品和服务控制程序，含供应商评价/审批/定期复评。关键试剂/耗材须有验收记录",nc:"合格供应商名录未及时更新、关键标准物质购入后无验收记录",doc:"合格供应商名录 采购技术文件 验收记录（示例：含供应商名称/供应品/评价结果/有效期/复评时间）"},
+    ]
+  },
+  {
+    title:"过程要求（CL01 第7条）",
+    items:[
+      {id:"cn7-1",t:"合同评审是否有效执行",key:"查看合同评审记录，是否在接样前审核了方法/能力/周期/费用；分包项目是否告知客户",guide:"建立合同评审程序，每次接样须有评审记录。变更合同须重新评审并通知相关人员",nc:"未做合同评审即开始检测、分包项目未在合同中提前告知客户",doc:"合同评审程序 合同评审记录（示例：含评审时机/评审内容/修改流程/记录要求/职责划分）"},
+      {id:"cn7-2",t:"方法验证/确认是否充分",key:"查看方法验证记录（检出限/精密度/准确度/线性范围）；非标方法是否有完整确认",guide:"标准方法首次使用前做方法验证；非标/自制/超出范围方法做方法确认（含方法特性参数+比对验证）。验证/确认报告须经审核批准",nc:"方法验证缺少检出限或回收率数据、非标方法确认无比对数据",doc:"方法验证报告 方法确认报告 比对数据记录（示例：含标准方法与待确认方法的结果对比/偏差/统计评价）"},
+      {id:"cn7-3",t:"标准查新机制是否健全",key:"核查标准查新记录，确认能力表中所有方法版本是否现行有效；查新频次是否足够",guide:"至少每半年查新一次，查新源须可靠（官网/专业期刊/知网等）。发现标准换版须评估影响并更新能力表",nc:"能力表中方法版本号与现行标准不符、标准查新未保留原始记录",doc:"标准查新记录表 能力表(现行有效版本)（示例：含标准编号/名称/查新日期/查新源/当前版本/确认人）"},
+      {id:"cn7-4",t:"测量不确定度评定是否按要求实施",key:"CNAS重点要素。查看测量不确定度评定报告，是否覆盖全部检测项目；评定方法是否合理",guide:"制定测量不确定度评定程序。每个检测项目至少有一份有效的不确定度评定报告。评定方法可采用GUM法或使用精密度数据",nc:"部分检测项目无不确定度评定报告、评定报告使用过期数据",doc:"测量不确定度评定报告（示例：含测量模型/不确定度来源鱼骨图/A类B类评定/合成）"},
+      {id:"cn7-5",t:"抽样程序是否受控",key:"查看抽样计划和程序、抽样记录是否完整（含抽样位置/时间/方法/抽样人/环境条件）",guide:"若检测活动涉及抽样（如环境监测/水质采样），须有抽样计划和抽样程序。抽样记录须含所有必要信息，确保样品可追溯",nc:"抽样记录缺少关键信息（如采样时间/采样位置）、抽样程序未明确抽样方法依据",doc:"抽样程序 抽样计划 抽样记录表（示例：含抽样方法/工具/数量/样品包装/运输/保存/记录要求）"},
+      {id:"cn7-6",t:"样品处置是否全程可追溯",key:"查看样品标识系统、样品流转记录、保存条件记录；从接收到处置全链条可追溯",guide:"建立样品管理程序，样品编码须唯一、流转须有记录、保存条件须满足方法要求。废弃样品处置须有记录",nc:"样品标识不唯一、冷藏箱温度超标无记录、样品过期仍存放",doc:"样品管理程序 样品编码规则 样品流转单（示例：含编码结构(项目编号+类型+流水号)/编码示例/适用范围）"},
+      {id:"cn7-7",t:"技术记录是否完整且可追溯",key:"查看原始记录（含检测数据/计算公式/仪器图谱/环境条件/人员签名等），是否可复现",guide:"原始记录须包含：样品信息、方法依据、仪器信息、环境条件、原始数据、计算公式、结果、人员及日期。修改须签署（杠改+签名）",nc:"原始记录缺少计算过程或仪器信息、修改未杠改直接涂改",doc:"原始记录(含图谱/环境条件/计算公式/签名)（示例：项目编号/样品编号/方法/仪器/环境条件/原始数据/计算过程/图谱粘贴/签名/日期）"},
+      {id:"cn7-8",t:"结果有效性（质控）是否覆盖全部领域",key:"查看年度质控计划（空白/平行/加标/质控样/比对/能力验证），是否覆盖全部检测项目",guide:"制定年度质控计划，每个项目至少有一种质控方式。内部质控频率：空白每批≥1个、平行≥10%、加标5-10%。定期参加CNAS能力验证",nc:"质控计划遗漏部分检测项目、能力验证不满意结果未整改到位",doc:"年度质控计划 质控数据汇总表 能力验证结果报告（示例：含质控类型/批次/结果/评价/异常处理/汇总人）"},
+      {id:"cn7-9",t:"结果报告信息是否完整",key:"抽查报告，核对信息完整性：标题/编号/实验室信息/客户信息/样品描述/日期/方法/结果/签字/认可标识等",guide:"建立报告模板审核流程，CNAS认可标识使用须授权。报告须含所有必要信息，分包项目须标注",nc:"CNAS认可标识使用在非认可项目上、报告缺方法偏离声明",doc:"报告模板 报告审核记录 CNAS章使用授权书（示例：含CMA章位置/报告编号/委托方信息/样品信息/检测结果/签字栏）"},
+      {id:"cn7-10",t:"报告修改和更正是否有记录",key:"查看报告修改程序，抽查修改记录是否完整（修改原因/原报告编号/新报告编号/批准人）",guide:"制定报告修改程序，重新出具报告须标注「替代报告编号」并说明修改原因，保留原报告记录",nc:"报告修改无书面记录、替代报告未标注原报告编号",doc:"报告修改程序 报告修改记录表（示例：含修改条件/审批流程/替代报告编号规则/原报告保留要求）"},
+      {id:"cn7-11",t:"投诉处理程序是否有效",key:"查看投诉处理记录，是否在规定时效内答复；投诉是否引发纠正措施",guide:"建立投诉处理程序，明确投诉接收/调查/答复/记录的职责和时限。投诉处理结果须反馈给投诉人并保存记录",nc:"投诉无书面处理记录、投诉引发的纠正措施未跟踪验证",doc:"投诉处理程序 投诉处理记录（示例：含投诉接收渠道/调查流程/答复时限/记录保存/关闭标准）"},
+      {id:"cn7-12",t:"不符合工作是否启动纠正措施",key:"查看不符合工作记录，不符合是否进行了根因分析、是否采取了纠正措施、是否验证了措施有效性",guide:"建立不符合工作控制程序，发现不符合→评估影响→决定是否接受或启动纠正→根因分析→措施→验证→关闭",nc:"不符合工作未进行根因分析即关闭、纠正措施效果未验证",doc:"不符合工作控制程序 不符合记录 纠正措施验证记录（示例：含不符合识别/评估/分类/纠正/纠正措施/验证/关闭流程）"},
+      {id:"cn7-13",t:"数据管理和计算机化系统是否受控",key:"查看LIMS或电子数据处理系统的验证记录、数据备份/恢复程序、权限管理、修改日志",guide:"使用计算机化系统（如LIMS）须验证系统功能符合要求。数据须定期备份，权限分级，修改须有审计追踪。纸质和数据并行的过渡期须一致",nc:"LIMS未经功能验证、数据备份策略不明确、系统无审计追踪功能",doc:"LIMS验证记录 数据备份策略 权限清单 审计追踪记录（示例：含系统模块/测试用例/测试结果/通过标准/验证结论/日期）"},
+    ]
+  },
+  {
+    title:"管理体系要求（CL01 第8条）",
+    items:[
+      {id:"cn8-1",t:"管理体系文件是否覆盖全部要素",key:"查看质量手册要素对照表，是否覆盖CNAS-CL01全部要素；体系文件是否受控",guide:"质量手册须编制要素对照表（CL01条款→手册章节→程序文件），确保不遗漏。文件须有版本控制、审批记录和发放记录",nc:"质量手册未覆盖CNAS-CL01全部要素、程序文件版本号混乱",doc:"质量手册(要素对照表) 程序文件清单（示例：准则条款→手册章节→程序文件编号的对照矩阵）"},
+      {id:"cn8-2",t:"文件控制是否有效",key:"查看文件清单、文件审批记录、文件发放回收记录、作废文件处置记录",guide:"建立文件控制程序，内部文件（质量手册/程序文件/作业指导书）须审批后发布。外来文件（标准/法规）须查新和受控",nc:"现场使用的作业指导书不是现行有效版本、作废文件未从现场撤除",doc:"文件控制程序 文件清单 文件审批/发放/回收记录（示例：含文件分类/编号规则/审批/发放/回收/作废/保管要求）"},
+      {id:"cn8-3",t:"记录控制是否满足要求",key:"查看记录管理程序（含技术记录和质量记录的编号/存储/保管/借阅/销毁规则）",guide:"建立记录控制程序。技术记录保存期限至少6年（环境领域要求）。记录归档宜采用电子+纸质双重备份",nc:"技术记录未按规定期限保存、记录借阅无登记",doc:"记录控制程序 记录归档清单（示例：含记录分类/编号/保存期限/归档/借阅/销毁流程）"},
+      {id:"cn8-4",t:"是否识别并应对风险和机遇",key:"查看风险评估记录、风险应对措施。风险类型含技术/管理/公正性/安全等",guide:"建立风险评估和控制程序，至少每年做一次全面风险评估。机遇可包含扩项/新方法开发等",nc:"风险评估流于形式（所有风险评「低」且无措施）、风险识别未覆盖所有领域",doc:"风险评估程序 风险评估记录表 风险跟踪表（示例：含风险编号/类别/描述/等级/措施/责任人/验证）"},
+      {id:"cn8-5",t:"内审是否按要求实施",key:"查看内审计划+内审记录+不符合项+整改+内审报告。内审是否覆盖全部要素和部门",guide:"每年至少一次完整内审。内审员须经过培训且独立于被审核部门。不符合项须有整改和验证",nc:"内审未覆盖全部要素、内审员审核自己所在部门、不符合项整改验证不充分",doc:"内审计划 内审检查表 内审不符合项记录 内审报告（示例：含审核范围/要素/审核组/时间安排/首末次会议时间）"},
+      {id:"cn8-6",t:"管理评审是否按规定执行",key:"查看管理评审计划+评审输入材料+会议记录+输出决议+改进跟踪",guide:"每年至少一次管理评审。输入须含12项（内审结果/质控/客户反馈/投诉/能力验证/改进建议/风险评估等）。输出须有明确的改进措施和责任人",nc:"管理评审输入材料不完整（缺风险评估或改进建议）、输出改进措施未跟踪落实",doc:"管理评审计划 评审输入材料 会议记录 输出决议跟踪表（示例：含评审时间/输入材料清单/参会部门/主持人）"},
+    ]
+  }
+];
+
+function getState(id){return localStorage.getItem('cnas_'+id)==='1'}
+function setState(id,v){if(v)localStorage.setItem('cnas_'+id,'1');else localStorage.removeItem('cnas_'+id)}
+function getNote(id){return localStorage.getItem('cnas_note_'+id)||''}
+function setNote(id,v){if(v&&v.trim()) localStorage.setItem('cnas_note_'+id,v);else localStorage.removeItem('cnas_note_'+id)}
+function getRect(id){return localStorage.getItem('cnas_rect_'+id)||'none'}
+function setRect(id,v){if(v&&v!=='none') localStorage.setItem('cnas_rect_'+id,v);else localStorage.removeItem('cnas_rect_'+id)}
+
+function render(){
+  const app=document.getElementById('app');
+  let html='';
+  DATA.forEach((elem,i)=>{
+    const n=elem.items.length;
+    const done=elem.items.filter(it=>getState(it.id)).length;
+    html+=`<div class="elem" data-idx="${i}">
+      <div class="elem-header">
+        <div class="num">${i+1}</div>
+        <span class="title">${elem.title}</span>
+        <span class="count">${done}/${n}</span>
+        <span class="arrow">\u25BE</span>
+      </div>
+      <div class="elem-body" id="elemBody${i}">`;
+    elem.items.forEach(it=>{
+      const s=getState(it.id);
+      html+=`<div class="item" data-itemid="${it.id}">
+        <div class="item-head">
+          <div class="cb ${s?'checked':''}"></div>
+          <div class="item-area">
+            <div class="txt">${it.t}</div>
+            <div class="item-key">\uD83D\uDD0D 核查要点：${it.key}</div>
+          </div>
+          <span class="expand">\u25BE</span>
+        </div>
+        <div class="item-detail">
+          ${it.doc?'<div class="lab">\uD83D\uDCCE 佐证材料/对应表格</div><div class="doc">'+it.doc+'</div>':''}
+          <div class="lab">\uD83D\uDCCB 准备指引</div>
+          <div class="txt">${it.guide}</div>
+          <div class="lab">\u26A0\uFE0F 常见不符合项</div>
+          <div class="nc">${it.nc}</div>
+          <div class="note-lab">\uD83D\uDCDD 我的备注 / 现场记录</div>
+          <textarea class="note" data-nid="${it.id}" placeholder="记录本机构现状、待办、缺口…（自动保存到本机）"></textarea>
+          <div class="rect-row">
+            <span class="rl">整改状态</span>
+            <select class="rect s-none" data-rid="${it.id}">
+              <option value="none">无</option>
+              <option value="todo">待整改</option>
+              <option value="doing">整改中</option>
+              <option value="done">已关闭</option>
+            </select>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+  app.innerHTML=html;
+  app.querySelectorAll('.note').forEach(ta=>{ ta.value=getNote(ta.dataset.nid); });
+  app.querySelectorAll('.rect').forEach(sel=>{
+    const v=getRect(sel.dataset.rid);
+    sel.value=v; sel.className='rect s-'+v;
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  let total=0,done=0;
+  DATA.forEach(e=>e.items.forEach(it=>{total++;if(getState(it.id))done++}));
+  document.getElementById('progText').textContent='已核查 '+done+' / '+total+' 项';
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progPct').textContent=pct+'%';
+  const fill=document.getElementById('progFill');
+  fill.style.width=pct+'%';
+  fill.className='fill'+(pct<30?' warn':pct<80?'':' good');
+}
+
+document.addEventListener('input',function(e){
+  const ta=e.target.closest('.note');
+  if(ta){ setNote(ta.dataset.nid,ta.value); }
+});
+document.addEventListener('change',function(e){
+  const sel=e.target.closest('.rect');
+  if(sel){ const v=sel.value; setRect(sel.dataset.rid,v); sel.className='rect s-'+v; }
+});
+document.addEventListener('click',function(e){
+  const cb=e.target.closest('.item-head .cb');
+  if(cb){
+    const item=cb.closest('.item');
+    const id=item.dataset.itemid;
+    const v=!getState(id); setState(id,v);
+    cb.classList.toggle('checked',v);
+    updateProgress();
+    const elem=item.closest('.elem');
+    const idx=parseInt(elem.dataset.idx);
+    const did=DATA[idx].items.filter(it=>getState(it.id)).length;
+    elem.querySelector('.count').textContent=did+'/'+DATA[idx].items.length;
+    return;
+  }
+  const head=e.target.closest('.item-head');
+  if(head){
+    head.classList.toggle('open');
+    const det=head.nextElementSibling;
+    if(det&&det.classList.contains('item-detail')) det.classList.toggle('open');
+    return;
+  }
+  const eh=e.target.closest('.elem-header');
+  if(eh){
+    eh.classList.toggle('open');
+    eh.nextElementSibling.classList.toggle('open');
+  }
+});
+
+render();
+</script>
+</body>
+</html>

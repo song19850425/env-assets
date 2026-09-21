@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>立式压力蒸汽灭菌器 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f97316;--accent-glow:#fb923c;--accent-bg:rgba(249,115,22,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#271307 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(249,115,22,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(249,115,22,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(249,115,22,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#271307);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f97316,#fb923c);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.pwr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}@media(max-width:560px){.pwr{grid-template-columns:1fr 1fr}}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8}
+.pb:hover{border-color:var(--accent)}
+.pb.on{background:var(--accent-bg);color:var(--accent-glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.gauge{margin:14px 0;padding:14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid var(--border);text-align:center}
+.gauge .gv{font-size:34px;font-weight:900;color:var(--accent-glow);font-variant-numeric:tabular-nums}
+.gauge .gl{font-size:11px;color:#64748b;margin-top:2px}
+.gauge .bar{height:10px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;margin:10px 0}
+.gauge .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#34d399,#facc15,#ef4444);transition:width .4s}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px;font-weight:600}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.seg button{padding:7px 16px;background:transparent;border:none;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.seg button.on{background:var(--accent-bg);color:var(--accent-glow)}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1"><em>立式压力</em>蒸汽灭菌器</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">BXM-75VE / YXQ-LS-50SII</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">高温高压容器 · 培养基 / 器械 / 玻璃器皿灭菌</div>
+  <div class="hst">
+    <div><span class="n">121℃</span><span class="l">常规灭菌温度</span></div>
+    <div><span class="n">≤126℃</span><span class="l">温度上限(安全阀)</span></div>
+    <div><span class="n">0.14</span><span class="l">MPa 安全阀起跳①</span></div>
+    <div><span class="n">归零</span><span class="l">开盖前必看压力表</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在做什么，为什么危险</div>
+  <div class="sd">压力蒸汽灭菌器利用<b>饱和蒸汽</b>在密闭容器内产生高温高压，使微生物蛋白质变性凝固，达到彻底灭菌。它是实验室里最常见的灭菌设备——但也是<b>唯一带高温高压压力容器</b>的仪器：一旦错误操作，轻则烫伤，重则容器盖崩开、蒸汽喷溅伤人。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">♨️</div><div class="in">饱和蒸汽灭菌</div><div class="id">水沸腾产生蒸汽，密闭后压力升高、沸点升高，121℃ 下维持 15–30min 即可杀灭包括芽孢在内的一切微生物。</div><span class="it">湿热灭菌</span></div>
+    <div class="ic"><div class="ii">🛡️</div><div class="in">安全阀是最后防线</div><div class="id">设备靠安全阀整定压力（如 0.14–0.23MPa）泄压。温度设定绝不能超过安全阀对应的温度，否则安全阀一旦失效就会超压。</div><span class="it">超温=超压</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">压力表是生命表</div><div class="id">灭菌结束后压力表指针必须<b>先回到零位</b>，才能开盖。带压开盖 = 高温蒸汽瞬间喷出，是这类设备最致命的事故。</div><span class="it">开盖前看表</span></div>
+    <div class="ic"><div class="ii">📋</div><div class="in">受控操作规程依据</div><div class="id">本页合并两份真实受控作业指导书（立式灭菌器 A 型 / B 型），顺序与红线均按其原文提炼。</div><span class="it">操作规程双型号</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这台模拟器，<b>顺序错了、温度超了、带压开盖，系统会直接拦住你</b>——这正是真实实验室里最容易出烫伤事故的一步。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ 立式压力灭菌器 操作模拟台</div><span class="tag-real">依据 真实受控操作规程（双型号合并）</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 待装载</span>
+      <span style="font-size:10px;color:#475569">立式压力蒸汽灭菌器 · 121℃ 灭菌程序</span>
+    </div>
+
+    <div class="gauge">
+      <div class="gv" id="dP">0.00</div>
+      <div class="gl">压力表读数 (MPa) · 开盖前必须归零</div>
+      <div class="bar"><i id="dPbar"></i></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 加水（水位必须至灭菌桶搁脚处；连续使用每次灭菌后必须补水）</div>
+    <div class="acts">
+      <button class="btn b1" id="bw1" onclick="step(1)">💧 加水至搁脚处</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">② 装入物品（包扎、留间隙；<b style="color:var(--rose)">严禁堵塞安全阀出气孔</b>）</div>
+    <div class="acts">
+      <button class="btn b2" id="bw2" onclick="step(2)">🧺 装入灭菌网篮</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">③ 密封容器盖（对正螺栓槽 / 手轮，均匀旋紧；密封圈完好平整）</div>
+    <div class="acts">
+      <button class="btn b2" id="bw3" onclick="step(3)">🔒 密封容器盖</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">④ 开电源 + 设定灭菌温度（≤126℃）</div>
+    <div class="cols">
+      <div class="fld"><label>灭菌温度 (℃)</label><input type="number" id="iTemp" value="121" step="1"></div>
+      <div class="fld"><label>灭菌时间 (min)</label><input type="number" id="iTime" value="20" step="1"></div>
+    </div>
+    <div class="acts">
+      <button class="btn b1" id="bw4" onclick="step(4)">⚡ 开电源 + 工作键</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:10px 0 4px">⑤ 运行灭菌（自动升温、恒温计时，面板显示 End 即结束）</div>
+    <div class="acts">
+      <button class="btn b2" id="bw5" onclick="step(5)" disabled>♨️ 运行灭菌程序</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">⑥ 灭菌结束后的关机顺序（<b style="color:var(--rose)">先切电源 → 待压力表归零 → 打开放汽阀 → 才能开盖</b>）</div>
+    <div class="pwr">
+      <div class="pb" id="sh1" onclick="shut(1)">切断加热电源<span class="po">step 1</span></div>
+      <div class="pb" id="sh2" onclick="shut(2)">等待冷却归零<span class="po">压力回0</span></div>
+      <div class="pb" id="sh3" onclick="shut(3)">打开放汽阀<span class="po">排余汽</span></div>
+      <div class="pb" id="sh4" onclick="shut(4)">打开外桶盖<span class="po">最后一步</span></div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">灭菌物品类型（影响能否快速排汽干燥）</div>
+    <div class="seg">
+      <button id="tSolid" class="on" onclick="setType('solid')">固体 / 器械</button>
+      <button id="tLiquid" onclick="setType('liquid')">液体培养基</button>
+    </div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+    <div class="acts" style="margin-top:14px"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这两份受控作业指导书，卡的就是这几条</div>
+  <div class="sd">下面是从真实操作规程里直接提炼的红线。模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🚫</div><div class="in">温度不得超 126℃</div><div class="id">安全阀整定压力 0.14–0.23MPa，对应温度上限约 126℃。温控仪设定温度超过安全阀整定 → 超压风险。操作规程明文「温度设定不能大于 126℃」。</div><span class="it">超温红线</span></div>
+    <div class="ic"><div class="ii">💥</div><div class="in">开盖前压力表必须归零</div><div class="id">灭菌结束 → 先切电源停止加热 → 待冷却至压力表指针回零 → 打开放汽阀排尽余汽 → 才能开盖。带压开盖 = 高温蒸汽喷溅 / 容器盖崩开，是这类设备最致命的事故。</div><span class="it">致命红线</span></div>
+    <div class="ic"><div class="ii">🧪</div><div class="in">液体严禁快速排汽干燥</div><div class="id">灭菌液体时若立即排汽降压，液温未降、压力骤释会剧烈暴沸、容器爆裂。操作规程规定「灭菌液体时严禁使用此干燥方法」，必须自然冷却。</div><span class="it">液体红线</span></div>
+    <div class="ic"><div class="ii">🔥</div><div class="in">防干烧 + 安全阀畅通</div><div class="id">连续使用每次灭菌后必须补足水量（否则干烧重大事故）；堆放物品严禁堵塞安全阀出气孔，必须留空位保证泄压畅通。</div><span class="it">安全底线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把这种「高温高压压力容器」的操作规程做成可交互培训，新人先在屏幕上把<b>「归零再开盖」</b>走熟，比看一页纸操作规程直观得多——这正是 环境实验「育人」阶段能直接交付的产品。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={step:0,pressure:0,temp:121,type:'solid',shut:0,done:false};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+function showP(){const p=S.pressure;$('dP').textContent=p.toFixed(2);$('dPbar').style.width=Math.min(100,p/0.25*100)+'%';}
+
+function step(n){
+  if(S.shut>0){warn('已进入关机流程，请先重置或继续关机步骤');return;}
+  if(n!==S.step+1){
+    if(n===4 && S.step<3) warn('请按顺序：加水 → 装物 → 密封 → 再开电源');
+    else warn('顺序错误：加水 → 装物 → 密封 → 开电源 → 运行');
+    log('操作顺序错误，已阻断',false);return;
+  }
+  S.step=n;
+  if(n===1){log('加水至灭菌桶搁脚处（连续使用务必每次补水量，防干烧）',true);$('bw1').classList.add('on');$('bw2').disabled=false;}
+  if(n===2){log('物品包扎留间隙装入网篮，未堵塞安全阀出气孔',true);$('bw2').classList.add('on');$('bw3').disabled=false;}
+  if(n===3){log('容器盖对正旋紧、密封圈完好，放汽管插冷水容器',true);$('bw3').classList.add('on');$('bw4').disabled=false;setSts('🔒 已密封','sa');}
+  if(n===4){
+    const t=+$('iTemp').value;
+    if(t>126){warn('⚠️ 温度设定超过 126℃！超安全阀整定压力，有超压爆炸风险，已阻断');log('温度设定 '+t+'℃ 超上限，已阻断',false);S.step=3;return;}
+    S.temp=t;log('开电源，设定温度 '+t+'℃ / 时间 '+$('iTime').value+'min，按工作键',true);$('bw4').classList.add('on');$('bw5').disabled=false;setSts('⚡ 加热中','sa');warn('');
+    // 升温模拟：压力上升
+    S.pressure=0;showP();
+    const iv=setInterval(()=>{S.pressure=Math.min(0.12+(t-121)*0.002,S.pressure+0.02);showP();if(S.pressure>=0.10){clearInterval(iv);}},120);
+  }
+  if(n===5){
+    log('运行灭菌程序：升温→恒温计时（'+S.temp+'℃）',true);$('bw5').classList.add('on');setSts('♨️ 灭菌中…','sa');
+    setTimeout(()=>{log('✔ 灭菌结束，面板显示 End',true);setSts('✅ 灭菌完成','sok');
+      S.pressure=0.12+ (S.temp-121)*0.002; showP();
+      [1,2,3,4].forEach(k=>$('sh'+k).disabled=false);
+      warn('');
+    },1400);
+  }
+}
+
+function setType(t){
+  S.type=t;$('tSolid').classList.toggle('on',t==='solid');$('tLiquid').classList.toggle('on',t==='liquid');
+  log('灭菌物品类型：'+(t==='solid'?'固体 / 器械':'液体培养基'));
+}
+
+function shut(n){
+  if(S.step<5){warn('请先完成装载并运行灭菌程序');return;}
+  if(n!==S.shut+1){
+    if(n===4 && S.shut<2) warn('⚠️ 压力表还未归零！必须先切断加热电源 → 等待冷却至压力表回零 → 打开放汽阀，才能开盖');
+    else warn('关机顺序错误：切电源 → 冷却归零 → 开放汽阀 → 开盖');
+    log('关机顺序错误，已阻断',false);return;
+  }
+  S.shut=n;
+  if(n===1){log('切断加热电源，停止加热',true);$('sh1').classList.add('on');setSts('🛑 已断电','si');}
+  if(n===2){
+    // 带压开盖式反例前置：只有先断电再冷却
+    if(S.pressure>0.001){S.pressure=0;showP();}
+    log('等待冷却，压力表指针已回零位 (0.00 MPa)',true);$('sh2').classList.add('on');
+  }
+  if(n===3){
+    // 液体禁止快速排汽干燥红线
+    if(S.type==='liquid'){warn('⚠️ 液体培养基：严禁用快速排汽干燥！必须自然冷却，否则暴沸/容器爆裂');log('打开放汽阀排余汽（液体类已提示：禁止快速排汽干燥）',false);}
+    else{log('打开放汽阀排尽余汽',true);}
+    $('sh3').classList.add('on');
+  }
+  if(n===4){
+    if(S.pressure>0.001){warn('⚠️ 压力未归零，禁止开盖！');log('带压开盖被阻断（致命红线）',false);S.shut=3;return;}
+    log('打开外桶盖，取出已灭菌物品',true);$('sh4').classList.add('on');setSts('🔓 已完成','sok');S.done=true;warn('');
+  }
+}
+
+function resetAll(){
+  S={step:0,pressure:0,temp:121,type:'solid',shut:0,done:false};
+  [1,2,3,4,5].forEach(n=>{$('bw'+n).classList.remove('on');});
+  $('bw2').disabled=$('bw3').disabled=$('bw4').disabled=$('bw5').disabled=true;
+  [1,2,3,4].forEach(n=>{$('sh'+n).classList.remove('on');$('sh'+n).disabled=true;});
+  setType('solid');showP();
+  setSts('⏳ 待装载','si');$('log').innerHTML='';warn('');
+}
+
+// 滚动进度 + 入场动画
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+showP();
+</script>
+</body>
+</html>

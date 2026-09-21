@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>霉菌培养箱 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#d946ef;--accent-glow:#e879f9;--accent-bg:rgba(217,70,239,.12);--green:#34d399;--rose:#fb7185}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-glow));z-index:1000}
+.hr{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#240a2a 50%,#0a0e17 100%)}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(217,70,239,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(217,70,239,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--accent-glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--accent-bg);color:var(--accent-glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(217,70,239,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1}
+.hst{display:flex;gap:36px;margin-top:24px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:32px;font-weight:800;color:var(--accent-glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:920px;margin:0 auto;padding:80px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}.st{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2}
+.sd{font-size:14px;color:#64748b;line-height:1.7;max-width:600px;margin-bottom:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.g2{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:22px;margin-bottom:4px}.ic .in{font-size:14px;font-weight:700}.ic .id{font-size:12px;color:#94a3b8;line-height:1.6}.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:4px;background:var(--accent-bg);color:var(--accent-glow)}
+.lb{background:linear-gradient(180deg,#0a0e17,#240a2a);padding:60px 0}.lc{max-width:960px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}.lt{font-size:12px;font-weight:700;color:var(--accent-glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--accent-bg);color:var(--accent-glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#d946ef,#e879f9);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(217,70,239,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--accent-glow)}
+.fld{margin:8px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:4px}
+.fld input,.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+.dp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.dv{padding:10px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9px;color:#64748b}.dv .dd{font-size:16px;font-weight:800;margin-top:2px;color:var(--accent-glow)}
+#log{font-size:11.5px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:160px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border)}
+.ft b{color:var(--accent-glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:6px;min-height:16px}
+.tag-real{display:inline-block;font-size:10px;color:#64748b;border:1px solid var(--border);border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">✨ 环境实验 · 仪器操作培训</div>
+  <h1 class="h1">霉菌培养箱</h1>
+  <div style="margin-top:10px;font-size:12px;color:#94a3b8;z-index:1">📌 备注：示例机型 <b style="color:#94a3b8">MJX-250B-Z</b> · 依据受控操作规程构建（已脱敏）</div>
+  <div class="hs">霉菌 / 真菌培养 · 恒温孵育（通常 25℃）</div>
+  <div class="hst">
+    <div><span class="n">25℃</span><span class="l">常用</span></div>
+    <div><span class="n">按钮</span><span class="l">旋电位器设温</span></div>
+    <div><span class="n">勿转</span><span class="l">旋钮防过载</span></div>
+    <div><span class="n">少开门</span><span class="l">运行中</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">原理</div><div class="st">它在测什么，怎么测</div>
+  <div class="sd">霉菌培养箱专门给<b>霉菌、酵母等真菌</b>一个恒温环境（常用 25℃）。它和恒温培养箱原理一样，但操作规程里有一条很"反直觉"的红线：<b>调好温度后，不能随便把控温旋钮来回多次旋转</b>——会触发压缩机频繁启停、过载损伤。还有控温失灵先切电源查保险丝、运行中避免频繁开门。</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">🔘</div><div class="in">按钮+电位器设温</div><div class="id">按下温度设定按钮，旋转电位器到目标温度，松开显示实际温度。加热/制冷灯亮表示在调温。</div><span class="it">设温方式</span></div>
+    <div class="ic"><div class="ii">⚠️</div><div class="in">调好勿反复旋转</div><div class="id">温度设好后不能随意来回多次旋转控温旋钮，否则压缩机频繁启停、过载，缩短寿命甚至损坏。</div><span class="it">压缩机红线</span></div>
+    <div class="ic"><div class="ii">🔧</div><div class="in">失灵先切电源查保险</div><div class="id">控温失灵/不加热不制冷，先切电源，查 8A 保险丝再查相应部位。带电瞎修危险。</div><span class="it">故障红线</span></div>
+    <div class="ic"><div class="ii">🚪</div><div class="in">运行中少开门</div><div class="id">运行中除检验需要外避免频繁开箱门，防灰尘异物进入、保持温度稳定。</div><span class="it">开门红线</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">下面这个操作台，完全依据一份真实<b>受控作业指导书</b>搭建。你可以随便点——<b>调好温度后反复转旋钮、运行中频繁开门、故障时带电修，系统都会直接提醒你</b>。</div>
+</section>
+
+<section class="lb" id="s2">
+<div class="lc">
+  <div class="lh"><div class="lt">✨ MJX-250B-Z 操作模拟台</div><span class="tag-real">依据 真实受控操作规程</span></div>
+  <div class="lbb">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <span class="sts si" id="sts">⏳ 待机</span>
+      <span style="font-size:10px;color:#475569">MJX-250B-Z 霉菌培养箱</span>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 接电源</div>
+    <div class="acts"><button class="btn b1" id="btnPower" onclick="power()">🔌 接电源</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:14px 0 4px">② 按设定按钮 → 旋转电位器 → 松开设温</div>
+    <div class="fld"><label>目标温度 (℃)</label><input type="number" id="iTemp" value="25" step="0.5"></div>
+    <div class="acts"><button class="btn b2" id="btnSet" onclick="setTemp()" disabled>🌡️ 设定温度</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">③ 调好温度后反复旋转控温旋钮（<b style="color:var(--rose)">红线：压缩机过载</b>）</div>
+    <div class="acts"><button class="btn b2" id="btnTwist" onclick="twist()" disabled>🔄 反复旋转旋钮</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">④ 放入培养物（留空间）</div>
+    <div class="fld"><label>放置方式</label><select id="iSpace"><option value="ok">物品间留空隙（正确）</option><option value="bad">塞满不留空间</option></select></div>
+    <div class="acts"><button class="btn b2" id="btnItem" onclick="putItem()" disabled>📦 放入培养物</button></div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">⑤ 运行中频繁开箱门（<b style="color:var(--rose)">红线</b>）/ 故障处理</div>
+    <div class="acts">
+      <button class="btn b2" id="btnDoor" onclick="openDoor()" disabled>🚪 频繁开门</button>
+      <button class="btn b2" id="btnFault" onclick="fault()" disabled>🔧 控温失灵</button>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;margin:6px 0 4px">状态</div>
+    <div class="dp">
+      <div class="dv"><div class="dl">温度 ℃</div><div class="dd" id="dTemp">—</div></div>
+      <div class="dv"><div class="dl">状态</div><div class="dd" id="dState" style="font-size:13px">待机</div></div>
+      <div class="dv"><div class="dl">压缩机</div><div class="dd" id="dComp" style="font-size:13px">—</div></div>
+    </div>
+    <div class="acts"><button class="btn b2" onclick="resetAll()">🔄 重置</button></div>
+
+    <div id="log"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">操作规程关键点</div><div class="st">这份作业指导书，卡的就是这几条</div>
+  <div class="sd">对照真实受控操作规程，下面是从操作规程里直接提炼的"红线"。上面模拟台每一条都做了校验：</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">⚠️</div><div class="in">调好勿反复旋转</div><div class="id">温度设好后不能随意来回多次旋转控温旋钮。压缩机频繁启停 → 过载、寿命骤减甚至损坏。</div><span class="it">压缩机红线</span></div>
+    <div class="ic"><div class="ii">🔧</div><div class="in">失灵先断电查保险</div><div class="id">控温失灵先切电源，查 8A 保险丝再查相应部位。带电检修有触电风险。</div><span class="it">故障红线</span></div>
+    <div class="ic"><div class="ii">🚪</div><div class="in">运行中少开门</div><div class="id">运行中除检验外避免频繁开门，防灰尘进入、保持温度稳定。</div><span class="it">开门红线</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">按钮+电位器设温</div><div class="id">按下设定按钮旋电位器到目标值松开，加热/制冷灯指示调温状态。</div><span class="it">设温方式</span></div>
+  </div>
+  <div class="sd" style="margin-top:18px">把"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。</div>
+</section>
+
+<footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let S={power:false,set:false,twist:0,item:false,fault:false};
+function log(t,ok){const el=$('log');const d=document.createElement('div');d.innerHTML=(ok===true?'✅ ':ok===false?'⚠️ ':'• ')+t;$('log').appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{$('warn').textContent='';},4500);}
+
+function power(){
+  if(S.power){warn('已通电');return;}
+  S.power=true;$('btnPower').classList.add('on');$('btnPower').textContent='✅ 已接电源';
+  setSts('🟢 已通电','sa');log('接电源',true);
+  $('btnSet').disabled=false;warn('');
+}
+function setTemp(){
+  if(!S.power){warn('请先接电源');return;}
+  const t=+$('iTemp').value;
+  if(t<=0||t>70){warn('⚠️ 温度不合理（常规≤70℃）');log('温度异常，已提醒',false);return;}
+  S.set=true;$('btnSet').classList.add('on');$('btnSet').textContent='✅ '+t+'℃';
+  $('dTemp').textContent=t;setSts('🟢 调温中','sa');$('dComp').textContent='运行';
+  log('按设定按钮→旋电位器到 '+t+'℃→松开，设温完成（加热/制冷灯亮）',true);
+  $('btnTwist').disabled=false;$('btnItem').disabled=false;$('btnDoor').disabled=false;$('btnFault').disabled=false;warn('');
+}
+function twist(){
+  if(!S.set){warn('请先设温');return;}
+  S.twist++;
+  if(S.twist>1){warn('⚠️ 温度已设好，反复旋转控温旋钮 → 压缩机频繁启停、过载损伤！勿来回多次旋转');log('反复旋转旋钮，压缩机过载风险（操作规程红线）',false);return;}
+  warn('提示：调好温度后尽量不要再转旋钮');log('轻微旋转旋钮（一次可调，多次伤压缩机）',true);
+}
+function putItem(){
+  if(!S.set){warn('请先设温');return;}
+  if($('iSpace').value==='bad'){warn('⚠️ 物品塞满不留空间 → 空气对流受阻、温度不均！');log('放置过挤，已阻断',false);return;}
+  if(S.item){warn('已放');return;}
+  S.item=true;$('btnItem').classList.add('on');$('btnItem').textContent='✅ 已放入（留空间）';
+  setSts('🟢 培养中','sa');$('dState').textContent='培养中';
+  log('放入培养物（留空间），开始恒温培养',true);warn('');
+}
+function openDoor(){
+  if(!S.item){warn('请先放入培养物');return;}
+  warn('⚠️ 运行中频繁开箱门 → 灰尘进入、温度波动，影响霉菌培养！');log('运行中频繁开门（操作规程红线）',false);
+}
+function fault(){
+  if(!S.set){warn('请先设温');return;}
+  S.fault=true;$('btnFault').classList.add('on');$('btnFault').textContent='✅ 已断电查保险';
+  setSts('🔒 已处置','si');$('dComp').textContent='停用';
+  log('控温失灵：先切电源 → 查 8A 保险丝 → 再查相应部位（严禁带电检修）',true);warn('');
+}
+function resetAll(){
+  S={power:false,set:false,twist:0,item:false,fault:false};
+  $('btnPower').classList.remove('on');$('btnPower').textContent='🔌 接电源';
+  $('btnSet').classList.remove('on');$('btnSet').textContent='🌡️ 设定温度';$('btnSet').disabled=true;
+  $('btnTwist').classList.remove('on');$('btnTwist').textContent='🔄 反复旋转旋钮';$('btnTwist').disabled=true;
+  $('btnItem').classList.remove('on');$('btnItem').textContent='📦 放入培养物';$('btnItem').disabled=true;
+  $('btnDoor').classList.remove('on');$('btnDoor').textContent='🚪 频繁开门';$('btnDoor').disabled=true;
+  $('btnFault').classList.remove('on');$('btnFault').textContent='🔧 控温失灵';$('btnFault').disabled=true;
+  $('dTemp').textContent='—';$('dState').textContent='待机';$('dComp').textContent='—';
+  setSts('⏳ 待机','si');$('log').innerHTML='';warn('');
+}
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.15});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

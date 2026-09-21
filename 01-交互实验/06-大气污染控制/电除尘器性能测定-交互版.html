@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电除尘器性能测定 | 环境实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#f59e0b;--glow:#fbbf24;--abg:rgba(245,158,11,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#2b1a05 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(245,158,11,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(245,158,11,.13),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(245,158,11,.2);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:640px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:24px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:760px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(245,158,11,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#2b1a05);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#f59e0b;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:190px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:280px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+#cv2{width:100%;height:240px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.legend span i.dot{width:9px;height:9px;border-radius:50%}
+.note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#fcd34d;line-height:1.7;margin:16px 0}
+.note b{color:#fde68a}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.note.green{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.18);border-left-color:var(--green);color:#a7f3d0}
+.note.green b{color:#d1fae5}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:var(--accent)}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+.dot3{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:#94a3b8;margin-right:14px}
+.dot3 i{width:9px;height:9px;border-radius:50%;display:inline-block}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">电除尘器<br><em>性能测定</em></h1>
+  <div class="hs">它是大风量烟气净化的主力——阻力只有两三百帕，却能把 99.9% 的粉尘抓下来。<br>但它也是最"挑粉尘"的设备：<b style="color:#fcd34d">比电阻一旦跑出适宜区，效率可以断崖式掉二十个点</b>。</div>
+  <div class="hst">
+    <div><span class="n">Deutsch</span><span class="l">η = 1 − e<sup>−wA/Q</sup></span></div>
+    <div><span class="n">10⁴~5×10¹⁰</span><span class="l">适宜比电阻 Ω·cm</span></div>
+    <div><span class="n">40~80</span><span class="l">运行电压 kV</span></div>
+    <div><span class="n">5</span><span class="l">测量步骤</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">不靠离心力，也不靠滤布<br>它靠的是电场</div>
+  <div class="sd">旋风除尘器靠离心力把颗粒甩到壁面，袋式除尘器靠纤维把颗粒拦下来，而电除尘器靠的是<b>电场力</b>：先把粉尘用电晕放电<strong>荷电</strong>，再用高压电场把带电颗粒<strong>推向集尘板</strong>，最后振打清灰。整套流程没有机械运动部件，气流几乎是"直着穿过去"的。</div>
+  <div class="sd">这带来了它不可替代的三点：<b>阻力极低</b>（200～300 Pa，而袋式要 1000～1500 Pa）、<b>耐高温</b>（可处理 300℃ 以上烟气）、<b>能处理超大烟气量</b>。所以电厂锅炉、水泥窑、烧结机这些"大风量、高温"的场合，主力几乎都是它。</div>
+  <div class="sd">但它有一个别处没有的软肋：<b>效率对结构参数是递减敏感的，对粉尘性质却是断崖敏感的</b>。同一台设备、同样的电压，粉尘比电阻一旦跑到 10¹² Ω·cm 量级，效率可以从 99.9% 掉到 90% 以下——而你把设备拆开检查，找不到任何毛病。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">💨</div><div class="in">阻力极低</div><div class="id">电场分离不靠阻挡气流，所以阻力只有 <b>200～300 Pa</b>——是袋式的 1/5。对大机组来说，这直接省下巨额风机电耗。</div><span class="it">经济性</span></div>
+    <div class="ic"><div class="ii">🌡️</div><div class="in">耐高温、耐大流量</div><div class="id">可长期运行在 300℃ 以上，单台处理烟气量可达数百万 m³/h，这是袋式滤料做不到的规模。</div><span class="it">适用边界</span></div>
+    <div class="ic"><div class="ii">⚡</div><div class="in">挑粉尘的比电阻</div><div class="id">比电阻过高会<b>反电晕</b>、过低会<b>二次飞扬</b>，两端都让效率断崖式下跌。这是电除尘最核心、也最容易误判的一课。</div><span class="it">核心矛盾</span></div>
+  </div>
+  <div class="note blue">
+    <b>先分清两组数</b>：一组是<b>设备参数</b>（运行电压 U、比集尘面积 A/Q）；另一组是<b>粉尘性质</b>（比电阻 ρ、粒径分布）。效率低的时候，这两组数要分开查——<b>把粉尘问题当成设备问题，会把一台好设备改坏</b>。
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">四个概念撑起整个实验</div>
+  <div class="sd">模拟台里所有的读数和曲线，都能从下面四条推出来。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">⚡</div><div class="in">① 电晕放电与粉尘荷电</div>
+      <div class="id">放电极（阴极线）加上数十千伏直流高压，附近电场强度足以把气体<b>击穿电离</b>，形成电晕区。粉尘经过时捕获离子而带电。粗颗粒（&gt;0.5 μm）以<b>场荷电</b>为主，电荷与粒径平方成正比；亚微米颗粒以<b>扩散荷电</b>为主。<b>没荷电的粉尘，电场对它毫无作用。</b></div>
+      <div class="fx">q ≈ 4πε₀(1 + 2(ε−1)/(ε+2)) · a²E　（场荷电饱和电荷）</div>
+    </div>
+    <div class="ic">
+      <div class="ii">➡️</div><div class="in">② 驱进速度与 Deutsch 公式</div>
+      <div class="id">带电颗粒在电场中的迁移速度叫<b>驱进速度 w</b>，它等于电场力除以气流阻力。把 w 与集尘面积、烟气量组合起来，就得到电除尘最经典的设计式——<b>Deutsch 公式</b>。工程上用"有效驱进速度"（飞灰一般 0.03～0.12 m/s）代替理论值。</div>
+      <div class="fx">w = qE/(3πμd)　　η = 1 − exp(−w·A/Q)</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📈</div><div class="in">③ 比电阻：三段论</div>
+      <div class="id">比电阻是粉尘层电阻率，它把电除尘的适用性切成了三段：<b>&lt;10⁴ Ω·cm</b> 太低——颗粒到板后立刻失去电荷，附着力小，被气流重新卷走（<b>二次飞扬</b>）；<b>10⁴～5×10¹⁰</b> 适宜；<b>&gt;5×10¹⁰</b> 太高——粉尘层压降过大被击穿，产生<b>反电晕</b>，反向离子把粉尘电荷中和掉，效率骤降。</div>
+      <div class="fx">低 → 二次飞扬 ｜ 适宜 → 正常 ｜ 高 → 反电晕</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🎚️</div><div class="in">④ 火花放电：升压的天花板</div>
+      <div class="id">想靠提高电压来提升效率？有个硬上限——电压高到一定程度就会<b>火花放电</b>（击穿），火花率过高会破坏电场、烧蚀极板。所以实际运行电压不是"越高越好"，而是<b>跟踪在火花临界点以下</b>。高比电阻粉尘的反电晕会让这个上限进一步降低。</div>
+      <div class="fx">U运行 ≤ U火花 ≈ f(比电阻)　（高比电阻时反而更低）</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把四个概念连起来看</b>：电压 U 升高 → 电场强度 E 升高 → 荷电量和电场力都增大 → 驱进速度按 <b>E²</b> 增长 → 效率上升，但<b>受火花放电封顶</b>。而比电阻通过两条路同时打击效率：既降低火花临界电压（U 上不去），又让已捕集的粉尘重新跑掉（w 打折扣）。<span style="color:#fde68a">这就是"同样的设备，换个煤种效率就掉下来"的完整机理。</span>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 实验流程</div>
+  <div class="st">五步走完，顺序不能乱</div>
+  <div class="sd">烟气参数与浓度测定按固定污染源监测相关标准（GB/T 16157、HJ 836 等）执行，效率按进出口<b>同时</b>等速采样计算。<b>顺序错了数据就废了</b>——模拟台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">烟气工况与气流分布确认</div><div class="rd">记录烟气量 Q、温度、含湿量、进口含尘浓度，并检查电场断面气流分布是否均匀。烟气量是所有计算的输入，<b>工况不稳时测出的效率没有代表性</b>。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">高压升压与伏安特性测定</div><div class="rd">逐步升压并记录电压—电流曲线，确定<b>工作电压</b>与<b>火花率</b>。驱进速度由电压决定，<b>没升压到目标电压就测效率，等于测了一个不知道工况的点</b>。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">总除尘效率测定</div><div class="rd">进出口<b>同时</b>等速采样测含尘浓度，按 η=(C_in−C_out)/C_in 计算。进出口不同时采样，浓度不可比。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">粉尘比电阻测定与分析</div><div class="rd">测定粉尘比电阻，判断它落在 <b>二次飞扬区／适宜区／反电晕区</b> 哪一段。<b>这一步决定了"效率低"是设备问题还是粉尘问题</b>，是整改方向的唯一依据。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">有效驱进速度核算与达标判定</div><div class="rd">反算有效驱进速度 w、核算比集尘面积是否够用，并按排放限值判定是否达标。结论必须结合 STEP 4 的比电阻结论，否则无法指明整改方向。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">⚡ 电除尘器性能测定 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按顺序完成五步（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1" onclick="step1()">工况与气流确认<span class="po">step 1</span></button>
+      <button class="pb" id="p2" onclick="step2()" disabled>升压/伏安特性<span class="po">step 2</span></button>
+      <button class="pb" id="p3" onclick="step3()" disabled>测总效率<span class="po">step 3</span></button>
+      <button class="pb" id="p4" onclick="step4()" disabled>测比电阻<span class="po">step 4</span></button>
+      <button class="pb" id="p5" onclick="step5()" disabled>核算与判定<span class="po">step 5</span></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="g2">
+      <div>
+        <div class="fld">
+          <label>除尘器运行电压 U　<b style="color:#fbbf24" id="uTxt">50 kV</b>　（极间距 0.15 m）</label>
+          <input type="range" id="uIn" min="20" max="80" step="1" value="50" oninput="onParam()">
+          <div class="hint">电压越高，荷电量与电场力越大，驱进速度按电压平方增长。但受火花放电封顶。</div>
+        </div>
+        <div class="fld">
+          <label>比集尘面积 A/Q　<b style="color:#fbbf24" id="sTxt">120 m²/(m³/s)</b></label>
+          <input type="range" id="sIn" min="20" max="150" step="5" value="120" oninput="onParam()">
+          <div class="hint">＝集尘板总面积 ÷ 烟气量，代表烟气在电场里的"停留尺度"。常规 60～120。</div>
+        </div>
+        <div class="fld">
+          <label>粉尘比电阻 ρ</label>
+          <select id="rho" onchange="onParam()">
+            <option value="low">低比电阻 · 约 10³ Ω·cm（炭黑、金属氧化物粉尘）</option>
+            <option value="mid" selected>适宜比电阻 · 约 10⁶ Ω·cm（常规飞灰、水泥生料）</option>
+            <option value="high">高比电阻 · 约 10¹² Ω·cm（低硫煤飞灰、硅尘）</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>烟气调质措施</label>
+          <select id="cond" onchange="onParam()">
+            <option value="none" selected>未调质</option>
+            <option value="spray">喷水调质（增湿降温，降低粉尘比电阻）</option>
+            <option value="nh3">加氨／钠盐调质</option>
+          </select>
+          <div class="hint" id="cHint">—</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">实时读数</div>
+        <div class="dp" style="grid-template-columns:1fr 1fr">
+          <div class="dv"><div class="dl">有效驱进速度 w</div><div class="dd" id="oW">—</div><div class="du">m/s</div></div>
+          <div class="dv" id="dvSpark"><div class="dl">火花率</div><div class="dd" id="oSpark">—</div><div class="du">次/min</div></div>
+          <div class="dv" id="dvEta"><div class="dl">理论总效率</div><div class="dd" id="oEta">—</div><div class="du">%</div></div>
+          <div class="dv" id="dvC"><div class="dl">出口浓度</div><div class="dd" id="oOut">—</div><div class="du">mg/m³</div></div>
+        </div>
+        <div style="font-size:10.5px;color:#475569;margin:6px 0 4px">Deutsch 效率曲线族（纵轴 40～100%，横轴比集尘面积取对数）</div>
+        <canvas id="cv" width="900" height="560"></canvas>
+        <div class="legend">
+          <span><i style="background:rgba(148,163,184,.5)"></i>U=40 kV</span>
+          <span><i style="background:rgba(56,189,248,.6)"></i>U=60 kV</span>
+          <span><i style="background:rgba(148,163,184,.85);height:0;border-top:2px dashed #fb7185"></i>达标线 99.9%</span>
+          <span><i class="dot" style="background:#fbbf24"></i>当前运行点</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:10.5px;color:#475569;margin-bottom:4px">比电阻—效率关系（电除尘最核心的一张图）</div>
+      <canvas id="cv2" width="900" height="480"></canvas>
+      <div class="legend">
+        <span><i style="background:#fbbf24"></i>效率随比电阻</span>
+        <span><i class="dot" style="background:#38bdf8"></i>当前比电阻位置</span>
+        <span><i class="dot" style="background:#34d399"></i>调质后的有效比电阻</span>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与红线</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">先测比电阻，再谈效率</div><div class="id">效率低的原因只有两类：<b>设备问题</b>（电压上不去、极板积灰、气流偏斜）和<b>粉尘问题</b>（比电阻跑出适宜区、粒径过细）。区分它们的唯一依据就是比电阻测定。不做这一步就去改设备，很可能把好设备越改越差。</div><span class="it">诊断红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">电压是驱进速度的输入</div><div class="id">驱进速度按电压的平方变化。没升压到目标电压就测效率，你拿到的效率无法归因、也无法与其他工况比较——等于白测。这是顺序红线。</div><span class="it">顺序红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">高比电阻要调质，别硬扛</div><div class="id">粉尘比电阻超过 5×10¹⁰ Ω·cm 时，反电晕会让效率掉十几个点，而且它同时压低火花临界电压——你连电压都升不上去。正确对策是<b>烟气调质</b>（喷水／加氨／钠盐）把比电阻拉回适宜区，而不是继续加设备。</div><span class="it">工艺红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">别指望靠升压一路提效</div><div class="id">效率对电压和比集尘面积都是<b>递减敏感</b>的：从 99% 提到 99.9%，比集尘面积可能要近乎翻倍；而电压还有火花放电的硬天花板。所以判断"该不该改造"要先算清边际账。</div><span class="it">取舍红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：是拿到一台"效率不达标"的电除尘器时，能立刻想到问三句话——<b>粉尘比电阻多少？运行电压到多少？比集尘面积够不够？</b> 然后按"粉尘问题／运行问题／设备问题"三条线索分开排查。会算 Deutsch 公式不难，难的是知道<span style="color:#fde68a">什么时候这个公式不适用</span>。
+  </div>
+  <div class="note blue">
+    <b>模型边界</b>：Deutsch 公式假设气流均匀、粉尘充分荷电、捕集后不再脱离，实际它是<b>偏乐观</b>的——工程上因此用"有效驱进速度"代替理论值。本页即采用有效驱进速度并对比电阻做修正处理，用来演示趋势与判据，<b>不作为工程设计的依据</b>。
+  </div>
+  <div class="fw">
+    <a href="旋风除尘器性能测定-交互版.html"><div class="t">→ 旋风除尘器性能测定</div><div class="d">除尘家族的第一级。看"效率线性、能耗平方"这个经典矛盾。</div></a>
+    <a href="袋式除尘器性能测定-交互版.html"><div class="t">→ 袋式除尘器性能测定</div><div class="d">另一种主流除尘方式：靠滤布，效率更高但阻力大得多。</div></a>
+    <a href="00-大气污染控制工程实验-课程对照总览.html"><div class="t">→ 课程对照总览</div><div class="d">返回总览，查看本页对应的课程大纲位置与覆盖情况。</div></a>
+  </div>
+  <div class="sd" style="margin-top:18px">
+    排放限值依据：GB 13223《火电厂大气污染物排放标准》，燃煤锅炉烟尘排放限值 <b>30 mg/m³</b>（重点地区大气污染物特别排放限值 <b>20 mg/m³</b>）。本页取 30 mg/m³ 作教学达标基准。<br>
+    本页示例工况：进口含尘浓度 30 g/m³、极间距 0.15 m、飞灰中位径约 10 μm。<b>曲线与数值用于教学演示，不作为检测报告数据。</b>
+  </div>
+</section>
+
+<footer class="ft">
+  和小宋一起玩科学 · <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3<br>
+  <span style="font-size:11px;color:#334155">配套总览：<a href="00-大气污染控制工程实验-课程对照总览.html" style="color:#475569">大气污染控制工程实验 · 课程对照总览</a></span>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const WREF=0.045, UREF=40, WMAX=0.15;   // 有效驱进速度基准（m/s）
+const CIN=30000, LIMIT=30;              // 进口浓度 mg/m³、排放限值 mg/m³
+const RHO={low:1e3, mid:1e6, high:1e12};
+const RLAB={low:'低比电阻（二次飞扬区）', mid:'适宜比电阻', high:'高比电阻（反电晕区）'};
+let S={s1:false,s2:false,s3:false,s4:false,s5:false};
+let curKey=null, measured=null;
+
+/* 调质把高比电阻压低一个数量级（有效比电阻左移） */
+function rhoEff(){
+  const r=$('rho').value, c=$('cond').value;
+  if(c!=='none' && r==='high') return RHO[r]/10;
+  return RHO[r];
+}
+/* 比电阻—有效系数曲线（倒 U） */
+function fRhoOf(rho){
+  const L=Math.log10(rho);
+  if(L<=4) return 0.40;
+  if(L<5) return 0.40+(L-4)*(1.00-0.40);
+  if(L<=10.7) return 1.00;
+  if(L<12) return 1.00+(L-10.7)/1.3*(0.30-1.00);
+  return 0.30;
+}
+/* 火花临界电压随比电阻下降 */
+function uSpark(){
+  const L=Math.log10(rhoEff());
+  if(L<=4) return 80;
+  if(L<=5) return 80-(L-4)*5;
+  if(L<=10.7) return 75;
+  if(L<12) return 75-(L-10.7)/1.3*20;
+  return 55;
+}
+function params(){return {u:+$('uIn').value, sca:+$('sIn').value, rho:$('rho').value, cond:$('cond').value};}
+function key(p){return p.u+'|'+p.sca+'|'+p.rho+'|'+p.cond;}
+function calc(){
+  const p=params(), us=uSpark(), f=fRhoOf(rhoEff());
+  const ueff=Math.min(p.u,us);
+  const w0=Math.min(WMAX, WREF*Math.pow(ueff/UREF,2));
+  const w=w0*f;
+  const x=w*p.sca;
+  const eta=1-Math.exp(-x);
+  const out=CIN*(1-eta);
+  const sr=p.u>us ? 100+(p.u-us)*10 : 100*Math.pow(p.u/us,12);
+  return {u:p.u,sca:p.sca,us,ueff,w0,w,f,eta,out,sr,passive:out<=LIMIT};
+}
+
+function fmtEta(e){return Math.min(e*100,99.99).toFixed(2);}
+
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},7000);}
+
+function render(){
+  const p=params(), c=calc();
+  $('uTxt').textContent=p.u+' kV';
+  $('sTxt').textContent=p.sca+' m²/(m³/s)';
+  $('oW').textContent=S.s2?c.w.toFixed(4):'—';
+  $('oSpark').textContent=S.s2?c.sr.toFixed(1):'—';
+  $('dvSpark').className='dv'+(S.s2?(c.sr>60?' bad':c.sr>30?'':' good'):'');
+  $('oEta').textContent=S.s3?fmtEta(c.eta):'—';
+  $('dvEta').className='dv'+(S.s3?(c.eta>=0.999?' good':' bad'):'');
+  $('oOut').textContent=S.s3?c.out.toFixed(c.out<10?1:0):'—';
+  $('dvC').className='dv'+(S.s3?(c.passive?' good':' bad'):'');
+  const ch=$('cHint');
+  if(p.rho==='high'&&p.cond==='none'){ch.textContent='⚠️ 高比电阻粉尘未调质：反电晕几乎不可避免。';ch.style.color='#fb7185';}
+  else if(p.rho==='high'){ch.textContent='✅ 调质后有效比电阻被拉到约 10¹¹ Ω·cm，脱离反电晕主导区。';ch.style.color='#34d399';}
+  else if(p.cond!=='none'){ch.textContent='这档粉尘比电阻本来就在适宜区，调质收益有限。';ch.style.color='#94a3b8';}
+  else {ch.textContent='当前比电阻处于适宜区间，无需调质。';ch.style.color='#94a3b8';}
+  drawDeutsch(); drawRho();
+}
+
+/* ---------- 图1：Deutsch 效率曲线族 ---------- */
+function drawDeutsch(){
+  const cv=$('cv'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,H=280;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=52,PR=16,PT=18,PB=34,gw=W-PL-PR,gh=H-PT-PB;
+  const yMin=0.40, yMax=1.0;
+  const xm0=Math.log(20), xm1=Math.log(150);
+  const X=s=>PL+(Math.log(s)-xm0)/(xm1-xm0)*gw;
+  const Y=e=>PT+(yMax-e)/(yMax-yMin)*gh;
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  [0.40,0.50,0.60,0.70,0.80,0.90,0.95,1.00].forEach(e=>{ctx.beginPath();ctx.moveTo(PL,Y(e));ctx.lineTo(PL+gw,Y(e));ctx.stroke();});
+  [20,40,60,80,100,120,150].forEach(s=>{ctx.beginPath();ctx.moveTo(X(s),PT);ctx.lineTo(X(s),PT+gh);ctx.stroke();});
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  [0.40,0.50,0.60,0.70,0.80,0.90,0.95,1.00].forEach(e=>ctx.fillText((e*100).toFixed(0)+'%',PL-7,Y(e)));
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  [20,40,60,80,100,120,150].forEach(s=>ctx.fillText(s,X(s),PT+gh+7));
+  ctx.fillStyle='#475569';
+  ctx.fillText('比集尘面积 A/Q  m²/(m³/s)（对数坐标）',PL+gw/2,PT+gh+20);
+  ctx.save(); ctx.translate(12,PT+gh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#475569';
+  ctx.fillText('除尘效率 η',0,0); ctx.restore();
+
+  /* 曲线裁剪到绘图区（越界即出图，不贴边） */
+  ctx.save(); ctx.beginPath(); ctx.rect(PL,PT,gw,gh); ctx.clip();
+
+  /* 三条参考曲线（固定电压） */
+  const f=fRhoOf(rhoEff());
+  const fam=[{u:40,col:'rgba(148,163,184,.5)'},{u:60,col:'rgba(56,189,248,.6)'}];
+  fam.forEach(k=>{
+    const w=Math.min(WMAX,WREF*Math.pow(Math.min(k.u,uSpark())/UREF,2))*f;
+    ctx.strokeStyle=k.col; ctx.lineWidth=1.6; ctx.beginPath();
+    let started=false;
+    for(let i=0;i<=200;i++){
+      const s=Math.exp(xm0+i*(xm1-xm0)/200);
+      const e=1-Math.exp(-w*s);
+      const yy=Y(e);
+      if(!started){ctx.moveTo(X(s),yy);started=true;}else ctx.lineTo(X(s),yy);
+    }
+    ctx.stroke();
+  });
+  /* 当前电压曲线 */
+  const c=calc();
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=2.4; ctx.beginPath();
+  let st=false;
+  for(let i=0;i<=240;i++){
+    const s=Math.exp(xm0+i*(xm1-xm0)/240);
+    const e=1-Math.exp(-c.w*s);
+    const yy=Y(e);
+    if(!st){ctx.moveTo(X(s),yy);st=true;}else ctx.lineTo(X(s),yy);
+  }
+  ctx.stroke();
+  ctx.restore();
+  /* 达标线 99.9% */
+  ctx.strokeStyle='#fb7185'; ctx.lineWidth=1.2; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(PL,Y(0.999)); ctx.lineTo(PL+gw,Y(0.999)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#fb7185'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+  ctx.fillText('达标线 99.9%（对应出口 30 mg/m³）',PL+5,Y(0.999)-4);
+  /* 运行点 */
+  if(S.s3){
+    const px=X(Math.min(Math.max(c.sca,20),150)), py=Y(c.eta);
+    ctx.fillStyle='#fbbf24'; ctx.beginPath(); ctx.arc(px,py,4.2,0,7); ctx.fill();
+    ctx.strokeStyle='rgba(251,191,36,.5)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(px,py,8,0,7); ctx.stroke();
+    ctx.fillStyle='#fde68a'; ctx.font='10.5px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+    const lx=Math.min(px+9,PL+gw-104);
+    ctx.fillText('当前 '+fmtEta(c.eta)+'%',lx,py-6);
+  }
+}
+
+/* ---------- 图2：比电阻—效率倒 U 曲线 ---------- */
+function drawRho(){
+  const cv=$('cv2'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth,H=240;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const PL=52,PR=16,PT=18,PB=40,gw=W-PL-PR,gh=H-PT-PB;
+  const L0=2,L1=14;                 // log10(rho)
+  const yMin=60,yMax=100;           // %
+  const X=r=>PL+(Math.log10(r)-L0)/(L1-L0)*gw;
+  const Y=e=>PT+(yMax-e*100)/(yMax-yMin)*gh;
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=1;
+  [60,70,80,90,95,100].forEach(v=>{ctx.beginPath();ctx.moveTo(PL,Y(v/100));ctx.lineTo(PL+gw,Y(v/100));ctx.stroke();});
+  for(let L=L0;L<=L1;L++){ctx.beginPath();ctx.moveTo(X(Math.pow(10,L)),PT);ctx.lineTo(X(Math.pow(10,L)),PT+gh);ctx.stroke();}
+  ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  [60,70,80,90,95,100].forEach(v=>ctx.fillText(v+'%',PL-7,Y(v/100)));
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  for(let L=L0;L<=L1;L+=2) ctx.fillText('10'+sup(L),X(Math.pow(10,L)),PT+gh+7);
+  ctx.fillStyle='#475569';
+  ctx.fillText('粉尘比电阻 ρ（Ω·cm，对数坐标）',PL+gw/2,PT+gh+23);
+  ctx.save(); ctx.translate(12,PT+gh/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#475569';
+  ctx.fillText('除尘效率 η',0,0); ctx.restore();
+  /* 三段区间底色 */
+  const bands=[{a:1e2,b:1e4,c:'rgba(251,113,133,.10)',t:'二次飞扬区'},{a:1e4,b:5e10,c:'rgba(52,211,153,.10)',t:'适宜区'},{a:5e10,b:1e14,c:'rgba(251,113,133,.10)',t:'反电晕区'}];
+  bands.forEach(bd=>{
+    ctx.fillStyle=bd.c;
+    const x1=X(Math.max(bd.a,1e2)), x2=X(Math.min(bd.b,1e14));
+    ctx.fillRect(x1,PT,x2-x1,gh);
+    ctx.fillStyle='#64748b'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(bd.t,(x1+x2)/2,PT+4);
+  });
+  /* 曲线（裁剪到绘图区） */
+  const c=calc();
+  const etaAt=r=>{
+    const w=Math.min(WMAX,WREF*Math.pow(Math.min(c.u,uSparkAt(r))/UREF,2))*fRhoOf(r);
+    return 1-Math.exp(-w*c.sca);
+  };
+  ctx.save(); ctx.beginPath(); ctx.rect(PL,PT,gw,gh); ctx.clip();
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=2.4; ctx.beginPath();
+  for(let i=0;i<=300;i++){
+    const L=L0+i*(L1-L0)/300, r=Math.pow(10,L);
+    const y=Y(etaAt(r)), x=X(r);
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  ctx.restore();
+  /* 当前点 + 调质点（仅落在绘图区内才标注） */
+  const inPlot=(x,y)=>x>=PL&&x<=PL+gw&&y>=PT&&y<=PT+gh;
+  const marker=(x,y,col,lab,above)=>{
+    if(!inPlot(x,y)) return;
+    ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x,y,4.4,0,7); ctx.fill();
+    ctx.fillStyle=col; ctx.font='10.5px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.textBaseline=above?'bottom':'top';
+    ctx.fillText(lab,Math.min(Math.max(x,PL+44),PL+gw-44),above?y-7:y+7);
+  };
+  const rNow=RHO[$('rho').value];
+  marker(X(rNow),Y(etaAt(rNow)),'#38bdf8','当前 '+fmtEta(etaAt(rNow))+'%',true);
+  if($('cond').value!=='none' && $('rho').value==='high'){
+    const rA=rhoEff(), xa=X(rA), ya=Y(etaAt(rA));
+    ctx.strokeStyle='#34d399'; ctx.lineWidth=1.4; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(X(rNow),Y(etaAt(rNow))); ctx.lineTo(xa,ya); ctx.stroke(); ctx.setLineDash([]);
+    marker(xa,ya,'#34d399','调质后 '+fmtEta(etaAt(rA))+'%',false);
+  }
+}
+function uSparkAt(rho){
+  const L=Math.log10(rho);
+  if(L<=4) return 80;
+  if(L<=5) return 80-(L-4)*5;
+  if(L<=10.7) return 75;
+  if(L<12) return 75-(L-10.7)/1.3*20;
+  return 55;
+}
+function sup(n){
+  const m={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  return String(n).split('').map(ch=>m[ch]||ch).join('');
+}
+
+/* ---------- 分级重置 ---------- */
+function resetFrom2(){
+  S.s2=false;S.s3=false;S.s4=false;S.s5=false;
+  ['p2','p3','p4','p5'].forEach(id=>$(id).classList.remove('on'));
+  $('p2').disabled=false; $('p3').disabled=true; $('p4').disabled=true; $('p5').disabled=true;
+  measured=null; render();
+}
+function hardReset(clearLog){
+  S={s1:false,s2:false,s3:false,s4:false,s5:false}; curKey=null; measured=null;
+  ['p1','p2','p3','p4','p5'].forEach((id,i)=>{const b=$(id);b.classList.remove('on');b.disabled=i!==0;});
+  if(clearLog){ $('log').innerHTML=''; setSts('⏳ 未开始','si'); }
+  render();
+}
+function onParam(){
+  const p=params();
+  if(S.s1 && curKey!==null && key(p)!==curKey){
+    const o=curKey.split('|');
+    const onlyU=(String(p.sca)===o[1] && p.rho===o[2] && p.cond===o[3]);
+    log(onlyU ? '运行电压已改变——驱进速度按电压平方变化，此前数据失效，请从 STEP 2 重新升压'
+              : '设备规格／粉尘性质已改变（等于换了设备或换了煤种），此前数据失效，请从 STEP 1 重做',
+        'bad');
+    setSts('⚠️ 参数已变，需重做','sbad');
+    warn('⚠️ 参数变了：旧数据不能与新数据混用。'+(onlyU?'回 STEP 2 重新升压。':'回 STEP 1 重做工况确认。'));
+    if(onlyU){ resetFrom2(); } else { hardReset(false); }
+    curKey=key(p);
+  }
+  if(S.s1&&!S.s2) curKey=key(p);
+  render();
+}
+
+function step1(){
+  if(S.s1) return;
+  S.s1=true; curKey=key(params());
+  $('p1').classList.add('on'); $('p2').disabled=false;
+  setSts('🟡 工况已确认','sa');
+  log('烟气工况确认：烟气量稳定，进口含尘浓度 <b>30 g/m³</b>，电场断面气流分布均匀',true);
+  log('粉尘比电阻实测值：<b>'+rhoEff().toExponential(1)+' Ω·cm</b> —— '+RLAB[$('rho').value],true);
+  warn('');
+  render();
+}
+function step2(){
+  if(!S.s1){ warn('请先完成 STEP 1 烟气工况与气流分布确认'); return; }
+  if(S.s2) return;
+  const c=calc();
+  S.s2=true; $('p2').classList.add('on'); $('p3').disabled=false;
+  log('伏安特性测定：升压至 '+c.u+' kV，火花临界电压 <b>'+c.us.toFixed(1)+' kV</b>，火花率 <b>'+c.sr.toFixed(1)+' 次/min</b>',true);
+  log('有效驱进速度 w = <b>'+c.w.toFixed(4)+' m/s</b>（电压 '+c.ueff.toFixed(1)+' kV 有效值，比电阻修正系数 '+c.f.toFixed(2)+'）',true);
+  if(c.u>c.us){
+    warn('⚠️ 设定电压 '+c.u+' kV 已超过火花临界电压 '+c.us.toFixed(1)+' kV——火花率超标，实际只能降压至 '+c.us.toFixed(1)+' kV 运行。高比电阻粉尘火花临界电压更低，这是它的第二重打击。');
+  } else if(c.sr>30){
+    warn('⚠️ 火花率 '+c.sr.toFixed(1)+' 次/min 偏高（一般控制在 30 次/min 以内）——再升压会破坏电场。');
+  } else warn('');
+  setSts('🟡 已升压','sa');
+  render();
+}
+function step3(){
+  if(!S.s2){ warn('⚠️ 必须先用 STEP 2 升压到目标电压——驱进速度由电压决定，没有电压数据，效率无法归因也无法比较'); log('顺序错误：跳过升压直接测效率，已阻断',false); return; }
+  if(S.s3) return;
+  const c=calc();
+  S.s3=true; $('p3').classList.add('on'); $('p4').disabled=false;
+  measured={eta:c.eta,out:c.out,w:c.w};
+  log('总效率测定（进出口同时等速采样）：进口 30000 mg/m³ → 出口 <b>'+c.out.toFixed(c.out<10?1:0)+' mg/m³</b>，η = <b>'+fmtEta(c.eta)+'%</b>',true);
+  if(!c.passive) warn('⚠️ 出口浓度 '+c.out.toFixed(0)+' mg/m³ 超过排放限值 30 mg/m³——先别急着改设备，下一步测比电阻，先分清是设备问题还是粉尘问题。');
+  else warn('');
+  setSts('🟡 效率已测','sa');
+  render();
+}
+function step4(){
+  if(!S.s3){ warn('⚠️ 请先完成 STEP 3 总效率测定——比电阻分析是用来解释效率数据的'); log('顺序错误：未测效率先测比电阻，已阻断',false); return; }
+  if(S.s4) return;
+  const c=calc(), R=$('rho').value;
+  S.s4=true; $('p4').classList.add('on'); $('p5').disabled=false;
+  log('粉尘比电阻测定：ρ_有效 = <b>'+rhoEff().toExponential(1)+' Ω·cm</b>，落入 <b>'+RLAB[R]+'</b>',true);
+  if(R==='high'&&$('cond').value==='none'){
+    log('诊断：比电阻超过 5×10¹⁰ Ω·cm，<b>反电晕</b>是效率损失的主因——粉尘层被击穿、反向离子中和粉尘电荷。这属于<b>粉尘问题，不是设备问题</b>。',false);
+  } else if(R==='low'){
+    log('诊断：比电阻低于 10⁴ Ω·cm，颗粒到板后迅速失去电荷、附着力小，<b>二次飞扬</b>是效率损失的主因。对策是增大比集尘面积或改用袋式，<b>调质无效</b>。',false);
+  } else {
+    log('诊断：比电阻处于 10⁴～5×10¹⁰ Ω·cm 适宜区，粉尘本身不构成效率障碍；若效率仍不达标，应查设备与运行（电压、极板积灰、气流分布）。',true);
+  }
+  if(R==='high'&&$('cond').value!=='none') log('调质措施有效：有效比电阻已降至 '+rhoEff().toExponential(1)+' Ω·cm，脱离反电晕主导区。',true);
+  setSts('🟡 比电阻已分析','sa');
+  render();
+}
+function step5(){
+  if(!S.s4){ warn('⚠️ 必须先完成 STEP 4 比电阻测定——没有比电阻数据就无法区分设备问题与粉尘问题，达标结论会指错整改方向'); log('顺序错误：跳过比电阻直接下结论，已阻断',false); return; }
+  if(S.s5) return;
+  const c=calc(), R=$('rho').value, cond=$('cond').value;
+  S.s5=true; $('p5').classList.add('on');
+  log('核算：有效驱进速度 w = '+c.w.toFixed(4)+' m/s，比集尘面积 A/Q = '+c.sca+' m²/(m³/s)，w·A/Q = <b>'+(c.w*c.sca).toFixed(2)+'</b>',true);
+  if(c.passive){
+    setSts('🟢 达标','sok');
+    log('判定：出口 '+c.out.toFixed(c.out<10?1:0)+' mg/m³ ≤ 限值 30 mg/m³，<b>本次工况下达标</b>。',true);
+    if(c.eta>0.999) log('说明：效率已越过 99.9% 的分水岭——每再提高 0.09 个百分点，比集尘面积都要付出可观代价，这就是电除尘的边际账。');
+    warn('');
+  } else {
+    setSts('🔴 不达标','sbad');
+    log('判定：出口 '+c.out.toFixed(0)+' mg/m³ <b>超过排放限值 30 mg/m³</b>，本次工况下不达标。',false);
+    if(R==='high'&&cond==='none') warn('⚠️ 不达标主因是<b>高比电阻反电晕</b>（粉尘问题）：应优先烟气调质（喷水／加氨）把比电阻拉回适宜区，而不是继续加设备。');
+    else if(R==='low') warn('⚠️ 不达标主因是<b>二次飞扬</b>（粉尘问题）：比电阻过低，调质无效，应考虑增大比集尘面积或改用袋式除尘器。');
+    else warn('⚠️ 比电阻处于适宜区，不达标应归因于<b>设备或运行问题</b>：核对运行电压是否偏低、极板是否积灰、气流分布是否偏斜，或比集尘面积是否设计不足。');
+  }
+  drawDeutsch(); drawRho();
+}
+function resetAll(){ $('uIn').value=50; $('sIn').value=120; $('rho').value='mid'; $('cond').value='none'; hardReset(true); warn(''); }
+
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>render());
+render();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#e2e8f0;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#94a3b8}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.035);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 13223-2011</td><td>火电厂大气污染物排放标准</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">烟尘排放限值 30／20 mg/m³ 的来源</td></tr><tr><td class="sb-c">GB/T 16157-1996</td><td>固定污染源排气中颗粒物测定与气态污染物采样方法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">进口颗粒物采样与浓度测定方法</td></tr><tr><td class="sb-c">HJ 836-2017</td><td>固定污染源废气 低浓度颗粒物的测定 重量法</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">低浓度颗粒物测定的法定方法（≤20 mg/m³）</td></tr></table><div class="sb-ft">本页共依据 <b>3</b> 项标准：<b>3</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 GB/T 16157-1996。请注意其 <b>2018-03-01 实施的修改单</b>：颗粒物浓度 ≤20 mg/m³ 时应适用 HJ 836，&gt;20 且 ≤50 mg/m³ 时两者同时适用；用本标准测 ≤20 mg/m³ 时结果表述为「&lt;20 mg/m³」。涉及超低排放／低浓度判定的页面须按修改单处理。</li></ul></div></div></div></details>
+</body>
+</html>

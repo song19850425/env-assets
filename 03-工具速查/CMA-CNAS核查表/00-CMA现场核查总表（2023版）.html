@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMA现场核查总表（2023版）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Source Han Sans SC","Microsoft YaHei",-apple-system,sans-serif;background:#f6f3ec;color:#2b2b2b;line-height:1.75;font-size:14px}
+.cover{background:#14365c;padding:28px 24px 20px;text-align:center;border-bottom:3px solid #9e2b25}
+.cover .tag{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#e8eef4;padding:3px 12px;border-radius:4px;font-size:11px;letter-spacing:1px}
+.cover h1{font-family:"Source Han Serif SC","Songti SC","SimSun",serif;font-size:22px;margin:10px 0 4px;color:#fff;font-weight:700}
+.cover .sub{color:#c9d4de;font-size:13px}
+.cover .meta{margin-top:8px;color:#9fb0bf;font-size:11px}
+.wrap{max-width:960px;margin:0 auto;padding:16px 20px 60px}
+
+/* 进度条 */
+.progress-bar{background:#fff;border:1px solid #d8d0c0;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.progress-bar .info{display:flex;justify-content:space-between;font-size:13px;color:#14365c;font-weight:600;margin-bottom:6px}
+.progress-bar .track{height:8px;background:#e8eef4;border-radius:4px;overflow:hidden}
+.progress-bar .fill{height:100%;background:#2e6b3e;border-radius:4px;transition:width .4s;width:0%}
+.progress-bar .fill.warn{background:#a8761b}
+.progress-bar .fill.good{background:#2e6b3e}
+
+/* 要素面板 */
+.elem{margin-bottom:10px;border:1px solid #d8d0c0;border-radius:8px;overflow:hidden;background:#fff}
+.elem-header{display:flex;align-items:center;padding:12px 16px;cursor:pointer;background:#faf8f3;user-select:none;transition:background .2s}
+.elem-header:hover{background:#f0ede4}
+.elem-header .num{width:28px;height:28px;border-radius:50%;background:#14365c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.elem-header .title{flex:1;margin:0 12px;font-weight:600;font-size:14px;color:#14365c}
+.elem-header .count{font-size:12px;color:#888;white-space:nowrap;margin-right:10px}
+.elem-header .arrow{transition:transform .3s;font-size:14px;color:#888}
+.elem-header.open .arrow{transform:rotate(180deg)}
+.elem-body{display:none;padding:0 16px 14px;border-top:1px solid #e8eef4}
+.elem-body.open{display:block}
+
+/* 核查项 */
+.item{margin:8px 0;border:1px solid #e8eef4;border-radius:6px;overflow:hidden}
+.item-head{display:flex;align-items:flex-start;padding:10px 12px;cursor:pointer;gap:8px;transition:background .15s}
+.item-head:hover{background:#f8f6f0}
+.item-head .cb{width:18px;height:18px;border:2px solid #b8b0a0;border-radius:3px;flex-shrink:0;margin-top:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;transition:.2s;background:#fff}
+.item-head .cb.checked{background:#2e6b3e;border-color:#2e6b3e;color:#fff}
+.item-head .cb.checked::after{content:"✓"}
+.item-head .item-area{flex:1;min-width:0}
+.item-head .txt{font-size:13.5px;color:#333;font-weight:500}
+.item-head .item-key{font-size:12px;color:#2f5e8a;margin-top:4px;line-height:1.55;padding:4px 8px;background:#e8eef4;border-radius:4px}
+.item-head .expand{font-size:11px;color:#b8b0a0;transition:transform .3s;flex-shrink:0;margin-top:4px}
+.item-head.open .expand{transform:rotate(180deg)}
+.item-detail{display:none;padding:0 12px 10px;margin-left:28px;border-top:1px solid #f0ede4;background:#faf8f3;border-radius:0 0 6px 6px}
+.item-detail.open{display:block}
+.item-detail .lab{font-size:11.5px;font-weight:600;color:#2f5e8a;margin-top:8px}
+.item-detail .txt{font-size:12.5px;color:#444;line-height:1.6;margin:2px 0 0}
+.item-detail .nc{background:#f3e7e6;border-left:3px solid #9e2b25;padding:6px 10px;margin:6px 0;border-radius:0 4px 4px 0;font-size:12px;color:#333}
+.item-detail .doc{font-size:12px;color:#2e6b3e;line-height:1.6;margin:2px 0 6px;padding:4px 8px;background:#e7f0e8;border-radius:4px}
+/* 备注 + 整改跟踪 */
+.item-detail .note-lab{font-size:11.5px;font-weight:600;color:#7a5c12;margin-top:10px}
+.item-detail .note{width:100%;box-sizing:border-box;min-height:48px;margin-top:3px;padding:7px 9px;font-family:inherit;font-size:12.5px;color:#333;line-height:1.55;border:1px solid #d8d0c0;border-radius:6px;background:#fffdf6;resize:vertical}
+.item-detail .note:focus{outline:none;border-color:#a8761b;box-shadow:0 0 0 2px rgba(168,118,27,.15)}
+.item-detail .rect-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.item-detail .rect-row .rl{font-size:11.5px;font-weight:600;color:#7a5c12;white-space:nowrap}
+.item-detail .rect{font-family:inherit;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #d8d0c0;background:#fff;color:#333;cursor:pointer}
+.item-detail .rect.s-none{background:#f0ede4;color:#888}
+.item-detail .rect.s-todo{background:#f3e7e6;color:#9e2b25;border-color:#e3c0bd}
+.item-detail .rect.s-doing{background:#fbf0dc;color:#a8761b;border-color:#ecd9a8}
+.item-detail .rect.s-done{background:#e7f0e8;color:#2e6b3e;border-color:#bfe0c6}
+.tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;font-weight:600;margin:0 3px}
+.t-blue{background:#e8eef4;color:#2f5e8a}
+.t-red{background:#f3e7e6;color:#9e2b25}
+.t-green{background:#e7f0e8;color:#2e6b3e}
+
+/* 空要素占位 */
+.elem-empty{padding:10px 16px;text-align:center;color:#b8b0a0;font-size:12.5px}
+
+.foot{margin-top:24px;border-top:1px solid #d8d0c0;padding-top:12px;color:#888;font-size:11px;text-align:right}
+
+@media print{body{background:#fff}.elem-header{background:#f5f3ee}.elem-body{display:block !important}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">环境实验 · 评审工具 · 内部自检</div>
+  <h1>CMA 现场核查总表</h1>
+  <div class="sub">依据《检验检测机构资质认定评审准则》（市监检测发〔2023〕21号）</div>
+  <div class="meta">2026/07 版 · 含核查要点 + 准备指引 + 常见不符合项</div>
+</div>
+
+<div class="wrap">
+
+<div class="progress-bar" id="progressBar">
+  <div class="info"><span id="progText">已核查 0 / 0 项</span><span id="progPct">0%</span></div>
+  <div class="track"><div class="fill" id="progFill"></div></div>
+</div>
+
+<div id="app"></div>
+
+<div class="foot">核查进度自动保存至本机、关闭后不丢失 · 打印时可展开全部要素</div>
+</div>
+
+<script>
+// ===== 数据：11 要素 × 每条含 id/标题/要点/指引/不符合项 =====
+const DATA = [
+  {
+    title:"组织",
+    items:[
+      {id:"4-1",t:"是否依法成立，能够独立承担法律责任",key:"核查营业执照、法人证书或授权文件；确认检验检测机构的法律地位",guide:"备齐营业执照/事业单位法人证书/法人授权文件。若为分公司或分支机构，须有法人书面授权",nc:"授权文件过期或未明确法律责任的承担主体",doc:"营业执照 法人授权文件 实验室设立批文（示例：含统一社会信用代码/机构名称/法定代表人/有效期）"},
+      {id:"4-2",t:"是否具备必要的场所、设备和人员基本条件",key:"现场查看场所面积、设备配置表、人员名册是否与申请材料一致",guide:"准备场所平面图、设备台账、全员名册（含学历/职称/职务）",nc:"人员名册与社保记录不匹配",doc:"场所平面图 设备台账 全员名册（示例：标尺版，标注功能区名称/面积/人流动线/安全出口）"},
+      {id:"4-3",t:"是否明确质量负责人、技术负责人的职责与权限",key:"查看质量手册中岗位职责描述，询问质量负责人/技术负责人是否清楚自身职责",guide:"质量手册中须有岗位职责章节，质量负责人和技术负责人须签署职责确认书",nc:"质量负责人与技术负责人岗位由同一人兼任（虽未明确禁止，但评审实践强烈建议分设）",doc:"质量手册(岗位职责章节) 职责确认书（示例：含岗位职责描述/任职条件/考核方式/签字确认栏）"},
+    ]
+  },
+  {
+    title:"公正性和保密性",
+    items:[
+      {id:"5-1",t:"是否建立并实施公正性程序",key:"查看公正性声明、公正性风险评估记录、独立性承诺",guide:"制定《公正性和独立性管理程序》，全员签署公正性承诺书，每年做一次公正性风险评估",nc:"公正性声明内容套用模板，未体现本机构具体业务场景",doc:"公正性声明 公正性风险评估记录 全员签署的公正性承诺书（示例：机构对外发布的公正性承诺，须盖章/负责人签字/发布日期）"},
+      {id:"5-2",t:"是否建立并实施保密性程序",key:"查看保密制度、客户信息保护措施、数据访问权限控制",guide:"制定《保护客户机密信息和所有权程序》，样品/数据/报告按密级管理",nc:"实验室电脑无权限分级、客户信息随意暴露",doc:"保密程序文件 数据访问权限清单 客户信息保密协议（示例：含保密分级标准/数据访问权限/违规处罚/培训要求）"},
+      {id:"5-3",t:"是否识别并管控对公正性的风险",key:"查看风险识别记录、是否有利益冲突案例的应对方案",guide:"制作《公正性风险识别表》，识别来自内外部（如商业压力/人员流动/利益关联）的风险并制定消减措施",nc:"无书面风险识别记录、评审时答不出本机构当前最大公正性风险是什么",doc:"公正性风险识别表 利益冲突声明 风险消减措施记录（示例：含识别维度(内/外部)/风险描述/等级/消减措施/责任人）"},
+    ]
+  },
+  {
+    title:"人员",
+    items:[
+      {id:"6-1",t:"技术负责人和授权签字人是否满足任职条件",key:"核查学历、职称、从业年限、授权签字人的领域范围",guide:"技术负责人：本科+5年/专科+8年相关经历。授权签字人：熟悉相应领域标准、具备审核报告能力。备齐学历证书+职称证书+工作经历证明",nc:"授权签字人的能力范围与学历/经历不匹配,授权签字人计算机专业但签环境检测报告",doc:"学历证书/职称证书复印件 工作经历证明 授权签字人申请表（示例：原件扫描件或复印件，按人员编号归档）"},
+      {id:"6-2",t:"是否制定人员监督计划并保留记录",key:"重点（2023版新增强调）。查看新员工/转岗人员的监督计划+监督记录",guide:"制定《人员监督管理程序》，新员工上岗前须有监督期（至少3个月），每个被监督人须有监督记录表（含监督项目/观察结果/评价结论）",nc:"有监督计划但无监督记录,监督记录未体现具体操作观察（仅写「合格」二字）",doc:"人员监督管理程序 年度监督计划 人员监督记录表（示例：含监督目的/频次/方法/评价标准/记录表格模板）"},
+      {id:"6-3",t:"是否实施人员能力确认",key:"查看能力确认记录（实操考核+笔试+盲样），确认是否在授权前完成",guide:"能力确认须在授权之前完成。方式：盲样考核、人员比对、操作观察、笔试等。记录须有评价结论和授权日期",nc:"能力确认与授权日期逻辑颠倒：先授权后确认,能力确认记录缺失",doc:"能力确认记录表(盲样/实操/笔试) 人员授权书（示例：含确认方式/考核项目/评价标准/结论/授权人签字）"},
+      {id:"6-4",t:"人员技术档案是否完整",key:"抽查3-5人档案，看是否含学历/培训/能力确认/授权/监督等完整记录",guide:"每份档案含：学历&职称证书复印件+培训记录+能力确认记录+授权书+监督记录+继续教育记录",nc:"档案中缺能力确认或监督记录,离职人员档案未按规定保存",doc:"人员技术档案(学历/培训/能力确认/授权/监督/继续教育)（示例：一人一档，含全部记录的子目录/归档编号）"},
+    ]
+  },
+  {
+    title:"场所和环境条件",
+    items:[
+      {id:"7-1",t:"检测场所是否满足检测要求",key:"现场查看环境条件（温湿度/洁净度/通风）是否满足方法标准要求",guide:"对照方法标准对环境条件的要求，逐项核查。备齐环境条件监控记录（如恒温恒湿间的温湿度连续记录）",nc:"恒温恒湿间未配置连续记录仪,温湿度记录间断超过1天",doc:"环境条件监控记录(温湿度连续记录) 条件对照表（示例：含日期/时间/温度/湿度/记录人/异常备注）"},
+      {id:"7-2",t:"不相容区域是否有效隔离",key:"查看交叉污染控制措施（如样品前处理区与仪器区分隔、有机与无机区域分离）",guide:"绘制实验室功能分区图，注明各区域间的人物流向，设置缓冲间/气锁间等",nc:"有机前处理与无机前处理共用操作台无隔离,气瓶间未与仪器室隔离",doc:"实验室功能分区图 人物流向图 交叉污染控制程序（示例：按功能分区的平面图，标注人/物/气流方向）"},
+    ]
+  },
+  {
+    title:"设备设施",
+    items:[
+      {id:"8-1",t:"设备是否按期校准/检定",key:"抽查设备校准证书，校准参数/量程是否覆盖检测方法要求",guide:"建立《设备校准/检定周期表》，校准证书须覆盖检测方法所需参数（如天平d=0.1mg、烘箱温控±1℃等）",nc:"校准参数未覆盖方法要求（如分光光度计只校准了波长未校吸光度）",doc:"设备校准/检定周期表 校准证书 校准结果确认记录（示例：含设备编号/校准参数/校准周期/最近/下次校准日期）"},
+      {id:"8-2",t:"是否实施设备期间核查",key:"查看期间核查计划+记录，关键设备（天平/气相/ICP等）是否按计划执行",guide:"制定《期间核查程序》，关键设备每两次校准之间至少做一次期间核查。核查方式：用有证标准物质/比对等",nc:"有期间核查计划但无对应记录,期间核查使用了无效标准物质",doc:"期间核查程序 期间核查计划 期间核查记录表（示例：含核查对象/频次/方法/判断标准/记录要求）"},
+      {id:"8-3",t:"设备档案是否完整",key:"每台设备一档：含登记/校准/使用/维护/期间核查/故障等全部记录",guide:"设备档案编号规则统一，档案内容含：设备登记表+验收记录+校准证书+使用记录+维护记录+期间核查记录+故障维修记录",nc:"设备使用记录不连续,无故障维修记录",doc:"设备档案(登记/验收/校准/使用/维护/期间核查/故障维修)（示例：一设备一档，含全部记录的目录索引）"},
+    ]
+  },
+  {
+    title:"标准方法",
+    items:[
+      {id:"9-1",t:"标准方法验证是否充分",key:"查看方法验证记录（检出限/精密度/准确度/线性范围等），验证数据是否达标",guide:"每个标准方法首次使用前须做方法验证。记录须含：检出限、精密度（RSD%）、准确度（回收率）、线性范围等指标",nc:"方法验证报告数据不全（缺检出限或回收率）,验证使用的样品与实际检测基体不一致",doc:"方法验证报告(检出限/精密度/准确度/线性范围)（示例：含方法名称/检出限/RSD%/回收率/线性方程/结论）"},
+      {id:"9-2",t:"是否建立标准查新机制",key:"查看标准查新记录，确认能力表中标准版本是否现行有效",guide:"至少每半年查新一次，记录查新日期/查新源/查新结果。发现标准换版后的过渡安排",nc:"能力表中的方法版本号与现行标准不一致（这是最高频不符合项之一）",doc:"标准查新记录表 能力表(现行有效版本)（示例：含标准编号/名称/查新日期/查新源/当前版本/确认人）"},
+      {id:"9-3",t:"非标方法是否经过确认",key:"查看方法确认记录（非标/自制/超出范围的方法），确认过程是否完整",guide:"非标方法确认须含：方法特性参数（检出限/精密度/准确度/稳健性等）+ 与标准方法的比对数据",nc:"方法确认仅做了单浓度点验证,无比对数据",doc:"方法确认报告(方法特性参数+比对数据)（示例：含检出限/精密度/回收率/稳健性/标准方法比对结果）"},
+    ]
+  },
+  {
+    title:"样品管理",
+    items:[
+      {id:"10-1",t:"样品标识系统是否唯一且可追溯",key:"现场抽查样品，看编号是否能唯一标识；查看样品流转记录是否完整",guide:"建立样品编码规则（项目编号+样品类型+流水号），样品流转单须记录从接样→流转→分析→处置全路径",nc:"样品编号不唯一（两个样品同号）,样品流转单缺失中间环节记录",doc:"样品编码规则 样品流转单 样品交接记录（示例：含编码结构(项目编号+类型+流水号)/编码示例/适用范围）"},
+      {id:"10-2",t:"样品保存条件是否满足要求",key:"查看保存区域（冷藏/冷冻/避光等）是否符合方法要求，抽查温湿度记录",guide:"按方法要求设置保存条件，冷藏箱/冷冻箱须配置连续温湿度记录仪，保存区域设限（仅授权人员可进入）",nc:"冷藏箱温度超过方法要求范围无报警,样品过期仍存放在保存区",doc:"样品保存条件记录(冷藏/冷冻温湿度) 保存区域授权清单（示例：含保存区域/温度范围/定时记录/超标处理/记录人）"},
+    ]
+  },
+  {
+    title:"质量控制",
+    items:[
+      {id:"11-1",t:"内部质控计划是否涵盖全部检测领域",key:"查看年度内部质控计划（空白/平行/加标/质控样/人员比对/留样复测等）是否覆盖全部检测项目",guide:"制定年度质控计划，每个检测项目至少有一种质控方式。常见频率：空白每批≥1个、平行≥10%、加标5-10%",nc:"质控计划未覆盖全部检测项目,质控结果超出控制限未分析原因",doc:"年度内部质控计划 质控数据汇总表 质控结果评价记录（示例：含质控方式/覆盖项目/频次/责任人/质控指标）"},
+      {id:"11-2",t:"是否按要求参加能力验证/比对",key:"查看近2-3年能力验证/实验室间比对记录，不满意结果是否有整改",guide:"参加CMA组织的能力验证或自行组织的比对。不满意结果须有整改报告（根因分析+纠正+验证）",nc:"不满意结果整改不到位（只补做了样品未分析根因）",doc:"能力验证/比对计划 结果报告 不满意结果整改报告（示例：含参加领域/项目/组织方/计划时间/责任人）"},
+    ]
+  },
+  {
+    title:"结果报告",
+    items:[
+      {id:"12-1",t:"报告信息是否完整且符合要求",key:"抽查3-5份报告，核对信息完整性（标题/编号/委托方/样品描述/日期/方法/结果/签字/CMA章等）",guide:"建立报告模板审核流程，报告上岗前须经审核确保信息完整性。CMA章使用须授权",nc:"报告缺CMA章或盖章位置不规范,分包项目未在报告中标注",doc:"报告模板 报告审核记录 CMA章使用授权书（示例：含CMA章位置/报告编号/委托方信息/样品信息/检测结果/签字栏）"},
+      {id:"12-2",t:"报告修改是否有记录",key:"查看报告修改/补充程序，抽查修改记录是否完整",guide:"制定《报告修改程序》，换版报告须标注「替代报告编号」并说明修改原因，保留原报告记录",nc:"报告修改无书面记录,「重新出报告」未标注替代关系",doc:"报告修改程序 报告修改记录表（示例：含修改条件/审批流程/替代报告编号规则/原报告保留要求）"},
+    ]
+  },
+  {
+    title:"管理体系",
+    items:[
+      {id:"13-1",t:"质量手册和程序文件是否覆盖全部要素",key:"查看质量手册的要素对照表，是否覆盖准则全部要素",guide:"质量手册须编制要素对照表（准则条款→手册章节→程序文件），确保不遗漏",nc:"质量手册未覆盖2023版新增要素（风险识别等）",doc:"质量手册(要素对照表) 程序文件清单 文件审批记录（示例：准则条款→手册章节→程序文件编号的对照矩阵）"},
+      {id:"13-2",t:"内审是否按要求实施",key:"查看内审计划+内审记录+不符合项整改+内审报告",guide:"每年至少一次完整内审，覆盖全部要素和部门。内审员须经过培训并授权",nc:"内审未覆盖全部要素（只审了技术部分未审管理部分）,内审员未经培训",doc:"内审计划 内审检查表 内审不符合项整改记录 内审报告（示例：含审核范围/要素/审核组/时间安排/首末次会议时间）"},
+      {id:"13-3",t:"管理评审是否按规定执行",key:"查看管理评审计划+输入材料+会议记录+输出决议",guide:"每年至少一次管理评审，输入须含：内审结果、质控结果、客户反馈、能力验证、投诉、改进建议等12项输入",nc:"管理评审输入材料不完整,管理评审输出改进措施未跟踪落实",doc:"管理评审计划 评审输入材料 会议记录 输出决议跟踪表（示例：含评审时间/输入材料清单/参会部门/主持人）"},
+      {id:"13-4",t:"是否建立风险识别与管控机制",key:"2023版新增重点。查看风险评估记录、风险应对措施、风险跟踪",guide:"制定《风险识别与管控程序》，至少每年做一次全面风险评估。风险类型含：技术风险/管理风险/公正性风险/安全风险等",nc:"无风险评估记录,风险评估流于形式（所有风险均为「低」且无措施）",doc:"风险识别与管控程序 风险评估记录表 风险跟踪表（示例：含风险识别方法/评估标准/应对策略/监控/更新要求）"},
+    ]
+  }
+];
+
+// ===== 状态管理 =====
+function getState(id){return localStorage.getItem('cma_'+id)==='1'}
+function setState(id,v){if(v) localStorage.setItem('cma_'+id,'1');else localStorage.removeItem('cma_'+id)}
+function getNote(id){return localStorage.getItem('cma_note_'+id)||''}
+function setNote(id,v){if(v&&v.trim()) localStorage.setItem('cma_note_'+id,v);else localStorage.removeItem('cma_note_'+id)}
+function getRect(id){return localStorage.getItem('cma_rect_'+id)||'none'}
+function setRect(id,v){if(v&&v!=='none') localStorage.setItem('cma_rect_'+id,v);else localStorage.removeItem('cma_rect_'+id)}
+// ===== 渲染 =====
+function render(){
+  const app=document.getElementById('app');
+  let html='';
+  DATA.forEach((elem,i)=>{
+    const n=elem.items.length;
+    const done=elem.items.filter(it=>getState(it.id)).length;
+    html+=`<div class="elem" data-idx="${i}">
+      <div class="elem-header">
+        <div class="num">${i+1}</div>
+        <span class="title">${elem.title}</span>
+        <span class="count">${done}/${n}</span>
+        <span class="arrow">▾</span>
+      </div>
+      <div class="elem-body" id="elemBody${i}">`;
+    elem.items.forEach(it=>{
+      const s=getState(it.id);
+      html+=`<div class="item" data-itemid="${it.id}">
+        <div class="item-head">
+          <div class="cb ${s?'checked':''}"></div>
+          <div class="item-area">
+            <div class="txt">${it.t}</div>
+            <div class="item-key">🔍 核查要点：${it.key}</div>
+          </div>
+          <span class="expand">▾</span>
+        </div>
+        <div class="item-detail">
+          ${it.doc?'<div class="lab">📎 佐证材料/对应表格</div><div class="doc">'+it.doc+'</div>':''}
+          <div class="lab">📋 准备指引</div>
+          <div class="txt">${it.guide}</div>
+          <div class="lab">⚠️ 常见不符合项</div>
+          <div class="nc">${it.nc}</div>
+          <div class="note-lab">📝 我的备注 / 现场记录</div>
+          <textarea class="note" data-nid="${it.id}" placeholder="记录本机构现状、待办、缺口…（自动保存到本机）"></textarea>
+          <div class="rect-row">
+            <span class="rl">整改状态</span>
+            <select class="rect s-none" data-rid="${it.id}">
+              <option value="none">无</option>
+              <option value="todo">待整改</option>
+              <option value="doing">整改中</option>
+              <option value="done">已关闭</option>
+            </select>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+  app.innerHTML=html;
+  // 填充已保存的备注与整改状态
+  app.querySelectorAll('.note').forEach(ta=>{ ta.value=getNote(ta.dataset.nid); });
+  app.querySelectorAll('.rect').forEach(sel=>{
+    const v=getRect(sel.dataset.rid);
+    sel.value=v; sel.className='rect s-'+v;
+  });
+  updateProgress();
+}
+
+// ===== 委托事件 =====
+// 备注输入（自动保存）
+document.addEventListener('input',function(e){
+  const ta=e.target.closest('.note');
+  if(ta){ setNote(ta.dataset.nid,ta.value); }
+});
+// 整改状态切换
+document.addEventListener('change',function(e){
+  const sel=e.target.closest('.rect');
+  if(sel){
+    const v=sel.value; setRect(sel.dataset.rid,v);
+    sel.className='rect s-'+v;
+  }
+});
+document.addEventListener('click',function(e){
+  // 复选框勾选（只切换通过状态，不触发展开折叠）
+  const cb=e.target.closest('.item-head .cb');
+  if(cb){
+    const item=cb.closest('.item');
+    const id=item.dataset.itemid;
+    const v=!getState(id);
+    setState(id,v);
+    cb.classList.toggle('checked',v);
+    updateProgress();
+    // 更新要素标题计数
+    const elem=item.closest('.elem');
+    const idx=parseInt(elem.dataset.idx);
+    const did=DATA[idx].items.filter(it=>getState(it.id)).length;
+    elem.querySelector('.count').textContent=did+'/'+DATA[idx].items.length;
+    return;
+  }
+  // 测查项点击 → 切换展开详情（准备指引+不符合项）
+  const head=e.target.closest('.item-head');
+  if(head){
+    head.classList.toggle('open');
+    const detail=head.nextElementSibling;
+    if(detail&&detail.classList.contains('item-detail')) detail.classList.toggle('open');
+    return;
+  }
+  // 要素面板展开/收起
+  const eh=e.target.closest('.elem-header');
+  if(eh){
+    eh.classList.toggle('open');
+    eh.nextElementSibling.classList.toggle('open');
+  }
+});
+
+function updateProgress(){
+  let total=0,done=0;
+  DATA.forEach(elem=>{
+    elem.items.forEach(it=>{
+      total++;
+      if(getState(it.id)) done++;
+    });
+  });
+  document.getElementById('progText').textContent='已核查 '+done+' / '+total+' 项';
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progPct').textContent=pct+'%';
+  const fill=document.getElementById('progFill');
+  fill.style.width=pct+'%';
+  fill.className='fill'+(pct<30?' warn':pct<80?'':' good');
+}
+
+// ===== 初始化 =====
+render();
+</script>
+</body>
+</html>

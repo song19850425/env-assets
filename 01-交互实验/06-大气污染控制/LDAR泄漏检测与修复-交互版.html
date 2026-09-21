@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LDAR 泄漏检测与修复 | 环境实验</title>
+<meta name="description" content="LDAR（泄漏检测与修复）是 VOCs 无组织排放控制的核心制度：先建密封点台账，再用便携式 FID 按规程校准、逐点探枪检测，扣除环境本底后与 GB 37822 泄漏认定浓度比对；超限即挂牌，5 日内首修、15 日内完成。">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e17;color:#e2e8f0;overflow-x:hidden}
+:root{--ink:#0a0e17;--card:#131a2e;--border:rgba(255,255,255,.06);--accent:#8b5cf6;--glow:#a78bfa;--abg:rgba(139,92,246,.12);--green:#34d399;--rose:#fb7185;--blue:#38bdf8}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--glow));z-index:1000}
+.hr{min-height:74vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#0a0e17 0%,#1e1338 50%,#0a0e17 100%);position:relative}
+.hg{position:absolute;inset:0;background-image:radial-gradient(rgba(139,92,246,.06) 1px,transparent 1px);background-size:24px 24px;z-index:0}
+.hgl{position:absolute;top:-20%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(139,92,246,.14),transparent 70%);border-radius:50%}
+.h1{font-size:clamp(28px,5vw,50px);font-weight:900;line-height:1.15;z-index:1}
+.h1 em{color:var(--glow);font-style:normal}
+.hb{display:inline-block;padding:5px 16px;border-radius:20px;background:var(--abg);color:var(--glow);font-size:11px;font-weight:600;margin-bottom:20px;border:1px solid rgba(139,92,246,.22);z-index:1}
+.hs{margin-top:14px;font-size:15px;color:#64748b;z-index:1;max-width:640px;line-height:1.7}
+.hst{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap;justify-content:center;z-index:1}
+.hst .n{font-size:28px;font-weight:800;color:var(--glow)}.hst .l{font-size:11px;color:#64748b;margin-top:2px}
+.sec{max-width:940px;margin:0 auto;padding:72px 24px;opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}.sec.visible{opacity:1;transform:translateY(0)}
+.sn{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--accent)}
+.st{font-size:clamp(21px,3.4vw,32px);font-weight:800;line-height:1.2;margin-bottom:12px}
+.sd{font-size:14px;color:#94a3b8;line-height:1.75;max-width:760px;margin-bottom:22px}
+.sd b{color:#e2e8f0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:700px){.g3{grid-template-columns:1fr}}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.ic .ii{font-size:20px;margin-bottom:6px}.ic .in{font-size:14px;font-weight:700;margin-bottom:5px}
+.ic .id{font-size:12px;color:#94a3b8;line-height:1.65}
+.ic .it{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-top:8px;background:var(--abg);color:var(--glow)}
+.ic .fx{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--glow);background:rgba(139,92,246,.08);border-radius:6px;padding:6px 8px;margin-top:8px;line-height:1.6;overflow-x:auto}
+.lb{background:linear-gradient(180deg,#0a0e17,#1e1338);padding:60px 0}
+.lc{max-width:980px;margin:0 auto;padding:0 24px}
+.lh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.lt{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px}
+.lbb{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sts{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600}
+.si{background:rgba(255,255,255,.04);color:#64748b}.sa{background:var(--abg);color:var(--glow)}.sok{background:rgba(52,211,153,.1);color:var(--green)}.sbad{background:rgba(251,113,133,.12);color:var(--rose)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:9px 22px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.b1{background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:#0b0518}.b1:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,92,246,.3)}
+.b2{background:var(--card);color:#94a3b8;border:1px solid var(--border)}.b2:hover:not(:disabled){border-color:var(--accent);color:var(--glow)}
+.b3{background:linear-gradient(135deg,#f43f5e,#fb7185);color:#1a0308}.b3:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(244,63,94,.3)}
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.pb{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.2s;color:#94a3b8;font-family:inherit}
+.pb:hover:not(:disabled){border-color:var(--accent)}
+.pb:disabled{cursor:not-allowed;opacity:.45}
+.pb.on{background:var(--abg);color:var(--glow);border-color:var(--accent)}
+.pb .po{font-size:9px;color:#64748b;display:block;margin-top:3px}
+.fld{margin:10px 0}.fld label{font-size:11px;color:#94a3b8;display:block;margin-bottom:5px}
+.fld select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:13px;font-family:inherit}
+input[type=range]{width:100%;accent-color:#8b5cf6;margin-top:2px}
+.dp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}@media(max-width:700px){.dp{grid-template-columns:repeat(2,1fr)}}
+.dv{padding:11px 8px;background:rgba(255,255,255,.02);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.dv .dl{font-size:9.5px;color:#64748b;line-height:1.3}.dv .dd{font-size:17px;font-weight:800;margin-top:3px;color:var(--glow)}
+.dv .du{font-size:9px;color:#475569}
+.dv.bad .dd{color:var(--rose)}.dv.good .dd{color:var(--green)}
+#log{font-size:11.5px;line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);max-height:190px;overflow-y:auto;color:#94a3b8}
+#log b{color:#e2e8f0}
+.ft{text-align:center;padding:40px 24px;color:#475569;font-size:12px;border-top:1px solid var(--border);line-height:1.8}
+.ft b{color:var(--glow)}
+.ft .nav{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ft .nav a{display:inline-block;padding:5px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;text-decoration:none;transition:.2s;color:#475569}
+.ft .nav a:hover{border-color:var(--accent);color:var(--glow)}
+.ft .nav a.cur{border-color:var(--accent);color:var(--glow);background:var(--abg)}
+.warn{font-size:12px;color:var(--rose);margin-top:8px;min-height:18px;line-height:1.6}
+#cv{width:100%;height:280px;display:block;border-radius:8px;background:rgba(255,255,255,.015);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:#64748b;margin-top:8px}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+.note{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.18);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#ddd6fe;line-height:1.7;margin:16px 0}
+.note b{color:#ede9fe}
+.note.warnbox{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.2);border-left-color:var(--rose);color:#fecdd3}
+.note.warnbox b{color:#ffe4e6}
+.note.blue{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);border-left-color:var(--blue);color:#bae6fd}
+.note.blue b{color:#e0f2fe}
+.hint{font-size:11px;color:#475569;margin-top:6px;line-height:1.6}
+.rule{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rule .rn{font-size:11px;font-weight:800;color:var(--glow);background:var(--abg);border-radius:6px;padding:4px 9px;flex-shrink:0;margin-top:1px}
+.rule .rt{font-size:13px;font-weight:700;margin-bottom:3px}
+.rule .rd{font-size:12px;color:#94a3b8;line-height:1.65}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:rgba(139,92,246,.08);color:var(--glow);font-weight:700;font-size:11.5px}
+.tbl td{color:#94a3b8;line-height:1.6}
+.tbl td b{color:#e2e8f0}
+.fw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fw a{flex:1;min-width:220px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:.2s}
+.fw a:hover{border-color:var(--accent)}
+.fw .t{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.fw .d{font-size:11px;color:#64748b;line-height:1.6}
+/* ===== LDAR 专用 ===== */
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}@media(max-width:700px){.ledger{grid-template-columns:1fr}}
+.chk{display:flex;align-items:flex-start;gap:8px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:#94a3b8;cursor:pointer;line-height:1.4}
+.chk input{margin-top:2px;accent-color:#8b5cf6;flex-shrink:0}
+.chk .tg{font-size:9px;color:#64748b;display:block;margin-top:2px}
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.matsel{width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:#0a0e17;color:#e2e8f0;font-size:12px;font-family:inherit;margin-top:4px}
+.wo{border-left:3px solid var(--rose);background:rgba(251,113,133,.07);border-radius:0 8px 8px 0;padding:8px 10px;font-size:12px;color:#fecdd3;margin:6px 0}
+.wo b{color:#fff}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.badge.leak{background:rgba(251,113,133,.12);color:#fb7185}
+.badge.none{background:rgba(52,211,153,.1);color:#34d399}
+.badge.under{background:rgba(139,92,246,.12);color:#a78bfa}
+.sub{font-size:12px;font-weight:700;color:var(--glow);letter-spacing:1px;margin:18px 0 8px}
+</style>
+</head>
+<body>
+<div id="sp"></div>
+
+<section class="hr">
+  <div class="hg"></div><div class="hgl"></div>
+  <div class="hb">环境实验 · 高校课程配套 · 模块 3 污染控制技术性能实验</div>
+  <h1 class="h1">LDAR 泄漏检测<br><em>与修复</em></h1>
+  <div class="hs">VOCs 无组织排放控制 · 一杆探枪怎么揪出跑冒滴漏<br>设备管线的<b style="color:#ddd6fe">密封点跑冒滴漏</b>是 VOCs 无组织排放的大头，而 LDAR 是 GB 37822-2019 第 8 章<b style="color:#ddd6fe">强制</b>的法定程序。</div>
+  <div class="hst">
+    <div><span class="n">9 类</span><span class="l">受控组件</span></div>
+    <div><span class="n">≥2000</span><span class="l">密封点（开展门槛）</span></div>
+    <div><span class="n">6·12 月</span><span class="l">检测频次</span></div>
+    <div><span class="n">5 日</span><span class="l">首次修复</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sn">01 · 开篇引入</div>
+  <div class="st">拿不出台账，就是被督查通报的那一个</div>
+  <div class="sd">某化工园区因 VOCs 无组织排放被督察通报——企业说"我们都管得很好"，可要 LDAR 台账时一片空白：哪些密封点、什么时候测的、漏了怎么修的，全都没有记录。对照 GB 37822-2019，这是<b>硬伤</b>。</div>
+  <div class="sd">设备与管线组件（泵、阀门、法兰、开口管线……）的跑冒滴漏，是工业企业 VOCs 无组织排放的最主要来源之一。LDAR（Leak Detection And Repair，泄漏检测与修复）就是针对这些密封点建立的一套<b>闭环管理</b>：建档 → 检测 → 判定 → 修复 → 记录，周而复始。<b>它不是可选项</b>——GB 37822-2019 第 8 章把它列为强制开展的法定要求，漏做或台账缺失本身就是违规。</div>
+  <div class="g3">
+    <div class="ic"><div class="ii">🕳️</div><div class="in">泄漏藏在密封点里</div><div class="id">VOCs 不是都从烟囱排出去的。阀门填料函、泵轴封、法兰垫片这些<b>密封点</b>的微量渗漏，积少成多就是可观的无组织排放量——而且分散、难察觉。</div><span class="it">问题在哪</span></div>
+    <div class="ic"><div class="ii">📋</div><div class="in">闭环才是 LDAR</div><div class="id">有检测、有判定、有修复、有台账，缺一环都不叫 LDAR。<b>最怕"测了就算完"</b>——漏点不修，下次测还是漏，等于没测。</div><span class="it">核心逻辑</span></div>
+    <div class="ic"><div class="ii">⚖️</div><div class="in">强制，不是建议</div><div class="id">GB 37822-2019 第 8 章对载有 VOCs 物料的装置<b>强制</b>要求开展 LDAR。<b>不开展的后果不是"建议改进"，而是直接违规</b>。</div><span class="it">法规定位</span></div>
+  </div>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sn">02 · 科学原理</div>
+  <div class="st">三个问题，决定你做的是不是真的 LDAR</div>
+  <div class="sd">把下面的三个问题想清楚，交互台里每一条红线你都能提前说出它会怎么拦你。</div>
+  <div class="g2">
+    <div class="ic">
+      <div class="ii">🎯</div><div class="in">① 谁要测：受控 9 类组件</div>
+      <div class="id">载有<b>气态 / 液态 VOCs 物料</b>、且<b>密封点 ≥ 2000 个</b>的装置，须开展 LDAR。受控的 9 类组件为：泵、压缩机、搅拌器（机）、阀门、开口阀或开口管线、法兰及其他连接件、泄压设备、取样连接系统、其他密封设备（GB 37822-2019 §8.1）。<br><b>注意</b>：负压系统、已装 VOCs 收集处理系统的组件可免检（§8.3.2）。</div>
+      <div class="fx">判定门槛：密封点 ≥ 2000 且载 VOCs 物料</div>
+    </div>
+    <div class="ic">
+      <div class="ii">📐</div><div class="in">② 怎么判定：先扣本底</div>
+      <div class="id">读数要扣掉环境本底——上风向 ±45° 内探头测到的<b>最高值</b>，且探头距源须 <b>&gt; 25 cm</b>（HJ 733-2014 §4.2.3）。扣本底后<b>小于 LDC 的 2.5%</b> 判为"未检出排放"（HJ 733 §2.5）。<br><b>术语口径</b>："泄漏检测值"（扣除环境本底后的净值）的正式定义出自 <b>HJ 1230-2021 §3.15</b>；HJ 733-2014 用的是"差值法"。两处口径要分清，别写错来源。</div>
+      <div class="fx">C_判定 = C_测定 − C_本底<br>未检出排放 ⇔ C_判定 &lt; LDC × 2.5%</div>
+    </div>
+    <div class="ic">
+      <div class="ii">🚦</div><div class="in">③ 泄漏认定浓度 LDC（按物料分档）</div>
+      <div class="id">LDC 按<b>物料状态</b>分档（GB 37822-2019 表1，单位 μmol/mol）：气态 VOCs 物料 <b>5000 / 2000</b>；液态 VOCs 物料—挥发性有机液体 <b>5000 / 2000</b>；液态 VOCs 物料—其他 <b>2000 / 500</b>（前一值为一般地区、后一值为重点地区）。<br><b>教学点</b>：LDC 按物料状态分档，<b>不是</b>按动 / 静密封分档；网上流传的"阀门 500 ppm"是石化行业标准口径，<b>不是</b> GB 37822。</div>
+      <div class="fx">LDC = f(物料状态, 地区)</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>把三条连起来看</b>：先确认装置"载 VOCs 物料 + 密封点够多"才要测（①）；测的时候每一读数都先扣上风向本底（②）；扣完再拿 LDC 这个"物料状态决定"的门槛去比，超了才算泄漏（③）。<b>顺序错一步，结论就可能是错的</b>——这正是 LDAR 交互台所有红线要守护的东西。
+  </div>
+  <table class="tbl">
+    <tr><th style="width:40%">物料状态</th><th>一般地区 LDC (μmol/mol)</th><th>重点地区 LDC (μmol/mol)</th></tr>
+    <tr><td><b>气态 VOCs 物料</b></td><td>5000</td><td>2000</td></tr>
+    <tr><td><b>液态 VOCs 物料 — 挥发性有机液体</b></td><td>5000</td><td>2000</td></tr>
+    <tr><td><b>液态 VOCs 物料 — 其他</b></td><td>2000</td><td>500</td></tr>
+  </table>
+  <table class="tbl">
+    <tr><th style="width:46%">受控组件类型</th><th>常规检测频次（GB 37822-2019 §8.3.1）</th></tr>
+    <tr><td><b>泵、压缩机、搅拌器（机）、阀门、开口阀或开口管线、泄压设备、取样连接系统</b></td><td>至少每 6 个月</td></tr>
+    <tr><td><b>法兰及其他连接件、其他密封设备</b></td><td>至少每 12 个月</td></tr>
+  </table>
+  <div class="note blue" style="margin-top:10px">
+    <b>检测频次补充</b>：频次按<b>组件类型</b>分档，与所在地区无关（地区只用于 LDC 分档）。此外须<b>每周目视观察</b>；装置初次启用或检维修后须在 <b>90 d 内</b>完成检测；<b>直接排放</b>的泄压设备泄压后须在 <b>5 个工作日内</b>复测。
+  </div>
+  <div class="note blue" style="margin-top:12px">
+    <b>修复时限链（GB 37822-2019）</b>：发现泄漏起 <b>5 d 内首次修复 → 15 d 内完成</b>；无法立即修复的须报备延迟修复、并在下次停车检修完成；LDAR 台账保存 <b>≥ 3 年</b>。此外须<b>每周目视观察</b>，初次启用或检维修后 <b>90 d 内</b>完成检测。
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sn">03 · 操作规程</div>
+  <div class="st">六步走完，顺序就是红线</div>
+  <div class="sd">LDAR 的操作规程（标准链路）如下，<b>顺序错了数据就废了</b>——交互台里会直接拦你。</div>
+  <div class="rule"><div class="rn">STEP 1</div><div><div class="rt">建档（组件台账、密封点编号）</div><div class="rd">逐一对受控组件建立台账、给每个密封点编号。这是后面一切检测的<b>索引</b>——没有台账，测出来的读数不知道对应哪个点，整轮 LDAR 无效。</div></div></div>
+  <div class="rule"><div class="rn">STEP 2</div><div><div class="rt">FID 校准（点火→零点→量程）</div><div class="rd">氢火焰离子化检测器（FID）须按<b>点火→零点→量程</b>顺序校准，探头流量 0.10~3.0 L/min，且须为<b>防爆</b>型。顺序错或校准不过，数据一律无效。</div></div></div>
+  <div class="rule"><div class="rn">STEP 3</div><div><div class="rt">测环境本底（上风向）</div><div class="rd">在上风向 ±45° 内、探头距源 &gt; 25 cm 处测本底，取最高值。这一步<b>必须在现场扫描之前</b>——没本底就没法扣，后面的"判定值"全是错的。</div></div></div>
+  <div class="rule"><div class="rn">STEP 4</div><div><div class="rt">现场扫描</div><div class="rd">探头沿密封点表面移动取最大读数。行业作业指南细化：动密封探头顶端距轴封 ≤ 1 cm、移动速度 ≤ 10 cm/s，静密封贴近密封边缘——<b>须标注这是行业指南细化，非 HJ 733 原文</b>。</div></div></div>
+  <div class="rule"><div class="rn">STEP 5</div><div><div class="rt">判定（C_判定 vs LDC）</div><div class="rd">用扣本底后的 C_判定 与对应物料的 LDC 比较：超 LDC 即泄漏，小于 LDC×2.5% 为未检出排放，其余为检出但未超限。</div></div></div>
+  <div class="rule"><div class="rn">STEP 6</div><div><div class="rt">工单与归档</div><div class="rd">超标密封点发出维修工单并按 5 d / 15 d 时限修复；全部记录入 LDAR 台账，保存 ≥ 3 年，随时可查。</div></div></div>
+</section>
+
+<section class="lb" id="s4">
+<div class="lc">
+  <div class="lh">
+    <div class="lt">🔬 LDAR 泄漏检测与修复 · 交互模拟台</div>
+    <span class="sts si" id="sts">⏳ 未开始</span>
+  </div>
+  <div class="lbb">
+
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">① 按操作规程顺序完成六步（顺序错误会被阻断）</div>
+    <div class="seq">
+      <button class="pb" id="p1">建档台账<span class="po">step 1</span></button>
+      <button class="pb" id="p2" disabled>FID 校准<span class="po">step 2</span></button>
+      <button class="pb" id="p3" disabled>测环境本底<span class="po">step 3</span></button>
+      <button class="pb" id="p4" disabled>现场扫描<span class="po">step 4</span></button>
+      <button class="pb" id="p5" disabled>判定<span class="po">step 5</span></button>
+      <button class="pb" id="p6" disabled>工单归档<span class="po">step 6</span></button>
+    </div>
+
+    <!-- 关1 台账判断 -->
+    <div class="sub">关1 · 建档：勾选"必须纳入 LDAR 检测"的组件</div>
+    <div class="ledger" id="ledger"></div>
+    <div class="acts">
+      <button class="btn b1" id="btnLedger" onclick="submitLedger()">提交台账判断</button>
+    </div>
+
+    <!-- 关2 FID 校准 -->
+    <div class="sub">关2 · FID 校准（须按顺序：点火 → 零点 → 量程）</div>
+    <div class="acts">
+      <button class="btn b2" id="fIgnite" onclick="fidIgnite()" disabled>🔥 点火</button>
+      <button class="btn b2" id="fZero" onclick="fidZero()" disabled>⚪ 零点</button>
+      <button class="btn b2" id="fSpan" onclick="fidSpan()" disabled>📊 量程</button>
+    </div>
+
+    <!-- 关3 现场检测 -->
+    <div class="sub">关3 · 现场检测（先测本底，再移动探枪扫描各密封点）</div>
+    <div class="acts">
+      <button class="btn b2" id="btnBg" onclick="measureBg()" disabled>🌬️ 测上风向环境本底</button>
+      <button class="btn b1" id="btnScan" onclick="finishScan()" disabled>✅ 完成现场扫描</button>
+    </div>
+    <div class="hud">
+      <div class="dv"><div class="dl">探枪目标</div><div class="dd" id="hudName" style="font-size:14px">—</div><div class="du">密封点</div></div>
+      <div class="dv"><div class="dl">C_测定</div><div class="dd" id="hudMeas">—</div><div class="du">μmol/mol</div></div>
+      <div class="dv"><div class="dl">C_本底</div><div class="dd" id="hudBg">—</div><div class="du">μmol/mol</div></div>
+    </div>
+    <canvas id="cv" width="900" height="560"></canvas>
+    <div class="legend">
+      <span><i style="background:#8b5cf6"></i>未扫描</span>
+      <span><i style="background:#a78bfa"></i>已扫描</span>
+      <span><i style="background:#fbbf24"></i>检出未超限</span>
+      <span><i style="background:#fb7185"></i>泄漏</span>
+      <span><i style="background:#34d399"></i>未检出排放</span>
+    </div>
+
+    <!-- 关4 判定与工单 -->
+    <div class="sub">关4 · 判定与工单（为每个密封点选物料状态，系统按 LDC 判定）</div>
+    <div class="fld">
+      <label>所在地区</label>
+      <select id="region" onchange="onParamChange()">
+        <option value="gen" selected>一般地区（LDC 取高值档）</option>
+        <option value="key">重点地区（LDC 取低值档）</option>
+      </select>
+    </div>
+    <div id="matPanel" style="margin:8px 0"></div>
+    <div class="acts">
+      <button class="btn b1" id="btnJudge" onclick="judge()" disabled>⚖️ 判定并生成工单</button>
+      <button class="btn b3" id="btnArchive" onclick="archive()" disabled>🗂️ 工单与归档（保存≥3年）</button>
+    </div>
+    <div id="results"></div>
+
+    <div class="acts" style="margin-top:16px">
+      <button class="btn b2" onclick="resetAll()">🔄 重置实验</button>
+    </div>
+
+    <div id="log" style="margin-top:8px"></div>
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sn">05 · 总结与黄金法则</div>
+  <div class="st">四条红线，考场和现场都会考</div>
+  <div class="g2">
+    <div class="ic"><div class="ii">1️⃣</div><div class="in">不是所有组件都要测</div><div class="id">先看"载 VOCs 物料 + 密封点 ≥ 2000"。<b>负压系统、已装 VOCs 收集处理系统的组件可免检</b>（GB 37822 §8.3.2），非 VOCs 物料的水线阀门也不纳入。台账第一步就判错，后面全错。</div><span class="it">建档红线</span></div>
+    <div class="ic"><div class="ii">2️⃣</div><div class="in">LDC 按物料状态分档</div><div class="id">LDC 由<b>物料状态</b>决定（气态 5000/2000、液态挥发 5000/2000、液态其他 2000/500），<b>不是</b>按动/静密封分档。网上"阀门 500 ppm"是石化口径，<b>不是</b> GB 37822。</div><span class="it">判定红线</span></div>
+    <div class="ic"><div class="ii">3️⃣</div><div class="in">别忘了扣本底</div><div class="id">判定的永远是<b>扣掉上风向本底后的净值</b> C_判定 = C_测定 − C_本底。漏扣本底，会把环境背景也算成泄漏，或者反过来掩盖真泄漏。<b>未测本底就判定，数据无效</b>。</div><span class="it">操作红线</span></div>
+    <div class="ic"><div class="ii">4️⃣</div><div class="in">台账保存 ≥ 3 年</div><div class="id">发现泄漏 <b>5 d 内首次修复、15 d 内完成</b>；记录入 LDAR 台账并保存 <b>≥ 3 年</b>，随时可查。测而不修、修而不记，都背离了 LDAR 的闭环本意。</div><span class="it">闭环红线</span></div>
+  </div>
+  <div class="note">
+    <b>这个实验真正要练的能力</b>：面对一份装置清单，能判断<b>哪些组件该测、哪些可免</b>（建档），能按规程把<b>本底、扫描、判定</b>的顺序走对（操作规程），并能分清<b>"检出但未超限"与"泄漏"</b>——后者要发红牌、开维修工单，前者只需记录。现场出问题，多半是先在这些环节上松了手。
+  </div>
+  <table class="tbl">
+    <tr><th style="width:40%">物料状态</th><th>一般地区 LDC</th><th>重点地区 LDC</th></tr>
+    <tr><td><b>气态 VOCs 物料</b></td><td>5000 μmol/mol</td><td>2000 μmol/mol</td></tr>
+    <tr><td><b>液态 VOCs 物料 — 挥发性有机液体</b></td><td>5000 μmol/mol</td><td>2000 μmol/mol</td></tr>
+    <tr><td><b>液态 VOCs 物料 — 其他</b></td><td>2000 μmol/mol</td><td>500 μmol/mol</td></tr>
+  </table>
+  <div class="note blue" style="margin-top:12px">
+    <b>检测频次与时限速查</b>：检测频次按<b>组件类型</b>分档（6 个月 / 12 个月，与地区无关，地区只用于 LDC）；泄漏起 <b>5 d 内首次修复 → 15 d 内完成</b>；台账保存 <b>≥ 3 年</b>；每周目视观察；初次启用或检维修后 <b>90 d 内</b>检测。
+  </div>
+  <div class="note warnbox">
+    <b>模型边界声明</b>：各密封点真实浓度为教学设定值，现场扫描读数按"距探枪越近、高斯上升取峰值"简化模型近似，本底为定值。LDC 分档、频次与时限均引自 GB 37822-2019 表1 与第 8 章、HJ 733-2014、HJ 1230-2021。<b>本页用于教学演示，不作为执法或检测依据。</b>
+  </div>
+  <div class="fw">
+    <a href="00-大气污染控制工程实验-课程对照总览.html"><div class="t">→ 课程对照总览</div><div class="d">返回总览，查看本页对应的课程大纲位置与覆盖情况。</div></a>
+    <a href="活性炭吸附VOCs性能测定-交互版.html"><div class="t">→ 活性炭吸附 VOCs</div><div class="d">同属 VOCs 治理：末端穿透曲线与换炭时机。</div></a>
+    <a href="袋式除尘器性能测定-交互版.html"><div class="t">→ 袋式除尘器</div><div class="d">另一类排放控制：效率、阻力与清灰的循环博弈。</div></a>
+  </div>
+</section>
+
+<footer class="ft">
+  <b>环境实验 高校课程配套</b> · 大气污染控制工程实验 · 模块 3
+  <div class="nav">
+    <a href="00-大气污染控制工程实验-课程对照总览.html">课程对照总览</a>
+    <a href="旋风除尘器性能测定-交互版.html">旋风除尘器</a>
+    <a href="填料塔吸收SO2性能测定-交互版.html">填料塔吸收 SO₂</a>
+    <a href="活性炭吸附VOCs性能测定-交互版.html">活性炭吸附 VOCs</a>
+    <a href="催化净化NOx性能测定-交互版.html">催化净化 NOx</a>
+    <a class="cur" href="LDAR泄漏检测与修复-交互版.html">LDAR 泄漏检测与修复</a>
+  </div>
+</footer>
+
+<!-- 标准溯源块由标准溯源管线统一注入 -->
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* ---------- 数据：受控组件台账 ---------- */
+const LEDGER=[
+  {id:1, t:'泵 P-101（输送液态 VOCs 物料·挥发性有机液体）', tg:'载 VOCs 物料', must:true},
+  {id:2, t:'阀门 V-201（气态 VOCs 物料管线，DN50）', tg:'载 VOCs 物料', must:true},
+  {id:3, t:'搅拌器 A-301（反应器，液态 VOCs—其他）', tg:'载 VOCs 物料', must:true},
+  {id:4, t:'法兰 F-401（连接处，气态 VOCs）', tg:'载 VOCs 物料', must:true},
+  {id:5, t:'泄压阀 RV-501（泄压设备，气态 VOCs）', tg:'载 VOCs 物料', must:true},
+  {id:6, t:'水线 DN15 阀门 W-601（非 VOCs 物料·循环水）', tg:'非 VOCs 物料 → 不纳入', must:false},
+  {id:7, t:'负压储罐呼吸阀 NV-701（系统维持负压运行）', tg:'负压系统 → 免检 §8.3.2', must:false},
+  {id:8, t:'反应釜进料口 O-801（已接 VOCs 收集处理系统）', tg:'已收集 → 免检 §8.3.2', must:false},
+  {id:9, t:'压缩机 C-901（气态 VOCs 物料）', tg:'载 VOCs 物料', must:true},
+  {id:10, t:'取样连接 S-1001（取样连接系统，液态 VOCs—挥发性有机液体）', tg:'载 VOCs 物料', must:true}
+];
+const LEDGER_MUST=[1,2,3,4,5,9,10];
+
+/* ---------- 数据：现场密封点（隐藏真实浓度）---------- */
+const SEAL=[
+  {id:'P-101', name:'泵 P-101',       fx:0.20, fy:0.52, Ctrue:4200, mat:'lv'},
+  {id:'V-201', name:'阀门 V-201',     fx:0.40, fy:0.30, Ctrue:8200, mat:'gas'},
+  {id:'F-301', name:'法兰 F-301',     fx:0.60, fy:0.58, Ctrue:1800, mat:'lo'},
+  {id:'O-401', name:'开口管线 O-401', fx:0.82, fy:0.40, Ctrue:80,   mat:'gas'}
+];
+SEAL.forEach(s=>{s.Cmeas=0;s.Cnet=0;s.LDC=0;s.verdict='';});
+
+const SCANR=80, SIG=24;          // 探枪扫描半径 / 高斯宽度（CSS px）
+
+/* LDC 取值（GB 37822-2019 表1，单位 μmol/mol） */
+function ldcOf(mat, region){
+  const T={
+    gas:{gen:5000,key:2000},
+    lv:{gen:5000,key:2000},
+    lo:{gen:2000,key:500}
+  };
+  const row=T[mat]||T.gas;            // 物料未知时退回气态档，避免判定崩溃
+  return row[region==='key'?'key':'gen'];
+}
+
+/* ---------- 状态 ---------- */
+let G={s1:false,s2:false,s3:false,s4:false,s5:false,s6:false};
+let g1=false,g2=false,g3bg=false,g3scan=false,g4=false;
+let fid='';            // '' / ignite / zero / span / done
+let Cbg=0;             // 环境本底 μmol/mol
+let region='gen';
+let probe={x:null,y:null};
+
+/* ---------- 通用工具 ---------- */
+function log(t,ok){const el=$('log');const d=document.createElement('div');
+  d.innerHTML=(ok===true?'✅ ':ok===false?'⛔ ':'• ')+t;el.appendChild(d);el.scrollTop=el.scrollHeight;}
+function setSts(t,cls){const e=$('sts');e.className='sts '+cls;e.textContent=t;}
+function warn(t){$('warn').textContent=t;if(t)setTimeout(()=>{if($('warn').textContent===t)$('warn').textContent='';},8000);}
+
+function refreshSeq(){
+  $('p2').disabled=!g1; $('p3').disabled=!g2; $('p4').disabled=!g3bg; $('p5').disabled=!g3scan; $('p6').disabled=!g4;
+  for(let i=1;i<=6;i++){ $('p'+i).classList.toggle('on', G['s'+i]); }
+}
+
+/* ---------- 关1 台账判断 ---------- */
+function buildLedger(){
+  const box=$('ledger'); box.innerHTML='';
+  LEDGER.forEach(c=>{
+    const lab=document.createElement('label'); lab.className='chk';
+    lab.innerHTML='<input type="checkbox" value="'+c.id+'"><span>'+c.t+'<span class="tg">'+c.tg+'</span></span>';
+    box.appendChild(lab);
+  });
+}
+function submitLedger(){
+  if(G.s1) return;
+  const checked=[...document.querySelectorAll('#ledger input:checked')].map(i=>+i.value).sort((a,b)=>a-b);
+  const ok=JSON.stringify(checked)===JSON.stringify([...LEDGER_MUST].sort((a,b)=>a-b));
+  if(ok){
+    g1=true; G.s1=true; $('p1').classList.add('on');
+    ['fIgnite','fZero','fSpan'].forEach(id=>$(id).disabled=false);
+    setSts('🟡 建档完成','sa');
+    log('组件台账核对完成：确定 '+LEDGER_MUST.length+' 个密封点须纳入 LDAR（已排除非 VOCs 水线、负压系统、已装收集系统组件）',true);
+    warn(''); refreshSeq();
+  }else{
+    const wrongIn=checked.filter(x=>!LEDGER_MUST.includes(x));
+    const miss=LEDGER_MUST.filter(x=>!checked.includes(x));
+    let msg='台账判断错误：';
+    if(wrongIn.length) msg+='不应纳入的被勾选了（#'+wrongIn.join(',#')+'）；';
+    if(miss.length) msg+='应纳入的漏选了（#'+miss.join(',#')+'）。';
+    warn('⚠️ '+msg+' 注意：负压/已装收集系统可免检，非 VOCs 物料不纳入。');
+    log('台账判断错误：多选或漏选，未通过','bad');
+  }
+}
+
+/* ---------- 关2 FID 校准 ---------- */
+function failFid(msg){ fid=''; g2=false; G.s2=false;
+  ['fIgnite','fZero','fSpan'].forEach(id=>$(id).disabled=false);
+  setSts('🔴 校准失败','sbad'); warn('⚠️ '+msg+' 数据无效，须重来。');
+  log('FID 校准失败：'+msg+' 本次数据无效','bad'); refreshSeq(); }
+function fidIgnite(){
+  if(!g1){warn('请先完成 STEP1 建档（台账判断）');return;}
+  if(fid!==''){failFid('校准须从「点火」重新开始');return;}
+  fid='ignite'; log('FID 点火成功（防爆型，探头流量 0.10~3.0 L/min）',true); warn('');
+}
+function fidZero(){
+  if(!g1)return;
+  if(fid!=='ignite'){failFid('顺序错误：须先点火再做零点');return;}
+  fid='zero'; log('FID 零点校准完成',true);
+}
+function fidSpan(){
+  if(!g1)return;
+  if(fid!=='zero'){failFid('顺序错误：须先零点再量程');return;}
+  fid='done'; g2=true; G.s2=true; $('p2').classList.add('on');
+  $('btnBg').disabled=false;
+  setSts('🟡 FID 校准完成','sa'); log('FID 量程校准完成 → 校准通过，可进行现场检测',true); warn(''); refreshSeq();
+}
+
+/* ---------- 关3 现场检测 ---------- */
+function measureBg(){
+  if(!g2){warn('请先完成 STEP2 FID 校准');return;}
+  Cbg=35;                       // 教学定值：上风向多点取最高值，探头距源>25cm
+  g3bg=true; G.s3=true; $('p3').classList.add('on');
+  $('btnScan').disabled=false;
+  $('hudBg').textContent=Cbg;
+  setSts('🟡 本底已测','sa');
+  log('测环境本底：C_本底 = '+Cbg+' μmol/mol（上风向，探头距源 >25 cm）',true);
+  if(Cbg>100){ warn('⚠️ 上风向本底异常偏高，疑似存在干扰源，须排查后再测本底。'); }
+  else { warn(''); }
+  refreshSeq(); draw();
+}
+function onCvMove(e){
+  if(!g2){ warn('请先完成 STEP2 FID 校准，再进行现场扫描'); return; }
+  const r=$('cv').getBoundingClientRect();
+  probe.x=e.clientX-r.left; probe.y=e.clientY-r.top;
+  let near=null,nd=1e9;
+  SEAL.forEach(s=>{
+    const x=s.fx*$('cv').clientWidth, y=s.fy*280;
+    const d=Math.hypot(probe.x-x,probe.y-y);
+    if(d<SCANR){
+      const reading=Math.min(s.Ctrue, s.Ctrue*Math.exp(-Math.pow(d/SIG,2)));
+      if(reading>s.Cmeas) s.Cmeas=reading;
+      if(d<nd){nd=d;near=s;}
+    }
+  });
+  if(near){
+    $('hudName').textContent=near.id;
+    $('hudMeas').textContent=Math.round(near.Cmeas);
+  }
+  draw();
+}
+function onCvLeave(){ probe.x=null; probe.y=null; $('hudName').textContent='—'; draw(); }
+function finishScan(){
+  if(!g3bg){warn('顺序红线：未测本底先扫描');log('顺序红线：未测本底即现场扫描，已阻断','bad');return;}
+  SEAL.forEach(s=>{ if(s.Cmeas<=0) s.Cmeas=s.Ctrue; });   // 未手动扫到的点按已扫满处理
+  g3scan=true; G.s4=true; $('p4').classList.add('on');
+  $('btnJudge').disabled=false;
+  setSts('🟡 扫描完成','sa');
+  log('现场扫描完成：4 个密封点读数已记录（C_测定 即扣本底前的最大读数）',true); warn(''); refreshSeq();
+}
+
+/* ---------- 关4 判定与工单 ---------- */
+function buildMatPanel(){
+  const box=$('matPanel'); box.innerHTML='';
+  SEAL.forEach((s,i)=>{
+    const d=document.createElement('div'); d.style.cssText='margin:6px 0';
+    d.innerHTML='<div style="font-size:12px;color:#94a3b8;margin-bottom:2px">'+s.name+
+      '　<span style="color:#64748b">C_测定 = '+Math.round(s.Cmeas)+' μmol/mol</span></div>'+
+      '<select class="matsel" id="mat'+i+'" onchange="onParamChange()">'+
+      '<option value="gas"'+(s.mat==='gas'?' selected':'')+'>气态 VOCs 物料（LDC 5000/2000）</option>'+
+      '<option value="lv"'+(s.mat==='lv'?' selected':'')+'>液态 VOCs—挥发性有机液体（LDC 5000/2000）</option>'+
+      '<option value="lo"'+(s.mat==='lo'?' selected':'')+'>液态 VOCs—其他（LDC 2000/500）</option>'+
+      '</select>';
+    box.appendChild(d);
+  });
+}
+function readMats(){
+  SEAL.forEach((s,i)=>{ const sel=$('mat'+i); const v=sel&&sel.value; s.mat=(v==='gas'||v==='lv'||v==='lo')?v:s.mat; });
+  region=$('region').value;
+}
+function onParamChange(){
+  readMats();
+  if(g4){ invalidateJudge(); }    // 钩子②：参数变更 → 原判定作废
+  draw();
+}
+function invalidateJudge(){
+  g4=false; G.s5=false; G.s6=false;
+  $('p5').classList.remove('on'); $('p6').classList.remove('on');
+  $('btnArchive').disabled=true;
+  SEAL.forEach(s=>{ s.verdict=''; s.Cnet=0; s.LDC=0; });
+  $('results').innerHTML='';
+  setSts('⚠️ 参数已变，判定作废','sbad');
+  warn('⚠️ 物料状态或地区已改变（LDC 随之变化），原判定结果作废，请回 STEP5 重新判定。');
+  log('参数变更：物料状态/地区改变，LDC 变化，此前判定作废','bad');
+  refreshSeq();
+}
+function judge(){
+  if(!g3bg){warn('顺序红线：未测本底先判定');log('顺序红线：未测本底即判定，已阻断','bad');return;}
+  if(!g3scan){warn('请先完成 STEP4 现场扫描');return;}
+  readMats();
+  let leaks=0,none=0,under=0;
+  SEAL.forEach(s=>{
+    s.LDC=ldcOf(s.mat,region);
+    s.Cnet=s.Cmeas-Cbg;
+    if(s.Cnet>s.LDC){ s.verdict='leak'; leaks++; }
+    else if(s.Cnet < s.LDC*0.025){ s.verdict='none'; none++; }
+    else { s.verdict='under'; under++; }
+  });
+  g4=true; G.s5=true; $('p5').classList.add('on'); $('btnArchive').disabled=false;
+  renderResults(leaks,none,under);
+  if(leaks>0){ setSts('🔴 检出泄漏 '+leaks+' 处','sbad'); log('判定完成：发现泄漏 '+leaks+' 处，已生成维修工单','bad'); }
+  else { setSts('🟢 判定完成，无泄漏','sok'); log('判定完成：未发现泄漏，全部密封点达标',true); }
+  warn(''); refreshSeq(); draw();
+}
+function renderResults(leaks,none,under){
+  let html='<div class="dp" style="grid-template-columns:repeat(4,1fr)">'+
+    '<div class="dv"><div class="dl">密封点总数</div><div class="dd">'+SEAL.length+'</div><div class="du">个</div></div>'+
+    '<div class="dv bad"><div class="dl">泄漏</div><div class="dd">'+leaks+'</div><div class="du">处</div></div>'+
+    '<div class="dv good"><div class="dl">未检出排放</div><div class="dd">'+none+'</div><div class="du">处</div></div>'+
+    '<div class="dv"><div class="dl">检出未超限</div><div class="dd">'+under+'</div><div class="du">处</div></div></div>';
+  html+='<table class="tbl" style="margin-top:10px"><tr><th style="width:18%">密封点</th><th>C_测定</th><th>C_本底</th><th>C_判定</th><th>LDC</th><th>判定</th></tr>';
+  SEAL.forEach(s=>{
+    const bcls=s.verdict==='leak'?'leak':s.verdict==='none'?'none':'under';
+    const btxt=s.verdict==='leak'?'泄漏':s.verdict==='none'?'未检出排放':'检出未超限';
+    html+='<tr><td><b>'+s.id+'</b></td><td>'+Math.round(s.Cmeas)+'</td><td>'+Cbg+'</td><td>'+Math.round(s.Cnet)+'</td><td>'+s.LDC+'</td><td><span class="badge '+bcls+'">'+btxt+'</span></td></tr>';
+  });
+  html+='</table>';
+  const wo=SEAL.filter(s=>s.verdict==='leak');
+  if(wo.length){
+    html+='<div style="font-size:12px;font-weight:700;color:#fecdd3;margin-top:10px">📋 维修工单（泄漏点）</div>';
+    wo.forEach((s,i)=>{
+      html+='<div class="wo"><b>工单 #'+(i+1)+' · '+s.id+'</b>：C_判定 = '+Math.round(s.Cnet)+' μmol/mol &gt; LDC '+s.LDC+
+        ' → <b>5 d 内首次修复 → 15 d 内完成</b>，无法即修须报备延迟修复、下次停车检修完成。</div>';
+    });
+  }
+  $('results').innerHTML=html;
+}
+function archive(){
+  if(!g4){warn('请先完成 STEP5 判定');return;}
+  G.s6=true; $('p6').classList.add('on');
+  const leaks=SEAL.filter(s=>s.verdict==='leak').length;
+  setSts('🟢 工单已归档','sok');
+  log('维修工单 '+leaks+' 张已生成，LDAR 台账记录保存 ≥ 3 年（符合 GB 37822-2019 要求）',true);
+  warn(''); refreshSeq();
+}
+
+/* ---------- Canvas 绘制（retina）---------- */
+function draw(){
+  const cv=$('cv'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=280;
+  cv.width=W*dpr; cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  // 上风向空白区
+  ctx.fillStyle='rgba(56,189,248,.05)'; ctx.fillRect(0,0,W*0.30,H*0.34);
+  ctx.fillStyle='#38bdf8'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('↑ 上风向空白区（测本底）',8,8);
+
+  // 反应器/管线示意
+  const vx=W*0.30, vy=H*0.30, vw=W*0.42, vh=H*0.52;
+  ctx.strokeStyle='rgba(139,92,246,.5)'; ctx.lineWidth=2; ctx.strokeRect(vx,vy,vw,vh);
+  ctx.fillStyle='rgba(139,92,246,.06)'; ctx.fillRect(vx,vy,vw,vh);
+  ctx.fillStyle='#94a3b8'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('反应器 / 管线',vx+vw/2,vy+vh/2);
+
+  // 密封点
+  SEAL.forEach(s=>{
+    const x=s.fx*W, y=s.fy*H;
+    let near=false;
+    if(probe.x!=null){ const d=Math.hypot(probe.x-x,probe.y-y); if(d<SCANR) near=true; }
+    let col='#8b5cf6';
+    if(s.verdict==='leak') col='#fb7185';
+    else if(s.verdict==='none') col='#34d399';
+    else if(s.verdict==='under') col='#fbbf24';
+    else if(s.Cmeas>0) col='#a78bfa';
+    ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x,y,7,0,7); ctx.fill();
+    if(near){ ctx.strokeStyle='rgba(167,139,250,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,SCANR,0,7); ctx.stroke(); }
+    ctx.fillStyle='#e2e8f0'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText(s.id,x,y-10);
+    if(s.Cmeas>0){ ctx.fillStyle='#94a3b8'; ctx.font='9px Inter,sans-serif'; ctx.textBaseline='top'; ctx.fillText(Math.round(s.Cmeas),x,y+9); }
+  });
+
+  // 探枪
+  if(probe.x!=null && g2){
+    ctx.strokeStyle='#fbbf24'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(probe.x-10,probe.y); ctx.lineTo(probe.x+10,probe.y);
+    ctx.moveTo(probe.x,probe.y-10); ctx.lineTo(probe.x,probe.y+10); ctx.stroke();
+  }
+}
+
+/* ---------- 重置 ---------- */
+function resetAll(){
+  G={s1:false,s2:false,s3:false,s4:false,s5:false,s6:false};
+  g1=false; g2=false; g3bg=false; g3scan=false; g4=false; fid=''; Cbg=0; region='gen';
+  SEAL.forEach(s=>{s.Cmeas=0;s.Cnet=0;s.LDC=0;s.verdict='';});
+  ['fIgnite','fZero','fSpan'].forEach(id=>$(id).disabled=true);
+  $('btnBg').disabled=true; $('btnScan').disabled=true; $('btnJudge').disabled=true; $('btnArchive').disabled=true;
+  $('region').value='gen';
+  $('hudName').textContent='—'; $('hudMeas').textContent='—'; $('hudBg').textContent='—';
+  $('results').innerHTML='';
+  $('log').innerHTML='';
+  buildLedger(); buildMatPanel();
+  setSts('⏳ 未开始','si'); warn(''); refreshSeq(); draw();
+}
+
+/* ---------- 初始化 ---------- */
+const sp=$('sp');
+addEventListener('scroll',()=>{const h=document.documentElement;sp.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.12});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+addEventListener('resize',()=>draw());
+const cvEl=$('cv');
+cvEl.addEventListener('mousemove',onCvMove);
+cvEl.addEventListener('mouseleave',onCvLeave);
+buildLedger(); buildMatPanel(); refreshSeq(); draw();
+</script>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:40px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:13px 18px;border:1px solid rgba(56,189,248,.38);border-left:4px solid #38bdf8;border-radius:12px;background:linear-gradient(90deg,rgba(56,189,248,.13),rgba(56,189,248,.03));transition:background .18s,border-color .18s}.stdbasis .sb-hd:hover{background:rgba(56,189,248,.20)}.stdbasis .sb-hd:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}.stdbasis .sb-ic{font-size:16px;line-height:1;flex:none}.stdbasis .sb-tt{font-size:14px;font-weight:700;color:#f1f5f9;letter-spacing:.02em}.stdbasis .sb-sub{font-size:11.5px;color:#a8b6c8;letter-spacing:.02em}.stdbasis .sb-bgs{display:flex;gap:6px;flex-wrap:wrap;margin-left:4px}.stdbasis .sb-bg{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.5;white-space:nowrap}.stdbasis .sb-bg b{font-weight:800;font-size:12px}.stdbasis .sb-bg.ok{background:rgba(52,211,153,.15);color:#6ee7b7;border:1px solid rgba(52,211,153,.42)}.stdbasis .sb-bg.dep{background:rgba(251,113,133,.16);color:#fda4af;border:1px solid rgba(251,113,133,.45)}.stdbasis .sb-bg.pend{background:rgba(251,191,36,.16);color:#fcd34d;border:1px solid rgba(251,191,36,.45)}.stdbasis .sb-ar{margin-left:auto;flex:none;font-size:11px;color:#a8b6c8;transition:transform .2s;display:inline-block}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.14);border-top:none;border-radius:0 0 12px 12px;padding:16px 20px;margin-top:-1px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:rgba(255,255,255,.06);color:#94a3b8;font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);font-size:12px}.stdbasis table.sb-tb td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);color:#cbd5e1;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:700;color:#e2e8f0}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:700}.stdbasis .sb-u{width:26%;color:#94a3b8}.stdbasis .sb-ft{margin-top:12px;font-size:11.5px;line-height:1.7;color:#94a3b8}.stdbasis .sb-fx{margin-top:12px;padding:11px 14px;border-left:3px solid #fbbf24;background:rgba(255,255,255,.04);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#cbd5e1}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis .sb-hd{padding:12px 14px;gap:8px}.stdbasis .sb-tt{font-size:13px}.stdbasis .sb-sub{display:none}.stdbasis .sb-ar{margin-left:0;order:9}.stdbasis .sb-cd{padding:14px}.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.10)}}</style>
+<summary class="sb-hd"><span class="sb-ic">&#128220;</span><span class="sb-tt">本页依据标准与现行状态</span><span class="sb-sub">3 项标准 &middot; 已回官方源核验</span><span class="sb-bgs"><span class="sb-bg ok">全部现行</span></span><span class="sb-ar">&#9654;</span></summary>
+<div class="sb-cd"><div class="sb-bd">
+<table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr>
+<tr><td class="sb-c">GB 37822-2019</td><td>挥发性有机物无组织排放控制标准</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">泄漏认定浓度、检测频次、修复时限与台账要求</td></tr>
+<tr><td class="sb-c">HJ 733-2014</td><td>泄漏和敞开液面排放的挥发性有机物检测技术导则</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">检测方法与仪器要求、差值法判定、检测程序</td></tr>
+<tr><td class="sb-c">HJ 1230-2021</td><td>工业企业挥发性有机物泄漏检测与修复技术指南</td><td class="sb-s" style="color:#34d399">现行</td><td class="sb-u">泄漏检测值（净检测值）定义，与 GB 37822 衔接</td></tr>
+</table>
+<div class="sb-ft">本页共依据 <b>3</b> 项标准：<b>3</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div>
+</div></div></details>
+<style>#bk{position:fixed;right:22px;bottom:22px;z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 15px;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:.02em;text-decoration:none;line-height:1;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .22s,transform .22s,visibility .22s}#bk.on{opacity:1;visibility:visible;transform:translateY(0)}#bk:hover{transform:translateY(-2px)}#bk:focus-visible{outline:2px solid #fbbf24;outline-offset:3px}#bk .bk-a{font-size:15px;line-height:1}#bk .bk-t{font-size:13.5px}@media(max-width:720px){#bk{right:14px;bottom:14px;padding:10px 15px 10px 13px}#bk .bk-t{font-size:12.5px}}@media(prefers-reduced-motion:reduce){#bk{transition:none;transform:none}#bk.on{transform:none}}@media print{#bk{display:none!important}}#bk{background:rgba(19,26,46,.92);color:#e2e8f0;border:1px solid rgba(56,189,248,.42);box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}#bk:hover{background:rgba(23,33,58,.98);border-color:rgba(56,189,248,.75);box-shadow:0 8px 26px rgba(0,0,0,.5)}#bk .bk-a{color:#7dd3fc}#bk .bk-t{color:#e2e8f0}</style>
+<a id="bk" href="../../index.html" title="返回实验集总目录（Alt+Esc）"><span class="bk-a" aria-hidden="true">&#8592;</span><span class="bk-t">返回目录</span></a>
+<script>(function(){var b=document.getElementById("bk");if(!b)return;var f=function(){var y=window.pageYOffset||document.documentElement.scrollTop;if(y>260)b.classList.add("on");else b.classList.remove("on")};window.addEventListener("scroll",f,{passive:true});f();document.addEventListener("keydown",function(e){if(e.key==="Escape"&&e.altKey)location.href=b.getAttribute("href")});})();</script>
+</body>
+</html>

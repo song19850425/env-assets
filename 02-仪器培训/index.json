@@ -1,0 +1,38 @@
+[
+  {
+    "id": "aas-900t",
+    "name": "原子吸收分光光度计",
+    "model": "AAS-900T（示例机型）",
+    "category": "光谱分析"
+  },
+  {
+    "id": "uv-vis-l5s",
+    "name": "紫外可见分光光度计",
+    "model": "L5S（示例机型）",
+    "category": "紫外-可见分光（比色）"
+  },
+  {
+    "id": "balance-ms105du",
+    "name": "十万分之一天平",
+    "model": "MS105DU（示例机型）",
+    "category": "精密称量"
+  },
+  {
+    "id": "sampler-qcs6000",
+    "name": "四气路大气采样器",
+    "model": "QCS6000（示例机型）",
+    "category": "现场采样"
+  },
+  {
+    "id": "biosafety-bsc1300",
+    "name": "生物安全柜",
+    "model": "BSC-1300IIA2（示例机型）",
+    "category": "生物安全"
+  },
+  {
+    "id": "incubator-spx250",
+    "name": "生化培养箱",
+    "model": "SPX-250B-Z（示例机型）",
+    "category": "微生物培养"
+  }
+]

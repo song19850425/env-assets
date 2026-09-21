@@ -1,0 +1,516 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>环境质量 · 空间关联分析</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#0f172a;--ink-light:#475569;--paper:#f8fafc;--sky:#0284c7;--sky-light:#e0f2fe;--teal:#0d9488;--teal-light:#ccfbf1;--amber:#b45309;--amber-light:#fef3c7;--violet:#7c3aed;--violet-light:#ede9fe;--rose:#e11d48;--rose-light:#ffe4e6;--lime:#65a30d;--lime-light:#ecfccb;--border:#e2e8f0;--serif:'Noto Serif SC',serif;--sans:'Inter','PingFang SC','Microsoft YaHei',sans-serif}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);overflow-x:hidden}
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--sky),var(--teal),var(--violet));z-index:1000;transition:width .1s}
+
+/* HERO */
+.he{min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 20px;background:linear-gradient(180deg,#0f172a 0%,#1e293b 60%,var(--paper) 100%);color:#fff}
+.he .hb{padding:6px 18px;border-radius:20px;background:rgba(2,132,199,.2);color:var(--sky-light);font-size:12px;font-weight:600;letter-spacing:1px;border:1px solid rgba(2,132,199,.3);margin-bottom:20px}
+.he h1{font-family:var(--serif);font-size:clamp(28px,5vw,56px);font-weight:900}
+.he h1 em{font-style:normal;color:var(--sky-light)}
+.he p{font-size:clamp(14px,2vw,18px);color:#94a3b8;max-width:600px;line-height:1.8;margin-top:16px}
+.he-stats{display:flex;gap:24px;margin-top:40px;flex-wrap:wrap;justify-content:center}
+.he-stats div{text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 24px;min-width:100px}
+.he-stats .n{font-size:28px;font-weight:900;color:#38bdf8;display:block}
+.he-stats .l{font-size:11px;color:#64748b;margin-top:4px}
+
+/* MAP SECTION */
+.map-wrap{max-width:1100px;margin:-60px auto 0;padding:0 20px;position:relative;z-index:10}
+.map-box{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.12);overflow:hidden;border:1px solid var(--border)}
+.map-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+.map-header h2{font-family:var(--serif);font-size:18px;font-weight:700}
+.map-header .hint{font-size:12px;color:var(--ink-light);display:flex;align-items:center;gap:6px}
+.map-body{position:relative;background:#f0f9ff;padding:20px}
+.map-svg{width:100%;height:auto;display:block;border-radius:8px;cursor:default}
+
+/* SITE MARKERS */
+.site{fill:rgba(2,132,199,.08);stroke:var(--sky);stroke-width:1.5;cursor:pointer;transition:.3s;opacity:.6}
+.site:hover{opacity:1;stroke-width:2.5}
+.site.ac{fill:rgba(2,132,199,.2);stroke-width:3;opacity:1}
+.site-dot{fill:#fff;stroke:var(--sky);stroke-width:2.5;cursor:pointer;transition:.3s}
+.site-dot:hover{fill:var(--sky);r:8}
+.site-dot.ac{fill:var(--sky);r:8}
+.site-label{font-size:11px;font-weight:600;fill:var(--ink);cursor:pointer;pointer-events:none}
+
+/* FEATURE LABELS */
+.fl{font-size:10px;fill:var(--ink-light);font-weight:500;letter-spacing:1px}
+
+/* RESULT SECTION */
+.rs{margin-top:24px}
+.rs.hidden{display:none}
+.rs-header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.rs-header h3{font-family:var(--serif);font-size:20px;font-weight:700}
+.rs-header .site-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600}
+.rs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
+.rs-card{border-radius:10px;padding:14px;border:1px solid var(--border);cursor:pointer;transition:.3s;background:#fff}
+.rs-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.rs-card .rc-icon{font-size:20px;display:block;margin-bottom:4px}
+.rs-card .rc-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.rs-card .rc-val{font-family:var(--serif);font-size:18px;font-weight:900;display:block}
+.rs-card .rc-lvl{font-size:11px;display:block;margin-top:2px}
+.rs-card .rc-ind{font-size:10px;color:var(--ink-light)}
+.rs-card.ac{border-width:2px}
+
+/* CROSS ANALYSIS */
+.ca-wrap{background:linear-gradient(135deg,#f0f9ff,#f0fdf4);border-radius:12px;padding:20px;border:1px solid #bae6fd;margin:12px 0}
+.ca-wrap h4{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.ca-list{display:flex;flex-direction:column;gap:8px}
+.ca-item{padding:10px 14px;border-radius:8px;background:#fff;border:1px solid var(--border);font-size:13px;line-height:1.5}
+.ca-item strong{color:var(--sky)}
+
+/* COMPARE OVERLAY */
+.co-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,.6);z-index:999;align-items:center;justify-content:center;padding:20px}
+.co-wrap.ac{display:flex}
+.co-box{background:#fff;border-radius:16px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:28px}
+.co-box h3{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:16px}
+.co-close{float:right;background:none;border:none;font-size:24px;cursor:pointer;color:var(--ink-light);padding:0 4px}
+.co-close:hover{color:var(--ink)}
+.co-table{width:100%;border-collapse:collapse;font-size:13px}
+.co-table th{background:var(--ink);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px}
+.co-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.co-table tr:hover td{background:#f8fafc}
+.co-btn{padding:10px 20px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:.3s;margin-top:12px}
+.co-btn1{background:var(--sky);color:#fff}
+.co-btn1:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(2,132,199,.3)}
+.co-btn2{background:var(--rose);color:#fff}
+.co-btn2:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(225,29,72,.3)}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);align-items:center}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+.ft{text-align:center;padding:40px 20px;color:var(--ink-light);font-size:12px;border-top:1px solid var(--border);background:#f1f5f9;margin-top:60px}
+
+@media(max-width:700px){
+  .he-stats{gap:12px}
+  .he-stats div{padding:12px;min-width:70px}
+  .rs-grid{grid-template-columns:1fr 1fr}
+  .map-header{flex-direction:column;align-items:flex-start}
+}
+</style></head><body>
+<div id="sp"></div>
+
+<!-- HERO -->
+<div class="he">
+<div class="hb">🌍 空间关联 · 跨介质环境质量分析</div>
+<h1>从<em>一张地图</em>看环境</h1>
+<p>不��评价单一介质。在地图上选一个点位，系统自动给出该位置的大气·降水·土壤·河流·湖泊综合评价，并识别介质间的耦合关系。</p>
+<div class="he-stats">
+<div><span class="n">7</span><span class="l">监测点位</span></div>
+<div><span class="n">5</span><span class="l">环境介质</span></div>
+<div><span class="n">3</span><span class="l">关联分析维度</span></div>
+</div>
+<div style="margin-top:32px;font-size:12px;color:#64748b">↓ 滚动查看地图</div>
+</div>
+
+<!-- MAP -->
+<div class="map-wrap">
+<div class="map-box">
+<div class="map-header">
+<div><h2>🗺️ 虚拟区域环境监测网络</h2></div>
+<div class="hint">👆 点击地图上的点位查看综合评价</div>
+</div>
+<div class="map-body">
+<svg class="map-svg" viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
+<!-- Background -->
+<rect width="900" height="520" fill="#f0f9ff" rx="8"/>
+
+<!-- Terrain -->
+<ellipse cx="180" cy="80" rx="160" ry="60" fill="#dbeafe" opacity=".5"/>
+<rect x="580" y="30" width="180" height="120" rx="10" fill="#e2e8f0" opacity=".6"/>
+<rect x="580" y="30" width="180" height="120" rx="10" fill="url(#indPattern)" opacity=".3"/>
+<ellipse cx="400" cy="380" rx="200" ry="70" fill="#dcfce7" opacity=".4"/>
+<rect x="50" y="330" width="180" height="100" rx="8" fill="#fef3c7" opacity=".5"/>
+
+<!-- River -->
+<path d="M130,50 Q120,120 180,180 Q240,240 260,300 Q280,360 350,400 Q420,440 520,420 Q620,400 700,430 Q780,460 850,440" fill="none" stroke="#93c5fd" stroke-width="14" stroke-linecap="round" opacity=".7"/>
+<path d="M130,50 Q120,120 180,180 Q240,240 260,300 Q280,360 350,400 Q420,440 520,420 Q620,400 700,430 Q780,460 850,440" fill="none" stroke="#bfdbfe" stroke-width="6" stroke-linecap="round"/>
+
+<!-- Lake -->
+<ellipse cx="400" cy="380" rx="70" ry="30" fill="#93c5fd" opacity=".6"/>
+<ellipse cx="400" cy="380" rx="70" ry="30" fill="#bfdbfe" opacity=".3"/>
+
+<!-- Roads -->
+<path d="M0,200 L250,200 L400,220 L600,210 L700,190 L900,190" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,4"/>
+<path d="M300,0 L300,140 L320,220 L340,300 L350,400" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- Labels -->
+<text x="85" y="100" class="fl">⛰️ 源头区</text>
+<text x="610" y="50" class="fl">🏭 工业区</text>
+<text x="350" y="330" class="fl">🏝️ 湖泊</text>
+<text x="420" y="440" class="fl">🌾 农业区</text>
+<text x="100" y="420" class="fl">🏠 城区</text>
+
+<!-- Flow arrows -->
+<text x="160" y="160" font-size="20" fill="#93c5fd" opacity=".5">↓</text>
+<text x="270" y="360" font-size="20" fill="#93c5fd" opacity=".5">↓</text>
+<text x="550" y="405" font-size="20" fill="#93c5fd" opacity=".5">↓</text>
+
+<!-- SITES -->
+<!-- S0: 源头 -->
+<circle cx="130" cy="70" r="6" class="site-dot ac" id="sd0" onclick="selectSite(0)"/>
+<circle cx="130" cy="70" r="18" class="site ac" id="si0" onclick="selectSite(0)"/>
+<text x="125" y="98" class="site-label">G01 源头</text>
+
+<!-- S1: 工业区 -->
+<circle cx="650" cy="80" r="6" class="site-dot" id="sd1" onclick="selectSite(1)"/>
+<circle cx="650" cy="80" r="18" class="site" id="si1" onclick="selectSite(1)"/>
+<text x="640" y="108" class="site-label">G02 工业区</text>
+
+<!-- S2: 城区 -->
+<circle cx="130" cy="380" r="6" class="site-dot" id="sd2" onclick="selectSite(2)"/>
+<circle cx="130" cy="380" r="18" class="site" id="si2" onclick="selectSite(2)"/>
+<text x="115" y="408" class="site-label">G03 城区</text>
+
+<!-- S3: 河流上游 -->
+<circle cx="210" cy="200" r="6" class="site-dot" id="sd3" onclick="selectSite(3)"/>
+<circle cx="210" cy="200" r="18" class="site" id="si3" onclick="selectSite(3)"/>
+<text x="200" y="230" class="site-label">S01 上游断面</text>
+
+<!-- S4: 湖泊 -->
+<circle cx="385" cy="375" r="6" class="site-dot" id="sd4" onclick="selectSite(4)"/>
+<circle cx="385" cy="375" r="18" class="site" id="si4" onclick="selectSite(4)"/>
+<text x="370" y="355" class="site-label">L01 湖泊</text>
+
+<!-- S5: 河流下游 -->
+<circle cx="550" cy="415" r="6" class="site-dot" id="sd5" onclick="selectSite(5)"/>
+<circle cx="550" cy="415" r="18" class="site" id="si5" onclick="selectSite(5)"/>
+<text x="535" y="445" class="site-label">S02 下游断面</text>
+
+<!-- S6: 农田 -->
+<circle cx="720" cy="400" r="6" class="site-dot" id="sd6" onclick="selectSite(6)"/>
+<circle cx="720" cy="400" r="18" class="site" id="si6" onclick="selectSite(6)"/>
+<text x="710" y="430" class="site-label">F01 农田</text>
+
+<defs>
+<pattern id="indPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+<rect width="20" height="20" fill="none"/>
+<line x1="0" y1="0" x2="20" y2="20" stroke="#94a3b8" stroke-width="1"/>
+<line x1="20" y1="0" x2="0" y2="20" stroke="#94a3b8" stroke-width="1"/>
+</pattern>
+</defs>
+</svg>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+<span style="font-weight:600">图例：</span>
+<span class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span> 监测点位</span>
+<span class="legend-item"><span style="width:20px;height:4px;background:#93c5fd;display:inline-block;border-radius:2px"></span> 河流</span>
+<span class="legend-item"><span style="width:14px;height:14px;background:#93c5fd;display:inline-block;border-radius:50%;opacity:.6"></span> 湖泊</span>
+<span class="legend-item"><span style="width:10px;height:10px;background:#e2e8f0;display:inline-block;border-radius:2px"></span> 工业区</span>
+<span class="legend-item"><span style="width:10px;height:10px;background:#dcfce7;display:inline-block;border-radius:2px"></span> 农业区</span>
+</div>
+
+<!-- RESULT PANEL -->
+<div class="rs hidden" id="resultPanel">
+<div class="rs-header">
+<h3 id="siteTitle">点位名称</h3>
+<span class="site-badge" id="siteBadge" style="background:var(--sky-light);color:var(--sky)">区域环境</span>
+</div>
+<p style="font-size:13px;color:var(--ink-light);margin-bottom:16px;line-height:1.7" id="siteDesc">点位描述</p>
+
+<div class="rs-grid" id="mediaGrid"></div>
+
+<!-- Cross Analysis -->
+<div class="ca-wrap" id="crossAnalysis">
+<h4>🔗 跨介质关联分析</h4>
+<div class="ca-list" id="caList"></div>
+</div>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+<button class="co-btn co-btn1" onclick="showCompare()">📊 多点位对比</button>
+</div>
+</div>
+
+</div></div>
+
+<!-- COMPARE OVERLAY -->
+<div class="co-wrap" id="compareOverlay">
+<div class="co-box">
+<button class="co-close" onclick="hideCompare()">&times;</button>
+<h3>📊 点位综合对比</h3>
+<p style="font-size:13px;color:var(--ink-light);margin-bottom:16px">已被点击查看过的点位会显示在对比表中，系统自动计算各介质综合得分。</p>
+<div id="compareTableWrap">
+<table class="co-table">
+<thead><tr><th>点位</th><th>大气 (AQI)</th><th>降水 pH</th><th>河流水质</th><th>湖泊 TLI</th><th>土壤内梅罗</th><th>综合评分</th></tr></thead>
+<tbody id="compareBody"></tbody>
+</table>
+</div>
+<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="co-btn co-btn2" onclick="clearCompare()">清空</button>
+<button class="co-btn co-btn1" onclick="hideCompare()">关闭</button>
+</div>
+</div>
+</div>
+
+<footer class="ft">
+环境检测 · 交互式教学 &nbsp;|&nbsp; 联系方式：【联系方式见仓库主页】
+</footer>
+
+<script>
+// ===== DATA =====
+const sites = [
+  {
+    id:0, name:'G01 源头', badge:'清洁对照',
+    desc:'河流源头区域，海拔较高，远离人类活动干扰。作为区域环境质量的本底值参考。',
+    air:{aqi:18,lvl:'优',cls:'green',pm25:6,pm10:12,so2:3,no2:5,co:0.3,o3:40},
+    rain:{ph:6.5,lvl:'非酸雨',type:'清洁降水',so4:0.8,no3:0.5,ca:5.2,nh4:1.0},
+    river:{cls:'Ⅰ类',lvl:'水质优',ph:7.5,do:8.8,cod:8,bod:1.2,nh3:0.05,tp:0.01},
+    lake:{tli:22,lvl:'贫营养',chl:0.8,sd:7.2,tp:0.006,tn:0.2,cod:4},
+    soil:{pn:0.25,lvl:'安全',as:6,cd:0.05,pb:12,cu:8,ni:5,hg:0.02},
+    links:['本底参考——所有介质的理想状态']
+  },
+  {
+    id:1, name:'G02 工业区', badge:'污染源区',
+    desc:'化工与制造业集中区域。废气排放（SO₂/NOₓ）和废水排放是主要环境压力来源。',
+    air:{aqi:148,lvl:'轻度污染',cls:'orange',pm25:45,pm10:80,so2:85,no2:62,co:1.5,o3:78},
+    rain:{ph:4.5,lvl:'重度酸雨',type:'硫酸型',so4:22.5,no3:6.8,ca:2.1,nh4:1.5},
+    river:{cls:'Ⅳ类',lvl:'水质较差',ph:6.5,do:4.5,cod:32,bod:7.5,nh3:1.8,tp:0.38},
+    lake:{tli:65,lvl:'中度富营养',chl:38,sd:0.45,tp:0.22,tn:4.2,cod:35},
+    soil:{pn:2.8,lvl:'中污染',as:28,cd:2.2,pb:220,cu:85,ni:68,hg:0.65},
+    links:[
+      '大气 SO₂(85μg/m³) → 降水 pH 降至 4.5（重度酸雨），SO₄²⁻/NO₃⁻ 比值 3.3 > 3，判定为硫酸型酸雨',
+      '酸沉降 → 土壤 Cd(Pi=2.2)/Pb(Pi=1.8)活性升高，内梅罗指数 2.8（中污染）',
+      '废水排放 → 河流 COD(32mg/L)/NH₃-N(1.8mg/L) 超标，水质降为Ⅳ类',
+      '大气污染物经干湿沉降 → 湖泊 TN(4.2mg/L)/TP(0.22mg/L) 偏高 → TLI=65 中度富营养'
+    ]
+  },
+  {
+    id:2, name:'G03 城区', badge:'居住区',
+    desc:'城市中心区域，人口密集。主要环境压力来自机动车尾气和生活污水。',
+    air:{aqi:82,lvl:'良',cls:'yellow',pm25:35,pm10:55,so2:15,no2:48,co:1.1,o3:95},
+    rain:{ph:5.3,lvl:'弱酸雨',type:'混合型',so4:6.5,no3:5.8,ca:3.8,nh4:2.2},
+    river:{cls:'Ⅲ类',lvl:'水质一般',ph:7.2,do:5.8,cod:20,bod:4.5,nh3:0.95,tp:0.18},
+    lake:{tli:48,lvl:'中营养',chl:4.2,sd:2.8,tp:0.035,tn:1.2,cod:12},
+    soil:{pn:0.65,lvl:'安全',as:10,cd:0.12,pb:38,cu:18,ni:15,hg:0.06},
+    links:[
+      '城区 NO₂(48μg/m³)偏高（交通源）→ 降水 NO₃⁻(5.8mg/L)占比上升，酸雨类型转为混合型',
+      '城区绿地和水体具有一定的污染缓冲能力，土壤保持安全状态',
+      '生活污水经处理后排入河流 → NH₃-N(0.95mg/L)/TP(0.18mg/L) Ⅲ类水'
+    ]
+  },
+  {
+    id:3, name:'S01 上游断面', badge:'河流断面',
+    desc:'河流上游监测断面，位于工业园区下游约 2km。用于评估工业废水对水质的直接影响。',
+    air:{aqi:38,lvl:'优',cls:'green',pm25:12,pm10:25,so2:8,no2:12,co:0.5,o3:52},
+    rain:{ph:5.8,lvl:'非酸雨',type:'—',so4:3.2,no3:2.1,ca:6.8,nh4:2.5},
+    river:{cls:'Ⅴ类',lvl:'水质差',ph:6.3,do:3.2,cod:38,bod:9.5,nh3:2.5,tp:0.45},
+    lake:{tli:55,lvl:'轻度富营养',chl:18,sd:0.9,tp:0.14,tn:3.0,cod:25},
+    soil:{pn:0.48,lvl:'安全',as:8,cd:0.08,pb:22,cu:12,ni:10,hg:0.04},
+    links:[
+      '上游断面水质(Ⅴ类)显著劣于源头(Ⅰ类)，COD/NH₃-N/TP 均超标——工业废水直排影响',
+      '河水流动将污染物输送至下游湖泊，TLI=55 轻度富营养（对比源头湖泊TLI=22）',
+      '大气在该点位已恢复至优良（AQI=38），说明工业排放主要影响下风向——污染转移'
+    ]
+  },
+  {
+    id:4, name:'L01 湖泊', badge:'湖泊监测',
+    desc:'区域内的中型浅水湖泊，承接上游来水。受工业废水和农业面源双重影响。',
+    air:{aqi:52,lvl:'良',cls:'yellow',pm25:22,pm10:38,so2:10,no2:18,co:0.7,o3:62},
+    rain:{ph:5.2,lvl:'弱酸雨',type:'混合型',so4:7.8,no3:4.2,ca:4.5,nh4:3.0},
+    river:{cls:'Ⅳ类',lvl:'水质较差',ph:6.8,do:4.0,cod:28,bod:6.0,nh3:1.5,tp:0.32},
+    lake:{tli:62,lvl:'中度富营养',chl:32,sd:0.5,tp:0.18,tn:3.5,cod:28},
+    soil:{pn:0.55,lvl:'安全',as:9,cd:0.1,pb:28,cu:15,ni:12,hg:0.05},
+    links:[
+      '湖泊 TLI=62 中度富营养，Chl-a(32μg/L)为主要驱动因子——反映上游营养盐持续输入',
+      '湖心水质(Ⅳ类)略优于上游断面(Ⅴ类)——湖泊具有一定自净能力',
+      '酸雨(pH=5.2)进入湖泊 → 水体 pH 略微降低，可能增加底泥重金属释放风险'
+    ]
+  },
+  {
+    id:5, name:'S02 下游断面', badge:'河流断面',
+    desc:'河流出区域前的最后一个断面，综合反映整个流域的水质状况。',
+    air:{aqi:65,lvl:'良',cls:'yellow',pm25:28,pm10:45,so2:12,no2:22,co:0.8,o3:68},
+    rain:{ph:5.5,lvl:'弱酸雨',type:'混合型',so4:5.8,no3:3.5,ca:5.2,nh4:2.8},
+    river:{cls:'Ⅲ类',lvl:'水质一般',ph:7.0,do:5.2,cod:18,bod:4.0,nh3:0.85,tp:0.15},
+    lake:{tli:58,lvl:'轻度富营养',chl:22,sd:0.7,tp:0.15,tn:2.8,cod:22},
+    soil:{pn:0.38,lvl:'安全',as:7,cd:0.06,pb:18,cu:10,ni:8,hg:0.03},
+    links:[
+      '相比于上游断面(Ⅴ类)，下游水质改善至Ⅲ类——河流自净和稀释作用',
+      '但下游 NH₃-N(0.85mg/L)/TP(0.15mg/L) 仍高于源头，农业面源贡献不可忽视',
+      'AQI=65 良，大气质量好于工业区和城区——污染物在传输过程中扩散稀释'
+    ]
+  },
+  {
+    id:6, name:'F01 农田', badge:'农业区',
+    desc:'农业种植区，主要种植水稻和蔬菜。环境压力来自化肥施用和大气沉降。',
+    air:{aqi:42,lvl:'优',cls:'green',pm25:18,pm10:32,so2:8,no2:14,co:0.6,o3:55},
+    rain:{ph:5.0,lvl:'较重酸雨',type:'混合型',so4:10.2,no3:4.8,ca:7.5,nh4:5.5},
+    river:{cls:'Ⅲ类',lvl:'水质一般',ph:7.3,do:5.5,cod:16,bod:3.5,nh3:0.65,tp:0.22},
+    lake:{tli:52,lvl:'轻度富营养',chl:15,sd:1.2,tp:0.12,tn:2.2,cod:18},
+    soil:{pn:0.82,lvl:'警戒线',as:22,cd:0.45,pb:65,cu:42,ni:28,hg:0.12},
+    links:[
+      '农田土壤内梅罗指数 0.82（警戒线），Cd(Pi=0.75)/As(Pi=0.73) 接近筛选值——化肥施用和大气沉降双重输入',
+      '降水 NH₄⁺(5.5mg/L) 显著高于其他点位——农业施肥的氨挥发贡献',
+      '降水 pH=5.0（较重酸雨）→ 土壤酸化风险增加 → 可能活化重金属 → 作物吸收风险',
+      '农业面源 TP(0.22mg/L) 贡献 → 下游河流和湖泊的营养盐压力'
+    ]
+  }
+];
+
+let currentSite = 0;
+let compared = [];
+
+// ===== SITE SELECTION =====
+function selectSite(n){
+  currentSite = n;
+  // Update map markers
+  document.querySelectorAll('.site, .site-dot').forEach(el => el.classList.remove('ac'));
+  document.getElementById('sd'+n).classList.add('ac');
+  document.getElementById('si'+n).classList.add('ac');
+  
+  let site = sites[n];
+  document.getElementById('siteTitle').textContent = site.name;
+  document.getElementById('siteBadge').textContent = site.badge;
+  document.getElementById('siteDesc').textContent = site.desc;
+  
+  // Media cards
+  let grid = document.getElementById('mediaGrid');
+  let media = [
+    {key:'air',icon:'☀️',name:'大气质量',val:aqiStr(site.air),lvl:site.air.lvl,color:aqiColor(site.air),data:site.air},
+    {key:'rain',icon:'🌧️',name:'降水酸度',val:'pH '+site.rain.ph.toFixed(1),lvl:site.rain.lvl,color:rainColor(site.rain),data:site.rain},
+    {key:'river',icon:'🏞️',name:'河流水质',val:site.river.cls,lvl:site.river.lvl,color:riverColor(site.river),data:site.river},
+    {key:'lake',icon:'🏝️',name:'湖泊营养',val:'TLI '+site.lake.tli,lvl:site.lake.lvl,color:lakeColor(site.lake),data:site.lake},
+    {key:'soil',icon:'🌱',name:'土壤质量',val:'P='+site.soil.pn.toFixed(2),lvl:site.soil.lvl,color:soilColor(site.soil),data:site.soil}
+  ];
+  grid.innerHTML = '';
+  media.forEach((m,i)=>{
+    let card = document.createElement('div');
+    card.className = 'rs-card'+(i===0?' ac':'');
+    card.innerHTML = `<span class="rc-icon">${m.icon}</span>
+      <div class="rc-name">${m.name}</div>
+      <span class="rc-val" style="color:${m.color}">${m.val}</span>
+      <span class="rc-lvl" style="color:${m.color}">${m.lvl}</span>
+      <span class="rc-ind">点击查看详情</span>`;
+    card.onclick = ()=>showMediaDetail(m);
+    grid.appendChild(card);
+  });
+  
+  // Cross analysis
+  let ca = document.getElementById('caList');
+  if(site.links && site.links.length>0){
+    ca.innerHTML = site.links.map(l => `<div class="ca-item">${l}</div>`).join('');
+  } else {
+    ca.innerHTML = '<div class="ca-item" style="color:var(--ink-light)">暂未识别到显著的跨介质关联。</div>';
+  }
+  
+  document.getElementById('resultPanel').classList.remove('hidden');
+  
+  // Scroll to result
+  setTimeout(()=>{
+    document.getElementById('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+  
+  // Add to compare
+  if(!compared.find(d=>d.id===n)){
+    compared.push({id:n,name:site.name,badge:site.badge,air:site.air,rain:site.rain,river:site.river,lake:site.lake,soil:site.soil});
+  }
+}
+
+// ===== COLOR HELPERS =====
+function aqiStr(a){return 'AQI '+a.aqi}
+function aqiColor(a){
+  if(a.aqi<=50)return '#16a34a';if(a.aqi<=100)return '#ca8a04';if(a.aqi<=150)return '#c2410c';if(a.aqi<=200)return '#dc2626';if(a.aqi<=300)return '#7c3aed';return '#7c2d12'}
+function rainColor(r){
+  if(r.ph>=5.6)return '#16a34a';if(r.ph>=5.0)return '#eab308';if(r.ph>=4.5)return '#f97316';return '#dc2626'}
+function riverColor(r){
+  let map={'Ⅰ类':'#0ea5e9','Ⅱ类':'#22c55e','Ⅲ类':'#eab308','Ⅳ类':'#f97316','Ⅴ类':'#dc2626'};return map[r.cls]||'#999'}
+function lakeColor(l){
+  if(l.tli<30)return '#0ea5e9';if(l.tli<=50)return '#22c55e';if(l.tli<=60)return '#eab308';if(l.tli<=70)return '#f97316';return '#dc2626'}
+function soilColor(s){
+  if(s.pn<=0.7)return '#22c55e';if(s.pn<=1)return '#eab308';if(s.pn<=2)return '#f97316';if(s.pn<=3)return '#ef4444';return '#991b1b'}
+
+// ===== MEDIA DETAIL MODAL =====
+function showMediaDetail(m){
+  let data = m.data;
+  let detail = '';
+  switch(m.key){
+    case 'air':
+      detail = `<strong>${m.icon} ${m.name}</strong><br><br>
+      AQI: ${data.aqi}（${data.lvl}）<br>
+      PM₂.₅: ${data.pm25} μg/m³ | PM₁₀: ${data.pm10} μg/m³<br>
+      SO₂: ${data.so2} μg/m³ | NO₂: ${data.no2} μg/m³<br>
+      CO: ${data.co} mg/m³ | O₃: ${data.o3} μg/m³`;
+      break;
+    case 'rain':
+      detail = `<strong>${m.icon} ${m.name}</strong><br><br>
+      降水 pH: ${data.ph.toFixed(1)}（${data.lvl}）<br>
+      ${data.type?'酸雨类型: '+data.type+'<br>':''}
+      SO₄²⁻: ${data.so4} mg/L | NO₃⁻: ${data.no3} mg/L<br>
+      Ca²⁺: ${data.ca} mg/L | NH₄⁺: ${data.nh4} mg/L`;
+      break;
+    case 'river':
+      detail = `<strong>${m.icon} ${m.name}</strong><br><br>
+      水质类别: ${data.cls}（${data.lvl}）<br>
+      pH: ${data.ph} | DO: ${data.do} mg/L<br>
+      COD: ${data.cod} mg/L | BOD₅: ${data.bod} mg/L<br>
+      NH₃-N: ${data.nh3} mg/L | TP: ${data.tp} mg/L`;
+      break;
+    case 'lake':
+      detail = `<strong>${m.icon} ${m.name}</strong><br><br>
+      TLI: ${data.tli}（${data.lvl}）<br>
+      Chl-a: ${data.chl} μg/L | SD: ${data.sd} m<br>
+      TP: ${data.tp} mg/L | TN: ${data.tn} mg/L<br>
+      COD: ${data.cod} mg/L`;
+      break;
+    case 'soil':
+      detail = `<strong>${m.icon} ${m.name}</strong><br><br>
+      内梅罗指数: ${data.pn.toFixed(2)}（${data.lvl}）<br>
+      As: ${data.as} | Cd: ${data.cd} | Pb: ${data.pb} mg/kg<br>
+      Cu: ${data.cu} | Ni: ${data.ni} | Hg: ${data.hg} mg/kg`;
+      break;
+  }
+  alert(detail);
+}
+
+// ===== COMPARE =====
+function showCompare(){
+  let body = document.getElementById('compareBody');
+  if(compared.length===0){
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--ink-light)">暂无对比数据。请在左侧地图上点击点位。</td></tr>';
+  } else {
+    body.innerHTML = compared.map(d=>{
+      let score = calcScore(d);
+      return `<tr>
+        <td><strong>${d.name}</strong></td>
+        <td style="color:${aqiColor(d.air)}">${aqiStr(d.air)}</td>
+        <td style="color:${rainColor(d.rain)}">${d.rain.ph.toFixed(1)}</td>
+        <td style="color:${riverColor(d.river)}">${d.river.cls}</td>
+        <td style="color:${lakeColor(d.lake)}">TLI ${d.lake.tli}</td>
+        <td style="color:${soilColor(d.soil)}">${d.soil.pn.toFixed(2)}</td>
+        <td style="font-weight:700;color:${score>80?'#16a34a':score>60?'#eab308':'#dc2626'}">${score}分</td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('compareOverlay').classList.add('ac');
+}
+function hideCompare(){document.getElementById('compareOverlay').classList.remove('ac')}
+function clearCompare(){compared=[];showCompare()}
+
+function calcScore(d){
+  // Normalize each media to 0-100
+  let aqiScore = Math.max(0, 100 - d.air.aqi/5);
+  let rainScore = Math.min(100, (d.rain.ph - 4) * 40);
+  let riverScore = {'Ⅰ类':95,'Ⅱ类':80,'Ⅲ类':65,'Ⅳ类':45,'Ⅴ类':25}[d.river.cls]||50;
+  let lakeScore = Math.max(0, 100 - d.lake.tli);
+  let soilScore = Math.max(0, 100 - d.soil.pn * 25);
+  return Math.round((aqiScore+rainScore+riverScore+lakeScore+soilScore)/5);
+}
+
+// ===== SCROLL PROGRESS =====
+window.addEventListener('scroll',function(){
+  let h = document.documentElement.scrollHeight-window.innerHeight;
+  if(h>0) document.getElementById('sp').style.width=(window.scrollY/h*100)+'%';
+});
+
+// ===== DEFAULT: Select G01 =====
+window.addEventListener('load',function(){
+  setTimeout(()=>selectSite(0),300);
+});
+</script>
+</body></html>
