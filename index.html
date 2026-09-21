@@ -9,51 +9,191 @@
 *{box-sizing:border-box}
 body{margin:0;background:#0b1220;color:#e6edf7;
   font-family:"Noto Sans SC","Microsoft YaHei",-apple-system,sans-serif;line-height:1.7}
-.wrap{max-width:1080px;margin:0 auto;padding:48px 22px 80px}
-h1{font-size:32px;margin:0 0 10px;letter-spacing:.5px}
-.sub{color:#8ba0bd;font-size:15px;margin:0 0 8px}
-.tag{display:inline-block;font-size:12px;color:#7dd3fc;border:1px solid #1e3a5f;
-  background:#0f1d33;border-radius:99px;padding:3px 12px;margin:14px 8px 0 0}
+.wrap{max-width:1180px;margin:0 auto;padding:44px 22px 80px}
+h1{font-size:30px;margin:0 0 8px;letter-spacing:.5px}
+.sub{color:#8ba0bd;font-size:15px;margin:0 0 4px}
 .intro{background:#0f1a2e;border:1px solid #1b2a44;border-radius:12px;
-  padding:18px 20px;margin:26px 0 34px;font-size:14.5px;color:#a9bcd8}
+  padding:16px 20px;margin:22px 0 20px;font-size:14px;color:#a9bcd8}
 .intro b{color:#e6edf7}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.sec{background:#0f1a2e;border:1px solid #1b2a44;border-radius:12px;padding:18px 20px;
-  transition:.18s}
+
+/* ===== 搜索 + 筛选栏（吸顶）===== */
+.bar{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid #16233c;
+  padding:12px 0 10px;margin:0 0 20px}
+.searchbox{position:relative;margin-bottom:10px}
+.searchbox input{width:100%;background:#0f1a2e;border:1px solid #23375a;
+  border-radius:10px;color:#e6edf7;font-size:15px;padding:11px 38px 11px 14px;
+  font-family:inherit;outline:none;transition:.15s}
+.searchbox input:focus{border-color:#3b6ea8;box-shadow:0 0 0 3px rgba(59,110,168,.18)}
+.searchbox input::placeholder{color:#5f7a9e}
+.searchbox .clr{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  color:#5f7a9e;cursor:pointer;font-size:17px;line-height:1;display:none;user-select:none}
+.searchbox .clr:hover{color:#7dd3fc}
+.chips{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.chip{font-size:12.5px;color:#9db3d1;background:#0f1a2e;border:1px solid #23375a;
+  border-radius:99px;padding:4px 12px;cursor:pointer;transition:.15s;user-select:none;
+  white-space:nowrap}
+.chip:hover{border-color:#3b6ea8;color:#cfe2ff}
+.chip.on{background:#173052;border-color:#3b8fd6;color:#7dd3fc;font-weight:600}
+.chip .c{opacity:.6;font-size:11.5px;margin-left:3px}
+.chips .sep{width:1px;height:16px;background:#23375a;margin:0 3px}
+.chips .lbl{font-size:11.5px;color:#5f7a9e;letter-spacing:.5px;margin-right:1px}
+.chip.sub{border-style:dashed}
+
+/* ===== 卡片网格 ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.sec{background:#0f1a2e;border:1px solid #1b2a44;border-radius:12px;
+  padding:18px 20px;transition:.18s;display:flex;flex-direction:column}
 .sec:hover{border-color:#2d4a75;transform:translateY(-2px)}
 .sec h2{margin:0 0 6px;font-size:17px;display:flex;align-items:center;gap:8px}
 .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
 .sec p{margin:0 0 12px;font-size:13.5px;color:#8ba0bd}
 .sec .n{font-size:12px;color:#5f7a9e}
-ul{list-style:none;margin:0;padding:0}
+ul{list-style:none;margin:0;padding:0;max-height:290px;overflow-y:auto}
+ul::-webkit-scrollbar{width:6px}
+ul::-webkit-scrollbar-thumb{background:#23375a;border-radius:3px}
+ul::-webkit-scrollbar-track{background:transparent}
 li a{display:block;font-size:13.5px;color:#a9bcd8;text-decoration:none;
   padding:5px 8px;border-radius:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 li a:hover{background:#16233c;color:#7dd3fc}
 li a .ext{float:right;font-size:11px;color:#4d6a8f;opacity:.75}
+li a mark{background:rgba(125,211,252,.22);color:#cfeaff;border-radius:3px;padding:0 1px}
 .cnt{font-size:12px;color:#5f7a9e;margin-left:auto;font-weight:400}
 .more{font-size:12.5px;color:#5f7a9e;padding:6px 8px}
+.sec.hide{display:none}
+li.hide{display:none}
+
+/* ===== 空态 ===== */
+.empty{display:none;text-align:center;padding:60px 20px;color:#5f7a9e;font-size:15px}
+.empty.on{display:block}
+.empty b{color:#9db3d1}
+
 footer{margin-top:54px;padding-top:22px;border-top:1px solid #1b2a44;
   font-size:13px;color:#5f7a9e}
 footer a{color:#7dd3fc}
+.hint{font-size:12.5px;color:#5f7a9e;margin:0 0 10px}
+kbd{background:#16233c;border:1px solid #23375a;border-radius:4px;
+  padding:1px 5px;font-size:11.5px;font-family:inherit;color:#9db3d1}
+@media (max-width:640px){
+  .wrap{padding:28px 14px 60px}
+  h1{font-size:24px}
+  .grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>环境检测 · 数字资产库</h1>
 <p class="sub">把实验室和现场里"看一眼就懂、却说不清"的东西，做成能点开就用的网页。</p>
-<span class="tag">交互式实验</span><span class="tag">仪器培训</span>
-<span class="tag">操作规程</span><span class="tag">案例库</span>
-<span class="tag">碳汇工具链</span>
 <div class="intro">
 不是 PPT，不是概念稿 —— <b>每件都能在浏览器里直接操作</b>。<br>
 全库纯静态单文件 HTML，无构建步骤、无外部依赖，拷走就能用，断网也能跑。<br>
 库内案例与企业信息<b>均已脱敏</b>；标准引用均标注出处，以官方现行版本为准。
 </div>
-<div class="grid"><div class="sec"><h2><span class="dot" style="background:#0ea5e9"></span>交互式实验<span class="cnt">78 件可交互</span></h2><p>纯前端，打开即用。拖一拖、点一点，看现象出结果。</p><ul><li><a href="01-交互实验/01-采样布点/固定源废气采样-交互版.html" title="01-交互实验/01-采样布点/固定源废气采样-交互版.html">固定源废气采样-交互版</a></li><li><a href="01-交互实验/01-采样布点/土壤采样布点-交互版.html" title="01-交互实验/01-采样布点/土壤采样布点-交互版.html">土壤采样布点-交互版</a></li><li><a href="01-交互实验/01-采样布点/地下水洗井采样-交互版.html" title="01-交互实验/01-采样布点/地下水洗井采样-交互版.html">地下水洗井采样-交互版</a></li><li><a href="01-交互实验/01-采样布点/地表水采样布点-交互版.html" title="01-交互实验/01-采样布点/地表水采样布点-交互版.html">地表水采样布点-交互版</a></li><li><a href="01-交互实验/01-采样布点/环境空气PM25采样-交互版.html" title="01-交互实验/01-采样布点/环境空气PM25采样-交互版.html">环境空气PM25采样-交互版</a></li><li><a href="01-交互实验/02-检测实验/COD检测实验-交互版.html" title="01-交互实验/02-检测实验/COD检测实验-交互版.html">COD检测实验-交互版</a></li><li><a href="01-交互实验/02-检测实验/COD检测实验-从水样到报告.html" title="01-交互实验/02-检测实验/COD检测实验-从水样到报告.html">COD检测实验-从水样到报告</a></li><li><a href="01-交互实验/02-检测实验/PM2.5检测实验-从称膜到结果.html" title="01-交互实验/02-检测实验/PM2.5检测实验-从称膜到结果.html">PM2.5检测实验-从称膜到结果</a></li><li><a href="01-交互实验/02-检测实验/井水重金属-砷镉汞铅-ICP-MS.html" title="01-交互实验/02-检测实验/井水重金属-砷镉汞铅-ICP-MS.html">井水重金属-砷镉汞铅-ICP-MS</a></li><li><a href="01-交互实验/02-检测实验/土壤ICP-MS-锰铁铜砷汞.html" title="01-交互实验/02-检测实验/土壤ICP-MS-锰铁铜砷汞.html">土壤ICP-MS-锰铁铜砷汞</a></li><li><a href="01-交互实验/02-检测实验/工业废气甲烷-吸附管GC-FID.html" title="01-交互实验/02-检测实验/工业废气甲烷-吸附管GC-FID.html">工业废气甲烷-吸附管GC-FID</a></li><li><a href="01-交互实验/02-检测实验/总氮测定-交互版.html" title="01-交互实验/02-检测实验/总氮测定-交互版.html">总氮测定-交互版</a></li><li><a href="01-交互实验/02-检测实验/水质四项-COD氨氮总磷总氮实验.html" title="01-交互实验/02-检测实验/水质四项-COD氨氮总磷总氮实验.html">水质四项-COD氨氮总磷总氮实验</a></li><li><a href="01-交互实验/02-检测实验/水质检测-氨氮总磷总氮实验-详细版.html" title="01-交互实验/02-检测实验/水质检测-氨氮总磷总氮实验-详细版.html">水质检测-氨氮总磷总氮实验-详细版</a></li><li><a href="01-交互实验/02-检测实验/浊度测定-交互版.html" title="01-交互实验/02-检测实验/浊度测定-交互版.html">浊度测定-交互版</a></li><li><a href="01-交互实验/02-检测实验/环境空气NOx检测实验.html" title="01-交互实验/02-检测实验/环境空气NOx检测实验.html">环境空气NOx检测实验</a></li><li><a href="01-交互实验/02-检测实验/环境空气VOCs-罐采样GC-MS全流程.html" title="01-交互实验/02-检测实验/环境空气VOCs-罐采样GC-MS全流程.html">环境空气VOCs-罐采样GC-MS全流程</a></li><li><a href="01-交互实验/03-仪器分析/AAS-900T原子吸收分光光度计-交互版.html" title="01-交互实验/03-仪器分析/AAS-900T原子吸收分光光度计-交互版.html">AAS-900T原子吸收分光光度计-交互版</a></li><li><a href="01-交互实验/03-仪器分析/AAS原子吸收-交互版.html" title="01-交互实验/03-仪器分析/AAS原子吸收-交互版.html">AAS原子吸收-交互版</a></li><li><a href="01-交互实验/03-仪器分析/AFS原子荧光-交互版.html" title="01-交互实验/03-仪器分析/AFS原子荧光-交互版.html">AFS原子荧光-交互版</a></li><li><a href="01-交互实验/03-仪器分析/BC-J80S二氧化碳培养箱-交互版.html" title="01-交互实验/03-仪器分析/BC-J80S二氧化碳培养箱-交互版.html">BC-J80S二氧化碳培养箱-交互版</a></li><li><a href="01-交互实验/03-仪器分析/BPX-272电热恒温培养箱-交互版.html" title="01-交互实验/03-仪器分析/BPX-272电热恒温培养箱-交互版.html">BPX-272电热恒温培养箱-交互版</a></li><li><a href="01-交互实验/03-仪器分析/BSC-1300IIA2生物安全柜-交互版.html" title="01-交互实验/03-仪器分析/BSC-1300IIA2生物安全柜-交互版.html">BSC-1300IIA2生物安全柜-交互版</a></li><li><a href="01-交互实验/03-仪器分析/DHP-9052电热恒温培养箱-交互版.html" title="01-交互实验/03-仪器分析/DHP-9052电热恒温培养箱-交互版.html">DHP-9052电热恒温培养箱-交互版</a></li><li><a href="01-交互实验/03-仪器分析/F96PRO荧光分光光度计-交互版.html" title="01-交互实验/03-仪器分析/F96PRO荧光分光光度计-交互版.html">F96PRO荧光分光光度计-交互版</a></li><li><a href="01-交互实验/03-仪器分析/FOSS-8100凯氏定氮仪-交互版.html" title="01-交互实验/03-仪器分析/FOSS-8100凯氏定氮仪-交互版.html">FOSS-8100凯氏定氮仪-交互版</a></li><li><a href="01-交互实验/03-仪器分析/FTIR红外光谱-交互版.html" title="01-交互实验/03-仪器分析/FTIR红外光谱-交互版.html">FTIR红外光谱-交互版</a></li><li><a href="01-交互实验/03-仪器分析/GC-MS气质联用-交互版.html" title="01-交互实验/03-仪器分析/GC-MS气质联用-交互版.html">GC-MS气质联用-交互版</a></li><li><a href="01-交互实验/03-仪器分析/GXH-3010E1二氧化碳测定仪-交互版.html" title="01-交互实验/03-仪器分析/GXH-3010E1二氧化碳测定仪-交互版.html">GXH-3010E1二氧化碳测定仪-交互版</a></li><li><a href="01-交互实验/03-仪器分析/HPLC液相色谱-交互版.html" title="01-交互实验/03-仪器分析/HPLC液相色谱-交互版.html">HPLC液相色谱-交互版</a></li><li><a href="01-交互实验/03-仪器分析/ICP-OES等离子体发射光谱-交互版.html" title="01-交互实验/03-仪器分析/ICP-OES等离子体发射光谱-交互版.html">ICP-OES等离子体发射光谱-交互版</a></li><li><a href="01-交互实验/03-仪器分析/ICS-1100离子色谱仪-交互版.html" title="01-交互实验/03-仪器分析/ICS-1100离子色谱仪-交互版.html">ICS-1100离子色谱仪-交互版</a></li><li><a href="01-交互实验/03-仪器分析/JQC-1浮游空气菌采样器-交互版.html" title="01-交互实验/03-仪器分析/JQC-1浮游空气菌采样器-交互版.html">JQC-1浮游空气菌采样器-交互版</a></li><li><a href="01-交互实验/03-仪器分析/L5S紫外可见分光光度计-交互版.html" title="01-交互实验/03-仪器分析/L5S紫外可见分光光度计-交互版.html">L5S紫外可见分光光度计-交互版</a></li><li><a href="01-交互实验/03-仪器分析/LB-4低本底αβ测量仪-交互版.html" title="01-交互实验/03-仪器分析/LB-4低本底αβ测量仪-交互版.html">LB-4低本底αβ测量仪-交互版</a></li><li><a href="01-交互实验/03-仪器分析/LC-MS液质联用-交互版.html" title="01-交互实验/03-仪器分析/LC-MS液质联用-交互版.html">LC-MS液质联用-交互版</a></li><li class="more">… 另有 42 件，见目录</li></ul></div><div class="sec"><h2><span class="dot" style="background:#8b5cf6"></span>仪器交互培训<span class="cnt">6 件可交互</span></h2><p>20+ 台真实仪器的操作流程，按步骤走一遍胜过看十页说明书。</p><ul><li><a href="02-仪器培训/操作规程页/AAS-900T原子吸收分光光度计-交互版.html" title="02-仪器培训/操作规程页/AAS-900T原子吸收分光光度计-交互版.html">AAS-900T原子吸收分光光度计-交互版</a></li><li><a href="02-仪器培训/操作规程页/BSC-1300IIA2生物安全柜-交互版.html" title="02-仪器培训/操作规程页/BSC-1300IIA2生物安全柜-交互版.html">BSC-1300IIA2生物安全柜-交互版</a></li><li><a href="02-仪器培训/操作规程页/L5S紫外可见分光光度计-交互版.html" title="02-仪器培训/操作规程页/L5S紫外可见分光光度计-交互版.html">L5S紫外可见分光光度计-交互版</a></li><li><a href="02-仪器培训/操作规程页/MS105DU十万分之一天平-交互版.html" title="02-仪器培训/操作规程页/MS105DU十万分之一天平-交互版.html">MS105DU十万分之一天平-交互版</a></li><li><a href="02-仪器培训/操作规程页/QCS6000四气路大气采样器-交互版.html" title="02-仪器培训/操作规程页/QCS6000四气路大气采样器-交互版.html">QCS6000四气路大气采样器-交互版</a></li><li><a href="02-仪器培训/操作规程页/SPX-250B-Z生化培养箱-交互版.html" title="02-仪器培训/操作规程页/SPX-250B-Z生化培养箱-交互版.html">SPX-250B-Z生化培养箱-交互版</a></li></ul></div><div class="sec"><h2><span class="dot" style="background:#f59e0b"></span>工具与速查表<span class="cnt">14 件可交互</span></h2><p>干活时对着查、对着填的东西。标准溯源、核查表、字段模板。</p><ul><li><a href="03-工具速查/CMA-CNAS核查表/00-CMA现场核查总表（2023版）.html" title="03-工具速查/CMA-CNAS核查表/00-CMA现场核查总表（2023版）.html">00-CMA现场核查总表（2023版）</a></li><li><a href="03-工具速查/CMA-CNAS核查表/01-CNAS-CL01现场核查总表.html" title="03-工具速查/CMA-CNAS核查表/01-CNAS-CL01现场核查总表.html">01-CNAS-CL01现场核查总表</a></li><li><a href="03-工具速查/CMA-CNAS核查表/02-CMA与CNAS双体系对照表.html" title="03-工具速查/CMA-CNAS核查表/02-CMA与CNAS双体系对照表.html">02-CMA与CNAS双体系对照表</a></li><li><a href="03-工具速查/CMA-CNAS核查表/03-角色化核查清单.html" title="03-工具速查/CMA-CNAS核查表/03-角色化核查清单.html">03-角色化核查清单</a></li><li><a href="03-工具速查/CMA-CNAS核查表/index.html" title="03-工具速查/CMA-CNAS核查表/index.html">CMA-CNAS核查表 · 目录</a></li><li><a href="03-工具速查/实验分组任务单（可下发各实验组）.html" title="03-工具速查/实验分组任务单（可下发各实验组）.html">实验分组任务单（可下发各实验组）</a></li><li><a href="03-工具速查/检测因子实验室交互方案.html" title="03-工具速查/检测因子实验室交互方案.html">检测因子实验室交互方案</a></li><li><a href="03-工具速查/气相色谱方法开发速查表.html" title="03-工具速查/气相色谱方法开发速查表.html">气相色谱方法开发速查表</a></li><li><a href="03-工具速查/水质评价标准速查表.html" title="03-工具速查/水质评价标准速查表.html">水质评价标准速查表</a></li><li><a href="03-工具速查/监测方案智能生成器-v2.html" title="03-工具速查/监测方案智能生成器-v2.html">监测方案智能生成器-v2</a></li><li><a href="03-工具速查/监测方案智能生成器-多类型.html" title="03-工具速查/监测方案智能生成器-多类型.html">监测方案智能生成器-多类型</a></li><li><a href="03-工具速查/监测方案智能生成器.html" title="03-工具速查/监测方案智能生成器.html">监测方案智能生成器</a></li><li><a href="03-工具速查/采样字段模板/sampling_fields.html" title="03-工具速查/采样字段模板/sampling_fields.html">sampling_fields</a></li><li><a href="03-工具速查/采样字段模板/水和废水采样填表向导.html" title="03-工具速查/采样字段模板/水和废水采样填表向导.html">水和废水采样填表向导</a></li><li><a href="03-工具速查/CMA-CNAS核查表/立项书.md" title="03-工具速查/CMA-CNAS核查表/立项书.md">立项书<span class="ext">MD</span></a></li></ul></div><div class="sec"><h2><span class="dot" style="background:#10b981"></span>服务操作规程<span class="cnt">4 件可交互</span></h2><p>企业环保合规服务的作业规范，每条含输入、步骤、雷区。</p><ul><li><a href="04-操作规程/00-企业环保合规全栈服务目录.html" title="04-操作规程/00-企业环保合规全栈服务目录.html">00-企业环保合规全栈服务目录</a></li><li><a href="04-操作规程/02-土壤地下水初步调查-操作规范.html" title="04-操作规程/02-土壤地下水初步调查-操作规范.html">02-土壤地下水初步调查-操作规范</a></li><li><a href="04-操作规程/08-危废管理台账-操作规范.html" title="04-操作规程/08-危废管理台账-操作规范.html">08-危废管理台账-操作规范</a></li><li><a href="04-操作规程/26-第三方检测机构合规管理-操作规范.html" title="04-操作规程/26-第三方检测机构合规管理-操作规范.html">26-第三方检测机构合规管理-操作规范</a></li></ul></div><div class="sec"><h2><span class="dot" style="background:#ef4444"></span>真实案例库<span class="cnt">3 件可交互</span></h2><p>踩过的坑（已脱敏）+ 可直接复用的文档结构模板。</p><ul><li><a href="05-案例库/土壤调查/土壤调查评审自查一页纸SOP.html" title="05-案例库/土壤调查/土壤调查评审自查一页纸SOP.html">土壤调查评审自查一页纸SOP</a></li><li><a href="05-案例库/土壤调查/建设用地调查-HJ25评审自查一页纸SOP.html" title="05-案例库/土壤调查/建设用地调查-HJ25评审自查一页纸SOP.html">建设用地调查-HJ25评审自查一页纸SOP</a></li><li><a href="05-案例库/绩效分级/现场核查一页纸SOP.html" title="05-案例库/绩效分级/现场核查一页纸SOP.html">现场核查一页纸SOP</a></li><li><a href="05-案例库/01-总氮空白漂移.md" title="05-案例库/01-总氮空白漂移.md">01-总氮空白漂移<span class="ext">MD</span></a></li><li><a href="05-案例库/02-VOCs采样体积不足.md" title="05-案例库/02-VOCs采样体积不足.md">02-VOCs采样体积不足<span class="ext">MD</span></a></li><li><a href="05-案例库/03-非标方法走了验证.md" title="05-案例库/03-非标方法走了验证.md">03-非标方法走了验证<span class="ext">MD</span></a></li><li><a href="05-案例库/04-客户要环评实际卡排污许可.md" title="05-案例库/04-客户要环评实际卡排污许可.md">04-客户要环评实际卡排污许可<span class="ext">MD</span></a></li><li><a href="05-案例库/05-评审前记录缺签字.md" title="05-案例库/05-评审前记录缺签字.md">05-评审前记录缺签字<span class="ext">MD</span></a></li><li><a href="05-案例库/INDEX.md" title="05-案例库/INDEX.md">05-案例库 · 目录<span class="ext">MD</span></a></li><li><a href="05-案例库/土壤调查/00-三维标签与模式库骨架.md" title="05-案例库/土壤调查/00-三维标签与模式库骨架.md">00-三维标签与模式库骨架<span class="ext">MD</span></a></li><li><a href="05-案例库/土壤调查/S01-检出即判生产影响.md" title="05-案例库/土壤调查/S01-检出即判生产影响.md">S01-检出即判生产影响<span class="ext">MD</span></a></li><li><a href="05-案例库/土壤调查/S02-高背景值论证非本厂污染.md" title="05-案例库/土壤调查/S02-高背景值论证非本厂污染.md">S02-高背景值论证非本厂污染<span class="ext">MD</span></a></li><li><a href="05-案例库/土壤调查/S05-特征污染物识别与监测因子筛选范式.md" title="05-案例库/土壤调查/S05-特征污染物识别与监测因子筛选范式.md">S05-特征污染物识别与监测因子筛选范式<span class="ext">MD</span></a></li><li><a href="05-案例库/绩效分级/00-三维标签与模式库骨架.md" title="05-案例库/绩效分级/00-三维标签与模式库骨架.md">00-三维标签与模式库骨架<span class="ext">MD</span></a></li><li><a href="05-案例库/绩效分级/P01-VOCs活性炭风量虚标与用量不足.md" title="05-案例库/绩效分级/P01-VOCs活性炭风量虚标与用量不足.md">P01-VOCs活性炭风量虚标与用量不足<span class="ext">MD</span></a></li><li><a href="05-案例库/绩效分级/P02-无组织收集效率低.md" title="05-案例库/绩效分级/P02-无组织收集效率低.md">P02-无组织收集效率低<span class="ext">MD</span></a></li><li><a href="05-案例库/绩效分级/P03-验收监测报告数据矛盾涉嫌造假.md" title="05-案例库/绩效分级/P03-验收监测报告数据矛盾涉嫌造假.md">P03-验收监测报告数据矛盾涉嫌造假<span class="ext">MD</span></a></li></ul></div><div class="sec"><h2><span class="dot" style="background:#14b8a6"></span>碳汇与碳市场<span class="cnt">2 件可交互</span></h2><p>碳核查与履约的交互式演练 + 可直接开课的教学交付包。</p><ul><li><a href="07-碳汇与碳市场/钢铁企业碳排放核查与履约-交互版.html" title="07-碳汇与碳市场/钢铁企业碳排放核查与履约-交互版.html">钢铁企业碳排放核查与履约-交互版</a></li><li><a href="07-碳汇与碳市场/钢铁碳排放核查-教学交付包.html" title="07-碳汇与碳市场/钢铁碳排放核查-教学交付包.html">钢铁碳排放核查-教学交付包</a></li></ul></div></div><footer>
-共 <b>107</b> 件可交互资产 ｜ 全部为单文件静态 HTML，无需安装任何环境<br>
+
+<div class="bar">
+  <div class="searchbox">
+    <input id="q" type="search" placeholder="搜索：仪器名、方法、标准号、关键词…" autocomplete="off">
+    <span class="clr" id="clr" title="清空">×</span>
+  </div>
+  <div class="chips" id="chips"></div>
+</div>
+
+<div class="grid" id="grid"><div class="sec" data-g="0"><h2><span class="dot" style="background:#0ea5e9"></span>交互式实验<span class="cnt">78 件</span></h2><p>纯前端，打开即用。拖一拖、点一点，看现象出结果。</p><ul><li data-n="固定源废气采样" data-sub="采样布点"><a href="01-交互实验/01-采样布点/固定源废气采样-交互版.html" title="01-交互实验/01-采样布点/固定源废气采样-交互版.html">固定源废气采样</a></li><li data-n="土壤采样布点" data-sub="采样布点"><a href="01-交互实验/01-采样布点/土壤采样布点-交互版.html" title="01-交互实验/01-采样布点/土壤采样布点-交互版.html">土壤采样布点</a></li><li data-n="地下水洗井采样" data-sub="采样布点"><a href="01-交互实验/01-采样布点/地下水洗井采样-交互版.html" title="01-交互实验/01-采样布点/地下水洗井采样-交互版.html">地下水洗井采样</a></li><li data-n="地表水采样布点" data-sub="采样布点"><a href="01-交互实验/01-采样布点/地表水采样布点-交互版.html" title="01-交互实验/01-采样布点/地表水采样布点-交互版.html">地表水采样布点</a></li><li data-n="环境空气pm25采样" data-sub="采样布点"><a href="01-交互实验/01-采样布点/环境空气PM25采样-交互版.html" title="01-交互实验/01-采样布点/环境空气PM25采样-交互版.html">环境空气PM25采样</a></li><li data-n="cod检测实验" data-sub="检测实验"><a href="01-交互实验/02-检测实验/COD检测实验-交互版.html" title="01-交互实验/02-检测实验/COD检测实验-交互版.html">COD检测实验</a></li><li data-n="cod检测实验-从水样到报告" data-sub="检测实验"><a href="01-交互实验/02-检测实验/COD检测实验-从水样到报告.html" title="01-交互实验/02-检测实验/COD检测实验-从水样到报告.html">COD检测实验-从水样到报告</a></li><li data-n="pm2.5检测实验-从称膜到结果" data-sub="检测实验"><a href="01-交互实验/02-检测实验/PM2.5检测实验-从称膜到结果.html" title="01-交互实验/02-检测实验/PM2.5检测实验-从称膜到结果.html">PM2.5检测实验-从称膜到结果</a></li><li data-n="井水重金属-砷镉汞铅-icp-ms" data-sub="检测实验"><a href="01-交互实验/02-检测实验/井水重金属-砷镉汞铅-ICP-MS.html" title="01-交互实验/02-检测实验/井水重金属-砷镉汞铅-ICP-MS.html">井水重金属-砷镉汞铅-ICP-MS</a></li><li data-n="土壤icp-ms-锰铁铜砷汞" data-sub="检测实验"><a href="01-交互实验/02-检测实验/土壤ICP-MS-锰铁铜砷汞.html" title="01-交互实验/02-检测实验/土壤ICP-MS-锰铁铜砷汞.html">土壤ICP-MS-锰铁铜砷汞</a></li><li data-n="工业废气甲烷-吸附管gc-fid" data-sub="检测实验"><a href="01-交互实验/02-检测实验/工业废气甲烷-吸附管GC-FID.html" title="01-交互实验/02-检测实验/工业废气甲烷-吸附管GC-FID.html">工业废气甲烷-吸附管GC-FID</a></li><li data-n="总氮测定" data-sub="检测实验"><a href="01-交互实验/02-检测实验/总氮测定-交互版.html" title="01-交互实验/02-检测实验/总氮测定-交互版.html">总氮测定</a></li><li data-n="水质四项-cod氨氮总磷总氮实验" data-sub="检测实验"><a href="01-交互实验/02-检测实验/水质四项-COD氨氮总磷总氮实验.html" title="01-交互实验/02-检测实验/水质四项-COD氨氮总磷总氮实验.html">水质四项-COD氨氮总磷总氮实验</a></li><li data-n="水质检测-氨氮总磷总氮实验" data-sub="检测实验"><a href="01-交互实验/02-检测实验/水质检测-氨氮总磷总氮实验.html" title="01-交互实验/02-检测实验/水质检测-氨氮总磷总氮实验.html">水质检测-氨氮总磷总氮实验</a></li><li data-n="浊度测定" data-sub="检测实验"><a href="01-交互实验/02-检测实验/浊度测定-交互版.html" title="01-交互实验/02-检测实验/浊度测定-交互版.html">浊度测定</a></li><li data-n="环境空气nox检测实验" data-sub="检测实验"><a href="01-交互实验/02-检测实验/环境空气NOx检测实验.html" title="01-交互实验/02-检测实验/环境空气NOx检测实验.html">环境空气NOx检测实验</a></li><li data-n="环境空气vocs-罐采样gc-ms全流程" data-sub="检测实验"><a href="01-交互实验/02-检测实验/环境空气VOCs-罐采样GC-MS全流程.html" title="01-交互实验/02-检测实验/环境空气VOCs-罐采样GC-MS全流程.html">环境空气VOCs-罐采样GC-MS全流程</a></li><li data-n="aas-900t原子吸收分光光度计" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/AAS-900T原子吸收分光光度计-交互版.html" title="01-交互实验/03-仪器分析/AAS-900T原子吸收分光光度计-交互版.html">AAS-900T原子吸收分光光度计</a></li><li data-n="aas原子吸收" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/AAS原子吸收-交互版.html" title="01-交互实验/03-仪器分析/AAS原子吸收-交互版.html">AAS原子吸收</a></li><li data-n="afs原子荧光" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/AFS原子荧光-交互版.html" title="01-交互实验/03-仪器分析/AFS原子荧光-交互版.html">AFS原子荧光</a></li><li data-n="bc-j80s二氧化碳培养箱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/BC-J80S二氧化碳培养箱-交互版.html" title="01-交互实验/03-仪器分析/BC-J80S二氧化碳培养箱-交互版.html">BC-J80S二氧化碳培养箱</a></li><li data-n="bpx-272电热恒温培养箱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/BPX-272电热恒温培养箱-交互版.html" title="01-交互实验/03-仪器分析/BPX-272电热恒温培养箱-交互版.html">BPX-272电热恒温培养箱</a></li><li data-n="bsc-1300iia2生物安全柜" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/BSC-1300IIA2生物安全柜-交互版.html" title="01-交互实验/03-仪器分析/BSC-1300IIA2生物安全柜-交互版.html">BSC-1300IIA2生物安全柜</a></li><li data-n="dhp-9052电热恒温培养箱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/DHP-9052电热恒温培养箱-交互版.html" title="01-交互实验/03-仪器分析/DHP-9052电热恒温培养箱-交互版.html">DHP-9052电热恒温培养箱</a></li><li data-n="f96pro荧光分光光度计" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/F96PRO荧光分光光度计-交互版.html" title="01-交互实验/03-仪器分析/F96PRO荧光分光光度计-交互版.html">F96PRO荧光分光光度计</a></li><li data-n="foss-8100凯氏定氮仪" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/FOSS-8100凯氏定氮仪-交互版.html" title="01-交互实验/03-仪器分析/FOSS-8100凯氏定氮仪-交互版.html">FOSS-8100凯氏定氮仪</a></li><li data-n="ftir红外光谱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/FTIR红外光谱-交互版.html" title="01-交互实验/03-仪器分析/FTIR红外光谱-交互版.html">FTIR红外光谱</a></li><li data-n="gc-ms气质联用" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/GC-MS气质联用-交互版.html" title="01-交互实验/03-仪器分析/GC-MS气质联用-交互版.html">GC-MS气质联用</a></li><li data-n="gxh-3010e1二氧化碳测定仪" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/GXH-3010E1二氧化碳测定仪-交互版.html" title="01-交互实验/03-仪器分析/GXH-3010E1二氧化碳测定仪-交互版.html">GXH-3010E1二氧化碳测定仪</a></li><li data-n="hplc液相色谱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/HPLC液相色谱-交互版.html" title="01-交互实验/03-仪器分析/HPLC液相色谱-交互版.html">HPLC液相色谱</a></li><li data-n="icp-oes等离子体发射光谱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/ICP-OES等离子体发射光谱-交互版.html" title="01-交互实验/03-仪器分析/ICP-OES等离子体发射光谱-交互版.html">ICP-OES等离子体发射光谱</a></li><li data-n="ics-1100离子色谱仪" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/ICS-1100离子色谱仪-交互版.html" title="01-交互实验/03-仪器分析/ICS-1100离子色谱仪-交互版.html">ICS-1100离子色谱仪</a></li><li data-n="jqc-1浮游空气菌采样器" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/JQC-1浮游空气菌采样器-交互版.html" title="01-交互实验/03-仪器分析/JQC-1浮游空气菌采样器-交互版.html">JQC-1浮游空气菌采样器</a></li><li data-n="l5s紫外可见分光光度计" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/L5S紫外可见分光光度计-交互版.html" title="01-交互实验/03-仪器分析/L5S紫外可见分光光度计-交互版.html">L5S紫外可见分光光度计</a></li><li data-n="lb-4低本底αβ测量仪" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/LB-4低本底αβ测量仪-交互版.html" title="01-交互实验/03-仪器分析/LB-4低本底αβ测量仪-交互版.html">LB-4低本底αβ测量仪</a></li><li data-n="lc-ms液质联用" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/LC-MS液质联用-交互版.html" title="01-交互实验/03-仪器分析/LC-MS液质联用-交互版.html">LC-MS液质联用</a></li><li data-n="me-204万分之一天平" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/ME-204万分之一天平-交互版.html" title="01-交互实验/03-仪器分析/ME-204万分之一天平-交互版.html">ME-204万分之一天平</a></li><li data-n="mjx-250b-z霉菌培养箱" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/MJX-250B-Z霉菌培养箱-交互版.html" title="01-交互实验/03-仪器分析/MJX-250B-Z霉菌培养箱-交互版.html">MJX-250B-Z霉菌培养箱</a></li><li data-n="ms105du十万分之一天平" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/MS105DU十万分之一天平-交互版.html" title="01-交互实验/03-仪器分析/MS105DU十万分之一天平-交互版.html">MS105DU十万分之一天平</a></li><li data-n="ncg-1冷原子测汞仪" data-sub="仪器分析"><a href="01-交互实验/03-仪器分析/NCG-1冷原子测汞仪-交互版.html" title="01-交互实验/03-仪器分析/NCG-1冷原子测汞仪-交互版.html">NCG-1冷原子测汞仪</a></li></ul></div><div class="sec" data-g="1"><h2><span class="dot" style="background:#8b5cf6"></span>仪器交互培训<span class="cnt">6 件</span></h2><p>20+ 台真实仪器的操作流程，按步骤走一遍胜过看十页说明书。</p><ul><li data-n="aas-900t原子吸收分光光度计" data-sub=""><a href="02-仪器培训/操作规程页/AAS-900T原子吸收分光光度计-交互版.html" title="02-仪器培训/操作规程页/AAS-900T原子吸收分光光度计-交互版.html">AAS-900T原子吸收分光光度计</a></li><li data-n="bsc-1300iia2生物安全柜" data-sub=""><a href="02-仪器培训/操作规程页/BSC-1300IIA2生物安全柜-交互版.html" title="02-仪器培训/操作规程页/BSC-1300IIA2生物安全柜-交互版.html">BSC-1300IIA2生物安全柜</a></li><li data-n="l5s紫外可见分光光度计" data-sub=""><a href="02-仪器培训/操作规程页/L5S紫外可见分光光度计-交互版.html" title="02-仪器培训/操作规程页/L5S紫外可见分光光度计-交互版.html">L5S紫外可见分光光度计</a></li><li data-n="ms105du十万分之一天平" data-sub=""><a href="02-仪器培训/操作规程页/MS105DU十万分之一天平-交互版.html" title="02-仪器培训/操作规程页/MS105DU十万分之一天平-交互版.html">MS105DU十万分之一天平</a></li><li data-n="qcs6000四气路大气采样器" data-sub=""><a href="02-仪器培训/操作规程页/QCS6000四气路大气采样器-交互版.html" title="02-仪器培训/操作规程页/QCS6000四气路大气采样器-交互版.html">QCS6000四气路大气采样器</a></li><li data-n="spx-250b-z生化培养箱" data-sub=""><a href="02-仪器培训/操作规程页/SPX-250B-Z生化培养箱-交互版.html" title="02-仪器培训/操作规程页/SPX-250B-Z生化培养箱-交互版.html">SPX-250B-Z生化培养箱</a></li></ul></div><div class="sec" data-g="2"><h2><span class="dot" style="background:#f59e0b"></span>工具与速查表<span class="cnt">12 件</span></h2><p>干活时对着查、对着填的东西。标准溯源、核查表、字段模板。</p><ul><li data-n="00-cma现场核查总表（2023版）" data-sub=""><a href="03-工具速查/CMA-CNAS核查表/00-CMA现场核查总表（2023版）.html" title="03-工具速查/CMA-CNAS核查表/00-CMA现场核查总表（2023版）.html">00-CMA现场核查总表（2023版）</a></li><li data-n="01-cnas-cl01现场核查总表" data-sub=""><a href="03-工具速查/CMA-CNAS核查表/01-CNAS-CL01现场核查总表.html" title="03-工具速查/CMA-CNAS核查表/01-CNAS-CL01现场核查总表.html">01-CNAS-CL01现场核查总表</a></li><li data-n="02-cma与cnas双体系对照表" data-sub=""><a href="03-工具速查/CMA-CNAS核查表/02-CMA与CNAS双体系对照表.html" title="03-工具速查/CMA-CNAS核查表/02-CMA与CNAS双体系对照表.html">02-CMA与CNAS双体系对照表</a></li><li data-n="03-角色化核查清单" data-sub=""><a href="03-工具速查/CMA-CNAS核查表/03-角色化核查清单.html" title="03-工具速查/CMA-CNAS核查表/03-角色化核查清单.html">03-角色化核查清单</a></li><li data-n="cma-cnas核查表 · 目录" data-sub=""><a href="03-工具速查/CMA-CNAS核查表/index.html" title="03-工具速查/CMA-CNAS核查表/index.html">CMA-CNAS核查表 · 目录</a></li><li data-n="实验分组任务单（可下发各实验组）" data-sub=""><a href="03-工具速查/实验分组任务单（可下发各实验组）.html" title="03-工具速查/实验分组任务单（可下发各实验组）.html">实验分组任务单（可下发各实验组）</a></li><li data-n="检测因子实验室交互方案" data-sub=""><a href="03-工具速查/检测因子实验室交互方案.html" title="03-工具速查/检测因子实验室交互方案.html">检测因子实验室交互方案</a></li><li data-n="气相色谱方法开发速查表" data-sub=""><a href="03-工具速查/气相色谱方法开发速查表.html" title="03-工具速查/气相色谱方法开发速查表.html">气相色谱方法开发速查表</a></li><li data-n="水质评价标准速查表" data-sub=""><a href="03-工具速查/水质评价标准速查表.html" title="03-工具速查/水质评价标准速查表.html">水质评价标准速查表</a></li><li data-n="监测方案智能生成器" data-sub=""><a href="03-工具速查/监测方案智能生成器.html" title="03-工具速查/监测方案智能生成器.html">监测方案智能生成器</a></li><li data-n="sampling_fields" data-sub=""><a href="03-工具速查/采样字段模板/sampling_fields.html" title="03-工具速查/采样字段模板/sampling_fields.html">sampling_fields</a></li><li data-n="水和废水采样填表向导" data-sub=""><a href="03-工具速查/采样字段模板/水和废水采样填表向导.html" title="03-工具速查/采样字段模板/水和废水采样填表向导.html">水和废水采样填表向导</a></li><li data-n="立项书" data-sub=""><a href="03-工具速查/CMA-CNAS核查表/立项书.md" title="03-工具速查/CMA-CNAS核查表/立项书.md">立项书<span class="ext">MD</span></a></li></ul></div><div class="sec" data-g="3"><h2><span class="dot" style="background:#10b981"></span>服务操作规程<span class="cnt">4 件</span></h2><p>企业环保合规服务的作业规范，每条含输入、步骤、雷区。</p><ul><li data-n="00-企业环保合规全栈服务目录" data-sub=""><a href="04-操作规程/00-企业环保合规全栈服务目录.html" title="04-操作规程/00-企业环保合规全栈服务目录.html">00-企业环保合规全栈服务目录</a></li><li data-n="02-土壤地下水初步调查-操作规范" data-sub=""><a href="04-操作规程/02-土壤地下水初步调查-操作规范.html" title="04-操作规程/02-土壤地下水初步调查-操作规范.html">02-土壤地下水初步调查-操作规范</a></li><li data-n="08-危废管理台账-操作规范" data-sub=""><a href="04-操作规程/08-危废管理台账-操作规范.html" title="04-操作规程/08-危废管理台账-操作规范.html">08-危废管理台账-操作规范</a></li><li data-n="26-第三方检测机构合规管理-操作规范" data-sub=""><a href="04-操作规程/26-第三方检测机构合规管理-操作规范.html" title="04-操作规程/26-第三方检测机构合规管理-操作规范.html">26-第三方检测机构合规管理-操作规范</a></li></ul></div><div class="sec" data-g="4"><h2><span class="dot" style="background:#ef4444"></span>真实案例库<span class="cnt">3 件</span></h2><p>踩过的坑（已脱敏）+ 可直接复用的文档结构模板。</p><ul><li data-n="土壤调查评审自查一页纸sop" data-sub=""><a href="05-案例库/土壤调查/土壤调查评审自查一页纸SOP.html" title="05-案例库/土壤调查/土壤调查评审自查一页纸SOP.html">土壤调查评审自查一页纸SOP</a></li><li data-n="建设用地调查-hj25评审自查一页纸sop" data-sub=""><a href="05-案例库/土壤调查/建设用地调查-HJ25评审自查一页纸SOP.html" title="05-案例库/土壤调查/建设用地调查-HJ25评审自查一页纸SOP.html">建设用地调查-HJ25评审自查一页纸SOP</a></li><li data-n="现场核查一页纸sop" data-sub=""><a href="05-案例库/绩效分级/现场核查一页纸SOP.html" title="05-案例库/绩效分级/现场核查一页纸SOP.html">现场核查一页纸SOP</a></li><li data-n="01-总氮空白漂移" data-sub=""><a href="05-案例库/01-总氮空白漂移.md" title="05-案例库/01-总氮空白漂移.md">01-总氮空白漂移<span class="ext">MD</span></a></li><li data-n="02-vocs采样体积不足" data-sub=""><a href="05-案例库/02-VOCs采样体积不足.md" title="05-案例库/02-VOCs采样体积不足.md">02-VOCs采样体积不足<span class="ext">MD</span></a></li><li data-n="03-非标方法走了验证" data-sub=""><a href="05-案例库/03-非标方法走了验证.md" title="05-案例库/03-非标方法走了验证.md">03-非标方法走了验证<span class="ext">MD</span></a></li><li data-n="04-客户要环评实际卡排污许可" data-sub=""><a href="05-案例库/04-客户要环评实际卡排污许可.md" title="05-案例库/04-客户要环评实际卡排污许可.md">04-客户要环评实际卡排污许可<span class="ext">MD</span></a></li><li data-n="05-评审前记录缺签字" data-sub=""><a href="05-案例库/05-评审前记录缺签字.md" title="05-案例库/05-评审前记录缺签字.md">05-评审前记录缺签字<span class="ext">MD</span></a></li><li data-n="05-案例库 · 目录" data-sub=""><a href="05-案例库/INDEX.md" title="05-案例库/INDEX.md">05-案例库 · 目录<span class="ext">MD</span></a></li><li data-n="00-三维标签与模式库骨架" data-sub=""><a href="05-案例库/土壤调查/00-三维标签与模式库骨架.md" title="05-案例库/土壤调查/00-三维标签与模式库骨架.md">00-三维标签与模式库骨架<span class="ext">MD</span></a></li><li data-n="s01-检出即判生产影响" data-sub=""><a href="05-案例库/土壤调查/S01-检出即判生产影响.md" title="05-案例库/土壤调查/S01-检出即判生产影响.md">S01-检出即判生产影响<span class="ext">MD</span></a></li><li data-n="s02-高背景值论证非本厂污染" data-sub=""><a href="05-案例库/土壤调查/S02-高背景值论证非本厂污染.md" title="05-案例库/土壤调查/S02-高背景值论证非本厂污染.md">S02-高背景值论证非本厂污染<span class="ext">MD</span></a></li><li data-n="s05-特征污染物识别与监测因子筛选范式" data-sub=""><a href="05-案例库/土壤调查/S05-特征污染物识别与监测因子筛选范式.md" title="05-案例库/土壤调查/S05-特征污染物识别与监测因子筛选范式.md">S05-特征污染物识别与监测因子筛选范式<span class="ext">MD</span></a></li><li data-n="00-三维标签与模式库骨架" data-sub=""><a href="05-案例库/绩效分级/00-三维标签与模式库骨架.md" title="05-案例库/绩效分级/00-三维标签与模式库骨架.md">00-三维标签与模式库骨架<span class="ext">MD</span></a></li><li data-n="p01-vocs活性炭风量虚标与用量不足" data-sub=""><a href="05-案例库/绩效分级/P01-VOCs活性炭风量虚标与用量不足.md" title="05-案例库/绩效分级/P01-VOCs活性炭风量虚标与用量不足.md">P01-VOCs活性炭风量虚标与用量不足<span class="ext">MD</span></a></li><li data-n="p02-无组织收集效率低" data-sub=""><a href="05-案例库/绩效分级/P02-无组织收集效率低.md" title="05-案例库/绩效分级/P02-无组织收集效率低.md">P02-无组织收集效率低<span class="ext">MD</span></a></li><li data-n="p03-验收监测报告数据矛盾涉嫌造假" data-sub=""><a href="05-案例库/绩效分级/P03-验收监测报告数据矛盾涉嫌造假.md" title="05-案例库/绩效分级/P03-验收监测报告数据矛盾涉嫌造假.md">P03-验收监测报告数据矛盾涉嫌造假<span class="ext">MD</span></a></li></ul></div><div class="sec" data-g="5"><h2><span class="dot" style="background:#14b8a6"></span>碳汇与碳市场<span class="cnt">2 件</span></h2><p>碳核查与履约的交互式演练 + 可直接开课的教学交付包。</p><ul><li data-n="钢铁企业碳排放核查与履约" data-sub=""><a href="07-碳汇与碳市场/钢铁企业碳排放核查与履约-交互版.html" title="07-碳汇与碳市场/钢铁企业碳排放核查与履约-交互版.html">钢铁企业碳排放核查与履约</a></li><li data-n="钢铁碳排放核查-教学交付包" data-sub=""><a href="07-碳汇与碳市场/钢铁碳排放核查-教学交付包.html" title="07-碳汇与碳市场/钢铁碳排放核查-教学交付包.html">钢铁碳排放核查-教学交付包</a></li></ul></div></div><div class="empty" id="empty">没有匹配的条目。试试 <b>COD</b>、<b>ICP</b>、<b>HJ</b> 这类短词。</div><footer>
+共 <b>105</b> 件可交互资产 ｜ 全部为单文件静态 HTML，无需安装任何环境<br>
 个人学习 / 教学 / 内部培训可自由使用；商业使用或集成进产品请联系仓库主人。<br>
 本库内容不构成法定检测报告，不替代具备资质的第三方检测机构出具的结果。
 </footer>
 </div>
+
+<script>
+(function(){
+  var SECS = [{"key": "01-交互实验", "title": "交互式实验", "desc": "纯前端，打开即用。拖一拖、点一点，看现象出结果。", "color": "#0ea5e9", "count": 78}, {"key": "02-仪器培训", "title": "仪器交互培训", "desc": "20+ 台真实仪器的操作流程，按步骤走一遍胜过看十页说明书。", "color": "#8b5cf6", "count": 6}, {"key": "03-工具速查", "title": "工具与速查表", "desc": "干活时对着查、对着填的东西。标准溯源、核查表、字段模板。", "color": "#f59e0b", "count": 12}, {"key": "04-操作规程", "title": "服务操作规程", "desc": "企业环保合规服务的作业规范，每条含输入、步骤、雷区。", "color": "#10b981", "count": 4}, {"key": "05-案例库", "title": "真实案例库", "desc": "踩过的坑（已脱敏）+ 可直接复用的文档结构模板。", "color": "#ef4444", "count": 3}, {"key": "07-碳汇与碳市场", "title": "碳汇与碳市场", "desc": "碳核查与履约的交互式演练 + 可直接开课的教学交付包。", "color": "#14b8a6", "count": 2}];
+  var SUBS = ["采样布点", "检测实验", "仪器分析", "环境评价", "修复技术", "大气污染控制", "环境执法"];
+  var q = document.getElementById('q');
+  var clr = document.getElementById('clr');
+  var chips = document.getElementById('chips');
+  var grid = document.getElementById('grid');
+  var empty = document.getElementById('empty');
+  var curG = -1;        // -1 = 全部
+  var curSub = '';
+
+  // ---- 构建筛选标签 ----
+  var h = '';
+  var totalAll = SECS.reduce(function(a, s){ return a + (s.count || 0); }, 0);
+  h += '<span class="chip on" data-g="-1">全部<span class="c">' + totalAll + '</span></span>';
+  SECS.forEach(function(s, i){
+    h += '<span class="chip" data-g="' + i + '">' + s.title + '<span class="c">' + s.count + '</span></span>';
+  });
+  if (SUBS.length) {
+    h += '<span class="sep"></span><span class="lbl">细分</span>';
+    SUBS.forEach(function(s){
+      h += '<span class="chip sub" data-sub="' + s + '">' + s + '</span>';
+    });
+  }
+  chips.innerHTML = h;
+
+  function apply(){
+    var kw = (q.value || '').trim().toLowerCase();
+    var anyVisible = 0;
+    var secs = grid.querySelectorAll('.sec');
+    for (var i = 0; i < secs.length; i++) {
+      var sec = secs[i];
+      var gi = parseInt(sec.getAttribute('data-g'), 10);
+      var lis = sec.querySelectorAll('li');
+      var vis = 0;
+      for (var j = 0; j < lis.length; j++) {
+        var li = lis[j];
+        var name = li.getAttribute('data-n') || '';
+        var sub  = li.getAttribute('data-sub') || '';
+        var okKw  = !kw || name.indexOf(kw) >= 0 || (li.textContent || '').toLowerCase().indexOf(kw) >= 0;
+        var okG   = (curG < 0) || (gi === curG);
+        var okSub = !curSub || sub === curSub;
+        var ok = okKw && okG && okSub;
+        li.classList.toggle('hide', !ok);
+        if (ok) vis++;
+      }
+      sec.classList.toggle('hide', vis === 0);
+      if (vis > 0) anyVisible++;
+      var cntEl = sec.querySelector('.cnt');
+      if (cntEl) {
+        var base = cntEl.getAttribute('data-base');
+        if (!base) { base = cntEl.textContent.replace(' 件',''); cntEl.setAttribute('data-base', base); }
+        cntEl.textContent = (kw || curG >= 0 || curSub) ? (vis + ' / ' + base + ' 件') : (base + ' 件');
+      }
+    }
+    empty.classList.toggle('on', anyVisible === 0);
+  }
+
+  chips.addEventListener('click', function(e){
+    var c = e.target.closest('.chip');
+    if (!c) return;
+    if (c.hasAttribute('data-g')) {
+      curG = parseInt(c.getAttribute('data-g'), 10);
+      chips.querySelectorAll('[data-g]').forEach(function(x){ x.classList.remove('on'); });
+      c.classList.add('on');
+    } else if (c.hasAttribute('data-sub')) {
+      var sv = c.getAttribute('data-sub');
+      curSub = (curSub === sv) ? '' : sv;
+      chips.querySelectorAll('[data-sub]').forEach(function(x){ x.classList.remove('on'); });
+      if (curSub) c.classList.add('on');
+    }
+    apply();
+  });
+
+  q.addEventListener('input', function(){
+    clr.style.display = q.value ? 'block' : 'none';
+    apply();
+  });
+  clr.addEventListener('click', function(){
+    q.value = ''; clr.style.display = 'none'; apply(); q.focus();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+    if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; clr.style.display='none'; apply(); }
+  });
+  apply();
+})();
+</script>
 </body>
 </html>

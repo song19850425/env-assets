@@ -1,263 +1,280 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>监测方案智能生成器</title>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>监测方案智能生成器 多类型版 · 环境检测数字资产库</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Serif+SC:wght@400;700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--ink:#0f172a;--ink-light:#475569;--paper:#f8fafc;--sky:#0284c7;--sky-light:#e0f2fe;--teal:#0d9488;--teal-light:#ccfbf1;--border:#e2e8f0;--serif:'Noto Serif SC',serif;--sans:'Inter','PingFang SC','Microsoft YaHei',sans-serif}
-body{font-family:var(--sans);background:var(--paper);color:var(--ink)}
-#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--sky),var(--teal));z-index:1000;transition:width .1s}
-.app{max-width:1000px;margin:0 auto;padding:20px}
-header{text-align:center;padding:40px 20px 20px}
-header h1{font-family:var(--serif);font-size:clamp(24px,4vw,40px);font-weight:900}
-header h1 em{font-style:normal;color:var(--sky)}
-header p{color:var(--ink-light);font-size:14px;margin-top:8px}
-.steps{display:flex;gap:0;max-width:700px;margin:24px auto;position:relative;justify-content:center}
-.step-item{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;font-weight:600;color:#94a3b8}
-.step-item .sn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-weight:700;font-size:13px;transition:.3s}
-.step-item.ac .sn{background:var(--sky);color:#fff}
-.step-item.done .sn{background:var(--teal);color:#fff}
-.step-item.ac{color:var(--sky)}.step-item.done{color:var(--teal)}
-.step-item .sl{display:none}@media(min-width:600px){.step-item .sl{display:inline}}
-.panel{display:none;background:#fff;border-radius:16px;border:1px solid var(--border);padding:32px;margin-top:16px;box-shadow:0 4px 16px rgba(0,0,0,.04)}
+:root{--ink:#0f172a;--ink-light:#475569;--paper:#f8fafc;--sky:#0284c7;--sky-light:#e0f2fe;--teal:#0d9488;--teal-light:#ccfbf1;--amber:#b45309;--amber-light:#fef3c7;--rose:#e11d48;--rose-light:#ffe4e6;--violet:#7c3aed;--violet-light:#ede9fe;--border:#e2e8f0;--serif:'Noto Serif SC',serif;--sans:'Inter','PingFang SC','Microsoft YaHei',sans-serif}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink)}#sp{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--sky),var(--teal),var(--violet));z-index:1000;transition:width .1s}
+.app{max-width:1100px;margin:0 auto;padding:20px}
+header{text-align:center;padding:30px 20px}header h1{font-family:var(--serif);font-size:clamp(24px,4vw,36px);font-weight:900}header h1 em{font-style:normal;color:var(--sky)}header p{color:var(--ink-light);font-size:13px;margin-top:6px}
+.steps{display:flex;justify-content:center;gap:4px;max-width:800px;margin:12px auto}
+.si{display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:11px;font-weight:600;color:#94a3b8}
+.si .sn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-weight:700;font-size:11px;transition:.3s}
+.si.ac .sn{background:var(--sky);color:#fff}.si.done .sn{background:var(--teal);color:#fff}.si.ac{color:var(--sky)}.si.done{color:var(--teal)}
+.panel{display:none;background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-top:12px}
 .panel.ac{display:block}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.form-group label{display:block;font-size:12px;font-weight:600;color:var(--ink-light);margin-bottom:4px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);background:#fff;transition:.2s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px rgba(2,132,199,.12)}
-.form-group textarea{min-height:60px;resize:vertical}
-.tag-group{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 16px}
-.tag{padding:5px 12px;border-radius:6px;border:1px solid var(--border);font-size:12px;cursor:pointer;transition:.2s;background:#fff;user-select:none}
-.tag:hover{border-color:var(--sky);background:var(--sky-light)}
-.tag.ac{background:var(--sky);color:#fff;border-color:var(--sky)}
-.result-section{margin-bottom:28px}
-.result-section h3{font-size:16px;font-weight:700;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid var(--sky-light);display:flex;align-items:center;gap:6px}
-.result-section h3 .badge{font-size:11px;background:var(--sky-light);color:var(--sky);padding:2px 10px;border-radius:10px;font-weight:600}
-.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.result-card{background:#f8fafc;border-radius:8px;padding:14px;border:1px solid var(--border)}
-.result-card .rv{font-weight:700;font-size:16px;font-family:var(--serif);display:block}
-.result-card .rl{font-size:11px;color:var(--ink-light)}
-.result-table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
-.result-table th{text-align:left;padding:6px 8px;background:#f1f5f9;font-weight:600;font-size:11px;border-bottom:2px solid var(--border)}
-.result-table td{padding:6px 8px;border-bottom:1px solid var(--border)}
-.result-table tr:hover td{background:#f8fafc}
-.btn-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.btn{padding:12px 28px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:.3s}
-.btn-primary{background:linear-gradient(135deg,var(--sky),#0369a1);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(2,132,199,.3)}
-.btn-secondary{background:#f1f5f9;color:var(--ink);border:1px solid var(--border)}
-.btn-secondary:hover{background:#e2e8f0}
-.btn-success{background:linear-gradient(135deg,var(--teal),#0f766e);color:#fff}
-.btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,.3)}
-.std-ref{background:#f8fafc;border-radius:8px;padding:12px;font-size:12px;color:var(--ink-light);line-height:1.8;margin:8px 0}
-.std-ref strong{color:var(--ink)}
-.export-area{display:none;margin-top:16px}
-.export-area.ac{display:block}
-@media(max-width:640px){.form-row{grid-template-columns:1fr}.panel{padding:20px 16px}}
+h2.st{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+h3.sub{font-size:13px;font-weight:600;margin:14px 0 8px;color:var(--ink)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--ink-light);margin-bottom:3px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:var(--sans);background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px rgba(2,132,199,.1)}
+.form-full{grid-column:1/-1}.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{padding:10px 22px;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:.3s}
+.btn-pri{background:linear-gradient(135deg,var(--sky),#0369a1);color:#fff}
+.btn-pri:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(2,132,199,.25)}
+.btn-sec{background:#f1f5f9;color:var(--ink);border:1px solid var(--border)}
+.btn-sec:hover{background:#e2e8f0}
+.btn-suc{background:linear-gradient(135deg,var(--teal),#0f766e);color:#fff}
+.btn-suc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(13,148,136,.25)}
+/* TYPE SELECTOR */
+.ts{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:16px 0}
+.tc{border:2px solid var(--border);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:.25s;background:#fff}
+.tc:hover{border-color:var(--sky);transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.tc.ac{border-color:var(--sky);background:var(--sky-light);box-shadow:0 6px 16px rgba(2,132,199,.1)}
+.tc .ti{font-size:28px;display:block;margin-bottom:6px}.tc .tn{font-weight:700;font-size:13px;display:block}.tc .td{font-size:11px;color:var(--ink-light);margin-top:2px}
+/* UNIT CARDS */
+.ug{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.uc{border:1.5px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:.2s}.uc:hover{border-color:var(--sky);background:var(--sky-light)}.uc.ac{border-color:var(--sky);background:var(--sky-light)}
+.uc .un{font-weight:600;font-size:12px;margin-bottom:2px}.uc .ud{font-size:10px;color:var(--ink-light)}.uc .ur{display:inline-block;margin-top:3px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;background:#f1f5f9}
+/* TAG */
+.tag{display:inline-block;padding:4px 10px;border-radius:5px;border:1px solid var(--border);font-size:11px;cursor:pointer;background:#fff;margin:3px;transition:.15s}
+.tag:hover{border-color:var(--sky)}.tag.ac{background:var(--sky-light);border-color:var(--sky);color:var(--sky)}
+/* DOC */
+.doc-toc{background:#f8fafc;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:11px;line-height:2.2}
+.doc-toc strong{font-size:12px}.doc-toc span{cursor:pointer;color:var(--sky);margin-right:10px;font-size:10px}.doc-toc span:hover{text-decoration:underline}
+.doc-section{margin-bottom:20px;page-break-inside:avoid}
+.doc-section h3{font-size:14px;font-weight:700;margin-bottom:6px;padding-bottom:5px;border-bottom:2px solid var(--sky-light)}
+.doc-section h4{font-size:12px;font-weight:600;margin:8px 0 4px}
+.doc-section p,.doc-section li{font-size:11px;line-height:1.8;color:var(--ink-light)}
+.doc-section table.dt{width:100%;border-collapse:collapse;font-size:10px;margin:6px 0}
+.doc-section table.dt th{background:#f1f5f9;padding:4px 5px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);font-size:9px}
+.doc-section table.dt td{padding:3px 5px;border-bottom:1px solid var(--border)}
+.doc-ref{background:#f8fafc;border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.7;margin:4px 0}
+.hidden-s{display:none}
+@media(max-width:700px){.form-grid,.ug{grid-template-columns:1fr}.ts{grid-template-columns:1fr 1fr}.panel{padding:16px}}
 </style></head><body>
 <div id="sp"></div>
 <div class="app">
-<header>
-<h1>监测方案<em>智能生成器</em></h1>
-<p>输入项目基本信息，自动生成符合 HJ 系列标准的采样布点方案及检测项目清单</p>
-</header>
-<div class="steps">
-<div class="step-item ac" id="step0"><span class="sn">1</span><span class="sl">项目信息</span></div>
-<div class="step-item" id="step1"><span class="sn">2</span><span class="sl">污染物筛选</span></div>
-<div class="step-item" id="step2"><span class="sn">3</span><span class="sl">方案生成</span></div>
+<header><h1>监测方案<em>智能生成器</em></h1><p>覆盖土壤/噪声/废水/废气四类方案，基于真实方案模板构建</p></header>
+<div class="steps"><div class="si ac" id="s0"><span class="sn">1</span><span>方案类型</span></div><div class="si" id="s1"><span class="sn">2</span><span>参数填写</span></div><div class="si" id="s2"><span class="sn">3</span><span>生成方案</span></div></div>
+
+<div class="panel ac" id="p0">
+<h2 class="st">选择方案类型</h2>
+<div class="ts" id="typeGrid">
+<div class="tc ac" onclick="selType(0)"><span class="ti">🌱</span><span class="tn">土壤/地下水</span><span class="td">自行监测 · HJ 1209-2021</span></div>
+<div class="tc" onclick="selType(1)"><span class="ti">🎵</span><span class="tn">噪声/振动</span><span class="td">厂界/敏感点 · GB 12348/GB 10071</span></div>
+<div class="tc" onclick="selType(2)"><span class="ti">💧</span><span class="tn">废水</span><span class="td">排放口监测 · GB 8978/GB 18466</span></div>
+<div class="tc" onclick="selType(3)"><span class="ti">💨</span><span class="tn">废气</span><span class="td">有组织/无组织 · GB 16297</span></div>
+</div>
+<div class="btn-row"><button class="btn btn-pri" onclick="go(1)">下一步 →</button></div>
 </div>
 
-<div class="panel ac" id="panel0">
-<h2 style="font-size:18px;font-weight:700;margin-bottom:20px">项目基础信息</h2>
-<div class="form-row">
-<div class="form-group"><label>项目名称 *</label><input type="text" id="projName" value="某疑似污染地块调查"></div>
-<div class="form-group"><label>场地面积 (m²) *</label><input type="number" id="area" value="5000"></div>
+<div class="panel" id="p1">
+<div id="formSoil" class="hidden-s">
+<h2 class="st">🌱 土壤/地下水 项目信息</h2>
+<div class="form-grid">
+<div class="form-group"><label>项目名称</label><input id="sProj" value="某地块土壤污染状况调查"></div>
+<div class="form-group"><label>地块面积 (m²)</label><input id="sArea" type="number" value="5000"></div>
+<div class="form-group"><label>地块类型</label><select id="sLand"><option value="c">建设用地</option><option value="a">农用地</option></select></div>
+<div class="form-group"><label>规划用途</label><select id="sUse"><option value="1">第一类用地</option><option value="2">第二类用地</option></select></div>
+<div class="form-group"><label>所属行业</label><select id="sInd" onchange="upPol()"><option value="chemical">化工</option><option value="petro">石油加工</option><option value="metal">有色金属冶炼</option><option value="electro">电子设备</option><option value="plating">电镀</option><option value="other">其他</option></select></div>
+<div class="form-group"><label>关注介质</label><select id="sMed"><option value="both">土壤+地下水</option><option value="soil">仅土壤</option></select></div>
+<div class="form-group"><label>地下水埋深</label><input id="sGwd" value="20~60m"></div>
+<div class="form-group"><label>地下水流向</label><input id="sGwf" value="西北→东南"></div>
 </div>
-<div class="form-row">
-<div class="form-group"><label>地块类型 *</label>
-<select id="landType"><option value="construction">建设用地</option><option value="agriculture">农用地</option></select></div>
-<div class="form-group"><label>规划用途 *</label>
-<select id="useType"><option value="1">第一类用地（居住/学校/公园）</option><option value="2">第二类用地（工业/商业/物流）</option></select></div>
+<div><label style="font-size:11px;font-weight:600;color:var(--ink-light)">特征污染物：</label><div id="sPols"></div></div>
+<div class="ug" id="sUnits"></div>
 </div>
-<div class="form-row">
-<div class="form-group"><label>所属行业 *</label>
-<select id="industry" onchange="updatePollutants()">
-<option value="">— 请选择 —</option>
-<option value="chemical">化工原料及化学品制造</option>
-<option value="petro">石油加工/炼焦</option>
-<option value="metal">有色金属冶炼/压延</option>
-<option value="electro">电气机械/电子设备制造</option>
-<option value="machinery">通用/专用设备制造</option>
-<option value="textile">纺织/印染</option>
-<option value="leather">皮革/制革</option>
-<option value="paper">造纸及纸制品</option>
-<option value="pharma">医药制造</option>
-<option value="pesticide">农药制造</option>
-<option value="plating">金属表面处理/电镀</option>
-<option value="rubber">橡胶/塑料制品</option>
-<option value="battery">电池制造</option>
-<option value="smelt">黑色金属冶炼</option>
-<option value="coking">炼焦</option>
-<option value="gas">燃气生产/供应</option>
-<option value="waste">固废处置/垃圾焚烧</option>
-<option value="mining">采矿/选矿</option>
-<option value="other">其他</option>
+
+<div id="formNoise" class="hidden-s">
+<h2 class="st">🎵 噪声/振动 项目信息</h2>
+<div class="form-grid">
+<div class="form-group"><label>项目名称</label><input id="nProj" value="XX轨道交通工程噪声监测"></div>
+<div class="form-group"><label>敏感点数量</label><input id="nSites" type="number" value="117"></div>
+<div class="form-group"><label>测点总数</label><input id="nPoints" type="number" value="144"></div>
+<div class="form-group"><label>监测天数</label><input id="nDays" type="number" value="2"></div>
+<div class="form-group"><label>监测类型</label><select id="nType"><option value="both">噪声+振动</option><option value="noise">仅噪声</option><option value="vibration">仅振动</option></select></div>
+<div class="form-group"><label>执行标准</label><select id="nStd">
+<option value="GB3096-2008+GB10071-88">GB 3096-2008 + GB 10071-88</option>
+<option value="GB12348-2008">GB 12348-2008 厂界噪声</option>
+<option value="GB3096-2008">GB 3096-2008 声环境质量</option>
 </select></div>
-<div class="form-group"><label>关注介质 *</label>
-<select id="media"><option value="both">土壤 + 地下水</option><option value="soil">仅土壤</option><option value="gw">仅地下水</option></select></div>
 </div>
-<div class="form-group"><label>场地历史简述</label>
-<textarea id="history">曾用于化工生产，涉及有机溶剂和重金属使用，已停产3年</textarea></div>
-<div class="btn-group"><button class="btn btn-primary" onclick="nextStep(1)">下一步：筛选污染物 →</button></div>
+<div class="form-grid">
+<div class="form-group form-full"><label>振动监测因子</label><input id="nVibFact" value="VLzmax（有车时）/ VLz10（无车时）"></div>
+<div class="form-group form-full"><label>噪声监测因子</label><input id="nNoiFact" value="等效连续A声级 Leq"></div>
 </div>
-
-<div class="panel" id="panel1">
-<h2 style="font-size:18px;font-weight:700;margin-bottom:8px">特征污染物筛选</h2>
-<p style="font-size:13px;color:var(--ink-light);margin-bottom:16px">根据所选行业，系统已推荐以下特征污染物。点击可调整。</p>
-<div style="margin-bottom:12px">
-<label style="font-size:12px;font-weight:600;color:var(--ink-light)">行业推荐特征污染物：</label>
-<div class="tag-group" id="recPollutants"><span style="color:var(--ink-light);font-size:12px">请先选择行业</span></div></div>
-<div style="margin-bottom:12px">
-<label style="font-size:12px;font-weight:600;color:var(--ink-light)">基本项目（必选）：</label>
-<div class="tag-group" id="basePollutants"></div></div>
-<div style="margin-bottom:12px">
-<label style="font-size:12px;font-weight:600;color:var(--ink-light)">其他可选项：</label>
-<div class="tag-group" id="optPollutants"></div></div>
-<div class="btn-group">
-<button class="btn btn-secondary" onclick="prevStep(0)">← 上一步</button>
-<button class="btn btn-primary" onclick="nextStep(2)">生成方案 →</button></div>
+<div class="form-grid"><div class="form-group"><label>昼间标准值 dB(A)</label><input id="nDay" value="70"></div>
+<div class="form-group"><label>夜间标准值 dB(A)</label><input id="nNight" value="55"></div></div>
+<div class="form-grid"><div class="form-group"><label>敏感点类型</label><textarea id="nSens" rows="2">住宅小区、学校、医院等噪声敏感建筑物</textarea></div>
+<div class="form-group"><label>减振措施</label><textarea id="nDamp" rows="2">钢弹簧浮置板道床、双轨扣件、浮轨扣件</textarea></div></div>
 </div>
 
-<div class="panel" id="panel2">
-<h2 style="font-size:18px;font-weight:700;margin-bottom:4px">监测方案</h2>
-<p style="font-size:13px;color:var(--ink-light);margin-bottom:20px" id="resultTitle">基于以下信息生成</p>
-<div class="result-section">
-<h3>布点方案 <span class="badge">HJ 25.1-2019 / HJ 25.2-2019</span></h3>
-<div class="result-grid" id="samplingPlan"></div></div>
-<div class="result-section">
-<h3>检测项目清单</h3>
-<table class="result-table" id="testItems"><thead><tr><th>类别</th><th>检测项目</th><th>分析方法</th><th>标准编号</th></tr></thead><tbody></tbody></table></div>
-<div class="result-section">
-<h3>采样与保存要求</h3>
-<div class="std-ref" id="samplingReq">加载中...</div></div>
-<div class="result-section">
-<h3>质量控制要求</h3>
-<div class="std-ref" id="qcReq">加载中...</div></div>
-<div class="result-section">
-<h3>执行标准</h3>
-<div class="std-ref" id="stdRef">加载中...</div></div>
-<div class="btn-group">
-<button class="btn btn-secondary" onclick="prevStep(1)">← 修改参数</button>
-<button class="btn btn-success" onclick="exportPlan()">导出方案</button></div>
-<div class="export-area" id="exportArea">
-<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:14px;font-size:13px;margin-top:16px">
-按 Ctrl+P（Windows）或 Cmd+P（Mac），另存为PDF即可导出方案文档。</div></div>
+<div id="formWastewater" class="hidden-s">
+<h2 class="st">💧 废水监测 项目信息</h2>
+<div class="form-grid">
+<div class="form-group"><label>项目名称</label><input id="wProj" value="XX医院废水监测"></div>
+<div class="form-group"><label>排放口数量</label><input id="wOut" type="number" value="1"></div>
+<div class="form-group"><label>行业类型</label><select id="wInd"><option value="hospital">医疗机构</option><option value="chemical">化工</option><option value="electro">电子</option><option value="food">食品加工</option><option value="municipal">城镇污水处理</option></select></div>
+<div class="form-group"><label>监测天数</label><input id="wDays" type="number" value="2"></div>
+<div class="form-group"><label>日均采样次数</label><input id="wFreq" type="number" value="4"></div>
+<div class="form-group"><label>执行标准</label><select id="wStd">
+<option value="GB18466-2005">GB 18466-2005 医疗机构</option>
+<option value="GB8978-1996">GB 8978-1996 污水综合排放</option>
+<option value="GB18918-2002">GB 18918-2002 城镇污水处理厂</option>
+</select></div>
 </div>
+<div class="form-grid">
+<div class="form-group form-full"><label>监测因子（逗号分隔）</label><textarea id="wFact" rows="2">pH, CODcr, BOD₅, SS, NH₃-N, TP, 动植物油, 阴离子表面活性剂, 粪大肠菌群, 总余氯</textarea></div></div>
+<div class="form-grid"><div class="form-group"><label>废水处理工艺</label><textarea id="wProc" rows="2">格栅+调节池+A²O一体化处理设备+消毒</textarea></div>
+<div class="form-group"><label>排放去向</label><textarea id="wDest" rows="2">进入城镇污水处理厂（间接排放）</textarea></div></div>
 </div>
 
-<footer style="text-align:center;padding:40px 20px;color:var(--ink-light);font-size:12px;border-top:1px solid var(--border);background:#f1f5f9;margin-top:40px">
-环境检测 · 交互式教学 | 联系方式：jinghao.song@gmail.com
-</footer>
+<div id="formExhaust" class="hidden-s">
+<h2 class="st">💨 废气监测 项目信息</h2>
+<div class="form-grid">
+<div class="form-group"><label>项目名称</label><input id="eProj" value="XX企业废气监测"></div>
+<div class="form-group"><label>排放口数量</label><input id="eOut" type="number" value="2"></div>
+<div class="form-group"><label>行业类型</label><select id="eInd"><option value="hospital">医疗机构</option><option value="chemical">化工</option><option value="coating">涂装/印刷</option><option value="boiler">锅炉</option><option value="power">电力/热力</option></select></div>
+<div class="form-group"><label>监测天数</label><input id="eDays" type="number" value="2"></div>
+<div class="form-group"><label>监测类型</label><select id="eType"><option value="both">有组织+无组织</option><option value="org">仅有组织</option><option value="unorg">仅无组织</option></select></div>
+<div class="form-group"><label>执行标准</label><select id="eStd">
+<option value="GB16297-1996">GB 16297-1996 大气污染物综合排放</option>
+<option value="GB13271-2014">GB 13271-2014 锅炉大气污染物</option>
+<option value="GB18466-2005">GB 18466-2005 医疗机构废气</option>
+</select></div>
+</div>
+<div class="form-grid">
+<div class="form-group form-full"><label>监测因子（逗号分隔）</label><textarea id="eFact" rows="2">颗粒物, SO₂, NOₓ, 氯化氢, 氯气, 非甲烷总烃, 臭气浓度</textarea></div></div>
+<div class="form-grid"><div class="form-group"><label>废气治理设施</label><textarea id="eTmt" rows="2">布袋除尘器+碱液喷淋塔+活性炭吸附</textarea></div>
+<div class="form-group"><label>排气筒参数</label><textarea id="eStack" rows="2">高度15m×2座，内径0.8m，烟气温度60℃</textarea></div></div>
+</div>
+
+<div class="btn-row"><button class="btn btn-sec" onclick="go(0)">← 返回</button><button class="btn btn-pri" onclick="go(2)">生成方案 →</button></div>
+</div>
+
+<div class="panel" id="p2">
+<div class="btn-row" style="margin-bottom:12px"><button class="btn btn-suc" onclick="window.print()">🖨️ 打印/导出PDF</button><button class="btn btn-sec" onclick="go(1)">← 修改</button></div>
+<div class="result-doc" id="docContent"></div>
+</div>
+
+<footer style="text-align:center;padding:30px;color:var(--ink-light);font-size:11px;border-top:1px solid var(--border);margin-top:30px">环境检测 · 交互式教学 | jinghao.song@gmail.com</footer></div>
 
 <script>
-const indP = {
-  chemical:{name:'化工',rec:['苯','甲苯','二甲苯','氯仿','四氯化碳','苯胺','硝基苯','As','Hg']},
-  petro:{name:'石油',rec:['石油烃(C10-C40)','苯','甲苯','乙苯','二甲苯','萘','苯并a芘']},
-  metal:{name:'有色冶金',rec:['As','Cd','Pb','Cu','Zn','Hg','Ni','Sb','CN-','F-']},
-  electro:{name:'电子',rec:['丙酮','异丙醇','苯','甲苯','二甲苯','铅','锡','三氯乙烯']},
-  machinery:{name:'机械',rec:['石油烃(C10-C40)','Pb','Zn','Cr','苯系物']},
-  textile:{name:'纺织印染',rec:['苯胺','硝基苯','Cr','Cu','Zn']},
-  leather:{name:'皮革',rec:['Cr6+','Cr','As','苯酚','甲醛','石油烃']},
-  paper:{name:'造纸',rec:['氯仿','苯酚','甲苯','二甲苯','As','Hg','Pb']},
-  pharma:{name:'医药',rec:['丙酮','甲醇','异丙醇','苯','甲苯','二甲苯','氯仿']},
-  pesticide:{name:'农药',rec:['六六六','滴滴涕','敌敌畏','乐果','As']},
-  plating:{name:'电镀',rec:['Cr6+','Ni','Cu','Zn','Cd','CN-','Pb']},
-  rubber:{name:'橡塑',rec:['苯','甲苯','二甲苯','乙苯','苯乙烯','邻苯二甲酸酯','Pb']},
-  battery:{name:'电池',rec:['Pb','Cd','Ni','Co','Li','Hg','As','Sb']},
-  smelt:{name:'黑色冶金',rec:['As','Cd','Pb','Zn','Cu','Ni','Hg','CN-']},
-  coking:{name:'炼焦',rec:['苯','甲苯','二甲苯','萘','苯并a芘','石油烃','As','Pb']},
-  gas:{name:'燃气',rec:['苯','甲苯','二甲苯','乙苯','石油烃','萘']},
-  waste:{name:'固废',rec:['As','Cd','Pb','Cu','Zn','Ni','Hg']},
-  mining:{name:'采矿',rec:['As','Cd','Pb','Cu','Zn','Ni','Hg','CN-','F-']},
-  other:{name:'其他',rec:['VOCs','SVOCs','重金属','石油烃']}
-};
-const allOpt = ['VOCs(27项)','SVOCs(11项)','有机氯农药','多氯联苯','二噁英','六六六','滴滴涕','敌敌畏','乐果','甲醛','苯酚','氰化物','氟化物','硫化物','Sb','Be','Co','Se','Ti','V','Tl'];
-const baseItems = ['pH','As','Cd','Pb','Cr6+','Cu','Zn','Ni','Hg'];
-let selRec=[],selOpt=[];
-
-function nextStep(n){
-  if(n===1&&!document.getElementById('industry').value){alert('请选择所属行业');return}
-  if(n===2)genPlan();
+let currType=0;
+function selType(n){currType=n;document.querySelectorAll('.tc').forEach((t,i)=>t.classList.toggle('ac',i===n))}
+function go(n){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('ac'));
-  document.getElementById('panel'+n).classList.add('ac');
-  document.querySelectorAll('.step-item').forEach(s=>s.classList.remove('ac'));
-  document.getElementById('step'+n).classList.add('ac');
-  for(let i=0;i<n;i++){document.getElementById('step'+i).classList.add('done');document.getElementById('step'+i).classList.remove('ac')}
+  document.getElementById('p'+n).classList.add('ac');
+  document.querySelectorAll('.si').forEach(s=>s.classList.remove('ac'));
+  document.getElementById('s'+n).classList.add('ac');
+  for(let i=0;i<n;i++){document.getElementById('s'+i).classList.add('done');document.getElementById('s'+i).classList.remove('ac')}
+  if(n===1)initForm();
+  if(n===2)genDoc();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function prevStep(n){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('ac'));
-  document.getElementById('panel'+n).classList.add('ac');
-  document.querySelectorAll('.step-item').forEach(s=>s.classList.remove('ac'));
-  document.getElementById('step'+n).classList.add('ac');
-  for(let i=0;i<n;i++)document.getElementById('step'+i).classList.add('done');
-  window.scrollTo({top:0,behavior:'smooth'});
+function initForm(){
+  ['formSoil','formNoise','formWastewater','formExhaust'].forEach((id,i)=>document.getElementById(id).classList.toggle('hidden-s',i!==currType));
+  if(currType===0){initSoilForms()}
 }
 
-function updatePollutants(){
-  let ind=document.getElementById('industry').value;
-  if(!ind){document.getElementById('recPollutants').innerHTML='<span style="color:var(--ink-light);font-size:12px">请先选择行业</span>';return}
-  let d=indP[ind];
-  document.getElementById('basePollutants').innerHTML = baseItems.map(p=>'<span class="tag ac" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;cursor:default">'+p+'</span>').join('');
-  selRec=[...d.rec];
-  document.getElementById('recPollutants').innerHTML = d.rec.map(p=>'<span class="tag ac" onclick="tr(this,\''+p+'\')">'+p+'</span>').join('');
-  selOpt=[];
-  document.getElementById('optPollutants').innerHTML = allOpt.filter(p=>!d.rec.includes(p)).map(p=>'<span class="tag" onclick="to(this,\''+p+'\')">'+p+'</span>').join('');
+// ===== SOIL =====
+const allUnits=[{id:'u1',n:'生产车间区域',d:'反应塔、槽、管道等',lv:2},{id:'u2',n:'原料/产品储罐区',d:'地上/地下储罐，含酸碱/有机溶剂',lv:1},{id:'u3',n:'污水处理站',d:'废水处理构筑物、污泥暂存',lv:1},{id:'u4',n:'危废暂存间',d:'危险废物临时储存',lv:2},{id:'u5',n:'装卸/包装区',d:'原料卸料、产品包装',lv:2},{id:'u6',n:'化学品仓库',d:'原辅料储存仓库',lv:2},{id:'u7',n:'地下管线/管廊',d:'地下工艺管线',lv:1},{id:'u8',n:'油品储罐区',d:'重油/润滑油储罐',lv:1}];
+const indP={chemical:{n:'化工',r:['苯','甲苯','二甲苯','氯仿','As','Hg']},petro:{n:'石油',r:['石油烃(C10-C40)','苯','甲苯','萘']},metal:{n:'有色冶金',r:['As','Cd','Pb','Cu','Zn','Hg','Ni']},electro:{n:'电子',r:['丙酮','苯','甲苯','三氯乙烯','Pb']},plating:{n:'电镀',r:['Cr6+','Ni','Cu','Zn','Cd','CN-']},other:{n:'其他',r:['VOCs','SVOCs','重金属','石油烃']}};
+let selU=[],selP=[];
+function initSoilForms(){
+  let g=document.getElementById('sUnits');
+  if(g.children.length>0)return;
+  g.innerHTML=allUnits.map(u=>`<div class="uc" onclick="tU(this,'${u.id}')"><div class="un">${u.n}</div><div class="ud">${u.d}</div><span class="ur">${u.lv===1?'一级':'二级'}单元</span></div>`).join('');
+  ['u1','u2','u3','u4'].forEach(id=>{let e=g.querySelector(`[onclick*="'${id}'"]`);if(e)e.classList.add('ac');selU.push(id)});
+  upPol();
 }
-function tr(el,n){el.classList.toggle('ac');let i=selRec.indexOf(n);i>-1?selRec.splice(i,1):selRec.push(n)}
-function to(el,n){el.classList.toggle('ac');let i=selOpt.indexOf(n);i>-1?selOpt.splice(i,1):selOpt.push(n)}
+function tU(e,i){e.classList.toggle('ac');let x=selU.indexOf(i);x>-1?selU.splice(x,1):selU.push(i)}
+function upPol(){let d=indP[document.getElementById('sInd').value]||indP.other;selP=[...d.r];
+  document.getElementById('sPols').innerHTML=d.r.map(p=>`<span class="tag ac" onclick="tP(this,'${p}')">${p}</span>`).join('')}
+function tP(e,p){e.classList.toggle('ac');e.classList.contains('ac')?selP.includes(p)||selP.push(p):selP=selP.filter(x=>x!==p)}
 
-function genPlan(){
-  let a=parseFloat(document.getElementById('area').value)||5000,lt=document.getElementById('landType').value,md=document.getElementById('media').value;
-  let ind=document.getElementById('industry').value,data=indP[ind]||{name:'其他',rec:[]};
-  document.getElementById('resultTitle').textContent='项目：'+document.getElementById('projName').value+' | 行业：'+data.name+' | 面积：'+a+'m²';
-  let sp=Math.max(3,Math.ceil(a/1600));if(lt==='agriculture')sp=Math.max(3,Math.floor(a/2000));
-  let gp=md==='gw'||md==='both'?Math.max(3,Math.ceil(a/2000)):0;
-  document.getElementById('samplingPlan').innerHTML=
-    '<div class="result-card"><span class="rv">'+sp+'</span><span class="rl">土壤采样点数</span></div>'+
-    '<div class="result-card"><span class="rv">'+(gp>0?gp:'—')+'</span><span class="rl">地下水监测井数</span></div>'+
-    '<div class="result-card"><span class="rv">'+(lt==='construction'?'专业判断布点':'系统布点')+'</span><span class="rl">布点方法</span></div>'+
-    '<div class="result-card"><span class="rv">0~0.5m / 0.5~2.0m / 深层</span><span class="rl">采样深度</span></div>'+
-    '<div class="result-card"><span class="rv">HJ 25.1-2019</span><span class="rl">调查技术导则</span></div>'+
-    '<div class="result-card"><span class="rv">HJ 25.2-2019</span><span class="rl">采样技术导则</span></div>';
-  
-  let all=[...new Set([...baseItems,...selRec,...selOpt])];
-  let mm={'pH':'电极法','As':'原子荧光法','Cd':'石墨炉原子吸收法','Pb':'原子吸收法','Cr6+':'二苯碳酰二肼分光光度法','Cu':'火焰原子吸收法','Zn':'火焰原子吸收法','Ni':'原子吸收法','Hg':'原子荧光法','Cr':'原子吸收法','苯':'顶空-气相色谱法','甲苯':'顶空-气相色谱法','二甲苯':'顶空-气相色谱法','乙苯':'顶空-气相色谱法','氯仿':'顶空-气相色谱法','四氯化碳':'顶空-气相色谱法','苯胺':'气相色谱法','硝基苯':'气相色谱法','萘':'GC-MS','苯并a芘':'GC-MS','苯乙烯':'顶空-气相色谱法','丙酮':'顶空-气相色谱法','甲醇':'气相色谱法','异丙醇':'气相色谱法','三氯乙烯':'顶空-气相色谱法','苯酚':'气相色谱法','甲醛':'乙酰丙酮分光光度法','石油烃(C10-C40)':'气相色谱法','VOCs(27项)':'顶空-GC-MS','SVOCs(11项)':'GC-MS','六六六':'气相色谱法','滴滴涕':'气相色谱法','敌敌畏':'气相色谱法','乐果':'气相色谱法','有机氯农药':'气相色谱法','多氯联苯':'气相色谱法','二噁英':'HRGC-HRMS','氰化物':'异烟酸分光光度法','氟化物':'离子选择电极法','硫化物':'亚甲基蓝分光光度法','CN-':'异烟酸分光光度法','F-':'离子选择电极法','Sb':'原子荧光法','Be':'石墨炉原子吸收法','Co':'原子吸收法','Se':'原子荧光法','Ti':'ICP-OES','V':'ICP-OES','Tl':'石墨炉原子吸收法','邻苯二甲酸酯':'GC-MS','石油烃':'气相色谱法','VOCs':'顶空-GC-MS','SVOCs':'GC-MS','重金属':'原子吸收/荧光法'};
-  let sm={'pH':'HJ 962-2018','As':'HJ 694-2014','Cd':'GB/T 17141-1997','Pb':'GB/T 17141-1997','Cr6+':'HJ 1082-2019','Cu':'HJ 491-2019','Zn':'HJ 491-2019','Ni':'HJ 491-2019','Hg':'HJ 680-2013','Cr':'HJ 491-2019','VOCs(27项)':'HJ 642-2013','SVOCs(11项)':'HJ 834-2017','石油烃(C10-C40)':'HJ 1021-2019','六六六':'HJ 921-2017','滴滴涕':'HJ 921-2017','多氯联苯':'HJ 922-2017','二噁英':'HJ 77.4-2025','氰化物':'HJ 745-2015','氟化物':'HJ 873-2017','苯':'HJ 642-2013','甲苯':'HJ 642-2013','二甲苯':'HJ 642-2013','乙苯':'HJ 642-2013','萘':'HJ 834-2017','苯并a芘':'HJ 834-2017','氯仿':'HJ 642-2013','四氯化碳':'HJ 642-2013','苯乙烯':'HJ 642-2013','丙酮':'HJ 642-2013','甲醛':'HJ 601-2011','苯酚':'HJ 703-2014','邻苯二甲酸酯':'HJ 834-2017','石油烃':'HJ 1021-2019','VOCs':'HJ 642-2013','SVOCs':'HJ 834-2017'};
-  let metal=all.filter(p=>['As','Cd','Pb','Cr6+','Cu','Zn','Ni','Hg','Cr','Sb','Be','Co','Se','Ti','V','Tl','重金属'].includes(p));
-  let voc=all.filter(p=>['VOCs(27项)','VOCs','苯','甲苯','二甲苯','乙苯','氯仿','四氯化碳','苯乙烯','丙酮','异丙醇','三氯乙烯'].includes(p));
-  let svoc=all.filter(p=>['SVOCs(11项)','SVOCs','萘','苯并a芘','苯酚','邻苯二甲酸酯','硝基苯','苯胺'].includes(p));
-  let other=all.filter(p=>!metal.includes(p)&&!voc.includes(p)&&!svoc.includes(p));
+// ===== GENERATE =====
+function genDoc(){
   let html='';
-  if(metal.length)html+='<tr><td rowspan="'+metal.length+'">重金属</td><td>'+metal[0]+'</td><td>'+(mm[metal[0]]||'—')+'</td><td>'+(sm[metal[0]]||'—')+'</td></tr>';
-  for(let i=1;i<metal.length;i++)html+='<tr><td>'+metal[i]+'</td><td>'+(mm[metal[i]]||'—')+'</td><td>'+(sm[metal[i]]||'—')+'</td></tr>';
-  if(voc.length)html+='<tr><td rowspan="'+voc.length+'">VOCs</td><td>'+voc[0]+'</td><td>'+(mm[voc[0]]||'—')+'</td><td>'+(sm[voc[0]]||'—')+'</td></tr>';
-  for(let i=1;i<voc.length;i++)html+='<tr><td>'+voc[i]+'</td><td>'+(mm[voc[i]]||'—')+'</td><td>'+(sm[voc[i]]||'—')+'</td></tr>';
-  if(svoc.length)html+='<tr><td rowspan="'+svoc.length+'">SVOCs</td><td>'+svoc[0]+'</td><td>'+(mm[svoc[0]]||'—')+'</td><td>'+(sm[svoc[0]]||'—')+'</td></tr>';
-  for(let i=1;i<svoc.length;i++)html+='<tr><td>'+svoc[i]+'</td><td>'+(mm[svoc[i]]||'—')+'</td><td>'+(sm[svoc[i]]||'—')+'</td></tr>';
-  if(other.length)html+='<tr><td rowspan="'+other.length+'">其他</td><td>'+other[0]+'</td><td>'+(mm[other[0]]||'—')+'</td><td>'+(sm[other[0]]||'—')+'</td></tr>';
-  for(let i=1;i<other.length;i++)html+='<tr><td>'+other[i]+'</td><td>'+(mm[other[i]]||'—')+'</td><td>'+(sm[other[i]]||'—')+'</td></tr>';
-  document.querySelector('#testItems tbody').innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:var(--ink-light)">请至少选择一项污染物</td></tr>';
-  
-  document.getElementById('samplingReq').innerHTML =
-    '<strong>土壤采样：</strong><br>• 采样深度：表层0~0.5m，下层0.5~2.0m<br>• 采样设备：无扰动取土器(VOCs) / 不锈钢取土器(重金属/SVOCs)<br>• 样品保存：VOCs样加甲醇密封4℃冷藏；重金属样自然风干过筛<br>• 运输保存：4℃冷藏48h内送达实验室<br><br><strong>地下水采样：'+(gp>0?'':'（本方案未涉及）')+'</strong><br>• 建井：孔径≥110mm，滤水管位于水位下0.5~5.0m<br>• 洗井：成井24h以上抽水洗井<br>• 采样：贝勒管或低流量采样泵';
-  document.getElementById('qcReq').innerHTML =
-    '<strong>现场质控：</strong><br>• 现场平行样：每10个样品1个（不少于1个）<br>• 运输空白：每批次1个（VOCs项目）<br>• 全程序空白：每批次1个<br><br><strong>实验室质控：</strong><br>• 空白分析：每批次1个<br>• 平行样：每10个样品1个<br>• 加标回收：每20个样品1个（回收率70~130%）<br>• 执行标准：HJ 166-2026';
-  document.getElementById('stdRef').innerHTML =
-    '<strong>评价标准：</strong><br>• 建设用地：GB 36600-2018<br>• 地下水：GB/T 14848-2017<br>• 农用地：GB 15618-2018<br><br><strong>技术导则：</strong><br>• HJ 25.1-2019 建设用地土壤污染状况调查技术导则<br>• HJ 25.2-2019 建设用地土壤污染风险管控和修复监测技术导则<br>• HJ 166-2026 土壤环境监测技术规范<br>• HJ 164-2020 地下水环境监测技术规范';
+  if(currType===0)html=genSoil();
+  else if(currType===1)html=genNoise();
+  else if(currType===2)html=genWater();
+  else if(currType===3)html=genExhaust();
+  document.getElementById('docContent').innerHTML=html;
 }
-function exportPlan(){document.getElementById('exportArea').classList.add('ac');window.print()}
+function genSoil(){
+  let a=parseFloat(document.getElementById('sArea').value)||5000;
+  let sp=Math.max(3,Math.ceil(a/1600));
+  let md=document.getElementById('sMed').value,gp=md==='both'?Math.max(3,Math.ceil(a/2000)):0;
+  let l1=selU.filter(id=>allUnits.find(u=>u.id===id)?.lv===1).length;
+  let l2=selU.filter(id=>allUnits.find(u=>u.id===id)?.lv===2).length;
+  let items=['pH','As','Cd','Pb','Cr6+','Cu','Zn','Ni','Hg',...selP,'石油烃(C10-C40)','氟化物'];
+  return `<div class="doc-toc"><strong>目录：</strong><span onclick="s2('ds1')">1.项目背景</span><span onclick="s2('ds2')">2.企业概况</span><span onclick="s2('ds3')">3.区域环境</span><span onclick="s2('ds4')">4.重点区域识别</span><span onclick="s2('ds5')">5.监测方案</span><span onclick="s2('ds6')">6.分析方法</span><span onclick="s2('ds7')">7.采样与保存</span><span onclick="s2('ds8')">8.质控</span></div>
+<div class="doc-section"><h3 id="ds1">1 项目背景</h3><p>为贯彻落实《土壤污染防治法》，按照HJ 1209-2021等要求，某某公司于2026年委托我方开展土壤及地下水自行监测工作。</p>
+<h4>工作依据</h4><div class="doc-ref">• HJ 1209-2021 工业企业土壤和地下水自行监测技术指南<br>• HJ 25.1-2019 建设用地土壤污染状况调查技术导则<br>• HJ 25.2-2019 建设用地土壤污染风险管控和修复监测技术导则<br>• HJ 166-2026 土壤环境监测技术规范<br>• HJ 164-2020 地下水环境监测技术规范<br>• GB 36600-2018 土壤环境质量 建设用地土壤污染风险管控标准<br>• GB/T 14848-2017 地下水质量标准</div></div>
+<div class="doc-section"><h3 id="ds2">2 企业概况</h3><p>某某公司位于某某省，地块面积约${a}m²。主要从事相关生产。</p></div>
+<div class="doc-section"><h3 id="ds3">3 区域环境概况</h3><p>调查区位于冲洪积平原地貌单元。地下水埋深${document.getElementById('sGwd').value}，流向${document.getElementById('sGwf').value}。浅层地下水为松散岩类孔隙水。</p></div>
+<div class="doc-section"><h3 id="ds4">4 重点区域识别</h3><p>识别出${l1+l2}个重点监测单元：一级${l1}个、二级${l2}个。</p><div class="doc-ref">${selU.map(id=>{let u=allUnits.find(x=>x.id===id);return u?'• '+u.n+'（'+(u.lv===1?'一级单元：隐蔽性设施':'二级单元：其他重点区域')+'）':''}).filter(Boolean).join('<br>')}</div></div>
+<div class="doc-section"><h3 id="ds5">5 监测方案</h3><p>布设土壤监测点${sp}个，${gp>0?'地下水监测井'+gp+'个':'因地下水位较深，本次不设地下水监测井'}。采样深度：表层0~0.5m${l1>0?'，深层略低于隐蔽设施底部':''}。</p><p>监测频次：表层土壤1次/年${l1>0?'，深层土壤1次/3年':''}。</p><p>检测指标：GB 36600表1基本项目+pH+特征污染物（${selP.join('、')}），执行${document.getElementById('sUse').value==='1'?'第一类':'第二类'}用地筛选值。</p></div>
+<div class="doc-section"><h3 id="ds6">6 检测分析方法</h3><table class="dt"><thead><tr><th>项目</th><th>分析方法</th><th>标准编号</th></tr></thead><tbody>
+<tr><td>pH</td><td>电极法</td><td>HJ 962-2018</td></tr><tr><td>As</td><td>原子荧光法</td><td>GB/T 22105.2-2008</td></tr><tr><td>Cd/Pb</td><td>石墨炉原子吸收法</td><td>GB/T 17141-1997</td></tr><tr><td>Cu/Zn/Ni/Cr</td><td>火焰原子吸收法</td><td>HJ 491-2019</td></tr><tr><td>Hg</td><td>原子荧光法</td><td>GB/T 22105.1-2008</td></tr><tr><td>Cr6+</td><td>二苯碳酰二肼分光光度法</td><td>HJ 1082-2019</td></tr><tr><td>VOCs</td><td>吹扫捕集-GC-MS</td><td>HJ 605-2011</td></tr><tr><td>SVOCs</td><td>GC-MS</td><td>HJ 834-2017</td></tr><tr><td>石油烃C10-C40</td><td>气相色谱法</td><td>HJ 1021-2019</td></tr></tbody></table></div>
+<div class="doc-section"><h3 id="ds7">7 样品采集与保存</h3><div class="doc-ref">VOCs样品用非扰动采样器采集至40mL吹扫瓶；SVOCs用250mL棕色玻璃瓶；重金属用自封袋。4℃冷藏，48h内送达实验室。每10个样品设1个平行样。</div></div>
+<div class="doc-section"><h3 id="ds8">8 质量保证与控制</h3><div class="doc-ref">现场：平行样/运输空白/全程序空白。实验室：空白/平行/加标回收/质控样。三级审核制度。执行 HJ 166-2026。</div></div>`;
+}
+function genNoise(){
+  let p=document.getElementById('nProj').value||'XX轨道交通工程';
+  let sites=document.getElementById('nSites').value||117,pts=document.getElementById('nPoints').value||144;
+  let nt=document.getElementById('nType').value,days=document.getElementById('nDays').value||2;
+  let day=document.getElementById('nDay').value||70,night=document.getElementById('nNight').value||55;
+  let std=document.getElementById('nStd').value;
+  let isVib=nt==='both'||nt==='vibration',isNoi=nt==='both'||nt==='noise';
+  return `<div class="doc-toc"><strong>目录：</strong><span onclick="s2('n1')">1.项目概况</span><span onclick="s2('n2')">2.监测依据</span><span onclick="s2('n3')">3.监测内容</span><span onclick="s2('n4')">4.监测点位</span><span onclick="s2('n5')">5.分析方法</span><span onclick="s2('n6')">6.质控措施</span></div>
+<div class="doc-section"><h3 id="n1">1 项目概况</h3><p>${p}，沿线布设${sites}处敏感点、共${pts}个监测点位。执行标准：${std}。</p></div>
+<div class="doc-section"><h3 id="n2">2 监测依据</h3><div class="doc-ref">• ${std}<br>• HJ/T 403-2007 城市轨道交通竣工环保验收技术规范<br>•  HJ 2.4-2021 环境影响评价技术导则 声环境</div></div>
+<div class="doc-section"><h3 id="n3">3 监测内容</h3>${isVib?`<h4>振动监测</h4><p>监测因子：${document.getElementById('nVibFact').value||'VLzmax/VLz10'}。监测${days}天，昼/夜各1次，每次不少于5对列车通过。采样间隔1s。</p>`:''}${isNoi?`<h4>噪声监测</h4><p>监测因子：${document.getElementById('nNoiFact').value||'Leq'}。监测${days}天，昼/夜各${days>1?'2':'1'}次，每次20min。</p>`:''}</div>
+<div class="doc-section"><h3 id="n4">4 监测点位</h3><div class="doc-ref">敏感点类型：${document.getElementById('nSens').value||'住宅小区、学校等'}<br>减振措施：${document.getElementById('nDamp').value||'钢弹簧浮置板道床'}<br>标准限值：昼间${day}dB(A) / 夜间${night}dB(A)</div></div>
+<div class="doc-section"><h3 id="n5">5 分析方法</h3><table class="dt"><thead><tr><th>项目</th><th>方法</th><th>标准</th></tr></thead><tbody><tr><td>等效连续A声级</td><td>声级计法</td><td>GB 3096-2008</td></tr><tr><td>振动级VLz</td><td>振动计法</td><td>GB 10071-88</td></tr></tbody></table></div>
+<div class="doc-section"><h3 id="n6">6 质量控制</h3><div class="doc-ref">声级计测量前后现场声学校准，偏差≤0.5dB。同步监测背景噪声。记录主要振源、列车编组、轨道条件、气象条件（风速<5m/s、无雨雪）。</div></div>`;
+}
+function genWater(){
+  let p=document.getElementById('wProj').value||'XX废水监测';
+  let out=document.getElementById('wOut').value||1,days=document.getElementById('wDays').value||2,freq=document.getElementById('wFreq').value||4;
+  let std=document.getElementById('wStd').value,ind=document.getElementById('wInd').value;
+  let facts=(document.getElementById('wFact').value||'pH,CODcr,BOD₅,SS,NH₃-N,TP').split(',').map(s=>s.trim());
+  let sname={hospital:'医疗机构',chemical:'化工',electro:'电子',food:'食品加工',municipal:'城镇污水处理'};
+  let stdFull={'GB18466-2005':'GB 18466-2005 医疗机构水污染物排放标准','GB8978-1996':'GB 8978-1996 污水综合排放标准','GB18918-2002':'GB 18918-2002 城镇污水处理厂污染物排放标准'};
+  return `<div class="doc-toc"><strong>目录：</strong><span onclick="s2('w1')">1.项目概况</span><span onclick="s2('w2')">2.监测依据</span><span onclick="s2('w3')">3.监测内容</span><span onclick="s2('w4')">4.分析方法</span><span onclick="s2('w5')">5.采样与保存</span><span onclick="s2('w6')">6.质控</span></div>
+<div class="doc-section"><h3 id="w1">1 项目概况</h3><p>${p}，属于${sname[ind]||ind}行业，共设${out}个废水排放口。执行${stdFull[std]||std}。</p><p>废水处理工艺：${document.getElementById('wProc').value||'—'}。排放去向：${document.getElementById('wDest').value||'—'}。</p></div>
+<div class="doc-section"><h3 id="w2">2 监测依据</h3><div class="doc-ref">• ${stdFull[std]||std}<br>• HJ 819-2017 排污单位自行监测技术指南 总则<br>• HJ 91.1-2019 污水监测技术规范</div></div>
+<div class="doc-section"><h3 id="w3">3 监测内容</h3><p>监测${days}天，每天${freq}次。监测因子（${facts.length}项）：${facts.join('、')}。</p></div>
+<div class="doc-section"><h3 id="w4">4 分析方法</h3><table class="dt"><thead><tr><th>项目</th><th>方法</th><th>标准</th></tr></thead><tbody>
+${facts.map(f=>`<tr><td>${f}</td><td>${f==='pH'?'电极法':f==='CODcr'?'重铬酸盐法':f==='BOD₅'?'稀释接种法':f==='SS'?'重量法':f==='NH₃-N'?'纳氏试剂分光光度法':f==='TP'?'钼酸铵分光光度法':'相应国家标准方法'}</td><td>${f==='pH'?'HJ 1147-2020':f==='CODcr'?'HJ 828-2017':f==='BOD₅'?'HJ 505-2009':f==='SS'?'GB/T 11901-1989':f==='NH₃-N'?'HJ 535-2009':f==='TP'?'GB/T 11893-1989':'—'}</td></tr>`).join('')}
+</tbody></table></div>
+<div class="doc-section"><h3 id="w5">5 样品采集与保存</h3><div class="doc-ref">采样容器：有机物用棕色玻璃瓶，重金属用聚乙烯瓶，微生物用灭菌瓶。4℃冷藏保存。COD样加H₂SO₄至pH<2。采样后24h内分析。</div></div>
+<div class="doc-section"><h3 id="w6">6 质量控制</h3><div class="doc-ref">现场平行样≥10%。全程序空白每批次1个。实验室加标回收70%~130%。质控样分析。三级审核。</div></div>`;
+}
+function genExhaust(){
+  let p=document.getElementById('eProj').value||'XX废气监测';
+  let out=document.getElementById('eOut').value||2,days=document.getElementById('eDays').value||2;
+  let std=document.getElementById('eStd').value,et=document.getElementById('eType').value;
+  let facts=(document.getElementById('eFact').value||'颗粒物,SO₂,NOₓ').split(',').map(s=>s.trim());
+  let stdFull={'GB16297-1996':'GB 16297-1996 大气污染物综合排放标准','GB13271-2014':'GB 13271-2014 锅炉大气污染物排放标准','GB18466-2005':'GB 18466-2005 医疗机构水污染物排放标准（废气部分）'};
+  let sname={hospital:'医疗机构',chemical:'化工',coating:'涂装/印刷',boiler:'锅炉',power:'电力/热力'};
+  return `<div class="doc-toc"><strong>目录：</strong><span onclick="s2('e1')">1.项目概况</span><span onclick="s2('e2')">2.监测依据</span><span onclick="s2('e3')">3.监测内容</span><span onclick="s2('e4')">4.分析方法</span><span onclick="s2('e5')">5.采样要求</span><span onclick="s2('e6')">6.质控</span></div>
+<div class="doc-section"><h3 id="e1">1 项目概况</h3><p>${p}，${sname[document.getElementById('eInd').value]||''}行业，共${out}个排气筒。执行${stdFull[std]||std}。</p><p>废气治理设施：${document.getElementById('eTmt').value||'—'}。排气筒参数：${document.getElementById('eStack').value||'—'}。</p></div>
+<div class="doc-section"><h3 id="e2">2 监测依据</h3><div class="doc-ref">• ${stdFull[std]||std}<br>• HJ 819-2017 自行监测技术指南 总则<br>• HJ/T 397-2007 固定源废气监测技术规范<br>• HJ/T 55-2000 大气污染物无组织排放监测技术导则</div></div>
+<div class="doc-section"><h3 id="e3">3 监测内容</h3><p>监测${days}天，每天${et==='unorg'?'无组织排放监测':''}。${et==='both'||et==='org'?'有组织排放口监测：'+out+'个排气筒。':''}${et==='both'||et==='unorg'?'无组织排放：厂界上风向1个对照点+下风向3个监控点。':''}</p><p>监测因子（${facts.length}项）：${facts.join('、')}。</p></div>
+<div class="doc-section"><h3 id="e4">4 分析方法</h3><table class="dt"><thead><tr><th>项目</th><th>方法</th><th>标准</th></tr></thead><tbody>
+${facts.map(f=>`<tr><td>${f}</td><td>${f==='颗粒物'?'重量法':f==='SO₂'?'定电位电解法':f==='NOₓ'?'定电位电解法':f==='氯化氢'?'离子色谱法':f==='氯气'?'甲基橙分光光度法':f==='非甲烷总烃'?'气相色谱法':f==='臭气浓度'?'三点比较式臭袋法':'相应国家标准方法'}</td><td>${f==='颗粒物'?'HJ 836-2017':f==='SO₂'?'HJ 57-2017':f==='NOₓ'?'HJ 693-2014':f==='氯化氢'?'HJ 549-2016':f==='氯气'?'HJ/T 30-1999':f==='非甲烷总烃'?'HJ 38-2017':f==='臭气浓度'?'GB/T 14675-1993':'—'}</td></tr>`).join('')}
+</tbody></table></div>
+<div class="doc-section"><h3 id="e5">5 采样要求</h3><div class="doc-ref">有组织：采样断面设在排气筒距地面1.5倍直径处。等速采样（颗粒物），每断面不少于3个采样点。无组织：在厂界上风向设1个对照点，下风向设3~4个监控点，采样高度1.5m。</div></div>
+<div class="doc-section"><h3 id="e6">6 质量控制</h3><div class="doc-ref">采样仪器流量校准和浓度校准。现场检漏。全程空白样。平行样≥10%。采样和分析人员持证上岗。三级审核。</div></div>`;
+}
+function s2(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
 window.addEventListener('scroll',function(){let h=document.documentElement.scrollHeight-window.innerHeight;if(h>0)document.getElementById('sp').style.width=(window.scrollY/h*100)+'%'});
 </script>
-<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">HJ 77.4-2008</td><td>土壤和沉积物 二噁英类的测定 同位素稀释高分辨气相色谱-高分辨质谱法</td><td class="sb-s" style="color:#b91c1c">已废止</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 15618-2018</td><td>土壤环境质量 农用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 36600-2018</td><td>土壤环境质量 建设用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 14848-2017</td><td>地下水质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 17141-1997</td><td>土壤质量 铅、镉的测定 石墨炉原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1021-2019</td><td>土壤和沉积物 石油烃（C10-C40）的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1082-2019</td><td>土壤和沉积物 六价铬的测定 碱溶液提取-火焰原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 164-2020</td><td>地下水环境监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 166-2026</td><td>土壤环境监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 25.1-2019</td><td>建设用地土壤污染状况调查技术导则</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 25.2-2019</td><td>建设用地土壤污染风险管控和修复监测技术导则</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 491-2019</td><td>土壤和沉积物 铜、锌、铅、镍、铬的测定 火焰原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 601-2011</td><td>水质 甲醛的测定 乙酰丙酮分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 642-2013</td><td>土壤和沉积物 挥发性有机物的测定 顶空／气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 680-2013</td><td>土壤和沉积物 汞、砷、硒、铋、锑的测定 微波消解／原子荧光法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 694-2014</td><td>水质 汞、砷、硒、铋和锑的测定 原子荧光法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 703-2014</td><td>土壤和沉积物 酚类化合物的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 745-2015</td><td>土壤 氰化物和总氰化物的测定 分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 834-2017</td><td>土壤和沉积物 半挥发性有机物的测定 气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 873-2017</td><td>土壤 水溶性氟化物和总氟化物的测定 离子选择电极法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 921-2017</td><td>土壤和沉积物 有机氯农药的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 922-2017</td><td>土壤和沉积物 多氯联苯的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 962-2018</td><td>土壤 pH 值的测定 电位法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>23</b> 项标准：<b>23</b> 项已回官方源核验（截至 2026-09-11），0 项待核；其中 <b style="color:#b91c1c">1 项标为已废止／部分废止</b>，仅作历史对照，不得作为现行方法依据。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div><div class="sb-fx"><b>引用写法提示（1 处）</b><ul><li>本页引用 <b>HJ 77.4-2008</b>（已废止）：自新标准实施之日起被 HJ 77.4-2025 代替。重要：台账误记为"水质"，HJ 77.4-2008 实为"土壤和沉积物"；水质二噁英应为 HJ 77.1-2008。且该标准已于2026-07-01被 HJ 77.4-2025 代替。</li></ul></div></div></div></details>
+<details class="stdbasis" id="stdBasis"><style>.stdbasis{max-width:1100px;margin:34px auto 0;padding:0 20px;font-family:inherit}.stdbasis>summary{list-style:none;cursor:pointer;user-select:none}.stdbasis>summary::-webkit-details-marker{display:none}.stdbasis .sb-hd{font-size:13px;color:#0f172a;letter-spacing:.02em;font-weight:600;display:flex;align-items:center;gap:8px}.stdbasis .sb-hd .sb-ar{margin-left:auto;transition:transform .2s;font-size:11px;color:#64748b}.stdbasis[open] .sb-hd .sb-ar{transform:rotate(90deg)}.stdbasis .sb-cd{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-top:10px}.stdbasis .sb-bd{display:block}.stdbasis table.sb-tb{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.stdbasis table.sb-tb th{background:#eef2f7;color:#64748b;font-weight:600;text-align:left;padding:7px 9px;border-bottom:1px solid #e2e8f0;font-size:12px}.stdbasis table.sb-tb td{padding:7px 9px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top;line-height:1.55;word-break:break-word}.stdbasis table.sb-tb tr:last-child td{border-bottom:none}.stdbasis .sb-c{width:19%;font-weight:600;color:#0f172a}.stdbasis .sb-s{width:11%;white-space:nowrap;font-weight:600}.stdbasis .sb-u{width:26%;color:#64748b}.stdbasis .sb-ft{margin-top:10px;font-size:11.5px;line-height:1.7;color:#64748b}.stdbasis .sb-fx{margin-top:10px;padding:10px 12px;border-left:3px solid #b45309;background:#f8fafc;border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.7;color:#334155}.stdbasis .sb-fx ul{margin:6px 0 0;padding-left:18px}.stdbasis .sb-fx li{margin:4px 0}@media(max-width:720px){.stdbasis table.sb-tb{font-size:11px}.stdbasis table.sb-tb tr:first-child{display:none}.stdbasis table.sb-tb td{display:block;width:auto!important;border-bottom:none;padding:2px 0}.stdbasis table.sb-tb tr{display:block;padding:8px 0;border-bottom:1px solid #e2e8f0}}</style><summary class="sb-hd"><span>本页依据标准与现行状态</span><span class="sb-ar">&#9654;</span></summary><div class="sb-cd"><div class="sb-bd"><table class="sb-tb"><tr><th>标准号</th><th>标准名称</th><th>状态</th><th>本页用途</th></tr><tr><td class="sb-c">GB 12348-2008</td><td>工业企业厂界环境噪声排放标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 13271-2014</td><td>锅炉大气污染物排放标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 16297-1996</td><td>大气污染物综合排放标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 18466-2005</td><td>医疗机构水污染物排放标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 18918-2002</td><td>城镇污水处理厂污染物排放标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 3096-2008</td><td>声环境质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 36600-2018</td><td>土壤环境质量 建设用地土壤污染风险管控标准（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB 8978-1996</td><td>污水综合排放标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 10071-1988</td><td>城市区域环境振动测量方法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 11893-1989</td><td>水质 总磷的测定 钼酸铵分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 11901-1989</td><td>水质 悬浮物的测定 重量法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 14675-1993</td><td>空气质量 恶臭的测定 三点比较式臭袋法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 14848-2017</td><td>地下水质量标准</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 17141-1997</td><td>土壤质量 铅、镉的测定 石墨炉原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 22105.1-2008</td><td>土壤质量 总汞、总砷、总铅的测定 原子荧光法 第1部分：土壤中总汞的测定</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">GB/T 22105.2-2008</td><td>土壤质量 总汞、总砷、总铅的测定 原子荧光法 第2部分：土壤中总砷的测定</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1021-2019</td><td>土壤和沉积物 石油烃（C10-C40）的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1082-2019</td><td>土壤和沉积物 六价铬的测定 碱溶液提取-火焰原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1147-2020</td><td>水质 pH 值的测定 电极法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 1209-2021</td><td>工业企业土壤和地下水自行监测技术指南（试行）</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 164-2020</td><td>地下水环境监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 166-2026</td><td>土壤环境监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 25.1-2019</td><td>建设用地土壤污染状况调查技术导则</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 25.2-2019</td><td>建设用地土壤污染风险管控和修复监测技术导则</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 38-2017</td><td>固定污染源废气 总烃、甲烷和非甲烷总烃的测定 气相色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 491-2019</td><td>土壤和沉积物 铜、锌、铅、镍、铬的测定 火焰原子吸收分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 505-2009</td><td>水质 五日生化需氧量（BOD5）的测定 稀释与接种法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 535-2009</td><td>水质 氨氮的测定 纳氏试剂分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 549-2016</td><td>环境空气和废气 氯化氢的测定 离子色谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 57-2017</td><td>固定污染源废气 二氧化硫的测定 定电位电解法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 605-2011</td><td>土壤和沉积物 挥发性有机物的测定 吹扫捕集／气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 693-2014</td><td>固定污染源废气 氮氧化物的测定 定电位电解法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 819-2017</td><td>排污单位自行监测技术指南 总则</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 828-2017</td><td>水质 化学需氧量的测定 重铬酸盐法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 834-2017</td><td>土壤和沉积物 半挥发性有机物的测定 气相色谱-质谱法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 836-2017</td><td>固定污染源废气 低浓度颗粒物的测定 重量法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 91.1-2019</td><td>污水监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ 962-2018</td><td>土壤 pH 值的测定 电位法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ/T 30-1999</td><td>固定污染源排气中氯气的测定 甲基橙分光光度法</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ/T 397-2007</td><td>固定源废气监测技术规范</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ/T 403-2007</td><td>建设项目竣工环境保护验收技术规范 城市轨道交通</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr><tr><td class="sb-c">HJ/T 55-2000</td><td>大气污染物无组织排放监测技术导则</td><td class="sb-s" style="color:#15803d">现行</td><td class="sb-u">—</td></tr></table><div class="sb-ft">本页共依据 <b>42</b> 项标准：<b>42</b> 项已回官方源核验（截至 2026-09-11），0 项待核。　核验来源与全部条目见《标准依据溯源总表》。本页数值与曲线用于教学演示，不作为工程设计或检测报告的依据。</div></div></div></details>
 
 <!-- 联系页脚（构建时自动注入） -->
 <div data-contact-footer style="max-width:900px;margin:40px auto 26px;padding:20px 22px;border-top:1px solid #d8e0ea;background:transparent;display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap;font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:#2d3748;font-size:14px;line-height:1.8">

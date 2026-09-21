@@ -219,7 +219,7 @@ for k,v in DOMAINS.items():
 
 html = f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>环境实验 环境采样字段模板</title>
+<title>环境采样字段模板 · 环境检测数字资产库</title>
 <style>
 :root{{--bg:#0a0e17;--card:#121826;--line:#23304a;--ink:#e7eefc;--mut:#8aa0c0;--a:#2563eb;}}
 *{{box-sizing:border-box}}
