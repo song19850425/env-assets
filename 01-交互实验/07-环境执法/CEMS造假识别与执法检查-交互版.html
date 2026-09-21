@@ -807,5 +807,22 @@ if(typeof requestAnimationFrame === 'function') requestAnimationFrame(loop);
 <style>#bk{position:fixed;right:22px;bottom:22px;z-index:9990;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 15px;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:.02em;text-decoration:none;line-height:1;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .22s,transform .22s,visibility .22s}#bk.on{opacity:1;visibility:visible;transform:translateY(0)}#bk:hover{transform:translateY(-2px)}#bk:focus-visible{outline:2px solid #fbbf24;outline-offset:3px}#bk .bk-a{font-size:15px;line-height:1}#bk .bk-t{font-size:13.5px}@media(max-width:720px){#bk{right:14px;bottom:14px;padding:10px 15px 10px 13px}#bk .bk-t{font-size:12.5px}}@media(prefers-reduced-motion:reduce){#bk{transition:none;transform:none}#bk.on{transform:none}}@media print{#bk{display:none!important}}#bk{background:rgba(19,26,46,.92);color:#e2e8f0;border:1px solid rgba(56,189,248,.42);box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}#bk:hover{background:rgba(23,33,58,.98);border-color:rgba(56,189,248,.75);box-shadow:0 8px 26px rgba(0,0,0,.5)}#bk .bk-a{color:#7dd3fc}#bk .bk-t{color:#e2e8f0}</style>
 <a id="bk" href="../../index.html" title="返回实验集总目录（Alt+Esc）"><span class="bk-a" aria-hidden="true">&#8592;</span><span class="bk-t">返回目录</span></a>
 <script>(function(){var b=document.getElementById("bk");if(!b)return;var f=function(){var y=window.pageYOffset||document.documentElement.scrollTop;if(y>260)b.classList.add("on");else b.classList.remove("on")};if(typeof window.addEventListener==='function')window.addEventListener("scroll",f,{passive:true});f();if(typeof document.addEventListener==='function')document.addEventListener("keydown",function(e){if(e.key==="Escape"&&e.altKey)location.href=b.getAttribute("href")});})();</script>
+
+<!-- 联系页脚（构建时自动注入） -->
+<div data-contact-footer style="max-width:900px;margin:40px auto 26px;padding:20px 22px;border-top:1px solid #d8e0ea;background:transparent;display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap;font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:#2d3748;font-size:14px;line-height:1.8">
+  <div style="text-align:center">
+    <img src="../../assets/公众号二维码.png" alt="公众号二维码" loading="lazy"
+         style="width:118px;height:118px;display:block;border-radius:6px;background:#fff"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div style="display:none;width:118px;height:118px;border:1px dashed #d8e0ea;border-radius:6px;font-size:12px;color:#93a1b0;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box">二维码<br>待放置</div>
+    <div style="margin-top:8px;font-size:13px;color:#4a5568">扫码关注公众号</div>
+  </div>
+  <div style="border-left:1px solid #d8e0ea;padding-left:22px">
+    <div style="font-size:15px;color:#2d3748;font-weight:600;margin-bottom:4px">环境检测 · 数字资产库</div>
+    <div>交流 / 定制课程 / 工具合作：<a href="mailto:jinghao.song@gmail.com"
+        style="color:#2b6cb0;text-decoration:none">jinghao.song@gmail.com</a></div>
+    <div style="font-size:12.5px;color:#93a1b0;margin-top:4px">本页内容不构成法定检测报告，标准请以官方现行版本为准</div>
+  </div>
+</div>
 </body>
 </html>
