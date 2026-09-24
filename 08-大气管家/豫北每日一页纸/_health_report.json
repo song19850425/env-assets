@@ -1,20 +1,35 @@
 {
- "last_run": "2026-09-24 19:13:50",
+ "last_run": "2026-09-24 19:59:09",
  "tz": "Asia/Shanghai",
  "ok": true,
- "kinds": {
+ "reports": {
+  "daily": {
+   "ok": true,
+   "timepoint": "2026-09-24T19:00",
+   "stations": 21,
+   "weather_cities": 4,
+   "weather_aligned": "2026-09-24T19:00",
+   "period": "2026-09-24",
+   "file": "2026-09-24.html",
+   "written": 2,
+   "archive_count": 2,
+   "at": "2026-09-24 19:59:00"
+  },
   "weekly": {
    "ok": true,
    "period": "2026-09-17 ~ 2026-09-23",
    "file": "0917_to_0923.html",
-   "written": 0
+   "written": 0,
+   "at": "2026-09-24 19:59:09"
   },
   "monthly": {
    "ok": true,
    "period": "2026-09-10 ~ 2026-09-23",
    "file": "2026-09.html",
-   "written": 0
+   "written": 0,
+   "at": "2026-09-24 19:59:09"
   }
  },
- "note": "written=0 表示内容与上次一致（去抖生效），不代表失败；失败看 ok 与 error。"
+ "stale": [],
+ "note": "ok 只看近 3 小时内更新过的条目；written=0 表示内容与上次一致（去抖生效），不代表失败，失败看各类自身的 ok/error。"
 }

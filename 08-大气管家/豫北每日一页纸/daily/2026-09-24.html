@@ -68,7 +68,7 @@ tr.warn td{background:#fff7ea}
 <div class="hd">
   <div>
     <h1>豫北四市大气研判日报</h1>
-    <div class="sub">安阳 · 濮阳 · 鹤壁 · 新乡 ｜ 数据时点：2026-09-24T19:00 ｜ 生成：2026-09-24 19:53</div>
+    <div class="sub">安阳 · 濮阳 · 鹤壁 · 新乡 ｜ 数据时点：2026-09-24T19:00 ｜ 生成：2026-09-24 19:59</div>
   </div><div class='stamp'>AI 草稿<br>未经审定</div>
 </div>
 
@@ -212,7 +212,7 @@ tr.warn td{background:#fff7ea}
 
 <div class="audit">
   <div class="ah">数据可信度与审定状态</div>
-  <ul><li>接口：<code>https://air.cnemc.cn:18007/CityData/GetAQIDataPublishLive?cityName=&lt;URL编码城市名&gt;</code>（逐城市调用）</li><li>抓取时点（平台 TimePoint）：<b>2026-09-24T19:00</b>；本页生成时刻：<b>2026-09-24 19:53:21</b></li><li>气象接口：<code>api.open-meteo.com/v1/forecast</code>（免密钥，ECMWF/ICON 模式再分析+预报，取 <code>wind_speed_10m / wind_direction_10m / boundary_layer_height / relative_humidity_2m</code> 等）</li><li>气象命中：<b>4</b> 个城市（安阳、濮阳、鹤壁、新乡），时点对齐 <b>2026-09-24T19:00</b>；单位：风速 m/s、风向 °（气象风向＝风的来向）、边界层高度 m。</li><li>样本数：<b>21</b> 个点位（安阳 5、濮阳 4、鹤壁 5、新乡 7）</li><li>缺测（返回 NA）统计：pm10 1 个、aqi 1 个</li><li>达标判定依据：GB 3095-2012 二级限值 PM2.5 24h 75、PM10 24h 150、O₃-8h 160 μg/m³；城市 AQI 依据 HJ 663-2013 点位平均法。</li><li>口径风险提示：平台 <code>AQI</code> 字段由<b>当前小时浓度</b>算出（实时口径），与官方日报的日均 AQI 不等价；本页已分列两套口径，勿混用。</li><li>字段待核：平台 <code>O3_8h_24h</code> 语义未确认，本版<b>未用于</b>达标判定。</li><li>数据性质：总站实时发布平台<b>未经审核</b>数据，与年度审核数据可能存在差异；正式对外结论应使用省级/总站审核后数据。</li><li>原始报文留存：本机已留存原始报文 <code>data/raw/2026-09-24/&lt;城市&gt;_&lt;时点&gt;.json</code>，可按点位回溯上游返回值（见 ingest/fetch_air.archive_raw）</li><li>气象数据性质：模式产品、<b>城市尺度</b>代表性，非国控点位本地实测气象，与点位微环境存在差异；用于研判趋势与传输方向，不作为合规判据。</li><li>传输研判盲区：上风向判定仅在<span>已纳入的 4 个城市</span>内成立，省外上风向城市（邯郸、邢台、聊城、菏泽、焦作、长治、晋城等）未纳入，可能存在传输盲区。</li><li>阈值属性：静稳/边界层/高湿静稳等阈值均为<b>经验阈值</b>，非国家标准限值，仅用于辅助研判。</li></ul>
+  <ul><li>接口：<code>https://air.cnemc.cn:18007/CityData/GetAQIDataPublishLive?cityName=&lt;URL编码城市名&gt;</code>（逐城市调用）</li><li>抓取时点（平台 TimePoint）：<b>2026-09-24T19:00</b>；本页生成时刻：<b>2026-09-24 19:59:00</b></li><li>气象接口：<code>api.open-meteo.com/v1/forecast</code>（免密钥，ECMWF/ICON 模式再分析+预报，取 <code>wind_speed_10m / wind_direction_10m / boundary_layer_height / relative_humidity_2m</code> 等）</li><li>气象命中：<b>4</b> 个城市（安阳、濮阳、鹤壁、新乡），时点对齐 <b>2026-09-24T19:00</b>；单位：风速 m/s、风向 °（气象风向＝风的来向）、边界层高度 m。</li><li>样本数：<b>21</b> 个点位（安阳 5、濮阳 4、鹤壁 5、新乡 7）</li><li>缺测（返回 NA）统计：pm10 1 个、aqi 1 个</li><li>达标判定依据：GB 3095-2012 二级限值 PM2.5 24h 75、PM10 24h 150、O₃-8h 160 μg/m³；城市 AQI 依据 HJ 663-2013 点位平均法。</li><li>口径风险提示：平台 <code>AQI</code> 字段由<b>当前小时浓度</b>算出（实时口径），与官方日报的日均 AQI 不等价；本页已分列两套口径，勿混用。</li><li>字段待核：平台 <code>O3_8h_24h</code> 语义未确认，本版<b>未用于</b>达标判定。</li><li>数据性质：总站实时发布平台<b>未经审核</b>数据，与年度审核数据可能存在差异；正式对外结论应使用省级/总站审核后数据。</li><li>原始报文留存：云端采集留存的是精简字段（<code>data-hourly/&lt;日期&gt;.jsonl</code>，含各点位原始数值），平台返回的完整原始报文未入仓；逐点复核请以该 JSONL 中同点位记录为准</li><li>气象数据性质：模式产品、<b>城市尺度</b>代表性，非国控点位本地实测气象，与点位微环境存在差异；用于研判趋势与传输方向，不作为合规判据。</li><li>传输研判盲区：上风向判定仅在<span>已纳入的 4 个城市</span>内成立，省外上风向城市（邯郸、邢台、聊城、菏泽、焦作、长治、晋城等）未纳入，可能存在传输盲区。</li><li>阈值属性：静稳/边界层/高湿静稳等阈值均为<b>经验阈值</b>，非国家标准限值，仅用于辅助研判。</li></ul>
   <div class="sign">
     <span class="pill">审定状态：<b>AI 草稿 · 未经人工审定</b></span>
     <span class="pill">有效期：仅反映 2026-09-24T19:00 时点状况</span>
