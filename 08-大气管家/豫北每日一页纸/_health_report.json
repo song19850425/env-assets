@@ -1,0 +1,20 @@
+{
+ "last_run": "2026-09-24 19:13:50",
+ "tz": "Asia/Shanghai",
+ "ok": true,
+ "kinds": {
+  "weekly": {
+   "ok": true,
+   "period": "2026-09-17 ~ 2026-09-23",
+   "file": "0917_to_0923.html",
+   "written": 0
+  },
+  "monthly": {
+   "ok": true,
+   "period": "2026-09-10 ~ 2026-09-23",
+   "file": "2026-09.html",
+   "written": 0
+  }
+ },
+ "note": "written=0 表示内容与上次一致（去抖生效），不代表失败；失败看 ok 与 error。"
+}
