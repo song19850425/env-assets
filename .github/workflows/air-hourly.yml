@@ -23,6 +23,12 @@
 #  - 仅默认分支（main）上的工作流会按计划触发
 #  - 公开仓库：60 天无活动会自动停用计划任务（本工作流每小时提交，天然保持活跃）
 #  - 整点是全球高峰，故取每小时 17 分
+#  - ⚠️ 实测补充（2026-09-24）：**新建的 workflow，cron 不一定会立刻生效**
+#    （创建后 100 分钟、跨过 2 个整点仍未出现 schedule 运行记录）。故除 cron 外还挂了
+#    "脚本有改动就 push 触发一次"的冒烟测试，改完代码能立刻拿到云端结论，不用干等。
+#    核对定时是否真的在跑（公开仓库免 token）：
+#      GET https://api.github.com/repos/song19850425/env-assets/actions/workflows/air-hourly.yml/runs
+#    或本机一行命令：py .cloud_sim/watch_cloud_run.py 600
 
 name: 大气管家 · 豫北小时采集
 
@@ -30,6 +36,19 @@ on:
   schedule:
     - cron: '17 * * * *'
   workflow_dispatch:        # 支持手动触发与 API 触发
+
+  # 为什么还要 push 触发（2026-09-24 加）：
+  #   ① 定时任务是"静默失败"的典型场景 —— 改完脚本却不知道云端到底跑不跑得通。
+  #      把触发条件限定在"脚本/工作流本身有改动"时跑一次，等于每次改代码自动做一次冒烟测试。
+  #   ② 实测教训：新建的 workflow，cron 不一定会立刻生效（本项目创建后 100 分钟、
+  #      跨过 2 个整点都没出现 schedule 运行）。没有这条 push 触发，就只能干等。
+  # 不会自激：`git push` 用的 GITHUB_TOKEN 触发的 push 事件**不会**再触发工作流（GitHub 硬限制），
+  # 且 paths 只匹配 scripts/ 与工作流文件本身，机器人每小时提交的数据文件不在范围内。
+  push:
+    branches: [main]
+    paths:
+      - '08-大气管家/豫北每日一页纸/scripts/**'
+      - '.github/workflows/air-hourly.yml'
 
 permissions:
   contents: write
@@ -42,6 +61,8 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # 双保险：即便将来改成 PAT 推送（会自激），机器人自己的提交也不会再触发
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'data(air)')
     steps:
       - uses: actions/checkout@v4
 
