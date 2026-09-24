@@ -10,8 +10,9 @@
 取数：平台历史接口（最近 14 天城市日值，直连 air.cnemc.cn:18007）
 输出：<模块>/weekly/*.html、<模块>/monthly/*.html，各自的 index.html，
       模块首页 index.html（三板块入口 + 归档期数），
-      以及健康档案 <模块>/_health_report.json（记每类报告是否成功/覆盖哪几天/时区是否正常 ——
-      因为"内容不变不落盘"会让"失败"和"没变化"在文件层面长得一模一样，必须有档案才能分辨）
+      并把 weekly/monthly 条目并入健康档案 <模块>/_health_report.json
+      （与日报共用同一份，见 report/health.py —— 因为"内容不变不落盘"会让
+       "失败"和"没变化"在文件层面长得一模一样，必须有档案才能分辨）
 
 ⚠️ 与日报的关键差别：**内容不变就不落盘**。
 周报/月报的数据一天才滚一次，而本脚本每小时跑一次；如果照写不误，
@@ -75,6 +76,7 @@ from config import PROFILES                      # noqa: E402
 from report.period_report import KIND_PREFIX, build_period   # noqa: E402
 from report.index_pages import (SECTIONS, archive_name,   # noqa: E402
                                module_home, section_index, write_report)
+from report.health import merge as health_merge   # noqa: E402
 
 CFG = PROFILES["yubei"]
 LABEL = {sub: label for sub, _prefix, label in SECTIONS}
@@ -119,19 +121,16 @@ def _memo_fetch():
     return fetch
 
 
-def _health(payload):
-    """写健康档案 <模块>/_health_report.json。
+def _health(kinds, failed):
+    """把本轮结果并入 <模块>/_health_report.json 的 weekly/monthly 条目。
 
     为什么必须要：云端失败是**静默**的 —— 周报/月报"内容不变就不写盘"的设计，
     使"取数失败"和"内容没变"在文件层面看起来一模一样（都是文件没动），
-    光看仓库根本分辨不出来。采集侧早有 data-hourly/_health.json 解决同类问题（见技能 cloud-cron-collector），
-    出报侧同样需要一份：记下每类报告是否成功、覆盖哪几天、这次写了几个文件、以及进程时区偏移。
-    这样任何人（或下次自动化）拉一次仓库就能判断"云端到底在不在干活"。
+    光看仓库根本分辨不出来。采集侧早有 data-hourly/_health.json 解决同类问题，
+    出报侧同样需要一份；日报与周期报告共用同一个文件、各写各的条目（见 report/health.py）。
     """
-    import json
-    with open(os.path.join(MODULE, "_health_report.json"), "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=1)
-        f.write("\n")
+    health_merge(MODULE, "weekly", kinds["weekly"])
+    health_merge(MODULE, "monthly", kinds["monthly"])
 
 
 def main():
@@ -153,15 +152,7 @@ def main():
     if module_home(MODULE, SECTIONS):
         print("[写入] 模块 index.html（三板块入口）")
 
-    from datetime import datetime
-    off = -time.timezone if not time.localtime().tm_isdst else -time.altzone
-    _health({
-        "last_run": datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
-        "tz": "Asia/Shanghai" if off == 8 * 3600 else "UTC%+.1fh（异常：页面时间会偏差）" % (off / 3600.0),
-        "ok": not failed,
-        "kinds": kinds,
-        "note": "written=0 表示内容与上次一致（去抖生效），不代表失败；失败看 ok 与 error。",
-    })
+    _health(kinds, failed)
 
     if failed:
         print("[警告] %d/%d 类周期报告生成失败：%s" % (len(failed), 2, failed))

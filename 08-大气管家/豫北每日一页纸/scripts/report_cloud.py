@@ -7,16 +7,24 @@
 本机关机时，公开页 daily/latest.html 就停在旧日期，"不开机也能看到新数据"只做到一半。
 本脚本让日报也做到：**云端采集完顺手出报，不需要本机参与。**
 
-输入：<data-hourly>/YYYY-MM-DD.jsonl（air_collect.py 的产出）
-输出：<模块>/daily/<日期>.html + latest.html + index.html + 模块首页 index.html
+版式：**V2 研判版**（自 2026-09-24 起与 run_daily.py 统一）。不再有"本机一版、云端另一版"——
+两边的编排与模板都来自 report/daily_report.py，口径唯一。
 
-渲染/配置不在这里重写：直接复用同目录的**镜像副本**
-    config.py      ← 项目 config.py（PROFILES["yubei"]）
-    aqi_stats.py   ← 项目 calc/aqi_stats.py
-    daily_page.py  ← 项目 report/daily_page.py
-    index_pages.py ← 项目 report/index_pages.py（导航页模板，与本地部署脚本共用一份）
-由项目 deploy_github.py 的 sync_cloud_scripts() 每次自动同步，
-因此不存在"两份模板各改各的"的问题。
+输入：<data-hourly>/YYYY-MM-DD.jsonl（air_collect.py 的产出，含点位 k=s 与气象 k=w 两类记录）
+输出：<模块>/daily/<日期>.html + latest.html + index.html + 模块首页 index.html，
+      以及健康档案 <模块>/_health_report.json 的 daily 条目
+
+渲染/研判/证据链不在这里重写：直接复用同目录的**镜像副本**（由 deploy_github.sync_cloud_scripts 同步）
+    config.py         ← 项目 config.py（PROFILES["yubei"]）
+    daily_report.py   ← 项目 report/daily_report.py（编排：研判 → 证据链 → 渲染）
+    page_v2.py        ← 项目 report/page_v2.py（版式）
+    brief.py / wind.py← 项目 calc/（研判与气象逻辑）
+    aqi_stats.py      ← 项目 calc/aqi_stats.py
+    index_pages.py    ← 项目 report/index_pages.py（导航页模板与去抖写盘）
+    health.py         ← 项目 report/health.py
+
+气象不额外请求：air_collect.py 已经把 Open-Meteo 的小时气象写进同一份 JSONL（k=w），
+这里按城市取"不晚于数据时点"的最近一小时即可 —— 少 4 次网络请求，也少一条失败路径。
 
 时区：runner 是 UTC，脚本启动即切到 Asia/Shanghai —— 否则页面"生成时间"比北京时间少 8 小时。
 
@@ -38,10 +46,10 @@ DATA_DIR = os.path.join(MODULE, "data-hourly")
 DAILY_DIR = os.path.join(MODULE, "daily")
 
 # 让镜像副本保持项目内的导入路径：
-# daily_page.py 里写的是 `from calc.aqi_stats import aqi_level`，
+#   daily_report.py 里写的是 `from calc.brief import ...` / `from report.page_v2 import ...`
 # 只要把 calc / report 两个"包"的 __path__ 指向本目录即可原样复用，
 # 不必改写源码 —— 改写会让镜像与源文件产生实质差异，就失去复用的意义了。
-for _name in ("calc", "report"):
+for _name in ("calc", "report", "ingest"):
     _m = types.ModuleType(_name)
     _m.__path__ = [HERE]
     sys.modules.setdefault(_name, _m)
@@ -68,17 +76,21 @@ def _fix_tz():
 
 _fix_tz()
 
-from report.daily_page import render        # noqa: E402
-from report.index_pages import (SECTIONS, section_index,  # noqa: E402
+from config import PROFILES                                   # noqa: E402
+from report.daily_report import build, print_summary          # noqa: E402
+from report.index_pages import (SECTIONS, section_index,      # noqa: E402
                                module_home, write_report)
-from calc.aqi_stats import city_summary     # noqa: E402
-from config import PROFILES                 # noqa: E402
+from report.health import merge as health_merge               # noqa: E402
 
-# 与项目 config.PROFILES["yubei"] 同源（镜像副本），只取渲染需要的键
+# 与项目 config.PROFILES["yubei"] 同源（镜像副本）
 CFG = PROFILES["yubei"]
 
 DAILY_PREFIX = {sub: prefix for sub, prefix, _ in SECTIONS}["daily"]
 DAILY_LABEL = {sub: label for sub, _p, label in SECTIONS}["daily"]
+
+# 云端可溯源到什么程度，就写什么 —— 不夸大
+RAW_NOTE = ("云端采集留存的是精简字段（<code>data-hourly/&lt;日期&gt;.jsonl</code>，含各点位原始数值），"
+            "平台返回的完整原始报文未入仓；逐点复核请以该 JSONL 中同点位记录为准")
 
 
 def write_index(daily_dir):
@@ -112,7 +124,7 @@ def _read_file(path):
 
 
 def load_latest(data_dir):
-    """取最新时点的全部点位行，返回 (timepoint, records)。
+    """取最新时点的全部记录，返回 (timepoint, records)。
 
     只读最新的 1–2 个文件：文件按日期命名，最新时点必然落在最新的文件里。
     """
@@ -136,7 +148,7 @@ def load_latest(data_dir):
 
 
 def to_rows(recs):
-    """云端简写字段 → city_summary / daily_page 需要的键名（与 fetch_air 对齐）"""
+    """云端简写字段 → 研判/渲染需要的键名（与 ingest/fetch_air 对齐）"""
     return [{
         "city": r.get("city"), "station_name": r.get("st", ""),
         "station_code": r.get("code", ""), "timepoint": str(r.get("tp", ""))[:16],
@@ -149,6 +161,81 @@ def to_rows(recs):
     } for r in recs]
 
 
+def _read_weather(data_dir, timepoint, cities):
+    """从 JSONL 的 k=w 记录里取各城市气象：优先精确命中，退到"不晚于时点的最近一小时"。
+
+    返回 ({city: row}, 缺失城市列表, 实际对齐时点)。字段名与 core.db.load_weather 一致，
+    因此 report/daily_report.build_wind 对两个来源一视同仁。
+    """
+    files = sorted(glob.glob(os.path.join(data_dir, "*.jsonl")) +
+                   glob.glob(os.path.join(data_dir, "*.jsonl.gz")))
+    best = {}       # city → (tp, row)
+    for p in reversed(files[-2:]):
+        for r in _read_file(p):
+            if r.get("k") != "w":
+                continue
+            city, t = r.get("city"), str(r.get("tp", ""))[:16]
+            if not city or not t or t > timepoint:
+                continue
+            if city not in best or t > best[city][0]:
+                best[city] = (t, r)
+    got = {}
+    for city, (t, r) in best.items():
+        got[city] = {
+            "city": city, "timepoint": t,
+            "wind_speed": r.get("ws"), "wind_dir": r.get("wd"), "wind_gust": r.get("wg"),
+            "blh": r.get("blh"), "temp": r.get("t"), "rh": r.get("rh"),
+            "pressure": r.get("p"), "precip": r.get("pr"),
+        }
+    missing = [c for c in cities if c not in got]
+    if missing:
+        # 兜底：air_collect 那一步的气象没采到时（少见但会偶发），
+        # 直接补抓一次，免得"六、气象条件与区域传输"整节消失 ——
+        # 与该节的研判降级相比，多一次请求更划算。
+        got2, _ = _fallback_weather(missing, timepoint)
+        got.update(got2)
+        missing = [c for c in cities if c not in got]
+    aligned = max((v["timepoint"] for v in got.values()), default="")
+    if missing:
+        print("[气象] 缺 %s（补抓仍未取到），研判相应降级" % "、".join(missing))
+    elif aligned != timepoint:
+        print("[气象] 对齐到 %s（数据时点 %s 无对应气象记录，取最近一小时）" % (aligned, timepoint))
+    return got, missing, aligned
+
+
+def _fallback_weather(missing, timepoint):
+    """对缺气象的城市直接抓一次 Open-Meteo（镜像副本 fetch_weather.py）。失败不影响出报。"""
+    coords = CFG.get("coords") or {}
+    want = {c: coords[c] for c in missing if c in coords}
+    if not want:
+        return {}, ""
+    try:
+        from ingest.fetch_weather import fetch_all_weather
+        rows, errs = fetch_all_weather(want, past_days=2, forecast_days=1,
+                                       keep_after=timepoint[:10] + "T00:00")
+    except Exception as e:
+        print("[气象] 补抓失败：%s" % e)
+        return {}, ""
+    if errs:
+        print("[气象] 补抓告警：%s" % "；".join(errs))
+    best = {}
+    for r in rows:
+        t, city = str(r.get("timepoint", ""))[:16], r.get("city")
+        if not t or t > timepoint or not city:
+            continue
+        if city not in best or t > best[city]["timepoint"]:
+            best[city] = r
+    out = {c: {"city": c, "timepoint": r["timepoint"],
+               "wind_speed": r.get("wind_speed"), "wind_dir": r.get("wind_dir"),
+               "wind_gust": r.get("wind_gust"), "blh": r.get("blh"),
+               "temp": r.get("temp"), "rh": r.get("rh"),
+               "pressure": r.get("pressure"), "precip": r.get("precip")}
+           for c, r in best.items()}
+    if out:
+        print("[气象] 补抓命中 %s" % "、".join(sorted(out)))
+    return out, max((v["timepoint"] for v in out.values()), default="")
+
+
 def main():
     data_dir = os.environ.get("AIR_DATA_DIR") or DATA_DIR
     out_dir = (sys.argv[1] if len(sys.argv) > 1
@@ -157,26 +244,36 @@ def main():
     tp, recs = load_latest(data_dir)
     if not tp or not recs:
         print("[跳过] 未取到点位数据：%s" % data_dir)
+        health_merge(MODULE, "daily", {"ok": False, "error": "未取到点位数据：%s" % data_dir})
         return 1
 
-    summaries = city_summary(to_rows(recs))
-    html = render(summaries, tp, CFG)
+    cities = CFG["cities"]
+    rows = to_rows(recs)
+    weather, missing, aligned = _read_weather(data_dir, tp, cities)
+    result = build(CFG, rows, tp, weather=weather,
+                   werr=["%s 无气象记录" % c for c in missing], raw_note=RAW_NOTE)
 
     os.makedirs(out_dir, exist_ok=True)
     day = tp[:10]
+    written = 0
     for name in ("%s.html" % day, "latest.html"):
-        if write_report(os.path.join(out_dir, name), html):
+        if write_report(os.path.join(out_dir, name), result["html"]):
+            written += 1
             print("  [写入] daily/%s" % name)
     n = write_index(out_dir)
     if module_home(MODULE, SECTIONS):
         print("  [写入] 模块 index.html（三板块入口）")
 
-    print("[日报] %s → daily/%s.html（+ latest.html，归档 %d 期）" % (tp, day, n))
-    for c in summaries:
-        print("  %-4s %s %s | 点位 %d | 首要 %s | 最差 %s %s" % (
-            c["city"][:2], c["aqi_max"], c["quality"], c["n"], c["primary"],
-            c["worst"]["station_name"] if c["worst"] else "—",
-            c["worst"]["aqi"] if c["worst"] else "—"))
+    print("[日报] %s → daily/%s.html（+ latest.html，归档 %d 期，本次写入 %d 个文件）"
+          % (tp, day, n, written))
+    print_summary(result, tp, len(rows))
+
+    health_merge(MODULE, "daily", {
+        "ok": True, "timepoint": tp, "stations": len(rows),
+        "weather_cities": len(weather), "weather_aligned": aligned,
+        "period": day, "file": "%s.html" % day, "written": written,
+        "archive_count": n,
+    })
     return 0
 
 

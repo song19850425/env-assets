@@ -78,9 +78,12 @@ def dated_files(sub_dir):
                   reverse=True)
 
 
-# 报告页头部都有"生成：YYYY-MM-DD HH:MM"，每次渲染都不同 ——
-# 判断"内容是否真的变了"必须先把这一段抹掉，否则永远判为"变了"。
-STAMP_RE = re.compile(r"生成：\d{4}-\d{2}-\d{2} \d{2}:\d{2}")
+# 报告页每次渲染都会变的"生成时间"有两处，判断"内容是否真的变了"必须都抹掉，
+# 否则永远判为"变了"：
+#   ① 页眉的"生成：YYYY-MM-DD HH:MM"（日报/周报/月报都有）
+#   ② 日报证据链里的"本页生成时刻：<b>YYYY-MM-DD HH:MM:SS</b>"
+STAMP_RE = re.compile(r"生成：\d{4}-\d{2}-\d{2} \d{2}:\d{2}"
+                      r"|生成时刻：<b>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}</b>")
 
 
 def same_content(path, html):
