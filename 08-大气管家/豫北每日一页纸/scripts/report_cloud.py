@@ -8,27 +8,32 @@
 本脚本让日报也做到：**云端采集完顺手出报，不需要本机参与。**
 
 输入：<data-hourly>/YYYY-MM-DD.jsonl（air_collect.py 的产出）
-输出：<模块>/daily/<日期>.html + latest.html + index.html
+输出：<模块>/daily/<日期>.html + latest.html + index.html + 模块首页 index.html
 
-渲染代码不在这里重写：直接复用同目录的**镜像副本**
+渲染/配置不在这里重写：直接复用同目录的**镜像副本**
+    config.py      ← 项目 config.py（PROFILES["yubei"]）
     aqi_stats.py   ← 项目 calc/aqi_stats.py
     daily_page.py  ← 项目 report/daily_page.py
+    index_pages.py ← 项目 report/index_pages.py（导航页模板，与本地部署脚本共用一份）
 由项目 deploy_github.py 的 sync_cloud_scripts() 每次自动同步，
 因此不存在"两份模板各改各的"的问题。
 
+时区：runner 是 UTC，脚本启动即切到 Asia/Shanghai —— 否则页面"生成时间"比北京时间少 8 小时。
+
 退出码：0 成功；1 无可用数据（让 workflow 显红，便于告警）
 用法：python report_cloud.py [daily 输出目录]
-环境变量：AIR_DATA_DIR / AIR_DAILY_DIR 可覆盖输入输出目录
+环境变量：AIR_DATA_DIR / AIR_DAILY_DIR / AIR_MODULE_DIR 可覆盖输入输出目录
 """
 import glob
 import gzip
 import json
 import os
 import sys
+import time
 import types
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MODULE = os.path.dirname(HERE)                                  # …/豫北每日一页纸
+MODULE = os.environ.get("AIR_MODULE_DIR") or os.path.dirname(HERE)   # …/豫北每日一页纸
 DATA_DIR = os.path.join(MODULE, "data-hourly")
 DAILY_DIR = os.path.join(MODULE, "daily")
 
@@ -42,31 +47,51 @@ for _name in ("calc", "report"):
     sys.modules.setdefault(_name, _m)
 sys.path.insert(0, HERE)
 
+
+def _fix_tz():
+    """把进程时区改成北京时间。
+
+    云端 runner 默认 UTC，不修的话页面上的"生成：2026-09-24 09:12"实际是北京时间 17:12，
+    对外材料看起来像数据滞后 8 小时（2026-09-24 实测确认存在）。
+
+    ⚠️ Windows 上没有 time.tzset()，且给 MSVCRT 设 TZ=Asia/Shanghai 会被解析失败、
+    反而把本地时间变成 UTC（实测 17:49 → 09:49）。故本机直接跳过：本机系统时区已是北京时间。
+    """
+    if not hasattr(time, "tzset"):
+        return
+    os.environ["TZ"] = "Asia/Shanghai"
+    time.tzset()
+    off = -time.timezone if not time.localtime().tm_isdst else -time.altzone
+    if off != 8 * 3600:
+        print("[警告] 时区未切到北京时间（UTC 偏移 %+.1f h），页面时间会偏差" % (off / 3600.0))
+
+
+_fix_tz()
+
 from report.daily_page import render        # noqa: E402
+from report.index_pages import (SECTIONS, section_index,  # noqa: E402
+                               module_home, write_report)
 from calc.aqi_stats import city_summary     # noqa: E402
+from config import PROFILES                 # noqa: E402
 
-# 与项目 config.PROFILES["yubei"] 对齐（只取渲染需要的键；本文件不引项目 config）
-CFG = {
-    "sample": True,
-    "client_name": "豫北四市（安阳·濮阳·鹤壁·新乡）",
-    "source": "https://air.cnemc.cn:18007  中国环境监测总站·全国城市空气质量实时发布平台",
-}
+# 与项目 config.PROFILES["yubei"] 同源（镜像副本），只取渲染需要的键
+CFG = PROFILES["yubei"]
 
-# 与项目 deploy_github.section_index() 保持同一套静态模板（本地/云端谁生成都一样）
-INDEX_TPL = """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
-<title>大气管家 · 豫北 每日一页纸 · 归档</title><style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Microsoft YaHei',sans-serif;background:#F5F4F0;color:#2B2B28;font-size:14px;line-height:1.7}
-.page{max-width:720px;margin:24px auto;background:#fff;border:1px solid #E2E0D8;border-radius:12px;padding:28px 32px}
-h1{font-size:20px;color:#1F3B2C;border-bottom:3px solid #1F5C45;padding-bottom:10px}
-li{margin:6px 0;list-style:none}a{color:#1F5C45}
-.note{background:#FDF3E7;border:1px solid #E8C99F;border-radius:8px;padding:10px 14px;font-size:12.5px;margin:14px 0}
-</style></head><body><div class="page">
-<h1>大气管家 · 豫北四市每日一页纸（安阳 · 濮阳 · 鹤壁 · 新乡）</h1>
-<div class="note">数据来源：中国环境监测总站·全国城市空气质量实时发布平台（air.cnemc.cn:18007）。页面由自动化流水线每日自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。</div>
-<ul>%s</ul>
-<p style="margin-top:16px"><a href="../index.html">← 返回模块目录</a> ｜ <a href="../../../index.html">env-assets 总目录</a></p>
-</div></body></html>"""
+DAILY_PREFIX = {sub: prefix for sub, prefix, _ in SECTIONS}["daily"]
+DAILY_LABEL = {sub: label for sub, _p, label in SECTIONS}["daily"]
+
+
+def write_index(daily_dir):
+    """重建 daily/index.html。
+
+    模板统一在 report/index_pages.py —— 本地 deploy_github.py 与云端调的是同一份，
+    不再各写一套（过去这里有一份自己的 INDEX_TPL，与本地那份标题、间距都略有差异，
+    两侧轮流跑就会来回覆盖同一文件）。
+    """
+    section_index(daily_dir, DAILY_PREFIX, DAILY_LABEL)
+    dated = [f for f in os.listdir(daily_dir)
+             if f.endswith(".html") and f not in ("index.html", "latest.html")]
+    return len(dated)
 
 
 def _read_file(path):
@@ -124,19 +149,6 @@ def to_rows(recs):
     } for r in recs]
 
 
-def write_index(daily_dir):
-    dated = sorted((f for f in os.listdir(daily_dir)
-                    if f.endswith(".html") and f not in ("index.html", "latest.html")),
-                   reverse=True)
-    items = ""
-    if dated:
-        items += "<li><a href='latest.html'>最新一期</a></li>"
-        items += "\n".join("<li><a href='%s'>%s</a></li>" % (f, f[:-5]) for f in dated)
-    with open(os.path.join(daily_dir, "index.html"), "w", encoding="utf-8") as f:
-        f.write(INDEX_TPL % items)
-    return len(dated)
-
-
 def main():
     data_dir = os.environ.get("AIR_DATA_DIR") or DATA_DIR
     out_dir = (sys.argv[1] if len(sys.argv) > 1
@@ -152,12 +164,12 @@ def main():
 
     os.makedirs(out_dir, exist_ok=True)
     day = tp[:10]
-    dated = os.path.join(out_dir, "%s.html" % day)
-    with open(dated, "w", encoding="utf-8") as f:
-        f.write(html)
-    with open(os.path.join(out_dir, "latest.html"), "w", encoding="utf-8") as f:
-        f.write(html)
+    for name in ("%s.html" % day, "latest.html"):
+        if write_report(os.path.join(out_dir, name), html):
+            print("  [写入] daily/%s" % name)
     n = write_index(out_dir)
+    if module_home(MODULE, SECTIONS):
+        print("  [写入] 模块 index.html（三板块入口）")
 
     print("[日报] %s → daily/%s.html（+ latest.html，归档 %d 期）" % (tp, day, n))
     for c in summaries:

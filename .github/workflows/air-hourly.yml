@@ -1,12 +1,18 @@
-# 大气管家 · 豫北小时采集（云端，不依赖本机开机）
+# 大气管家 · 豫北小时采集 + 出报（云端，不依赖本机开机）
 #
 # 为什么需要它：平台不提供小时级历史接口（实测 404），点位小时值只有实时接口能拿。
-# 本机定时任务关机即停，因此必须由云端采集。
+# 本机定时任务关机即停，因此必须由云端采集；报告同理 —— 本机不跑，公开页就停在旧日期。
 #
 # 部署位置：env-assets/.github/workflows/air-hourly.yml
-# 采集脚本：env-assets/08-大气管家/豫北每日一页纸/scripts/air_collect.py
-# 出报脚本：env-assets/08-大气管家/豫北每日一页纸/scripts/report_cloud.py
-#           （scripts/ 下的脚本由项目 deploy_github.py 自动镜像，勿手工改仓库内副本）
+# 模块目录：env-assets/08-大气管家/豫北每日一页纸/
+#   采集脚本  scripts/air_collect.py        （小时点位值 + 气象 → data-hourly/*.jsonl）
+#   日报脚本  scripts/report_cloud.py       （→ daily/）
+#   周期脚本  scripts/report_cloud_period.py（→ weekly/ monthly/）
+#   ⚠️ scripts/ 下全部由项目 deploy_github.py 自动镜像，勿手工改仓库内副本
+#
+# 公开页（GitHub Pages，推送后自动重建）：
+#   https://song19850425.github.io/env-assets/air.html  ← 短链入口
+#   https://song19850425.github.io/env-assets/08-大气管家/豫北每日一页纸/
 #
 # ✅ 跨境可达性已实测确认（2026-09-24）：海外 runner 能正常访问 air.cnemc.cn:18007，
 #    首轮运行 success，4/4 城市、117 条记录、零错误。原"头号未验证风险"已排除。
@@ -59,15 +65,20 @@ jobs:
       - name: 生成日报（云端出报，本机关机也能刷新公开页）
         run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
 
+      - name: 生成周报 / 月报（周期报告，按"内容不变不落盘"避免 hourly 空提交）
+        run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud_period.py"
+
+      # if: always() —— 上游任一步失败（如跨境取数抖动）时，本次已采到的数据仍要提交，
+      # 否则一小时的数据白采；同时该 run 依旧显示失败，告警不会被静默。
       - name: 提交并推送
+        if: always()
         run: |
           git config user.name  "air-bot"
           git config user.email "air-bot@users.noreply.github.com"
-          git add -A "08-大气管家/豫北每日一页纸/data-hourly"
-          git add -A "08-大气管家/豫北每日一页纸/daily"
+          git add -A "08-大气管家/豫北每日一页纸"
           if git diff --cached --quiet; then
-            echo "无新增数据，跳过提交"
+            echo "无变更，跳过提交"
           else
-            git commit -m "data(air): 小时采集 + 日报 $(date -u +%FT%TZ)"
+            git commit -m "data(air): 采集 + 日报/周报/月报 $(date -u +%FT%TZ)"
             git push
           fi
