@@ -1,0 +1,68 @@
+# 大气管家 · 豫北小时采集（云端，不依赖本机开机）
+#
+# 为什么需要它：平台不提供小时级历史接口（实测 404），点位小时值只有实时接口能拿。
+# 本机定时任务关机即停，因此必须由云端采集。
+#
+# 部署位置：env-assets/.github/workflows/air-hourly.yml
+# 采集脚本：env-assets/08-大气管家/豫北每日一页纸/scripts/air_collect.py
+#
+# ⚠️ 未验证的头号风险：GitHub runner 位于海外，能否访问 air.cnemc.cn:18007 尚未证实。
+#    首次部署后请手动 Run workflow 一次，查看 data-hourly/_health.json 的 ok 字段。
+#    若 ok=false 且错误为超时/连接失败 → 说明跨境被拦，请改用国内云函数方案
+#    （见同目录 scf_handler.py，腾讯云 SCF 国内节点无此问题）。
+#
+# 已知行为（GitHub 官方文档）：
+#  - 最小间隔 5 分钟；cron 为尽力而为，高峰延迟 5–30 分钟属正常，无 SLA
+#  - 仅默认分支（main）上的工作流会按计划触发
+#  - 公开仓库：60 天无活动会自动停用计划任务（本工作流每小时提交，天然保持活跃）
+#  - 整点是全球高峰，故取每小时 17 分
+
+name: 大气管家 · 豫北小时采集
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:        # 支持手动触发与 API 触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: air-hourly
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 采集（点位小时值 + 气象）
+        run: python "08-大气管家/豫北每日一页纸/scripts/air_collect.py" "08-大气管家/豫北每日一页纸/data-hourly"
+
+      - name: 打印健康状态（首轮用于确认跨境可达性）
+        run: |
+          echo "=== _health.json ==="
+          cat "08-大气管家/豫北每日一页纸/data-hourly/_health.json"
+
+      - name: 压缩历史（保留近 3 天明文，更早的 gzip）
+        run: |
+          cd "08-大气管家/豫北每日一页纸/data-hourly"
+          find . -name '[0-9]*.jsonl' -mtime +3 -exec gzip -f {} \;
+
+      - name: 提交并推送
+        run: |
+          git config user.name  "air-bot"
+          git config user.email "air-bot@users.noreply.github.com"
+          git add -A "08-大气管家/豫北每日一页纸/data-hourly"
+          if git diff --cached --quiet; then
+            echo "无新增数据，跳过提交"
+          else
+            git commit -m "data(air): 小时采集 $(date -u +%FT%TZ)"
+            git push
+          fi
