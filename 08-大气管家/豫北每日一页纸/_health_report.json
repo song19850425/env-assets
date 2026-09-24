@@ -1,33 +1,33 @@
 {
- "last_run": "2026-09-25 02:25:48",
+ "last_run": "2026-09-25 06:24:23",
  "tz": "Asia/Shanghai",
  "ok": true,
  "reports": {
   "daily": {
    "ok": true,
-   "timepoint": "2026-09-25T02:00",
+   "timepoint": "2026-09-25T06:00",
    "stations": 21,
    "weather_cities": 4,
-   "weather_aligned": "2026-09-25T02:00",
+   "weather_aligned": "2026-09-25T06:00",
    "period": "2026-09-25",
    "file": "2026-09-25.html",
    "written": 2,
    "archive_count": 3,
-   "at": "2026-09-25 02:25:41"
+   "at": "2026-09-25 06:24:15"
   },
   "weekly": {
    "ok": true,
    "period": "2026-09-18 ~ 2026-09-24",
    "file": "0918_to_0924.html",
-   "written": 3,
-   "at": "2026-09-25 02:25:48"
+   "written": 0,
+   "at": "2026-09-25 06:24:23"
   },
   "monthly": {
    "ok": true,
    "period": "2026-09-11 ~ 2026-09-24",
    "file": "2026-09.html",
-   "written": 2,
-   "at": "2026-09-25 02:25:48"
+   "written": 0,
+   "at": "2026-09-25 06:24:23"
   }
  },
  "stale": [],
