@@ -63,6 +63,10 @@ jobs:
     timeout-minutes: 15
     # 双保险：即便将来改成 PAT 推送（会自激），机器人自己的提交也不会再触发
     if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'data(air)')
+    # 禁止 Python 写 __pycache__：脚本目录被整目录 git add，.pyc 二进制文件一旦入仓
+    # 就会随每次代码改动产生二进制 diff，越滚越大（2026-09-24 实测已误提交 8 个 .pyc）。
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - uses: actions/checkout@v4
 
