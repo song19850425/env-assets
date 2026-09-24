@@ -5,11 +5,12 @@
 #
 # 部署位置：env-assets/.github/workflows/air-hourly.yml
 # 采集脚本：env-assets/08-大气管家/豫北每日一页纸/scripts/air_collect.py
+# 出报脚本：env-assets/08-大气管家/豫北每日一页纸/scripts/report_cloud.py
+#           （scripts/ 下的脚本由项目 deploy_github.py 自动镜像，勿手工改仓库内副本）
 #
-# ⚠️ 未验证的头号风险：GitHub runner 位于海外，能否访问 air.cnemc.cn:18007 尚未证实。
-#    首次部署后请手动 Run workflow 一次，查看 data-hourly/_health.json 的 ok 字段。
-#    若 ok=false 且错误为超时/连接失败 → 说明跨境被拦，请改用国内云函数方案
-#    （见同目录 scf_handler.py，腾讯云 SCF 国内节点无此问题）。
+# ✅ 跨境可达性已实测确认（2026-09-24）：海外 runner 能正常访问 air.cnemc.cn:18007，
+#    首轮运行 success，4/4 城市、117 条记录、零错误。原"头号未验证风险"已排除。
+#    若日后 ok=false 且错误为超时/连接失败，再改用国内节点方案（见同目录 scf_handler.py）。
 #
 # 已知行为（GitHub 官方文档）：
 #  - 最小间隔 5 分钟；cron 为尽力而为，高峰延迟 5–30 分钟属正常，无 SLA
@@ -55,14 +56,18 @@ jobs:
           cd "08-大气管家/豫北每日一页纸/data-hourly"
           find . -name '[0-9]*.jsonl' -mtime +3 -exec gzip -f {} \;
 
+      - name: 生成日报（云端出报，本机关机也能刷新公开页）
+        run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
+
       - name: 提交并推送
         run: |
           git config user.name  "air-bot"
           git config user.email "air-bot@users.noreply.github.com"
           git add -A "08-大气管家/豫北每日一页纸/data-hourly"
+          git add -A "08-大气管家/豫北每日一页纸/daily"
           if git diff --cached --quiet; then
             echo "无新增数据，跳过提交"
           else
-            git commit -m "data(air): 小时采集 $(date -u +%FT%TZ)"
+            git commit -m "data(air): 小时采集 + 日报 $(date -u +%FT%TZ)"
             git push
           fi
