@@ -22,6 +22,8 @@ from datetime import datetime
 
 from calc.brief import (POLL_CN, DISPERSION_LOCAL, DISPERSION_REGION, GB3095_2,
                         PM_RATIO_DUST, city_brief, region_brief, cause_frame, tasks)
+from calc.forecast import forecast_summary
+from calc.review import region_review
 from calc.wind import WIND_CALM, compass, stability, transport
 from report.page_v2 import render_v2
 
@@ -36,21 +38,29 @@ def make_briefs(cfg, rows):
     return briefs
 
 
-def build_wind(briefs, weather, cfg):
+def build_wind(briefs, weather, cfg, extra_air=None):
     """逐市气象研判 + 区域传输判断。
 
     weather: {city: {wind_speed, wind_dir, wind_gust, blh, temp, rh, pressure, precip}}
     （本机来自 city_hourly_weather 表，云端来自 JSONL 的 k=w 记录，字段名一致）
+    extra_air: 省外上风向城市的城市级浓度 {city: {"pm25_mean":..}}，用于补上传输盲区。
+
+    为什么把 neighbors 合进 coords：上风向判定是"目标城市→其它城市"的方位角比较，
+    备选集合必须包含邻居城市才可能命中（此前 neighbors 为空，安阳/濮阳经常输出
+    "无同组上风向城市"）。未提供 extra_air 时自动退回"仅本地四市"的旧行为 ——
+    云端若未采邻居城市，页面会如实降级，不会假装判过。
     """
-    coords = cfg.get("coords") or {}
-    air = {c["city"]: c for c in briefs}
+    coords = dict(cfg.get("coords") or {})
+    coords.update(cfg.get("neighbor_coords") or {})
+    air = {c["city"]: {"pm25_mean": c.get("pm25_mean"), "aqi_rt": c.get("aqi_rt")} for c in briefs}
+    for k, v in (extra_air or {}).items():
+        air[k] = {"pm25_mean": (v or {}).get("pm25_mean"), "aqi_rt": (v or {}).get("aqi_rt")}
     out = {}
     for c in briefs:
         w = weather.get(c["city"]) or {}
         ws, blh, wd = w.get("wind_speed"), w.get("blh"), w.get("wind_dir")
         level, desc = stability(ws, blh)
-        tp = transport(c["city"], wd, coords,
-                       {k: {"pm25_mean": v.get("pm25_mean")} for k, v in air.items()})
+        tp = transport(c["city"], wd, coords, air)
         out[c["city"]] = {
             "wind_speed": ws, "wind_dir": wd, "wind_dir_cn": compass(wd),
             "wind_gust": w.get("wind_gust"), "blh": blh, "temp": w.get("temp"),
@@ -59,6 +69,72 @@ def build_wind(briefs, weather, cfg):
             "rh_flag": (w.get("rh") is not None and w["rh"] >= 80 and (ws or 99) < WIND_CALM),
         }
     return out
+
+
+def bias_check(rows, forecast_series, timepoint, cities):
+    """同小时「实测 vs 模式」偏差自检。
+
+    存在的理由：CAMS 是约 40 km 的全球模式，对本市存在**系统性偏差**。
+    2026-09-25 实测：模式 PM2.5 比同期实测高 11%~328%（鹤壁、新乡最明显），
+    臭氧预报值低约一半。把这种未订正的绝对值当"本地预报"发布，会直接误导管控决策
+    （把模式高估读成"明天要污染"，或把臭氧低估读成"不会超标"）。
+    故把偏差量级**当场算出来给读者看**，而不是藏在免责声明里。
+    """
+    out = []
+    for c in cities:
+        obs = [r.get("pm25") for r in rows
+               if r.get("city") == c and r.get("pm25") is not None]
+        obs_m = round(sum(obs) / len(obs), 1) if obs else None
+        mod = None
+        for r in (forecast_series.get(c) or []):
+            if str(r.get("timepoint"))[:16] == str(timepoint)[:16]:
+                mod = r.get("pm25")
+                break
+        out.append({"city": c, "obs": obs_m, "mod": mod})
+    return {"rows": out, "tp": timepoint}
+
+
+def _extra_evidence(timepoint, review, region_rev, fcst, bias, neighbor_air, cfg):
+    """回顾段与预报段的证据链 —— 新增章节必须同等地可复核，不能只写结论。"""
+    ev = []
+    if review:
+        ev.append("日评价回顾来源：平台城市日历史接口（<code>HourChangesPublish/"
+                  "GetCityDayAqiHistoryByCondition</code>，按城市代码查询），落库表 "
+                  "<code>city_daily</code>；距平基准为评价日<b>之前</b>近 14 天均值"
+                  "（被评价日不计入，避免自我包含）。")
+    if region_rev:
+        ev.append("污染结构判据：近 %d 天各市首要污染物按日评价结果统计 —— 臭氧 %d 天、"
+                  "PM2.5 %d 天、PM10 %d 天；结论「以%s为主导」即由此判定。"
+                  % (region_rev["n_days"], region_rev["o3_days"], region_rev["pm25_days"],
+                     region_rev["pm10_days"], region_rev["lead"]))
+    if fcst:
+        ev.append("预报接口：<code>air-quality-api.open-meteo.com/v1/air-quality</code>"
+                  "（CAMS 全球模式，免密钥）；要素 <code>pm2_5 / pm10 / ozone / no2 / so2 / co</code>，"
+                  "逐时、过去 1 天 + 未来 3 天。"
+                  "<b>CO 已由 μg/m³ 折算为 mg/m³</b>，与平台口径及 HJ 633 IAQI 分段一致。")
+        ev.append("预报算法：逐时 O₃ 取 8 小时滑动平均（窗口不足 8 项记缺测，不补零）；"
+                  "各项按 HJ 633-2012 分段算 IAQI，该小时 AQI = 各 IAQI 取最大，"
+                  "首要污染物 = 对应项；未来 24h = 严格晚于数据时点的 24 个整点。")
+    if bias:
+        got = [b for b in bias["rows"] if b["obs"] and b["mod"]]
+        if got:
+            ev.append("⚠️ <b>模式偏差自检（同日同时刻，实测城市均值 vs 模式值）</b>：%s。"
+                      "模式在本市存在系统性偏差，故预报节的绝对值<b>只能用于比较时段高低</b>，"
+                      "未做 MOS（模式输出统计）订正前不得作为预测值引用。"
+                      % "；".join("%s %.1f→%.1f" % (b["city"][:2], b["obs"], b["mod"]) for b in got))
+    if cfg.get("neighbors"):
+        if neighbor_air:
+            ev.append("传输研判城市池：本地 %d 市 + 省外上风向 %d 市（%s），共 %d 市。"
+                      "邻居城市浓度取自实时接口同小时城市均值，与本地口径一致。"
+                      % (len(cfg["cities"]), len(neighbor_air),
+                         "、".join(c[:2] for c in sorted(neighbor_air)),
+                         len(cfg["cities"]) + len(neighbor_air)))
+        else:
+            ev.append("⚠️ 传输研判城市池：本次<b>未取得省外上风向城市数据</b>"
+                      "（配置已列 %s），上风向判定仅在本地 %d 市内成立，"
+                      "结论可能因盲区而偏保守（「判不出」不等于「没有传输」）。"
+                      % ("、".join(c[:2] for c in cfg["neighbors"]), len(cfg["cities"])))
+    return ev
 
 
 def evidence_chain(rows, cities, timepoint, cfg, weather=None, werr=None, raw_note=None):
@@ -106,10 +182,16 @@ def evidence_chain(rows, cities, timepoint, cfg, weather=None, werr=None, raw_no
     return ev
 
 
-def build(cfg, rows, timepoint, weather=None, werr=None, raw_note=None):
+def build(cfg, rows, timepoint, weather=None, werr=None, raw_note=None,
+          review=None, forecast_series=None, neighbor_air=None):
     """构建日报。rows 为点位行（键名与 ingest/fetch_air、core.db.load_hour 一致）。
 
-    返回 dict(html, briefs, region, causes, actions, winds, evidence)，
+    三个新增入参**全部可选**，缺省即优雅降级（云端拿不到时该节自动隐藏，不写占位）：
+      review          calc.review.build_review 的输出 —— 日评价回顾（依赖 city_daily）
+      forecast_series {city: calc.forecast.hourly_aqi 的输出} —— 未来 24h 模式趋势
+      neighbor_air    {city: {"pm25_mean":..}} —— 省外上风向城市浓度，用于补传输盲区
+
+    返回 dict(html, briefs, region, causes, actions, winds, evidence, ...)，
     调用方自行决定落盘位置（本机 out/ 与云端 daily/ 的路径并不相同）。
     """
     cities = cfg["cities"]
@@ -119,16 +201,30 @@ def build(cfg, rows, timepoint, weather=None, werr=None, raw_note=None):
     briefs = make_briefs(cfg, rows)
     region = region_brief(briefs)
     causes = cause_frame(briefs, region)
-    action_list = tasks(briefs, region)
+    region_rev = region_review(review, cities) if review else None
+    action_list = tasks(briefs, region, region_rev)
 
     weather = weather or {}
-    winds = build_wind(briefs, weather, cfg) if weather else {}
-    evidence = evidence_chain(rows, cities, timepoint, cfg, weather, werr, raw_note)
+    winds = build_wind(briefs, weather, cfg, extra_air=neighbor_air) if weather else {}
 
-    html = render_v2(briefs, region, causes, action_list, timepoint, cfg, evidence, winds)
+    fcst, bias = {}, None
+    if forecast_series:
+        for city, ser in forecast_series.items():
+            s = forecast_summary(ser, timepoint, 24, first_day=str(timepoint)[:10])
+            if s:
+                fcst[city] = s
+        if fcst:
+            bias = bias_check(rows, forecast_series, timepoint, cities)
+
+    evidence = evidence_chain(rows, cities, timepoint, cfg, weather, werr, raw_note)
+    evidence.extend(_extra_evidence(timepoint, review, region_rev, fcst, bias, neighbor_air, cfg))
+
+    html = render_v2(briefs, region, causes, action_list, timepoint, cfg, evidence, winds,
+                     review=review, region_rev=region_rev, forecast=fcst, bias=bias)
     return {"html": html, "briefs": briefs, "region": region,
             "causes": causes, "actions": action_list,
-            "winds": winds, "evidence": evidence}
+            "winds": winds, "evidence": evidence,
+            "review": review, "region_rev": region_rev, "forecast": fcst, "bias": bias}
 
 
 def print_summary(result, timepoint, n_rows):

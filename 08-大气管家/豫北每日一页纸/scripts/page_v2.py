@@ -31,6 +31,19 @@ def fmt(v, d=0):
     return ("%.*f" % (d, v))
 
 
+def _hh(tp, base_date=None):
+    """'2026-09-26T07:00' → '07:00'；若晚于基准日则标「次日07:00」，避免与当日时刻混淆。
+
+    基准日必须由调用方传入（数据时点的日期），不用 now() —— 报告可复算，
+    不能因为"什么时候生成"而改变内容。
+    """
+    s = str(tp)
+    hh = s[11:16]
+    if base_date and s[:10] > base_date:
+        return "次日" + hh
+    return hh
+
+
 def _hl(v, limit, unit=""):
     """超限值标红"""
     if v is None:
@@ -40,7 +53,124 @@ def _hl(v, limit, unit=""):
     return "%g%s" % (v, unit)
 
 
-def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, winds=None):
+def lv_tag(aqi):
+    """只显示等级名的小标签（用在回顾/预报表里，数值另有列）"""
+    name, bg, fg = aqi_level(aqi)
+    return "<span class='tag' style='background:%s;color:%s'>%s</span>" % (bg, fg, name)
+
+
+def _review_section(review, region_rev, cities):
+    """一、日评价回顾 —— 早间日报的判据段（替代"用 07:00 瞬时帧下结构结论"）
+
+    为什么放在最前面：早间瞬时帧系统性偏向 PM2.5 与"局地源"（臭氧未生成、
+    夜间颗粒物累积、边界层最低），不能用来判污染结构。日评价口径才是可引用的。
+    """
+    if not review:
+        return ""
+    rows = ""
+    for c in cities:
+        r = review.get(c["city"])
+        if not r:
+            continue
+        ref, anom = r["ref"], r["aqi_anom"]
+        anom_txt = "—" if anom is None else "%+.0f" % anom
+        anom_cls = "" if anom is None else ("bad" if anom > 0 else "ok")
+        rows += ("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+                 "<td>%s</td><td class='%s'>%s</td><td>%s</td><td>%s</td></tr>") % (
+            c["city"][:2], ref["date"], chip(ref["aqi"]),
+            (ref["primary"] or "—"),
+            fmt(r["aqi_mean14"], 1), anom_cls, anom_txt,
+            ("%s%%" % r["o3_share"]) if r["o3_share"] is not None else "—",
+            r["over100_days"],
+        )
+    if not rows:
+        return ""
+    roll = ""
+    if region_rev:
+        roll = "<div class='note'>%s</div>" % region_rev["html"]
+    return """
+<h2>一、日评价回顾（判据段）</h2>
+<div class="legend">本节用<b>平台日评价口径</b>（城市日 AQI / 首要污染物 / 24h 值），
+是<b>可对外引用</b>的口径；与后半部分"实时口径"不是一回事。<b>距平</b>为评价日 AQI 减去
+其<b>之前</b>近 14 天均值（被评价日不计入均值，避免自我包含压低距平）。</div>
+%s
+<div class="tscroll"><table>
+<tr><th>城市</th><th>评价日</th><th>日 AQI</th><th>首要污染物</th>
+<th>近14天<br>AQI均值</th><th>距平</th><th>近14天<br>臭氧首要占比</th><th>AQI&gt;100<br>天数</th></tr>
+%s</table></div>
+%s""" % (
+        "<div class='legend'>数据滞后提示：平台日评价数据通常晚一天发布，"
+        "本节评价日与实际「昨日」可能不一致，以表中<b>评价日</b>列为准。</div>",
+        rows, roll,
+    )
+
+
+def _forecast_section(forecast, bias, cities, timepoint):
+    """二、未来 24 小时模式趋势 —— 预报段（此前完全缺失，管控决策缺依据）
+
+    ⚠️ 本节的写法是刻意的：**不给"预测 AQI 会是多少"，只给"哪几个小时相对更高"**。
+    原因见下表"模式偏差自检"——2026-09-25 实测：模式 PM2.5 比实测同期高 11%~328%、
+    臭氧低约一半。未做 MOS 订正前，绝对值引用会误导（把模式高估读成"明天要污染"）。
+    """
+    if not forecast:
+        return ""
+    base = str(timepoint)[:10]
+    rows = ""
+    for c in cities:
+        f = forecast.get(c["city"])
+        if not f:
+            continue
+        rows += ("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
+                 "<td>%s</td><td>%s</td><td>%s</td></tr>") % (
+            c["city"][:2],
+            fmt(f["peak_aqi"], 0) + "（%s）" % _hh(f["peak_tp"], base),
+            lv_tag(f["peak_aqi"]),
+            f["primary_main"] + ("（%d/%d 小时）" % (f["primary_main_n"], f["n"]) if f["n"] else ""),
+            f["over100_hours"],
+            fmt(f["o3_8h_day_max"], 0) if f["o3_8h_day_max"] is not None else "—",
+            "、".join(_hh(t, base) for t in f["window_tps"]) if f["window_tps"] else "—",
+        )
+    if not rows:
+        return ""
+
+    bias_html = ""
+    if bias:
+        brows = ""
+        for b in bias["rows"]:
+            if b["obs"] is None or b["mod"] is None:
+                continue
+            ratio = (b["mod"] / b["obs"]) if b["obs"] else None
+            brows += "<tr><td>%s</td><td>%s</td><td>%s</td><td class='%s'>%s</td></tr>" % (
+                b["city"][:2], fmt(b["obs"], 1), fmt(b["mod"], 1),
+                "bad" if (ratio or 1) > 1.3 else "ok",
+                ("%.2f×" % ratio) if ratio else "—")
+        if brows:
+            bias_html = """
+<div class="legend"><b>模式偏差自检</b>（数据时点同小时，实测城市均值 vs 模式预报值）：
+未订正的模式值在本市存在<b>系统性偏差</b>，故本节的 AQI 数值<b>只可用于比较时段高低，
+不可作为"明天 AQI 会是多少"的预测</b>。</div>
+<div class="tscroll"><table>
+<tr><th>城市</th><th>PM2.5 实测</th><th>PM2.5 模式</th><th>模式/实测</th></tr>
+%s</table></div>""" % brows
+
+    return """
+<h2>二、未来 24 小时模式趋势（未订正，仅供时段参考）</h2>
+<div class="note"><b>口径声明：</b>本节为 <b>CAMS 全球模式预报值</b>（ECMWF 哥白尼大气监测服务，
+约 40 km 网格、城市尺度），<b>不是国控点位本地实测</b>；已发现对本市存在系统性偏差（见下"模式偏差自检"）。
+用途仅限：<b>判断未来 24 小时内哪几个小时相对更高、峰值大致出现在几点</b>。
+<b>禁止</b>将其绝对值作为达标判据、考核依据或对外正式结论；与实测冲突时以实测为准。</div>
+<div class="tscroll"><table>
+<tr><th>城市</th><th>模式峰值 AQI<br>（时段）</th><th>模式等级</th><th>模式主导污染物</th>
+<th>模式 AQI&gt;100<br>小时数</th><th>模式 O₃-8h<br>当日最大</th><th>相对高值时段</th></tr>
+%s</table></div>
+%s
+<div class="legend">O₃-8h 为模式逐时 O₃ 的 8 小时滑动平均（窗口不足 8 小时记缺测，不补零），
+口径与 GB 3095-2012 的 O₃-8h 一致。模式对本地臭氧存在明显低估（见自检），
+因此<b>不能用"模式未超 160"推断"不会臭氧超标"</b>。</div>""" % (rows, bias_html)
+
+
+def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, winds=None,
+              review=None, region_rev=None, forecast=None, bias=None):
     winds = winds or {}
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     sample = cfg.get("sample", True)
@@ -69,13 +199,26 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
         "属<b>筛查口径</b>；GB 3095-2012 对该项的评价对象是<b>日最大 8 小时滑动平均</b>，"
         "二者不可混用。当日是否真的超标，须待当日数据完整后复核。</p>"
     ) if _o3_screen else ""
+    # 早间帧提示：本项目的实测规律是"日变化 > 日际变化"，单帧不足以支撑结构结论。
+    # 07:00 帧臭氧尚未生成、PM2.5 处夜间累积峰值、边界层最低 —— 此时判出的
+    # "首要污染物/成因类型"若不加提示，会被读成全天结论（曾把 07:00 的 PM2.5 判读
+    # 直接写成全天结构，当日午后实际全部转良、首要转为臭氧）。
+    _hh_int = int(str(timepoint)[11:13]) if len(str(timepoint)) >= 13 else 12
+    morning_note = (
+        "<p class='legend'><b>帧时点提示：</b>本页实况取自 <b>%s</b> 的<b>早间瞬时帧</b>。"
+        "此时臭氧尚未生成（O₃-8h 常整层缺测）、PM2.5 处于夜间累积峰值、边界层高度接近全天最低，"
+        "因此本节的<b>首要污染物与成因类型不代表全天结构</b>。"
+        "全天结构请以「一、日评价回顾」为准，未来趋势请以「二、未来 24 小时模式趋势」为准。</p>"
+        % str(timepoint)[11:16]
+    ) if _hh_int < 10 else ""
+
     verdict = (
         "<p><b>实时口径</b>：%d 个点位中有 <b>%d 个</b>当前 AQI&gt;100，四市实时城市 AQI "
         "由高到低为 %s，%s。</p>"
         "<p><b>日均（达标）口径</b>：改用平台 24h 滑动均值对照 GB 3095-2012 二级限值后，"
         "超标点位仅 <b>%d 个</b>——%s。"
         "两套口径差异显著，引用时须注明所用口径。</p>"
-        "%s<p>%s</p>"
+        "%s%s<p>%s</p>"
     ) % (
         total_n, total_rt,
         "、".join("%s %.0f" % (c["city"][:2], c["aqi_rt"]) for c in
@@ -86,6 +229,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
             e["city"][:2], e["station"],
             "、".join("%s %g μg/m³ &gt; %d" % (h[0], h[1], h[2]) for h in e["hits"]))
             for e in [x for c in cities for x in c["exceed_dy"]]) if total_dy else "全部点位日均口径达标"),
+        morning_note,
         o3_note,
         region["text"].replace("**", ""),
     )
@@ -207,6 +351,30 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 
     ev = "".join("<li>%s</li>" % e for e in evidence)
 
+    # 回顾段与预报段在模板最前面 —— 顺序刻意：先判据（日评价/基线）→ 再看趋势 → 最后看瞬时实况
+    review_sec = _review_section(review, region_rev, cities)
+    fcst_sec = _forecast_section(forecast, bias, cities, timepoint)
+
+    # 顶部口径声明随"实际有哪些章节"自适应：云端若拿不到日历史/预报，
+    # 页面不能继续声称"本页先回顾昨日再报未来"—— 文案与内容不符比少一节更糟。
+    if review_sec and fcst_sec:
+        note_html = ("本页区分三套口径：<b>日评价口径</b>（平台城市日 AQI，<b>可对外引用</b>）／"
+                     "<b>实时口径</b>（平台当前小时浓度，反映瞬时高值）／"
+                     "<b>模式预报口径</b>（CAMS 全球模式，仅供趋势）。"
+                     "引用结论前请确认口径。本页顺序刻意如此："
+                     "<b>先回顾昨日与近 14 天基线 → 再看未来 24 小时趋势 → 最后看当前实况</b>——"
+                     "因为单帧瞬时值不足以支撑污染结构结论（见「三、今日实况研判」的帧时点提示）。")
+    elif review_sec or fcst_sec:
+        which = "回顾" if review_sec else "趋势"
+        note_html = ("本页区分三套口径：<b>日评价口径</b>（可对外引用）／<b>实时口径</b>（当前小时浓度）／"
+                     "<b>模式预报口径</b>（CAMS，仅供趋势）。本次<b>未能取得全部补充数据</b>，"
+                     "仅呈现%s相关章节，其余章节按数据可得性自动省略（不影响已列结论的有效性）。" % which)
+    else:
+        note_html = ("本页区分两套口径：<b>实时口径</b>（平台当前小时浓度，反映瞬时高值）与"
+                     "<b>日均（达标）口径</b>（24h 滑动均值对 GB 3095-2012 二级限值，用于达标判定）。"
+                     "本次<b>未取得日评价历史与模式预报数据</b>，故无回顾段与预报段；"
+                     "引用结论前请确认口径。")
+
     # ── 气象条件与区域传输 ──
     LEVEL_CLS = {"不利": "lv-bad", "较不利": "lv-warn", "一般": "lv-mid", "有利": "lv-ok", "待核": "lv-mid"}
     wind_rows, wind_notes = "", ""
@@ -241,7 +409,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
     wind_section = ""
     if wind_rows:
         wind_section = """
-<h2>六、气象条件与区域传输</h2>
+<h2>八、气象条件与区域传输</h2>
 <div class="tscroll"><table>
 <tr><th>城市</th><th>风速<br>(m/s)</th><th>风向<br>(来向)</th><th>阵风<br>(m/s)</th>
 <th>边界层高度<br>(m)</th><th>相对湿度</th><th>扩散条件</th></tr>
@@ -262,17 +430,17 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
   </div>%s
 </div>
 
-<div class="note">本页区分两套口径：<b>实时口径</b>（平台当前小时浓度，反映瞬时高值）与
-<b>日均（达标）口径</b>（24h 滑动均值对 GB 3095-2012 二级限值，用于达标判定）。
-引用结论前请确认口径。</div>
+<div class="note">%s</div>
 
-<h2>一、今日研判</h2>
+%s
+%s
+<h2>三、今日实况研判</h2>
 <div class="verdict">%s</div>
 
-<h2>二、四市核心指标</h2>
+<h2>四、四市核心指标</h2>
 <div class="cards">%s</div>
 
-<h2>三、双口径对照（口径差异是引用结论的关键）</h2>
+<h2>五、双口径对照（口径差异是引用结论的关键）</h2>
 <div class="tscroll"><table>
 <tr><th>城市</th><th>实时城市<br>AQI</th><th>日均城市<br>AQI</th><th>点位 AQI<br>平均</th>
 <th>PM2.5<br>实时</th><th>PM2.5·24h<br>(限 75)</th><th>PM10 实时/24h<br>(限 150)</th><th>日均口径判定</th></tr>
@@ -280,26 +448,29 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 <div class="legend">注：城市 AQI 按 HJ 663-2013「点位平均法」计算（先取各点位浓度算术平均，再算 IAQI 取最大）。
 「点位 AQI 平均」与「最差点位 AQI」列为对照，不代表城市评价值。红色为该值超过 GB 3095-2012 二级限值。</div>
 
-<h2>四、点位异常清单（全量 %d 个点位，按当前 AQI 降序）</h2>
+<h2>六、点位异常清单（全量 %d 个点位，按当前 AQI 降序）</h2>
 <div class="tscroll"><table>
 <tr><th>城市</th><th>点位</th><th>实时 AQI</th><th>PM2.5</th><th>PM2.5·24h</th><th>PM10</th><th>O₃-8h</th></tr>
 %s</table></div>
 <div class="legend">底色标出为当前 AQI&gt;100 的点位；PM2.5·24h 加粗表示超过 24h 滑动均值对应的二级限值 75 μg/m³。
 本清单为全量列示，不做人工挑选，以保证排序可复核。</div>
 
-<h2>五、核心污染物（点位平均浓度，μg/m³）</h2>
+<h2>七、核心污染物（点位平均浓度，μg/m³）</h2>
 <div class="tscroll"><table>
 <tr><th>城市</th><th>PM2.5 实时</th><th>PM2.5·24h</th><th>PM10 实时</th><th>PM10·24h</th><th>O₃-8h 均值</th><th>O₃-8h 峰值</th></tr>
 %s</table></div>
 
 %s
 
-<h2>七、污染成因研判框架</h2>
+<h2>九、污染成因研判框架</h2>
 <div class="legend">以下每条均挂可自动复算的判别指标；指标不足时不出结论。PM10/PM2.5≥%.1f 判扬尘型，
 同城点位极差比≥%.1f 判局地特征，四市均值极差比≤%.2f 判区域同步。</div>
 %s
 
-<h2>八、今日重点行动任务</h2>
+<h2>十、管控行动任务</h2>
+<div class="legend">措施必须与<b>污染结构</b>匹配（判据见「一、日评价回顾」）：
+臭氧主导期控 <b>VOCs / NOx 前体物</b>，颗粒物主导期控 <b>扬尘 / 燃烧源</b>。
+结构错配的典型症状是「措施很忙、指标不动」。任务中的点位/时段均可由前文数据复算。</div>
 %s
 
 <div class="audit">
@@ -319,6 +490,8 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 </div>
 </div></body></html>""" % (
         timepoint, CSS, timepoint, now, stamp,
+        note_html,
+        review_sec, fcst_sec,
         verdict, cards, cmp_rows,
         total_n, detail, pol,
         wind_section,

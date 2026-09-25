@@ -236,6 +236,85 @@ def _fallback_weather(missing, timepoint):
     return out, max((v["timepoint"] for v in out.values()), default="")
 
 
+DAILY_CACHE = os.path.join(MODULE, "data-daily", "city_daily.json")
+
+
+def _load_daily_cache():
+    try:
+        with open(DAILY_CACHE, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _refresh_daily_cache(cities, today):
+    """云端日历史：按天刷新一次，顺带把 14 天滚动窗口固化进仓库。
+
+    为什么不每小时都抓：平台日历史一天只更新一次，每小时重复请求 10 个城市既无意义
+    也不礼貌；更关键的是**平台只有 14 天滚动窗口**，落进仓库才是真正把数据保住。
+    """
+    cache = _load_daily_cache()
+    if cache.get("updated") == today and cache.get("cities"):
+        return cache, True
+    from ingest.fetch_history import fetch_daily
+    got, errs = [], []
+    for c in cities:
+        try:
+            got += fetch_daily(c)
+        except Exception as e:
+            errs.append("%s: %s" % (c, str(e)[:80]))
+    if got:
+        store = cache.get("cities") or {}
+        for r in got:
+            store.setdefault(r["city"], {})[r["date"]] = r
+        cache = {"updated": today, "cities": store}
+        try:
+            os.makedirs(os.path.dirname(DAILY_CACHE), exist_ok=True)
+            with open(DAILY_CACHE, "w", encoding="utf-8") as f:
+                json.dump(cache, f, ensure_ascii=False, indent=1)
+            print("[回顾] 日历史已刷新并固化（%d 城）" % len(store))
+        except Exception as e:
+            print("[回顾] 缓存写盘失败：%s" % e)
+    if errs:
+        print("[回顾] 部分城市日历史失败：%s" % "；".join(errs))
+    return cache, False
+
+
+def _review_from_cache(cache, cities):
+    """缓存 → calc.review.build_review 的输入格式 {city: [按日期升序的行]}"""
+    from calc.review import build_review
+    store = cache.get("cities") or {}
+    daily = {}
+    for c in cities:
+        d = store.get(c) or {}
+        daily[c] = [d[k] for k in sorted(d)]
+    return build_review(daily, cities)
+
+
+def _supplementary(cfg, cities, today):
+    """云端补充数据：日评价回顾 / 未来 24h 预报 / 省外上风向城市。
+
+    全部容错 —— 任一来源失败，对应章节由页面自动省略（并如实改写顶部口径声明），
+    绝不让"少一节"变成"整张日报出不来"。这与本机 run_daily 的行为一致。
+    """
+    review, neighbor_air, fcst = None, {}, {}
+    try:
+        cache, _fresh = _refresh_daily_cache(
+            list(cities) + list(cfg.get("neighbors") or []), today)
+        review = _review_from_cache(cache, cities) or None
+    except Exception as e:
+        print("[回顾] 生成失败（该节省略）：%s" % e)
+    try:
+        from ingest.assemble import fetch_forecast_series, fetch_neighbors
+        neighbor_air, _nrows, n_err = fetch_neighbors(cfg, archive=False)
+        for e in n_err:
+            print("[上风向] %s" % e)
+        fcst, _f_err = fetch_forecast_series(cfg)
+    except Exception as e:
+        print("[预报/上风向] 采集失败（相关章节省略）：%s" % e)
+    return review, neighbor_air, fcst
+
+
 def main():
     data_dir = os.environ.get("AIR_DATA_DIR") or DATA_DIR
     out_dir = (sys.argv[1] if len(sys.argv) > 1
@@ -250,8 +329,10 @@ def main():
     cities = CFG["cities"]
     rows = to_rows(recs)
     weather, missing, aligned = _read_weather(data_dir, tp, cities)
+    review, neighbor_air, fcst = _supplementary(CFG, cities, tp[:10])
     result = build(CFG, rows, tp, weather=weather,
-                   werr=["%s 无气象记录" % c for c in missing], raw_note=RAW_NOTE)
+                   werr=["%s 无气象记录" % c for c in missing], raw_note=RAW_NOTE,
+                   review=review, forecast_series=fcst, neighbor_air=neighbor_air)
 
     os.makedirs(out_dir, exist_ok=True)
     day = tp[:10]
@@ -273,6 +354,9 @@ def main():
         "weather_cities": len(weather), "weather_aligned": aligned,
         "period": day, "file": "%s.html" % day, "written": written,
         "archive_count": n,
+        # 补充数据的到位情况要进健康档案：否则"某节悄悄消失"没人会发现
+        "review": bool(review), "forecast_cities": len(fcst),
+        "neighbor_cities": len(neighbor_air),
     })
     return 0
 

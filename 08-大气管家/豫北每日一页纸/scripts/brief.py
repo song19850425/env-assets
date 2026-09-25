@@ -184,9 +184,28 @@ def cause_frame(cities, region):
     return out
 
 
-def tasks(cities, region):
-    """今日重点行动：只在有依据时给动作，并标明依据口径"""
+def tasks(cities, region, region_rev=None):
+    """今日重点行动：只在有依据时给动作，并标明依据口径。
+
+    region_rev 传入时（calc.review.region_review 的输出），会按**污染结构**调整措施路线。
+    为什么必须这么做（这是本项目最贵的一个错配）：实测 2026-09-10~09-23 四市
+    79% 的天数首要污染物是臭氧、O₃-8h 均值 146–154（贴近 160 限值），
+    但行动任务长期只写"走航排查局地源 + 加密洒水降尘" —— 那是控**颗粒物**的路线，
+    对臭氧基本无效（臭氧要控 VOCs / NOx 前体物）。结果是"措施很忙、指标不动"。
+    """
     out = []
+    ozone_lead = bool(region_rev and region_rev.get("lead") == "臭氧")
+    if ozone_lead:
+        out.append({"city": "区域共同（四市同此路线）", "acts": [
+            "【臭氧路线·前体物管控】本阶段首要污染物以<b>臭氧</b>为主（近 %d 天四市单市最高 %d 天为臭氧首要，"
+            "O₃-8h 均值约 %s μg/m³），须按 <b>VOCs 与 NOx 前体物</b>分配措施："
+            "涉 VOCs 企业（涂装/印刷/化工/包装/家具）错峰生产与无组织排放检查、"
+            "加油站油气回收与错峰装卸（避开 08–18 时）、餐饮油烟净化设施运行核查、"
+            "重点路段机动车疏导与怠速管控。"
+            % (region_rev["n_days"], region_rev["o3_days"], region_rev["o3_mean"]),
+            "【路线纠偏提示】扬尘/洒水措施对臭氧<b>无效</b>，勿占满日程；"
+            "颗粒物路线仅在当日 PM10/PM2.5 比值偏高或出现颗粒物高值时启用。",
+        ]})
     for c in cities:
         acts = []
         if c["exceed_dy_cnt"]:
