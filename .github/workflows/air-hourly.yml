@@ -6,6 +6,7 @@
 # 部署位置：env-assets/.github/workflows/air-hourly.yml
 # 模块目录：env-assets/08-大气管家/豫北每日一页纸/
 #   采集脚本  scripts/air_collect.py        （小时点位值 + 气象 → data-hourly/*.jsonl）
+#   看板脚本  scripts/report_cloud_hourly.py（读 data-hourly → hourly/index.html）
 #   日报脚本  scripts/report_cloud.py       （→ daily/）
 #   周期脚本  scripts/report_cloud_period.py（→ weekly/ monthly/）
 #   ⚠️ scripts/ 下全部由项目 deploy_github.py 自动镜像，勿手工改仓库内副本
@@ -86,6 +87,9 @@ jobs:
         run: |
           cd "08-大气管家/豫北每日一页纸/data-hourly"
           find . -name '[0-9]*.jsonl' -mtime +3 -exec gzip -f {} \;
+
+      - name: 生成小时序列看板（读 data-hourly JSONL，Pages 上随采集自动刷新）
+        run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud_hourly.py"
 
       - name: 生成日报（云端出报，本机关机也能刷新公开页）
         run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud.py"

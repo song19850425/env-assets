@@ -129,16 +129,24 @@ def section_index(sub_dir, prefix, label):
 
 
 def module_home(module_dir, sections=SECTIONS):
-    """生成模块首页 <模块>/index.html（三板块入口 + 归档期数）。返回是否写入。"""
+    """生成模块首页 <模块>/index.html（各板块入口 + 归档期数）。返回是否写入。
+
+    小时序列看板是单页（无归档），由**云端** report_cloud_hourly.py 生成到 模块/hourly/index.html；
+    本机 deploy 只重建导航页、不产出该文件。故入口**只在文件确实存在时**才输出 ——
+    否则本机 deploy 的死链自检会把它当成死链（云端先产出、本机后对齐，两侧结果自然一致）。
+    """
     secs = ""
     for sub, _prefix, label in sections:
         n = len(dated_files(os.path.join(module_dir, sub)))
         secs += "<li><a href='%s/latest.html'>%s · 最新一期</a> ｜ <a href='%s/index.html'>归档（%d 期）</a></li>" % (
             sub, label, sub, n)
+    if os.path.exists(os.path.join(module_dir, "hourly", "index.html")):
+        secs += ("<li><a href='hourly/index.html'>小时序列看板 · 最近 7 天</a>"
+                 "（逐时点位值 + 采集覆盖 + 气象；含「缺了哪些小时」）</li>")
     html = """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
 <title>大气管家 · 豫北每日一页纸</title><style>%s</style></head><body><div class="page">
 <h1>大气管家 · 豫北四市空气质量报告（安阳 · 濮阳 · 鹤壁 · 新乡）</h1>
-<div class="note">%s。全部页面由自动化流水线自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。周期口径：日报=当日实时；周报=最近 7 个完整日；月报=平台开放历史窗口（整月口径随本地数据库积累切换）。</div>
+<div class="note">%s。全部页面由自动化流水线自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。周期口径：日报=当日实时；周报=最近 7 个完整日；月报=平台开放历史窗口（整月口径随本地数据库积累切换）；小时看板=近 7 天逐时点位值。</div>
 <ul>%s</ul>
 <p style="margin-top:16px"><a href="../../index.html">← 返回 env-assets 总目录</a></p>
 </div></body></html>""" % (_CSS.replace("LI_MARGIN", "8px"), SOURCE_NOTE, secs)
