@@ -1,14 +1,14 @@
 {
- "last_run": "2026-09-26 06:20:40",
+ "last_run": "2026-09-26 09:34:12",
  "tz": "Asia/Shanghai",
  "ok": true,
  "reports": {
   "daily": {
    "ok": true,
-   "timepoint": "2026-09-26T05:00",
+   "timepoint": "2026-09-26T09:00",
    "stations": 21,
    "weather_cities": 4,
-   "weather_aligned": "2026-09-26T05:00",
+   "weather_aligned": "2026-09-26T09:00",
    "period": "2026-09-26",
    "file": "2026-09-26.html",
    "written": 2,
@@ -16,35 +16,35 @@
    "review": true,
    "forecast_cities": 4,
    "neighbor_cities": 6,
-   "at": "2026-09-26 06:20:33"
+   "at": "2026-09-26 09:34:07"
   },
   "weekly": {
    "ok": true,
    "period": "2026-09-19 ~ 2026-09-25",
    "file": "0919_to_0925.html",
    "written": 0,
-   "at": "2026-09-26 06:20:40"
+   "at": "2026-09-26 09:34:12"
   },
   "monthly": {
    "ok": true,
    "period": "2026-09-12 ~ 2026-09-25",
    "file": "2026-09.html",
-   "written": 0,
-   "at": "2026-09-26 06:20:40"
+   "written": 2,
+   "at": "2026-09-26 09:34:12"
   },
   "hourly": {
    "ok": true,
    "days": 7,
    "files": 3,
-   "stations": 273,
+   "stations": 294,
    "weather": 288,
-   "hours": 13,
+   "hours": 14,
    "window": [
     "2026-09-24T16:00",
-    "2026-09-26T05:00"
+    "2026-09-26T09:00"
    ],
    "written": true,
-   "at": "2026-09-26 06:20:22"
+   "at": "2026-09-26 09:33:58"
   }
  },
  "stale": [],
