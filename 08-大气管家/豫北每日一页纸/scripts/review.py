@@ -116,6 +116,8 @@ def region_review(review, cities):
     got = [review[c] for c in cities if c in review and review[c]["window_days"]]
     if not got:
         return None
+    _CN = {2: "两市", 3: "三市", 4: "四市", 5: "五市", 6: "六市", 7: "七市", 8: "八市"}
+    n_city = _CN.get(len(cities), "%d市" % len(cities))
     n_win = max(g["window_days"] for g in got)
     o3_days = max(g["mix"]["o3"] for g in got)
     pm25_days = max(g["mix"]["pm25"] for g in got)
@@ -127,9 +129,9 @@ def region_review(review, cities):
 
     lead = "臭氧" if (o3_share or 0) >= 50 else ("颗粒物" if (pm25_days + pm10_days) > o3_days else "无单一主导")
     parts = [
-        "近 %d 天四市中单市最高有 <b>%d 天</b>首要污染物为 <b>臭氧</b>（约占 %s%%），"
+        "近 %d 天%s中单市最高有 <b>%d 天</b>首要污染物为 <b>臭氧</b>（约占 %s%%），"
         "O₃-8h 均值约 <b>%s μg/m³</b>（GB 3095-2012 二级限值 160），AQI&gt;100 最多 %d 天。"
-        % (n_win, o3_days, o3_share, o3_avg, over100)
+        % (n_win, n_city, o3_days, o3_share, o3_avg, over100)
     ]
     if lead == "臭氧":
         parts.append("→ 本阶段污染结构<b>以臭氧为主导</b>。臭氧管控的技术路线是"

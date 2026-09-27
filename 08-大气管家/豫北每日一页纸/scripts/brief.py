@@ -138,11 +138,13 @@ def city_brief(city, rows):
 
 
 def region_brief(cities):
-    """四市区域同步性：均值极差小 → 受同一天气系统影响。
+    """多市区域同步性：均值极差小 → 受同一天气系统影响。
 
-    注意口径边界：区域同步 ≠ 城市间相互传输。同步只能说明四市被同一天气系统覆盖，
+    注意口径边界：区域同步 ≠ 城市间相互传输。同步只能说明各市被同一天气系统覆盖，
     是否构成"输入性传输"必须结合风向与上风向城市浓度另行判定（见 calc/wind.py）。
+    城市数量写进文案（此前硬编码"四市"，扩到六市后口径对不上）。
     """
+    _CN = {2: "两市", 3: "三市", 4: "四市", 5: "五市", 6: "六市", 7: "七市", 8: "八市"}
     means = [(c["city"], c["pm25_mean"]) for c in cities if c["pm25_mean"]]
     if len(means) < 2:
         return {"sync": None, "text": "样本不足，待核"}
@@ -150,13 +152,14 @@ def region_brief(cities):
     lo = min(means, key=lambda m: m[1])
     ratio = round(hi[1] / lo[1], 2) if lo[1] else None
     sync = ratio is not None and ratio <= DISPERSION_REGION
+    n_city = _CN.get(len(means), "%d市" % len(means))
     return {
         "sync": sync, "ratio": ratio, "hi": hi, "lo": lo,
-        "text": ("四市 PM2.5 均值极差比 %.2f（≤%.2f），呈**区域同步**特征："
-                 "四市受同一天气系统覆盖、同步抬升。需注意区域同步不能直接等同于城市间相互传输，"
-                 "传输与否须结合风向与上风向城市浓度另行判定。" % (ratio, DISPERSION_REGION)) if sync else
-                ("四市 PM2.5 均值极差比 %.2f（>%.2f），城市间差异明显，"
-                 "需按城市分别排查局地源。" % (ratio, DISPERSION_REGION)),
+        "text": ("%s PM2.5 均值极差比 %.2f（≤%.2f），呈**区域同步**特征："
+                 "各市受同一天气系统覆盖、同步抬升。需注意区域同步不能直接等同于城市间相互传输，"
+                 "传输与否须结合风向与上风向城市浓度另行判定。" % (n_city, ratio, DISPERSION_REGION)) if sync else
+                ("%s PM2.5 均值极差比 %.2f（>%.2f），城市间差异明显，"
+                 "需按城市分别排查局地源。" % (n_city, ratio, DISPERSION_REGION)),
     }
 
 
@@ -196,13 +199,15 @@ def tasks(cities, region, region_rev=None):
     out = []
     ozone_lead = bool(region_rev and region_rev.get("lead") == "臭氧")
     if ozone_lead:
-        out.append({"city": "区域共同（四市同此路线）", "acts": [
-            "【臭氧路线·前体物管控】本阶段首要污染物以<b>臭氧</b>为主（近 %d 天四市单市最高 %d 天为臭氧首要，"
+        _CN = {2: "两市", 3: "三市", 4: "四市", 5: "五市", 6: "六市", 7: "七市", 8: "八市"}
+        n_city = _CN.get(len(cities), "%d市" % len(cities))
+        out.append({"city": "区域共同（%s同此路线）" % n_city, "acts": [
+            "【臭氧路线·前体物管控】本阶段首要污染物以<b>臭氧</b>为主（近 %d 天%s单市最高 %d 天为臭氧首要，"
             "O₃-8h 均值约 %s μg/m³），须按 <b>VOCs 与 NOx 前体物</b>分配措施："
             "涉 VOCs 企业（涂装/印刷/化工/包装/家具）错峰生产与无组织排放检查、"
             "加油站油气回收与错峰装卸（避开 08–18 时）、餐饮油烟净化设施运行核查、"
             "重点路段机动车疏导与怠速管控。"
-            % (region_rev["n_days"], region_rev["o3_days"], region_rev["o3_mean"]),
+            % (region_rev["n_days"], n_city, region_rev["o3_days"], region_rev["o3_mean"]),
             "【路线纠偏提示】扬尘/洒水措施对臭氧<b>无效</b>，勿占满日程；"
             "颗粒物路线仅在当日 PM10/PM2.5 比值偏高或出现颗粒物高值时启用。",
         ]})
