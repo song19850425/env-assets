@@ -21,12 +21,23 @@ git 里堆满无意义的 diff，出了问题也说不清哪一份才是"对"的
 import os
 import re
 
-# 模块内三个板块：(子目录, 本地文件名前缀, 显示名)
+# 模块内四个板块：(子目录, 本地文件名前缀, 显示名)
+# daily6 = 默认档案日报（郑州/新乡/洛阳/焦作/济源/三门峡，run_daily 默认档案产物，
+#          只由本机 deploy 供给；云端工作流不生成该板块，无防回退冲突）
 SECTIONS = [
     ("daily",   "大气管家豫北日报", "每日一页纸"),
+    ("daily6",  "大气管家日报", "默认档案日报"),
     ("weekly",  "大气管家豫北周报", "周报"),
     ("monthly", "大气管家豫北月报", "月报"),
 ]
+
+# 各板块城市标注（section_index 归档页标题用，按前缀查；缺省"豫北四市"）
+CITY_NOTE = {
+    "大气管家豫北日报": "豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）",
+    "大气管家日报": "默认档案六市（郑州 · 新乡 · 洛阳 · 焦作 · 济源 · 三门峡）",
+    "大气管家豫北周报": "豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）",
+    "大气管家豫北月报": "豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）",
+}
 
 SOURCE_NOTE = "数据来源：中国环境监测总站·全国城市空气质量实时发布平台（air.cnemc.cn:18007）"
 
@@ -119,12 +130,12 @@ def section_index(sub_dir, prefix, label):
         items += "\n".join("<li><a href='%s'>%s</a></li>" % (f, archive_name(f, prefix)[:-5])
                               for f in dated)
     html = """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
-<title>大气管家 · 豫北 %s · 归档</title><style>%s</style></head><body><div class="page">
-<h1>大气管家 · 豫北四市%s（安阳 · 濮阳 · 鹤壁 · 新乡）</h1>
+<title>大气管家 · %s · 归档</title><style>%s</style></head><body><div class="page">
+<h1>大气管家 · %s · %s</h1>
 <div class="note">%s。页面由自动化流水线每日自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。</div>
 <ul>%s</ul>
 <p style="margin-top:16px"><a href="../index.html">← 返回模块目录</a> ｜ <a href="../../../index.html">env-assets 总目录</a></p>
-</div></body></html>""" % (label, _CSS.replace("LI_MARGIN", "6px"), label, SOURCE_NOTE, items)
+</div></body></html>""" % (CITY_NOTE.get(prefix, "豫北四市"), _CSS.replace("LI_MARGIN", "6px"), CITY_NOTE.get(prefix, "豫北四市"), label, SOURCE_NOTE, items)
     return write_if_changed(os.path.join(sub_dir, "index.html"), html)
 
 
@@ -145,7 +156,7 @@ def module_home(module_dir, sections=SECTIONS):
                  "（逐时点位值 + 采集覆盖 + 气象；含「缺了哪些小时」）</li>")
     html = """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
 <title>大气管家 · 豫北每日一页纸</title><style>%s</style></head><body><div class="page">
-<h1>大气管家 · 豫北四市空气质量报告（安阳 · 濮阳 · 鹤壁 · 新乡）</h1>
+<h1>大气管家 · 空气质量报告<br>豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）＋ 默认档案六市（郑州 · 新乡 · 洛阳 · 焦作 · 济源 · 三门峡）</h1>
 <div class="note">%s。全部页面由自动化流水线自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。周期口径：日报=当日实时；周报=最近 7 个完整日；月报=平台开放历史窗口（整月口径随本地数据库积累切换）；小时看板=近 7 天逐时点位值。</div>
 <ul>%s</ul>
 <p style="margin-top:16px"><a href="../../index.html">← 返回 env-assets 总目录</a></p>
