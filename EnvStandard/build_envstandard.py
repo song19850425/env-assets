@@ -109,6 +109,7 @@ HTML_TEMPLATE = r'''<!DOCTYPE html>
 <meta name="description" content="EnvStandard 环境标准库：标准、修改单、废止与替代关系、适用范围、检测因子、方法、采样要求，以及标准到实验资产的可追溯链路。">
 <meta name="envstandard-data-sha256" content="__DATA_SHA__">
 <title>EnvStandard · 环境标准库</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <style>
 *{box-sizing:border-box}
 :root{color-scheme:dark}
