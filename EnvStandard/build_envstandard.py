@@ -156,6 +156,7 @@ h1{font-size:32px;line-height:1.25;margin:5px 0 8px;letter-spacing:.01em}
       <p class="lede">标准、方法、采样、实验和交付资产不再各自孤立。先查清标准出处，再沿着关系链进入可操作页面。</p>
     </div>
     <div class="actions">
+      <a class="btn" href="../about.html">项目大纲</a>
       <a class="btn" href="../index.html">← 返回数字资产库</a>
       <button class="btn" id="printBtn" type="button">打印当前页</button>
     </div>
