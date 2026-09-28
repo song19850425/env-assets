@@ -1,0 +1,3 @@
+# Python 字节码缓存：脚本目录被整目录 git add，.pyc 一旦入仓会随每次改动产生二进制 diff
+__pycache__/
+*.pyc
