@@ -32,6 +32,14 @@ h1{font-size:32px;line-height:1.25;margin:5px 0 8px;letter-spacing:.01em}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.mini-card{border:1px solid #1b3a55;background:#0b182a;border-radius:10px;padding:11px 12px}.mini-card h4{font-size:12.5px;margin:0 0 4px;color:#d8edfb}.mini-card p{font-size:11.5px;color:#8da6c0;margin:3px 0}.mini-card .small{font-size:10.5px;color:#6984a3}.mini-card a{font-size:11.5px}.factor-table,.rel-table{width:100%;border-collapse:collapse;font-size:11.5px}.factor-table th,.rel-table th{text-align:left;background:#122b43;color:#9dd9f4;font-size:11px;padding:7px 8px;border-bottom:1px solid #27516d}.factor-table td,.rel-table td{padding:7px 8px;border-bottom:1px solid #18334e;vertical-align:top;color:#b5c9de}.factor-table tr:hover td,.rel-table tr:hover td{background:#10243a}.factor-table .num{color:#f1db94;font-variant-numeric:tabular-nums}.table-wrap{overflow:auto;border:1px solid #1b3a55;border-radius:9px}.muted{color:#718aa6}.small-note{font-size:11px;color:#6e88a5;margin-top:8px}.pill{display:inline-block;color:#8fd9f6;border:1px solid #2b5875;background:#0c263b;border-radius:999px;padding:2px 7px;font-size:10px;margin:2px 3px 2px 0}.pill.amber{color:#ffd47b;border-color:#745b2b;background:#33250f}.pill.green{color:#8ce0ae;border-color:#2c6649;background:#0c2c1d}
 .relation-card{border:1px solid #224661;border-radius:10px;background:#0b182a;padding:12px;margin-bottom:9px}.relation-line{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:13px}.relation-line .arrow{color:#62c4e8;font-size:18px}.relation-line .code{font-weight:800;color:#dff3ff}.relation-card p{font-size:11.5px;color:#91a9c1;margin:7px 0}.relation-card .verified{color:#8de0ae}.relation-card .pending{color:#ffd47b}.warning{border-left:3px solid #d69b38;background:#2a210f;padding:11px 13px;border-radius:0 9px 9px 0;color:#f3d394;font-size:12px;margin-bottom:12px}.warning strong{color:#ffe4a8}.chain-card{border:1px solid #234862;background:#0b182a;border-radius:12px;padding:14px;margin-bottom:13px}.chain-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.chain-head h3{margin:0;font-size:15px;color:#e1f2ff}.chain-head p{font-size:11.5px;color:#88a4bd;margin:5px 0 10px;max-width:780px}.flow{display:flex;align-items:stretch;gap:6px;overflow:auto;padding-bottom:4px}.flow-step{min-width:150px;flex:1;border:1px solid #2a5570;border-radius:9px;padding:9px 10px;background:#10283e}.flow-step .type{font-size:10px;color:#61c6ee;font-weight:800;letter-spacing:.08em}.flow-step .label{display:block;font-size:12px;color:#e0edf8;margin-top:3px;line-height:1.45}.flow-step a,.flow-step button{display:inline-block;margin-top:6px;font-size:10.5px;color:#8ad8fa;background:none;border:0;padding:0;cursor:pointer;font-family:inherit;text-align:left}.flow-arrow{display:flex;align-items:center;color:#4c9ac0;font-size:18px}.chain-soil .flow-step{border-color:#735a38}.chain-water .flow-step{border-color:#2f5d74}.chain-voc .flow-step{border-color:#6a416b}.chain-air .flow-step{border-color:#5a6537}
 .factor-search{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.factor-search input{flex:1 1 250px;background:#0b182a;border:1px solid #2a4a64;border-radius:8px;color:#e7eef9;padding:8px 10px;font:inherit;font-size:12px}.factor-count{font-size:11px;color:#7892ae;padding:8px 0}.footer{margin-top:30px;border-top:1px solid #1b3550;padding-top:17px;color:#66819e;font-size:11.5px}.footer code{color:#86c7e8}
+.qr-foot{display:flex;align-items:center;gap:20px;margin-top:30px;padding:18px 20px;border:1px solid #1b3550;border-radius:13px;background:#0d1b2d;flex-wrap:wrap}
+.qr-foot-img{width:132px;height:132px;display:block;border-radius:10px;background:#fff;flex:0 0 auto}
+.qr-foot-ph{display:none;width:132px;height:132px;border:1px dashed #2c4a66;border-radius:10px;align-items:center;justify-content:center;text-align:center;font-size:12px;color:#6e88a5;flex:0 0 auto}
+.qr-foot-txt{min-width:220px;flex:1 1 300px}
+.qr-foot-t{font-size:15px;font-weight:700;color:#e6f5ff;margin-bottom:5px}
+.qr-foot-d{font-size:12.5px;color:#9fb4cf;line-height:1.7;max-width:560px}
+.qr-foot-n{font-size:11.5px;color:#6e88a5;margin-top:6px}
+@media(max-width:640px){.qr-foot{gap:14px;padding:15px 16px}.qr-foot-img,.qr-foot-ph{width:112px;height:112px}}
 @media(max-width:1050px){.layout{grid-template-columns:280px minmax(0,1fr)}.stats{grid-template-columns:repeat(3,1fr)}.meta-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.wrap{padding:24px 13px 55px}h1{font-size:25px}.layout{grid-template-columns:1fr}.side{position:static;max-height:none}.overview{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.detail{padding:14px}.grid2{grid-template-columns:1fr}.flow{margin-right:-5px}.flow-step{min-width:136px}.meta-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -80,6 +88,18 @@ h1{font-size:32px;line-height:1.25;margin:5px 0 8px;letter-spacing:.01em}
       <div id="detail"></div>
     </section>
   </main>
+
+  <section class="qr-foot" aria-label="关注公众号">
+    <img class="qr-foot-img" src="../assets/公众号二维码.jpg" alt="公众号二维码"
+         width="132" height="132" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="qr-foot-ph">二维码<br>待放置</div>
+    <div class="qr-foot-txt">
+      <div class="qr-foot-t">环境检测 · 数字资产库</div>
+      <div class="qr-foot-d">长按识别二维码关注公众号，获取标准速查表、交互实验与工具更新。</div>
+      <div class="qr-foot-n">标准库为教学与工作辅助工具，不构成法定检测报告；标准现行性以官方发布版本为准。</div>
+    </div>
+  </section>
 
   <footer class="footer">
     EnvStandard · 结构化数据指纹 <code id="sha"></code><br>
