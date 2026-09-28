@@ -1,0 +1,28 @@
+{
+  "_comment": "标准文件清单。由 tools/build-standards-inline.mjs 生成，勿手工修改。",
+  "standards": [
+    "GB12348-2008.json",
+    "GB16297-1996.json",
+    "GB3096-2008.json",
+    "GB36600-2018.json",
+    "GB37822-2019.json",
+    "GB50325-2020.json",
+    "GB5085.3-2007.json",
+    "GB5749-2022.json",
+    "GBT14848-2017.json",
+    "GBT18883-2022.json",
+    "HJ1075-2019.json",
+    "HJ1230-2021.json",
+    "HJ164-2020.json",
+    "HJ25.1-2019.json",
+    "HJ25.2-2019.json",
+    "HJ38-2017.json",
+    "HJ535-2009.json",
+    "HJ586-2010.json",
+    "HJ639-2012.json",
+    "HJ700-2014.json",
+    "HJT167-2004.json",
+    "HJT299-2007.json",
+    "HJT397-2007.json"
+  ]
+}

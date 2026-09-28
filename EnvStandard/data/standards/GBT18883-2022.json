@@ -1,0 +1,953 @@
+{
+  "standardId": "GBT18883-2022",
+  "name": "室内空气质量标准",
+  "issuer": "国家市场监督管理总局、国家标准化管理委员会",
+  "effectiveDate": "2023-02-01",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.ndcpa.gov.cn/jbkzzx/c100201/1666357812062392320/ZgwODgwF.pdf",
+    "publisher": "国家疾病预防控制局（转载）",
+    "table": "第 4 章 室内空气质量要求（表 1）、第 5 章 室内空气质量指标测定与评价、附录 A 室内空气质量指标检测技术导则（表 A.1）、附录 B 甲醛的测定、附录 C 苯、甲苯、二甲苯的测定",
+    "retrievedAt": "2026-09-16",
+    "type": "scan",
+    "note": "公开渠道只有无文本层的扫描件（49 页，1240×1753）。全部数值由人工把内嵌页面图放大 2× 后视觉逐行转录，不用 OCR（OCR 会静默抄错限值）。",
+    "sha256": "37452c9a964c1ae57178377ac22603320247b9d9379da75c7e409f78ed3de502"
+  },
+  "transcription": {
+    "method": "scan-visual",
+    "tool": "pypdf 取 page.images → PIL 放大 2× → 视觉逐行转录",
+    "at": "2026-09-16",
+    "pageRefs": {
+      "table1-part1": "PDF 第 6 页（正文第 2 页）：表 1 序号 01~12",
+      "table1-part2": "PDF 第 7 页（正文第 3 页）：表 1 序号 13~22 + 第 5 章",
+      "annex-a-guide": "PDF 第 8~12 页（正文第 4~8 页）：附录 A A.1~A.11",
+      "table-a1": "PDF 第 9~11 页（正文第 5~7 页）：表 A.1 测定方法",
+      "annex-b-formaldehyde": "PDF 第 13 页起（正文第 9 页起）：附录 B 甲醛的测定（高效液相色谱法）",
+      "annex-c-btex": "PDF 第 16 页起（正文第 12 页起）：附录 C 苯、甲苯、二甲苯的测定"
+    },
+    "machineCheck": "来源指纹 + 页数 + 表 1 行数（22）+ 序号连续性 + 化学性指标类别单调性 + 关键条款锚点句（见 tools/verify_standards_sources.py 的 SCAN_PAGES）",
+    "note": "附录 D（TVOC）、E（苯并[a]芘）、F（颗粒物）、G（细菌总数）、H（氡）的逐条参数本 MVP 未逐页转录，只收录表 A.1 给出的方法归属。"
+  },
+  "coverage": {
+    "included": "表 1 室内空气质量指标及要求全部 22 项（物理性 4 + 化学性 16 + 生物性 1 + 放射性 1）、第 5 章评价规则、附录 A 检测技术导则全部条款与数值、表 A.1 测定方法归属、附录 B 甲醛（HPLC）试剂与采样参数、附录 C 苯系物（热解吸-GC）试剂与采样参数。",
+    "excluded": "附录 D~H 的逐条参数（TVOC、苯并[a]芘、颗粒物、细菌总数、氡的详细测定步骤）。",
+    "reason": "剧本三的核心实验是甲醛与苯系物的采样-测定-判定，附录 D~H 的方法细节不在本次范围内；表 A.1 已给出它们的方法归属与来源标准。"
+  },
+  "columns": {
+    "summer": "夏季",
+    "winter": "冬季",
+    "limit": "要求",
+    "averageTime": "备注（平均时间）"
+  },
+  "limits": [
+    {
+      "seq": 1,
+      "table": "表 1",
+      "category": "物理性",
+      "name": "温度",
+      "units": "℃",
+      "summer": "22~28",
+      "winter": "16~24",
+      "averageTime": "—"
+    },
+    {
+      "seq": 2,
+      "table": "表 1",
+      "category": "物理性",
+      "name": "相对湿度",
+      "units": "%",
+      "summer": "40~80",
+      "winter": "30~60",
+      "averageTime": "—"
+    },
+    {
+      "seq": 3,
+      "table": "表 1",
+      "category": "物理性",
+      "name": "风速",
+      "units": "m/s",
+      "summer": "≤0.3",
+      "winter": "≤0.2",
+      "averageTime": "—"
+    },
+    {
+      "seq": 4,
+      "table": "表 1",
+      "category": "物理性",
+      "name": "新风量",
+      "units": "m³/(h·人)",
+      "limit": "≥30",
+      "averageTime": "—"
+    },
+    {
+      "seq": 5,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "臭氧",
+      "alias": "O₃",
+      "units": "mg/m³",
+      "limit": "≤0.16",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 6,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "二氧化氮",
+      "alias": "NO₂",
+      "units": "mg/m³",
+      "limit": "≤0.20",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 7,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "二氧化硫",
+      "alias": "SO₂",
+      "units": "mg/m³",
+      "limit": "≤0.50",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 8,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "二氧化碳",
+      "alias": "CO₂",
+      "units": "%（体积分数）",
+      "limit": "≤0.10",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 9,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "一氧化碳",
+      "alias": "CO",
+      "units": "mg/m³",
+      "limit": "≤10",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 10,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "氨",
+      "alias": "NH₃",
+      "units": "mg/m³",
+      "limit": "≤0.20",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 11,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "甲醛",
+      "alias": "HCHO",
+      "units": "mg/m³",
+      "limit": "≤0.08",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 12,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "苯",
+      "alias": "C₆H₆",
+      "units": "mg/m³",
+      "limit": "≤0.03",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 13,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "甲苯",
+      "alias": "C₇H₈",
+      "units": "mg/m³",
+      "limit": "≤0.20",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 14,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "二甲苯",
+      "alias": "C₈H₁₀",
+      "units": "mg/m³",
+      "limit": "≤0.20",
+      "averageTime": "1 小时平均"
+    },
+    {
+      "seq": 15,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "总挥发性有机化合物",
+      "alias": "TVOC",
+      "units": "mg/m³",
+      "limit": "≤0.60",
+      "averageTime": "8 小时平均"
+    },
+    {
+      "seq": 16,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "三氯乙烯",
+      "alias": "C₂HCl₃",
+      "units": "mg/m³",
+      "limit": "≤0.006",
+      "averageTime": "8 小时平均"
+    },
+    {
+      "seq": 17,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "四氯乙烯",
+      "alias": "C₂Cl₄",
+      "units": "mg/m³",
+      "limit": "≤0.12",
+      "averageTime": "8 小时平均"
+    },
+    {
+      "seq": 18,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "苯并[a]芘",
+      "alias": "BaP",
+      "units": "ng/m³",
+      "limit": "≤1.0",
+      "averageTime": "24 小时平均"
+    },
+    {
+      "seq": 19,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "可吸入颗粒物",
+      "alias": "PM₁₀",
+      "units": "mg/m³",
+      "limit": "≤0.10",
+      "averageTime": "24 小时平均"
+    },
+    {
+      "seq": 20,
+      "table": "表 1",
+      "category": "化学性",
+      "name": "细颗粒物",
+      "alias": "PM₂.₅",
+      "units": "mg/m³",
+      "limit": "≤0.05",
+      "averageTime": "24 小时平均"
+    },
+    {
+      "seq": 21,
+      "table": "表 1",
+      "category": "生物性",
+      "name": "细菌总数",
+      "units": "CFU/m³",
+      "limit": "≤1500",
+      "averageTime": "—"
+    },
+    {
+      "seq": 22,
+      "table": "表 1",
+      "category": "放射性",
+      "name": "氡",
+      "alias": "²²²Rn",
+      "units": "Bq/m³",
+      "limit": "≤300",
+      "averageTime": "年平均（参考水平）"
+    }
+  ],
+  "values": {
+    "closing-hours-min": {
+      "value": 12,
+      "units": "h",
+      "name": "采样前关闭门窗、空气净化设备及新风系统的最短时间",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.1 条",
+      "citation": "GB/T 18883-2022 第 A.2.1 条：采样前，应关闭门窗、空气净化设备及新风系统至少 12 h"
+    },
+    "point-area-1-max": {
+      "value": 25,
+      "units": "m²",
+      "name": "单间面积小于该值时设 1 个采样点",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.2 条",
+      "citation": "GB/T 18883-2022 第 A.2.2 条：单间小于 25 m² 的房间应设 1 个点"
+    },
+    "point-area-2-min": {
+      "value": 25,
+      "units": "m²",
+      "name": "设 2~3 个采样点的房间面积下限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.2 条",
+      "citation": "GB/T 18883-2022 第 A.2.2 条：25 m²~50 m²（不含）应设 2 个~3 个点"
+    },
+    "point-area-3-min": {
+      "value": 50,
+      "units": "m²",
+      "name": "设 3~5 个采样点的房间面积下限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.2 条",
+      "citation": "GB/T 18883-2022 第 A.2.2 条：50 m²~100 m²（不含）应设 3 个~5 个点"
+    },
+    "point-area-5-min": {
+      "value": 100,
+      "units": "m²",
+      "name": "至少设 5 个采样点的房间面积下限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.2 条",
+      "citation": "GB/T 18883-2022 第 A.2.2 条：100 m² 及以上应至少设 5 个点"
+    },
+    "wall-distance-min": {
+      "value": 0.5,
+      "units": "m",
+      "name": "采样点离墙壁的最小距离（应大于）",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.3 条",
+      "citation": "GB/T 18883-2022 第 A.2.3 条：采样点应避开通风口和热源，离墙壁距离应大于 0.5 m，离门窗距离应大于 1 m"
+    },
+    "window-distance-min": {
+      "value": 1,
+      "units": "m",
+      "name": "采样点离门窗的最小距离（应大于）",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.3 条",
+      "citation": "GB/T 18883-2022 第 A.2.3 条：离门窗距离应大于 1 m"
+    },
+    "height-min": {
+      "value": 0.5,
+      "units": "m",
+      "name": "采样点相对高度下限（与成人呼吸带一致）",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.4 条",
+      "citation": "GB/T 18883-2022 第 A.2.4 条：原则上应与成人的呼吸带高度相一致，相对高度在 0.5 m~1.5 m 之间"
+    },
+    "height-max": {
+      "value": 1.5,
+      "units": "m",
+      "name": "采样点相对高度上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.4 条",
+      "citation": "GB/T 18883-2022 第 A.2.4 条：相对高度在 0.5 m~1.5 m 之间"
+    },
+    "child-height-extra-min": {
+      "value": 0.3,
+      "units": "m",
+      "name": "考虑坐卧状态和儿童身高时增加的相对高度下限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.4 条",
+      "citation": "GB/T 18883-2022 第 A.2.4 条：在有条件的情况下，考虑坐卧状态的呼吸高度和儿童身高，增加 0.3 m~0.6 m 相对高度的采样"
+    },
+    "child-height-extra-max": {
+      "value": 0.6,
+      "units": "m",
+      "name": "考虑坐卧状态和儿童身高时增加的相对高度上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.2.4 条",
+      "citation": "GB/T 18883-2022 第 A.2.4 条：增加 0.3 m~0.6 m 相对高度的采样"
+    },
+    "instrument-noise-max": {
+      "value": 50,
+      "units": "dB(A)",
+      "name": "采样仪器设备的噪声上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.4 条",
+      "citation": "GB/T 18883-2022 第 A.4 条：仪器设备的噪声一般应小于 50 dB(A)"
+    },
+    "screening-duration-min": {
+      "value": 45,
+      "units": "min",
+      "name": "筛选法采样时长（宜）",
+      "basis": "GB/T 18883-2022 附录 A 第 A.5.2 条",
+      "citation": "GB/T 18883-2022 第 A.5.2 条：筛选法宜采样 45 min"
+    },
+    "direct-reading-interval-min": {
+      "value": 10,
+      "units": "min",
+      "name": "使用直读仪器时的采样间隔下限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.5.2 条",
+      "citation": "GB/T 18883-2022 第 A.5.2 条：如使用直读仪器，采样间隔时间为 10 min~15 min"
+    },
+    "direct-reading-interval-max": {
+      "value": 15,
+      "units": "min",
+      "name": "使用直读仪器时的采样间隔上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.5.2 条",
+      "citation": "GB/T 18883-2022 第 A.5.2 条：采样间隔时间为 10 min~15 min"
+    },
+    "direct-reading-times-min": {
+      "value": 4,
+      "units": "次",
+      "name": "直读仪器每个点位的最少监测次数",
+      "basis": "GB/T 18883-2022 附录 A 第 A.5.2 条",
+      "citation": "GB/T 18883-2022 第 A.5.2 条：每个点位至少监测 4 次~5 次，最终结果以时间加权平均值表示"
+    },
+    "direct-reading-times-max": {
+      "value": 5,
+      "units": "次",
+      "name": "直读仪器每个点位的建议监测次数上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.5.2 条",
+      "citation": "GB/T 18883-2022 第 A.5.2 条：每个点位至少监测 4 次~5 次"
+    },
+    "average-1h-min": {
+      "value": 45,
+      "units": "min",
+      "name": "1 小时平均浓度的最少采样时长",
+      "basis": "GB/T 18883-2022 附录 A 第 A.3 条",
+      "citation": "GB/T 18883-2022 第 A.3 条：1 小时平均浓度应至少采样 45 min"
+    },
+    "average-8h-min": {
+      "value": 6,
+      "units": "h",
+      "name": "8 小时平均浓度的最少采样时长",
+      "basis": "GB/T 18883-2022 附录 A 第 A.3 条",
+      "citation": "GB/T 18883-2022 第 A.3 条：8 小时平均浓度应至少采样 6 h"
+    },
+    "average-24h-min": {
+      "value": 20,
+      "units": "h",
+      "name": "24 小时平均浓度的最少采样时长",
+      "basis": "GB/T 18883-2022 附录 A 第 A.3 条",
+      "citation": "GB/T 18883-2022 第 A.3 条：24 小时平均浓度（如苯并[a]芘、PM₂.₅、PM₁₀ 等）应至少采样 20 h"
+    },
+    "average-year-months-min": {
+      "value": 3,
+      "units": "个月",
+      "name": "年平均浓度的最少采样时长（如氡）",
+      "basis": "GB/T 18883-2022 附录 A 第 A.3 条",
+      "citation": "GB/T 18883-2022 第 A.3 条：年平均浓度（如氡）应至少采样 3 个月（包括冬季）"
+    },
+    "flow-calibration-deviation-max": {
+      "value": 5,
+      "units": "%",
+      "name": "采样流量前后两次校准的相对偏差上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.9.2 条",
+      "citation": "GB/T 18883-2022 第 A.9.2 条：采样前和采样后均要在负载条件下用检定合格的流量计进行校准，前后两次校准的相对偏差不得超过 5%"
+    },
+    "parallel-ratio-min": {
+      "value": 10,
+      "units": "%",
+      "name": "平行样数量占每批样品的最低比例",
+      "basis": "GB/T 18883-2022 附录 A 第 A.9.4 条",
+      "citation": "GB/T 18883-2022 第 A.9.4 条：平行样数量不得低于 10%，当样本量不足 10 个时，至少应采集 1 个平行样"
+    },
+    "parallel-deviation-max": {
+      "value": 20,
+      "units": "%",
+      "name": "平行样测定值绝对差值与平均值的比值上限",
+      "basis": "GB/T 18883-2022 附录 A 第 A.9.4 条",
+      "citation": "GB/T 18883-2022 第 A.9.4 条：平行样测定值的绝对差值与平均值的比值不得超过 20%"
+    },
+    "blank-tubes-min": {
+      "value": 2,
+      "units": "个",
+      "name": "现场空白的最少采样管（膜）数量",
+      "basis": "GB/T 18883-2022 附录 A 第 A.9.3 条",
+      "citation": "GB/T 18883-2022 第 A.9.3 条：现场采样时，至少留两个采样管（膜）、一组（六块）培养平板不采样"
+    },
+    "reference-temperature": {
+      "value": 298.15,
+      "units": "K",
+      "name": "气态污染物浓度校正的参比状态绝对温度",
+      "basis": "GB/T 18883-2022 附录 A 第 A.10.1 条",
+      "citation": "GB/T 18883-2022 第 A.10.1 条：参比状态（大气温度为 298.15 K、大气压力为 101.325 kPa 时的状态）"
+    },
+    "reference-pressure": {
+      "value": 101.325,
+      "units": "kPa",
+      "name": "参比状态的大气压力",
+      "basis": "GB/T 18883-2022 附录 A 第 A.10.1 条",
+      "citation": "GB/T 18883-2022 第 A.10.1 条：大气压力为 101.325 kPa"
+    },
+    "significant-digits": {
+      "value": 3,
+      "units": "位",
+      "name": "测量结果一般保留的有效数字位数",
+      "basis": "GB/T 18883-2022 附录 A 第 A.10.2 条",
+      "citation": "GB/T 18883-2022 第 A.10.2 条：测量结果一般保留三位有效数字，但当测量结果接近方法检出限时，测量结果表述与检出限小数点后位数保持一致"
+    },
+    "formaldehyde-hplc-flow": {
+      "value": 1,
+      "units": "L/min",
+      "name": "甲醛（附录 B 高效液相色谱法）的推荐采样流量",
+      "basis": "GB/T 18883-2022 附录 B 第 B.4.1 条",
+      "citation": "GB/T 18883-2022 第 B.4.1 条：推荐的采样方法参数为连续采样时间至少 45 min，采样流量 1 L/min"
+    },
+    "formaldehyde-hplc-duration-min": {
+      "value": 45,
+      "units": "min",
+      "name": "甲醛（附录 B）的推荐连续采样时长",
+      "basis": "GB/T 18883-2022 附录 B 第 B.4.1 条",
+      "citation": "GB/T 18883-2022 第 B.4.1 条：推荐的采样方法参数为连续采样时间至少 45 min"
+    },
+    "dnph-tube-storage-days-max": {
+      "value": 30,
+      "units": "d",
+      "name": "DNPH 采样管不能及时分析时的最长保存时间",
+      "basis": "GB/T 18883-2022 附录 B 第 B.4.2 条",
+      "citation": "GB/T 18883-2022 第 B.4.2 条：如果不能及时分析，应 4 ℃ 低温避光保存，时间不宜超过 30 d"
+    },
+    "formaldehyde-ahmt-flow": {
+      "value": 0.4,
+      "units": "L/min",
+      "name": "甲醛 AHMT 分光光度法的采样流量",
+      "basis": "GB/T 18883-2022 表 A.1 序号 11",
+      "citation": "GB/T 18883-2022 表 A.1 序号 11：AHMT 分光光度法（GB/T 16129），连续采样时间至少 45 min，采样流量 0.4 L/min"
+    },
+    "formaldehyde-mbth-flow": {
+      "value": 0.2,
+      "units": "L/min",
+      "name": "甲醛酚试剂分光光度法的采样流量",
+      "basis": "GB/T 18883-2022 表 A.1 序号 11",
+      "citation": "GB/T 18883-2022 表 A.1 序号 11：酚试剂分光光度法（GB/T 18204.2），连续采样时间至少 45 min，采样流量 0.2 L/min"
+    },
+    "tenax-mass-min": {
+      "value": 200,
+      "units": "mg",
+      "name": "苯系物采样管中 Tenax TA 吸附剂的最少填装量",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.2 条",
+      "citation": "GB/T 18883-2022 第 C.1.2 条：填装至少 200 mg 粒径为 0.18 mm~0.25 mm（60 目~80 目）的聚 2,6-二苯基对苯醚（Tenax TA）吸附剂"
+    },
+    "safe-volume-benzene": {
+      "value": 6.2,
+      "units": "L",
+      "name": "200 mg Tenax TA 采样管中苯的安全采样体积",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.2 条",
+      "citation": "GB/T 18883-2022 第 C.1.2 条：在填装有 200 mg 的 Tenax TA 采样管中苯、甲苯、二甲苯的安全采样体积分别为 6.2 L、38 L、300 L"
+    },
+    "safe-volume-toluene": {
+      "value": 38,
+      "units": "L",
+      "name": "200 mg Tenax TA 采样管中甲苯的安全采样体积",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.2 条",
+      "citation": "GB/T 18883-2022 第 C.1.2 条：苯、甲苯、二甲苯的安全采样体积分别为 6.2 L、38 L、300 L"
+    },
+    "safe-volume-xylene": {
+      "value": 300,
+      "units": "L",
+      "name": "200 mg Tenax TA 采样管中二甲苯的安全采样体积",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.2 条",
+      "citation": "GB/T 18883-2022 第 C.1.2 条：苯、甲苯、二甲苯的安全采样体积分别为 6.2 L、38 L、300 L"
+    },
+    "tube-aging-temp": {
+      "value": 270,
+      "units": "℃",
+      "name": "苯系物采样管的老化温度",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.4.1.1 条",
+      "citation": "GB/T 18883-2022 第 C.1.4.1.1 条：老化流量为 100 mL/min，温度为 270 ℃，时间为 120 min"
+    },
+    "tube-aging-time-new": {
+      "value": 120,
+      "units": "min",
+      "name": "新填装苯系物采样管的老化时间",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.4.1.1 条",
+      "citation": "GB/T 18883-2022 第 C.1.4.1.1 条：新填装的采样管应用老化装置通惰性气体老化，老化流量为 100 mL/min，温度为 270 ℃，时间为 120 min"
+    },
+    "tube-aging-time-used": {
+      "value": 30,
+      "units": "min",
+      "name": "使用过的苯系物采样管的最短老化时间",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.4.1.1 条",
+      "citation": "GB/T 18883-2022 第 C.1.4.1.1 条：使用过的采样管应在 270 ℃ 下通惰性气体老化 30 min 以上"
+    },
+    "tube-valid-weeks": {
+      "value": 2,
+      "units": "周",
+      "name": "老化后苯系物采样管的最长使用期限",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.4.1.1 条",
+      "citation": "GB/T 18883-2022 第 C.1.4.1.1 条：老化后的采样管应在两周内使用"
+    },
+    "sampler-flow-min": {
+      "value": 0.02,
+      "units": "L/min",
+      "name": "苯系物气体采样器的流量下限",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.3 条",
+      "citation": "GB/T 18883-2022 第 C.1.3 条：气体采样器在 0.02 L/min~0.5 L/min 范围内，流量误差应小于 5%"
+    },
+    "sampler-flow-max": {
+      "value": 0.5,
+      "units": "L/min",
+      "name": "苯系物气体采样器的流量上限",
+      "basis": "GB/T 18883-2022 附录 C 第 C.1.3 条",
+      "citation": "GB/T 18883-2022 第 C.1.3 条：气体采样器在 0.02 L/min~0.5 L/min 范围内"
+    }
+  },
+  "methods": [
+    {
+      "indicator": "温度",
+      "method": "玻璃液体温度计法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 1
+    },
+    {
+      "indicator": "温度",
+      "method": "数显式温度计法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 1
+    },
+    {
+      "indicator": "相对湿度",
+      "method": "电阻电容法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 2
+    },
+    {
+      "indicator": "相对湿度",
+      "method": "干湿球法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 2
+    },
+    {
+      "indicator": "相对湿度",
+      "method": "氯化锂露点法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 2
+    },
+    {
+      "indicator": "风速",
+      "method": "电风速计法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 3
+    },
+    {
+      "indicator": "新风量",
+      "method": "示踪气体法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 4
+    },
+    {
+      "indicator": "新风量",
+      "method": "风管法",
+      "standard": "GB/T 18204.1",
+      "params": "—",
+      "indicatorNo": 4
+    },
+    {
+      "indicator": "臭氧",
+      "method": "靛蓝二磺酸钠分光光度法",
+      "standard": "GB/T 18204.2",
+      "params": "连续采样时间至少 45 min，采样流量 0.4 L/min",
+      "indicatorNo": 5
+    },
+    {
+      "indicator": "臭氧",
+      "method": "紫外光度法",
+      "standard": "HJ 590",
+      "params": "监测时间至少 45 min，监测间隔 10 min~15 min，结果以时间加权平均值表示",
+      "indicatorNo": 5
+    },
+    {
+      "indicator": "二氧化氮",
+      "method": "改进的 Saltzman 法",
+      "standard": "GB/T 12372",
+      "params": "连续采样时间至少 45 min，采样流量 0.4 L/min",
+      "indicatorNo": 6
+    },
+    {
+      "indicator": "二氧化氮",
+      "method": "Saltzman 法",
+      "standard": "GB/T 15435",
+      "params": "连续采样时间至少 45 min，采样流量 0.4 L/min",
+      "indicatorNo": 6
+    },
+    {
+      "indicator": "二氧化氮",
+      "method": "化学发光法",
+      "standard": "HJ/T 167",
+      "params": "监测时间至少 45 min，监测间隔 10 min~15 min，结果以时间加权平均值表示",
+      "indicatorNo": 6
+    },
+    {
+      "indicator": "二氧化硫",
+      "method": "甲醛溶液吸收-盐酸副玫瑰苯胺分光光度法",
+      "standard": "GB/T 16128",
+      "params": "连续采样时间至少 45 min，采样流量 0.5 L/min",
+      "indicatorNo": 7
+    },
+    {
+      "indicator": "二氧化碳",
+      "method": "不分光红外分析法",
+      "standard": "GB/T 18204.2",
+      "params": "监测时间至少 45 min，监测间隔 10 min~15 min，结果以时间加权平均值表示",
+      "indicatorNo": 8
+    },
+    {
+      "indicator": "一氧化碳",
+      "method": "不分光红外分析法",
+      "standard": "GB/T 18204.2",
+      "params": "监测时间至少 45 min，监测间隔 10 min~15 min，结果以时间加权平均值表示",
+      "indicatorNo": 9
+    },
+    {
+      "indicator": "氨",
+      "method": "靛酚蓝分光光度法",
+      "standard": "GB/T 18204.2",
+      "params": "连续采样时间至少 45 min，采样流量 0.4 L/min",
+      "indicatorNo": 10
+    },
+    {
+      "indicator": "氨",
+      "method": "纳氏试剂分光光度法",
+      "standard": "HJ 533",
+      "params": "连续采样时间至少 45 min，采样流量 1 L/min",
+      "indicatorNo": 10
+    },
+    {
+      "indicator": "氨",
+      "method": "离子选择电极法",
+      "standard": "GB/T 14669",
+      "params": "连续采样时间至少 45 min，采样流量 0.5 L/min",
+      "indicatorNo": 10
+    },
+    {
+      "indicator": "甲醛",
+      "method": "AHMT 分光光度法",
+      "standard": "GB/T 16129",
+      "params": "连续采样时间至少 45 min，采样流量 0.4 L/min",
+      "indicatorNo": 11
+    },
+    {
+      "indicator": "甲醛",
+      "method": "酚试剂分光光度法",
+      "standard": "GB/T 18204.2",
+      "params": "连续采样时间至少 45 min，采样流量 0.2 L/min",
+      "indicatorNo": 11
+    },
+    {
+      "indicator": "甲醛",
+      "method": "高效液相色谱法",
+      "standard": "GB/T 18883-2022 附录 B",
+      "params": "连续采样时间至少 45 min，采样流量 1 L/min",
+      "indicatorNo": 11
+    },
+    {
+      "indicator": "苯",
+      "method": "固体吸附-热解吸-气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 12
+    },
+    {
+      "indicator": "苯",
+      "method": "活性炭吸附-二硫化碳解吸-气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 12
+    },
+    {
+      "indicator": "苯",
+      "method": "便携式气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 12
+    },
+    {
+      "indicator": "甲苯",
+      "method": "固体吸附-热解吸-气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 13
+    },
+    {
+      "indicator": "甲苯",
+      "method": "活性炭吸附-二硫化碳解吸-气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 13
+    },
+    {
+      "indicator": "甲苯",
+      "method": "便携式气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 13
+    },
+    {
+      "indicator": "二甲苯",
+      "method": "固体吸附-热解吸-气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 14
+    },
+    {
+      "indicator": "二甲苯",
+      "method": "活性炭吸附-二硫化碳解吸-气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 14
+    },
+    {
+      "indicator": "二甲苯",
+      "method": "便携式气相色谱法",
+      "standard": "GB/T 18883-2022 附录 C",
+      "params": "—",
+      "indicatorNo": 14
+    },
+    {
+      "indicator": "总挥发性有机化合物",
+      "method": "固体吸附-热解吸-气相色谱质谱法",
+      "standard": "GB/T 18883-2022 附录 D",
+      "params": "—",
+      "indicatorNo": 15
+    },
+    {
+      "indicator": "三氯乙烯",
+      "method": "固体吸附-热解吸-气相色谱质谱法",
+      "standard": "GB/T 18883-2022 附录 D",
+      "params": "—",
+      "indicatorNo": 16
+    },
+    {
+      "indicator": "四氯乙烯",
+      "method": "固体吸附-热解吸-气相色谱质谱法",
+      "standard": "GB/T 18883-2022 附录 D",
+      "params": "—",
+      "indicatorNo": 17
+    },
+    {
+      "indicator": "苯并[a]芘",
+      "method": "高效液相色谱法",
+      "standard": "GB/T 18883-2022 附录 E",
+      "params": "—",
+      "indicatorNo": 18
+    },
+    {
+      "indicator": "可吸入颗粒物",
+      "method": "撞击式-称量法",
+      "standard": "GB/T 18883-2022 附录 F",
+      "params": "—",
+      "indicatorNo": 19
+    },
+    {
+      "indicator": "细颗粒物",
+      "method": "撞击式-称量法",
+      "standard": "GB/T 18883-2022 附录 F",
+      "params": "—",
+      "indicatorNo": 20
+    },
+    {
+      "indicator": "细菌总数",
+      "method": "撞击法",
+      "standard": "GB/T 18883-2022 附录 G",
+      "params": "—",
+      "indicatorNo": 21
+    },
+    {
+      "indicator": "氡",
+      "method": "固体核径迹测量方法",
+      "standard": "GB/T 18883-2022 附录 H",
+      "params": "—",
+      "indicatorNo": 22
+    },
+    {
+      "indicator": "氡",
+      "method": "连续测量方法",
+      "standard": "GB/T 18883-2022 附录 H",
+      "params": "—",
+      "indicatorNo": 22
+    },
+    {
+      "indicator": "氡",
+      "method": "活性炭盒测量方法",
+      "standard": "GB/T 18883-2022 附录 H",
+      "params": "—",
+      "indicatorNo": 22
+    }
+  ],
+  "methodNote": "GB/T 18883-2022 第 A.8 条：同一个指标如果有两个或两个以上测定方法，应根据不同的适用范围选择对应的测定方法；若适用范围相同，可根据技术条件和实际情况选择使用，以第一法为仲裁法。表 A.1 注：AHMT 为 4-氨基-3-联氨-5-巯基-1,2,4-三氮杂茂。",
+  "qualitative": [
+    {
+      "key": "indoor-air-basic-requirement",
+      "text": "室内空气应无毒、无害、无异常嗅味。",
+      "citation": "GB/T 18883-2022 第 4.1 条",
+      "sourcePage": 6
+    },
+    {
+      "key": "evaluation-rule",
+      "text": "物理性、化学性、生物性和放射性指标的全项测定结果均符合本文件的要求时，评价为室内空气质量符合本文件。任意一项指标的测定结果未达到本文件的要求时，评价为室内空气质量不符合本文件。单项指标的测定结果符合本文件的要求时，评价为室内空气中该指标符合本文件。",
+      "citation": "GB/T 18883-2022 第 5.2 条",
+      "sourcePage": 7
+    },
+    {
+      "key": "environment-requirement",
+      "text": "采样前，应关闭门窗、空气净化设备及新风系统至少 12 h。采样时，门窗、空气净化设备及新风系统仍应保持关闭状态。使用空调的室内环境，应保持空调正常运转。物理性指标的测量和室内氡累积测量（固体核径迹测量方法），以及其他未能满足前述要求情况下的测量，应在房屋正常使用状态下进行。",
+      "citation": "GB/T 18883-2022 第 A.2.1 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "point-layout-method",
+      "text": "单点采样在房屋的中心位置布点，多点采样时应按对角线或梅花式均匀布点。采样点应避开通风口和热源，离墙壁距离应大于 0.5 m，离门窗距离应大于 1 m。",
+      "citation": "GB/T 18883-2022 第 A.2.3 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "screening-sampling",
+      "text": "筛选法宜采样 45 min。如使用直读仪器，采样间隔时间为 10 min~15 min，每个点位至少监测 4 次~5 次，最终结果以时间加权平均值表示。特殊情况（如氡），按照不同测定方法要求，采样至少 24 h（连续测量方法）或采样 2 d~7 d（活性炭盒测量方法）。",
+      "citation": "GB/T 18883-2022 第 A.5.2 条",
+      "sourcePage": 9
+    },
+    {
+      "key": "cumulative-sampling",
+      "text": "累积法按年平均、24 小时平均、8 小时平均的要求，根据测定方法的不同，可连续或间隔采样，间隔采样的最终结果以时间加权平均值表示。氡采用固体核径迹测量方法采样。",
+      "citation": "GB/T 18883-2022 第 A.5.3 条",
+      "sourcePage": 9
+    },
+    {
+      "key": "sampling-record",
+      "text": "采样时应对现场情况、可能的污染源、检测指标、采样日期、时间、地点、采样点数量、布点方式、大气压力、温度、相对湿度、风速、采样编号（采样点位、采样器、采样管等）及采样人员等进行详细记录，随样品一同送至实验室。",
+      "citation": "GB/T 18883-2022 第 A.6 条",
+      "sourcePage": 9
+    },
+    {
+      "key": "method-selection",
+      "text": "室内空气中各类指标的检验应优先选择表 A.1 指定的方法，使用前应按照 GB/T 32465 进行方法验证。若未使用本文件指定的方法，使用前应按照 GB/T 32465 进行方法确认，并与指定测定方法进行比对，以保证不同测定方法获得的检验结果的一致性。本文件中同一个指标如果有两个或两个以上测定方法，应根据不同的适用范围选择对应的测定方法；若适用范围相同，可根据技术条件和实际情况选择使用，以第一法为仲裁法。",
+      "citation": "GB/T 18883-2022 第 A.8 条",
+      "sourcePage": 9
+    },
+    {
+      "key": "airtightness-check",
+      "text": "在采样前应对采样系统的气密性进行检查，不得漏气。",
+      "citation": "GB/T 18883-2022 第 A.9.1 条",
+      "sourcePage": 11
+    },
+    {
+      "key": "flow-calibration",
+      "text": "现场仪器应符合国家有关标准和技术要求，使用前按说明书要求进行检定或校准。采样系统的流量要保持恒定，采样前和采样后均要在负载条件下用检定合格的流量计进行校准，前后两次校准的相对偏差不得超过 5%，取两次结果的平均值作为采样流量的实际值。宜在采样现场对采样器进行校准。",
+      "citation": "GB/T 18883-2022 第 A.9.2 条",
+      "sourcePage": 11
+    },
+    {
+      "key": "field-blank",
+      "text": "现场采样时，至少留两个采样管（膜）、一组（六块）培养平板不采样，并同其他样品管（膜）及培养平板一样对待，作为采样过程中的现场空白，采样结束后和其他样品一同送至实验室。样品分析时同时测定现场空白，若空白样品检验结果超过测定方法的定量限或空白样品培养平板上有菌落生长，则这批样品作废。",
+      "citation": "GB/T 18883-2022 第 A.9.3 条",
+      "sourcePage": 12
+    },
+    {
+      "key": "parallel-sample",
+      "text": "每批样品采集过程中，均应采集平行样，平行样数量不得低于 10%，当样本量不足 10 个时，至少应采集 1 个平行样。平行样测定值的绝对差值与平均值的比值不得超过 20%。",
+      "citation": "GB/T 18883-2022 第 A.9.4 条",
+      "sourcePage": 12
+    },
+    {
+      "key": "concentration-correction",
+      "text": "气态污染物（如二氧化硫、二氧化氮、臭氧等）的最终浓度是指参比状态（大气温度为 298.15 K、大气压力为 101.325 kPa 时的状态）下的校正浓度，其他污染物（如 PM₁₀、PM₂.₅、苯并[a]芘等）的浓度则为监测时大气压力和温度下的浓度。",
+      "citation": "GB/T 18883-2022 第 A.10.1 条",
+      "sourcePage": 12
+    },
+    {
+      "key": "result-expression",
+      "text": "测量结果的表述应同时考虑计量器具的精密度、准确度和读数误差。对检定合格的计量器具，有效数字位数可以记录到最小分度值，最多保留一位不确定数字；测量结果一般保留三位有效数字，但当测量结果接近方法检出限时，测量结果表述与检出限小数点后位数保持一致。",
+      "citation": "GB/T 18883-2022 第 A.10.2 条",
+      "sourcePage": 12
+    },
+    {
+      "key": "formaldehyde-hplc-principle",
+      "text": "使用填充了涂渍 2,4-二硝基苯肼（DNPH）的采样管采集一定体积的空气样品，样品中的甲醛经强酸催化与涂渍于硅胶上的 DNPH 反应，生成稳定有颜色的甲醛-2,4-二硝基苯腙，经乙腈洗脱后，使用具有紫外检测器或二极管阵列检测器的高效液相色谱仪进行分析，外标法定量。",
+      "citation": "GB/T 18883-2022 第 B.1 条",
+      "sourcePage": 13
+    },
+    {
+      "key": "btex-principle",
+      "text": "用采样管采集室内空气中的苯、甲苯、二甲苯，将采样管置于热解吸仪中解吸，经气相色谱柱分离，使用氢火焰离子化检测器进行分析，外标法定量。",
+      "citation": "GB/T 18883-2022 第 C.1.1 条",
+      "sourcePage": 16
+    }
+  ]
+}

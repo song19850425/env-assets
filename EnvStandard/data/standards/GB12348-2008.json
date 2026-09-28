@@ -1,0 +1,369 @@
+{
+  "standardId": "GB12348-2008",
+  "name": "工业企业厂界环境噪声排放标准",
+  "issuer": "环境保护部、国家质量监督检验检疫总局",
+  "effectiveDate": "2008-10-01",
+  "units": "dB(A)",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/wlhj/hjzspfbz/200809/W020161230342919235970.pdf",
+    "publisher": "生态环境部",
+    "table": "第 4 章 环境噪声排放限值（表 1 工业企业厂界环境噪声排放限值、表 2 结构传播固定设备室内噪声排放限值）、第 5 章 测量方法（表 4 测量结果修正表）",
+    "retrievedAt": "2026-09-14",
+    "type": "mixed",
+    "note": "PDF 文本层的 ASCII 被字体映射成全角（如「ＧＢ １２３４８」），比对前需做全角→半角归一化；表 1 的前半部分（含 0 类行）是扫描图片，由视觉转录补入。"
+  },
+  "transcription": {
+    "method": "text + scan-visual",
+    "tool": "pypdf 抽文本（全角→半角归一化）；表 1 的 0 类行取自 PDF 第 8 页的内嵌扫描图，2.2× 放大后视觉转录",
+    "at": "2026-09-14",
+    "pageRefs": {
+      "terms-3.5-3.13-and-table1-class-0": "PDF 第 8 页（整页扫描图，无文本层）",
+      "table1-class-1-4": "PDF 第 9 页（正文第 3 页，续表，文本层）",
+      "table2-and-chapter5": "PDF 第 9~11 页（文本层）"
+    },
+    "machineCheck": "全角→半角归一化后逐条比对；表 1 的 0 类行用锚点句与「限值随类别递减」关系校验",
+    "note": "第 8 页是整页扫描图（文本层为空），上面有术语 3.5~3.13、第 4.1.1 条与表 1 的 0 类行。该页由 pypdf 取内嵌图、PIL 放大 2× 后视觉转录，转录正文保存在 tools/verify_standards_sources.py 的 SCAN_PAGES 里参与复核（脚本同时反向断言这些句子不在文本层中）。"
+  },
+  "coverage": {
+    "included": "表 1 厂界环境噪声排放限值（0~4 类 × 昼/夜）、表 2 结构传播固定设备室内噪声排放限值（等效声级）、表 4 测量结果修正表、第 3 章术语 3.1~3.13、第 5 章测量方法全部参数。",
+    "excluded": "表 3 结构传播固定设备室内噪声排放限值（倍频带声压级，31.5~500 Hz 的逐带限值）。",
+    "reason": "表 3 用于结构传声的频谱分析，剧本五不做频谱分析；但表 3 用到的倍频带中心频率（第 3.10 条）已收录，用于校验学生选的频带范围。"
+  },
+  "columns": {
+    "dayLimit": "昼间",
+    "nightLimit": "夜间"
+  },
+  "limits": [
+    {
+      "seq": 1,
+      "name": "0 类",
+      "dayLimit": 50,
+      "nightLimit": 40,
+      "description": "厂界外为 0 类声环境功能区（康复疗养区等特别需要安静的区域）"
+    },
+    {
+      "seq": 2,
+      "name": "1 类",
+      "dayLimit": 55,
+      "nightLimit": 45,
+      "description": "厂界外为 1 类声环境功能区（以居民住宅、医疗卫生、文化教育、科研设计、行政办公为主要功能）"
+    },
+    {
+      "seq": 3,
+      "name": "2 类",
+      "dayLimit": 60,
+      "nightLimit": 50,
+      "description": "厂界外为 2 类声环境功能区（商业金融、集市贸易，或居住、商业、工业混杂）"
+    },
+    {
+      "seq": 4,
+      "name": "3 类",
+      "dayLimit": 65,
+      "nightLimit": 55,
+      "description": "厂界外为 3 类声环境功能区（以工业生产、仓储物流为主要功能）"
+    },
+    {
+      "seq": 5,
+      "name": "4 类",
+      "dayLimit": 70,
+      "nightLimit": 55,
+      "description": "厂界外为 4 类声环境功能区（交通干线两侧一定距离之内）"
+    }
+  ],
+  "indoorLimits": [
+    {
+      "name": "0 类",
+      "roomA_day": 40,
+      "roomA_night": 30,
+      "roomB_day": 40,
+      "roomB_night": 30
+    },
+    {
+      "name": "1 类",
+      "roomA_day": 40,
+      "roomA_night": 30,
+      "roomB_day": 45,
+      "roomB_night": 35
+    },
+    {
+      "name": "2、3、4 类",
+      "roomA_day": 45,
+      "roomA_night": 35,
+      "roomB_day": 50,
+      "roomB_night": 40
+    }
+  ],
+  "correctionTable": [
+    {
+      "difference": "3",
+      "correction": -3,
+      "citation": "GB 12348-2008 表 4：差值 3，修正值 −3"
+    },
+    {
+      "difference": "4~5",
+      "correction": -2,
+      "citation": "GB 12348-2008 表 4：差值 4~5，修正值 −2"
+    },
+    {
+      "difference": "6~10",
+      "correction": -1,
+      "citation": "GB 12348-2008 表 4：差值 6~10，修正值 −1"
+    }
+  ],
+  "values": {
+    "calibration-deviation-max": {
+      "value": 0.5,
+      "units": "dB",
+      "name": "每次测量前、后现场声学校准的示值偏差上限（超出则测量结果无效）",
+      "basis": "GB 12348-2008 第 5.1.2 条",
+      "citation": "GB 12348-2008 第 5.1.2 条：每次测量前、后必须在测量现场进行声学校准，其前、后校准示值偏差不得大于 0.5 dB，否则测量结果无效"
+    },
+    "wind-speed-max": {
+      "value": 5,
+      "units": "m/s",
+      "name": "测量允许的最大风速",
+      "basis": "GB 12348-2008 第 5.2.1 条",
+      "citation": "GB 12348-2008 第 5.2.1 条：测量应在无雨雪、无雷电天气，风速为 5 m/s 以下时进行"
+    },
+    "sampling-interval-max": {
+      "value": 1,
+      "units": "s",
+      "name": "仪器采样时间间隔上限（时间计权特性设为「F」挡）",
+      "basis": "GB 12348-2008 第 5.1.4 条",
+      "citation": "GB 12348-2008 第 5.1.4 条：测量仪器时间计权特性设为「F」挡，采样时间间隔不大于 1 s"
+    },
+    "boundary-distance": {
+      "value": 1,
+      "units": "m",
+      "name": "测点距厂界的距离（厂界外）",
+      "basis": "GB 12348-2008 第 5.3.2 条",
+      "citation": "GB 12348-2008 第 5.3.2 条：一般情况下，测点选在工业企业厂界外 1 m、高度 1.2 m 以上、距任一反射面距离不小于 1 m 的位置"
+    },
+    "microphone-height-min": {
+      "value": 1.2,
+      "units": "m",
+      "name": "测点高度下限",
+      "basis": "GB 12348-2008 第 5.3.2 条",
+      "citation": "GB 12348-2008 第 5.3.2 条：测点选在工业企业厂界外 1 m、高度 1.2 m 以上、距任一反射面距离不小于 1 m 的位置"
+    },
+    "reflection-distance-min": {
+      "value": 1,
+      "units": "m",
+      "name": "测点距任一反射面的最小距离",
+      "basis": "GB 12348-2008 第 5.3.2 条",
+      "citation": "GB 12348-2008 第 5.3.2 条：距任一反射面距离不小于 1 m 的位置"
+    },
+    "wall-height-extra-min": {
+      "value": 0.5,
+      "units": "m",
+      "name": "厂界有围墙时，测点应高于围墙的距离",
+      "basis": "GB 12348-2008 第 5.3.3.1 条",
+      "citation": "GB 12348-2008 第 5.3.3.1 条：当厂界有围墙且周围有受影响的噪声敏感建筑物时，测点应选在厂界外 1 m、高于围墙 0.5 m 以上的位置"
+    },
+    "indoor-reflection-distance-min": {
+      "value": 0.5,
+      "units": "m",
+      "name": "室内测量点位距任一反射面的最小距离",
+      "basis": "GB 12348-2008 第 5.3.3.3、5.3.3.4 条",
+      "citation": "GB 12348-2008 第 5.3.3.3 条：室内测量点位设在距任一反射面至少 0.5 m 以上、距地面 1.2 m 高度处"
+    },
+    "indoor-ground-height": {
+      "value": 1.2,
+      "units": "m",
+      "name": "室内测量点位距地面的高度",
+      "basis": "GB 12348-2008 第 5.3.3.3、5.3.3.4 条",
+      "citation": "GB 12348-2008 第 5.3.3.4 条：测点应距任一反射面至少 0.5 m 以上、距地面 1.2 m、距外窗 1 m 以上，窗户关闭状态下测量"
+    },
+    "indoor-window-distance-min": {
+      "value": 1,
+      "units": "m",
+      "name": "结构传声室内测量点位距外窗的最小距离",
+      "basis": "GB 12348-2008 第 5.3.3.4 条",
+      "citation": "GB 12348-2008 第 5.3.3.4 条：测点应距任一反射面至少 0.5 m 以上、距地面 1.2 m、距外窗 1 m 以上"
+    },
+    "sensitive-building-distance-threshold": {
+      "value": 1,
+      "units": "m",
+      "name": "厂界与噪声敏感建筑物距离小于该值时，应在室内测量并将限值减 10 dB(A)",
+      "basis": "GB 12348-2008 第 4.1.5 条",
+      "citation": "GB 12348-2008 第 4.1.5 条：当厂界与噪声敏感建筑物距离小于 1 m 时，厂界环境噪声应在噪声敏感建筑物的室内测量，并将表 1 中相应的限值减 10 dB(A) 作为评价依据"
+    },
+    "indoor-limit-reduction": {
+      "value": 10,
+      "units": "dB(A)",
+      "name": "厂界紧邻敏感建筑物时限值的折减量",
+      "basis": "GB 12348-2008 第 4.1.5 条",
+      "citation": "GB 12348-2008 第 4.1.5 条：将表 1 中相应的限值减 10 dB(A) 作为评价依据"
+    },
+    "frequent-noise-exceedance-max": {
+      "value": 10,
+      "units": "dB(A)",
+      "name": "夜间频发噪声最大声级超过限值的幅度上限",
+      "basis": "GB 12348-2008 第 4.1.2 条",
+      "citation": "GB 12348-2008 第 4.1.2 条：夜间频发噪声的最大声级超过限值的幅度不得高于 10 dB(A)"
+    },
+    "sporadic-noise-exceedance-max": {
+      "value": 15,
+      "units": "dB(A)",
+      "name": "夜间偶发噪声最大声级超过限值的幅度上限",
+      "basis": "GB 12348-2008 第 4.1.3 条",
+      "citation": "GB 12348-2008 第 4.1.3 条：夜间偶发噪声的最大声级超过限值的幅度不得高于 15 dB(A)"
+    },
+    "steady-noise-duration": {
+      "value": 1,
+      "units": "min",
+      "name": "稳态噪声测量采用的等效声级时间",
+      "basis": "GB 12348-2008 第 5.4.2 条",
+      "citation": "GB 12348-2008 第 5.4.2 条：被测声源是稳态噪声，采用 1 min 的等效声级"
+    },
+    "steady-noise-fluctuation-max": {
+      "value": 3,
+      "units": "dB(A)",
+      "name": "稳态噪声的声级起伏上限（超过即为非稳态噪声）",
+      "basis": "GB 12348-2008 第 3.11 条",
+      "citation": "GB 12348-2008 第 3.11 条：稳态噪声指在测量时间内，被测声源的声级起伏不大于 3 dB(A) 的噪声",
+      "sourcePage": 8
+    },
+    "frequency-band-low": {
+      "value": 31.5,
+      "units": "Hz",
+      "name": "本标准采用的室内噪声频谱分析倍频带中心频率下限",
+      "basis": "GB 12348-2008 第 3.10 条",
+      "citation": "GB 12348-2008 第 3.10 条：本标准采用的室内噪声频谱分析倍频带中心频率为 31.5 Hz、63 Hz、125 Hz、250 Hz、500 Hz，其覆盖频率范围为 22～707 Hz",
+      "sourcePage": 8
+    },
+    "frequency-band-high": {
+      "value": 500,
+      "units": "Hz",
+      "name": "本标准采用的室内噪声频谱分析倍频带中心频率上限",
+      "basis": "GB 12348-2008 第 3.10 条",
+      "citation": "GB 12348-2008 第 3.10 条：本标准采用的室内噪声频谱分析倍频带中心频率为 31.5 Hz、63 Hz、125 Hz、250 Hz、500 Hz，其覆盖频率范围为 22～707 Hz",
+      "sourcePage": 8
+    },
+    "frequency-band-coverage-low": {
+      "value": 22,
+      "units": "Hz",
+      "name": "上述五个倍频带中心频率覆盖的频率范围下限",
+      "basis": "GB 12348-2008 第 3.10 条",
+      "citation": "GB 12348-2008 第 3.10 条：其覆盖频率范围为 22～707 Hz",
+      "sourcePage": 8
+    },
+    "frequency-band-coverage-high": {
+      "value": 707,
+      "units": "Hz",
+      "name": "上述五个倍频带中心频率覆盖的频率范围上限",
+      "basis": "GB 12348-2008 第 3.10 条",
+      "citation": "GB 12348-2008 第 3.10 条：其覆盖频率范围为 22～707 Hz",
+      "sourcePage": 8
+    },
+    "correction-no-need-difference": {
+      "value": 10,
+      "units": "dB(A)",
+      "name": "测量值与背景值相差超过该值时不做修正",
+      "basis": "GB 12348-2008 第 5.7.1 条",
+      "citation": "GB 12348-2008 第 5.7.1 条：噪声测量值与背景噪声值相差大于 10 dB(A) 时，噪声测量值不做修正"
+    },
+    "correction-lower-bound": {
+      "value": 3,
+      "units": "dB(A)",
+      "name": "测量值与背景值相差小于该值时，应降低背景噪声后重测",
+      "basis": "GB 12348-2008 第 5.7.3 条",
+      "citation": "GB 12348-2008 第 5.7.3 条：噪声测量值与背景噪声值相差小于 3 dB(A) 时，应采取措施降低背景噪声后，视情况按 5.7.1 或 5.7.2 执行"
+    }
+  },
+  "qualitative": [
+    {
+      "key": "field-calibration",
+      "text": "测量仪器和校准仪器应定期检定合格，并在有效使用期限内使用；每次测量前、后必须在测量现场进行声学校准，其前、后校准示值偏差不得大于 0.5 dB，否则测量结果无效。",
+      "citation": "GB 12348-2008 第 5.1.2 条"
+    },
+    {
+      "key": "instrument-requirement",
+      "text": "声级计应符合 GB 3785 对 1 级或 2 级声级计的要求。当需要进行噪声的频谱分析时，仪器性能应符合 GB/T 3241 中对滤波器的要求。测量时传声器加防风罩。",
+      "citation": "GB 12348-2008 第 5.1.1、5.1.3 条"
+    },
+    {
+      "key": "measurement-condition",
+      "text": "气象条件：测量应在无雨雪、无雷电天气，风速为 5 m/s 以下时进行。不得不在特殊气象条件下测量时，应采取必要措施保证测量准确性，同时注明当时所采取的措施及气象情况。测量工况：测量应在被测声源正常工作时间进行，同时注明当时的工况。",
+      "citation": "GB 12348-2008 第 5.2.1、5.2.2 条"
+    },
+    {
+      "key": "point-layout",
+      "text": "测点布设根据工业企业声源、周围噪声敏感建筑物的布局以及毗邻的区域类别，在工业企业厂界布设多个测点，其中包括距噪声敏感建筑物较近以及受被测声源影响大的位置。",
+      "citation": "GB 12348-2008 第 5.3.1 条"
+    },
+    {
+      "key": "point-position-indoor-vs-structure",
+      "text": "室内噪声测量时，室内测量点位设在距任一反射面至少 0.5 m 以上、距地面 1.2 m 高度处，在受噪声影响方向的窗户开启状态下测量；固定设备结构传声至噪声敏感建筑物室内时，测点应距任一反射面至少 0.5 m 以上、距地面 1.2 m、距外窗 1 m 以上，窗户关闭状态下测量，被测房间内的其他可能干扰测量的声源应关闭。",
+      "citation": "GB 12348-2008 第 5.3.3.3、5.3.3.4 条"
+    },
+    {
+      "key": "measurement-period",
+      "text": "分别在昼间、夜间两个时段测量。夜间有频发、偶发噪声影响时同时测量最大声级。被测声源是非稳态噪声时，测量被测声源有代表性时段的等效声级，必要时测量整个正常工作时段的等效声级。",
+      "citation": "GB 12348-2008 第 5.4.1、5.4.3 条"
+    },
+    {
+      "key": "background-noise-measurement",
+      "text": "背景噪声的测量环境应不受被测声源影响且其他声环境与测量被测声源时保持一致；测量时段应与被测声源测量的时间长度相同。",
+      "citation": "GB 12348-2008 第 5.5.1、5.5.2 条"
+    },
+    {
+      "key": "measurement-record",
+      "text": "噪声测量时需做测量记录。记录内容应主要包括：被测量单位名称、地址、厂界所处声环境功能区类别、测量时气象条件、测量仪器、校准仪器、测点位置、测量时间、测量时段、仪器校准值（测前、测后）、主要声源、测量工况、示意图（厂界、声源、噪声敏感建筑物、测点位置等）。",
+      "citation": "GB 12348-2008 第 5.6 条"
+    },
+    {
+      "key": "result-evaluation",
+      "text": "各个测点的测量结果应单独评价。同一测点每天的测量结果按昼间、夜间进行评价。最大声级 Lmax 直接评价。",
+      "citation": "GB 12348-2008 第 6.1、6.2 条"
+    },
+    {
+      "key": "noise-sensitive-building-definition",
+      "text": "噪声敏感建筑物指医院、学校、机关、科研单位、住宅等需要保持安静的建筑物。",
+      "citation": "GB 12348-2008 第 3.5 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "day-night-definition",
+      "text": "根据《中华人民共和国环境噪声污染防治法》，「昼间」是指 6:00 至 22:00 之间的时段；「夜间」是指 22:00 至次日 6:00 之间的时段。县级以上人民政府为环境噪声污染防治的需要（如考虑时差、作息习惯差异等）而对昼间、夜间的划分另有规定的，应按其规定执行。",
+      "citation": "GB 12348-2008 第 3.6 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "frequent-noise-definition",
+      "text": "频发噪声指频繁发生、发生的时间和间隔有一定规律、单次持续时间较短、强度较高的噪声，如排气噪声、货物装卸噪声等。",
+      "citation": "GB 12348-2008 第 3.7 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "sporadic-noise-definition",
+      "text": "偶发噪声指偶然发生、发生的时间和间隔无规律、单次持续时间较短、强度较高的噪声，如短促鸣笛声、工程爆破噪声等。",
+      "citation": "GB 12348-2008 第 3.8 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "maximum-sound-level-definition",
+      "text": "最大声级指在规定测量时间内对频发或偶发噪声事件测得的 A 声级最大值，用 Lmax 表示，单位 dB(A)。",
+      "citation": "GB 12348-2008 第 3.9 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "octave-band-definition",
+      "text": "倍频带声压级指采用符合 GB/T 3241 规定的倍频程滤波器所测量的频带声压级，其测量带宽和中心频率成正比。本标准采用的室内噪声频谱分析倍频带中心频率为 31.5 Hz、63 Hz、125 Hz、250 Hz、500 Hz，其覆盖频率范围为 22～707 Hz。",
+      "citation": "GB 12348-2008 第 3.10 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "steady-noise-definition",
+      "text": "稳态噪声指在测量时间内，被测声源的声级起伏不大于 3 dB(A) 的噪声。非稳态噪声指在测量时间内，被测声源的声级起伏大于 3 dB(A) 的噪声。",
+      "citation": "GB 12348-2008 第 3.11、3.12 条",
+      "sourcePage": 8
+    },
+    {
+      "key": "background-noise-definition",
+      "text": "背景噪声指被测量噪声源以外的声源发出的环境噪声的总和。",
+      "citation": "GB 12348-2008 第 3.13 条",
+      "sourcePage": 8
+    }
+  ]
+}

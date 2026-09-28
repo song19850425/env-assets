@@ -1,0 +1,179 @@
+{
+  "standardId": "GB5085.3-2007",
+  "name": "危险废物鉴别标准 浸出毒性鉴别",
+  "issuer": "国家环境保护总局、国家质量监督检验检疫总局",
+  "effectiveDate": "2007-10-01",
+  "units": "mg/L",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/gthw/wxfwjbffbz/200705/W020120104532752182600.pdf",
+    "publisher": "生态环境部",
+    "table": "第 3 章 鉴别标准 表 1 浸出毒性鉴别标准值、第 4 章 实验方法",
+    "retrievedAt": "2026-09-14",
+    "note": "数值与条款由人工从上述官方 PDF 转录并逐条核对；由 tools/verify_standards_sources.py 复核。该 PDF 含全部附录，文本层完整。",
+    "sha256": "ed37859762c500a0bd6d7f7c7eeeff63ad4aa3ae15fafbdbdd1e155ce3e7b430"
+  },
+  "coverage": {
+    "included": "表 1 的「无机元素及化合物」全部 16 项（序号 1~16）。剧本七的鉴别对象是电镀污泥 / 冶炼渣类废物，判定依据集中在重金属。",
+    "excluded": "表 1 的「有机农药类」10 项（序号 17~26）、「非挥发性有机化合物」12 项（序号 27~38）、「挥发性有机化合物」12 项（序号 39~50）。",
+    "reason": "数据层按「剧本实际引用」收录；需要时按同一转录方式补录。表 1 共 50 项。"
+  },
+  "columns": {
+    "limit": "浸出液中危害成分浓度限值/(mg/L)"
+  },
+  "limits": [
+    {
+      "seq": 1,
+      "name": "铜（以总铜计）",
+      "group": "无机元素及化合物",
+      "limit": 100,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 2,
+      "name": "锌（以总锌计）",
+      "group": "无机元素及化合物",
+      "limit": 100,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 3,
+      "name": "镉（以总镉计）",
+      "group": "无机元素及化合物",
+      "limit": 1,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 4,
+      "name": "铅（以总铅计）",
+      "group": "无机元素及化合物",
+      "limit": 5,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 5,
+      "name": "总铬",
+      "group": "无机元素及化合物",
+      "limit": 15,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 6,
+      "name": "铬（六价）",
+      "group": "无机元素及化合物",
+      "limit": 5,
+      "method": "GB/T 15555.4-1995"
+    },
+    {
+      "seq": 7,
+      "name": "烷基汞",
+      "group": "无机元素及化合物",
+      "limit": "不得检出",
+      "method": "GB/T 14204-93"
+    },
+    {
+      "seq": 8,
+      "name": "汞（以总汞计）",
+      "group": "无机元素及化合物",
+      "limit": 0.1,
+      "method": "附录 B"
+    },
+    {
+      "seq": 9,
+      "name": "铍（以总铍计）",
+      "group": "无机元素及化合物",
+      "limit": 0.02,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 10,
+      "name": "钡（以总钡计）",
+      "group": "无机元素及化合物",
+      "limit": 100,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 11,
+      "name": "镍（以总镍计）",
+      "group": "无机元素及化合物",
+      "limit": 5,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 12,
+      "name": "总银",
+      "group": "无机元素及化合物",
+      "limit": 5,
+      "method": "附录 A、B、C、D"
+    },
+    {
+      "seq": 13,
+      "name": "砷（以总砷计）",
+      "group": "无机元素及化合物",
+      "limit": 5,
+      "method": "附录 C、E"
+    },
+    {
+      "seq": 14,
+      "name": "硒（以总硒计）",
+      "group": "无机元素及化合物",
+      "limit": 1,
+      "method": "附录 B、C、E"
+    },
+    {
+      "seq": 15,
+      "name": "无机氟化物（不包括氟化钙）",
+      "group": "无机元素及化合物",
+      "limit": 100,
+      "method": "附录 F"
+    },
+    {
+      "seq": 16,
+      "name": "氰化物（以 CN⁻ 计）",
+      "group": "无机元素及化合物",
+      "limit": 5,
+      "method": "附录 G"
+    }
+  ],
+  "qualitative": [
+    {
+      "key": "any-one-exceeds",
+      "text": "按照 HJ/T 299 制备的固体废物浸出液中任何一种危害成分含量超过表 1 中所列的浓度限值，则判定该固体废物是具有浸出毒性特征的危险废物。",
+      "citation": "GB 5085.3-2007 第 3 章"
+    },
+    {
+      "key": "scope",
+      "text": "本标准规定了以浸出毒性为特征的危险废物鉴别标准。本标准适用于任何生产、生活和其他活动中产生固体废物的浸出毒性鉴别。",
+      "citation": "GB 5085.3-2007 第 1 章"
+    },
+    {
+      "key": "leaching-method-reference",
+      "text": "鉴别标准以 HJ/T 299 制备的浸出液为判定对象 —— 浸出方法不是可选项，换了浸出方法就不是本标准意义上的浸出液。",
+      "citation": "GB 5085.3-2007 第 3 章（引用 HJ/T 299）"
+    },
+    {
+      "key": "sampling-reference",
+      "text": "采样点和采样方法按照 HJ/T 298 进行。",
+      "citation": "GB 5085.3-2007 第 4.1 条"
+    },
+    {
+      "key": "pretreatment-reference",
+      "text": "无机元素及其化合物的样品（除六价铬、无机氟化物、氰化物外）的前处理方法参照附录 S；六价铬及其化合物的样品的前处理方法参照附录 T。有机样品的前处理方法参照附录 U、V、W。",
+      "citation": "GB 5085.3-2007 第 4.2、4.3 条"
+    },
+    {
+      "key": "method-preference",
+      "text": "各危害成分项目的测定，除执行规定的标准分析方法外，暂按附录中规定的方法执行；待适用于测定特定危害成分项目的国家环境保护标准发布后，按标准的规定执行。",
+      "citation": "GB 5085.3-2007 第 4.4 条"
+    },
+    {
+      "key": "not-detected-definition",
+      "text": "「不得检出」指甲基汞＜10 ng/L，乙基汞＜20 ng/L。",
+      "citation": "GB 5085.3-2007 表 1 注 1"
+    },
+    {
+      "key": "enforcement",
+      "text": "本标准由县级以上人民政府环境保护行政主管部门负责监督实施。按有关法律规定，本标准具有强制执行的效力。",
+      "citation": "GB 5085.3-2007 第 5 章"
+    }
+  ]
+}

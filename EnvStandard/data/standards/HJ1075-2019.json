@@ -1,0 +1,233 @@
+{
+  "standardId": "HJ1075-2019",
+  "name": "水质 浊度的测定 浊度计法",
+  "issuer": "生态环境部",
+  "effectiveDate": "2020-06-30",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/202001/W020200102492122303749.pdf",
+    "publisher": "生态环境部",
+    "table": "第 1 章 适用范围、第 4 章 方法原理、第 5 章 试剂和材料、第 7 章 样品、第 8 章 分析步骤、第 11 章 质量保证和质量控制、第 13 章 注意事项",
+    "retrievedAt": "2026-09-14",
+    "note": "数值与条款由人工从上述官方 PDF 转录并逐条核对；由 tools/verify_standards_sources.py 复核。"
+  },
+  "values": {
+    "mdl": {
+      "value": 0.3,
+      "units": "NTU",
+      "name": "方法检出限",
+      "basis": "HJ 1075-2019 第 1 章",
+      "citation": "HJ 1075-2019 第 1 章：方法检出限为 0.3 NTU"
+    },
+    "standard-stock": {
+      "value": 4000,
+      "units": "NTU",
+      "name": "浊度标准贮备液浓度",
+      "basis": "HJ 1075-2019 第 5.4 条",
+      "citation": "HJ 1075-2019 第 5.4 条：浊度标准贮备液：4000 NTU"
+    },
+    "standard-working": {
+      "value": 400,
+      "units": "NTU",
+      "name": "浊度标准使用液浓度",
+      "basis": "HJ 1075-2019 第 5.5 条",
+      "citation": "HJ 1075-2019 第 5.5 条：浊度标准使用液：400 NTU。将浊度标准贮备液摇匀后，准确移取 10.00 ml 至 100 ml 容量瓶中，稀释定容至标线"
+    },
+    "hexamine-mass": {
+      "value": 5.0,
+      "units": "g",
+      "name": "配制浊度标准贮备液称取的六次甲基四胺质量",
+      "basis": "HJ 1075-2019 第 5.4 条",
+      "citation": "HJ 1075-2019 第 5.4 条：称取 5.0 g（准确至 0.01 g）六次甲基四胺和 0.5 g（准确至 0.01 g）硫酸肼"
+    },
+    "hydrazine-sulfate-mass": {
+      "value": 0.5,
+      "units": "g",
+      "name": "配制浊度标准贮备液称取的硫酸肼质量",
+      "basis": "HJ 1075-2019 第 5.4 条",
+      "citation": "HJ 1075-2019 第 5.4 条：称取 5.0 g 六次甲基四胺和 0.5 g 硫酸肼"
+    },
+    "standard-stock-stabilize-temp": {
+      "value": 25,
+      "units": "℃",
+      "name": "标准贮备液的静置温度（25℃±3℃）",
+      "basis": "HJ 1075-2019 第 5.4 条",
+      "citation": "HJ 1075-2019 第 5.4 条：在 25℃±3℃ 下水平放置 24 h，制备成浊度为 4000 NTU 的浊度标准贮备液"
+    },
+    "standard-stock-stabilize-hours": {
+      "value": 24,
+      "units": "h",
+      "name": "标准贮备液的静置时间",
+      "basis": "HJ 1075-2019 第 5.4 条",
+      "citation": "HJ 1075-2019 第 5.4 条：在 25℃±3℃ 下水平放置 24 h"
+    },
+    "standard-stock-shelf-months": {
+      "value": 6,
+      "units": "月",
+      "name": "标准贮备液的有效期",
+      "basis": "HJ 1075-2019 第 5.4 条",
+      "citation": "HJ 1075-2019 第 5.4 条：在室温条件下避光可保存 6 个月"
+    },
+    "standard-working-shelf-months": {
+      "value": 1,
+      "units": "月",
+      "name": "标准使用液的有效期",
+      "basis": "HJ 1075-2019 第 5.5 条",
+      "citation": "HJ 1075-2019 第 5.5 条：在 4℃以下冷藏条件下避光可保存 1 个月"
+    },
+    "standard-working-storage-temp-max": {
+      "value": 4,
+      "units": "℃",
+      "name": "标准使用液的保存温度上限",
+      "basis": "HJ 1075-2019 第 5.5 条",
+      "citation": "HJ 1075-2019 第 5.5 条：在 4℃以下冷藏条件下避光可保存 1 个月"
+    },
+    "reagent-drying-hours": {
+      "value": 48,
+      "units": "h",
+      "name": "六次甲基四胺与硫酸肼使用前在硅胶干燥器中放置的时间",
+      "basis": "HJ 1075-2019 第 5.2、5.3 条",
+      "citation": "HJ 1075-2019 第 5.2 条：临用前取适量平布于表面皿上，置于硅胶干燥器中放置 48 h 去除湿存水"
+    },
+    "sample-bottle-volume": {
+      "value": 500,
+      "units": "mL",
+      "name": "样品瓶容积",
+      "basis": "HJ 1075-2019 第 6.1 条",
+      "citation": "HJ 1075-2019 第 6.1 条：样品瓶：500 ml 具塞玻璃瓶或聚乙烯瓶"
+    },
+    "membrane-pore-max": {
+      "value": 0.45,
+      "units": "μm",
+      "name": "实验用水过滤所用滤膜的孔径上限",
+      "basis": "HJ 1075-2019 第 5.6 条",
+      "citation": "HJ 1075-2019 第 5.6 条：滤膜：孔径≤0.45 μm，水相微孔滤膜"
+    },
+    "storage-temp-max": {
+      "value": 4,
+      "units": "℃",
+      "name": "样品保存温度上限",
+      "basis": "HJ 1075-2019 第 7.2 条",
+      "citation": "HJ 1075-2019 第 7.2 条：样品应尽量现场测定。否则，应在 4℃以下冷藏避光保存"
+    },
+    "storage-hours-max": {
+      "value": 48,
+      "units": "h",
+      "name": "样品最长保存时间",
+      "basis": "HJ 1075-2019 第 7.2 条",
+      "citation": "HJ 1075-2019 第 7.2 条：应在 4℃以下冷藏避光保存，不超过 48 h"
+    },
+    "low-turbidity-wavelength-min": {
+      "value": 400,
+      "units": "nm",
+      "name": "10 NTU 以下样品建议选用的入射光波长下限",
+      "basis": "HJ 1075-2019 第 13.3 条",
+      "citation": "HJ 1075-2019 第 13.3 条：10 NTU 以下样品建议选择入射光为 400～600 nm 的浊度计"
+    },
+    "low-turbidity-wavelength-max": {
+      "value": 600,
+      "units": "nm",
+      "name": "10 NTU 以下样品建议选用的入射光波长上限",
+      "basis": "HJ 1075-2019 第 13.3 条",
+      "citation": "HJ 1075-2019 第 13.3 条：10 NTU 以下样品建议选择入射光为 400～600 nm 的浊度计"
+    },
+    "low-turbidity-threshold": {
+      "value": 10,
+      "units": "NTU",
+      "name": "适用低波长建议的浊度阈值",
+      "basis": "HJ 1075-2019 第 13.3 条",
+      "citation": "HJ 1075-2019 第 13.3 条：10 NTU 以下样品建议选择入射光为 400～600 nm 的浊度计"
+    },
+    "colored-wavelength": {
+      "value": 860,
+      "units": "nm",
+      "name": "有颜色样品应选用的入射光波长（860 nm±30 nm）",
+      "basis": "HJ 1075-2019 第 13.3 条",
+      "citation": "HJ 1075-2019 第 13.3 条：有颜色样品应选择入射光为 860 nm±30 nm 的浊度计"
+    },
+    "parallel-ratio-min": {
+      "value": 10,
+      "units": "%",
+      "name": "每批样品应测定的平行双样比例下限",
+      "basis": "HJ 1075-2019 第 11.3 条",
+      "citation": "HJ 1075-2019 第 11.3 条：每批样品应至少测定 10% 的平行双样"
+    },
+    "parallel-batch-threshold": {
+      "value": 10,
+      "units": "个",
+      "name": "低于该样品数时应至少测定一个平行双样",
+      "basis": "HJ 1075-2019 第 11.3 条",
+      "citation": "HJ 1075-2019 第 11.3 条：样品数量少于 10 个时，应至少测定一个平行双样"
+    },
+    "parallel-deviation-max": {
+      "value": 20,
+      "units": "%",
+      "name": "平行双样测定结果的相对偏差上限",
+      "basis": "HJ 1075-2019 第 11.3 条",
+      "citation": "HJ 1075-2019 第 11.3 条：测定结果相对偏差应小于 20%"
+    },
+    "blank-per-batch-min": {
+      "value": 1,
+      "units": "次",
+      "name": "每批样品至少进行的空白测定次数",
+      "basis": "HJ 1075-2019 第 11.1 条",
+      "citation": "HJ 1075-2019 第 11.1 条：每批样品至少进行 1 次空白测定，结果应小于方法检出限"
+    },
+    "standard-sample-per-run-min": {
+      "value": 1,
+      "units": "个",
+      "name": "每次分析样品时应加入的标准样品数下限",
+      "basis": "HJ 1075-2019 第 11.4 条",
+      "citation": "HJ 1075-2019 第 11.4 条：每次分析样品时应加入分析 1～2 个标准样品"
+    },
+    "standard-sample-per-run-max": {
+      "value": 2,
+      "units": "个",
+      "name": "每次分析样品时应加入的标准样品数上限",
+      "basis": "HJ 1075-2019 第 11.4 条",
+      "citation": "HJ 1075-2019 第 11.4 条：每次分析样品时应加入分析 1～2 个标准样品"
+    }
+  },
+  "qualitative": [
+    {
+      "key": "principle",
+      "text": "利用一束稳定光源光线通过盛有待测样品的样品池，传感器处在与发射光线垂直的位置上测量散射光强度。光束射入样品时产生的散射光的强度与样品中浊度在一定浓度范围内成比例关系。",
+      "citation": "HJ 1075-2019 第 4 章"
+    },
+    {
+      "key": "instrument-selfcheck",
+      "text": "按照仪器说明书打开仪器预热，仪器进行自检，仪器进入测量状态。每次分析样品时都应对仪器进行充分预热、校准。",
+      "citation": "HJ 1075-2019 第 8.1、11.2 条"
+    },
+    {
+      "key": "calibration-procedure",
+      "text": "将实验用水倒入样品池内，对仪器进行零点校准。按照仪器说明书将浊度标准使用液稀释成不同浓度点，分别润洗样品池数次后，缓慢倒至样品池刻度线，按仪器提示或仪器使用说明书的要求进行标准系列校准。",
+      "citation": "HJ 1075-2019 第 8.2 条"
+    },
+    {
+      "key": "measurement-procedure",
+      "text": "将样品摇匀，待可见的气泡消失后，用少量样品润洗样品池数次。将完全均匀的样品缓慢倒入样品池内，至样品池的刻度线即可。持握样品池位置尽量在刻度线以上，用柔软的无尘布擦去样品池外的水和指纹。将样品池放入仪器读数时，应将样品池上的标识对准仪器规定的位置。按下仪器测量键，待读数稳定后记录。",
+      "citation": "HJ 1075-2019 第 8.3 条"
+    },
+    {
+      "key": "field-measurement-preference",
+      "text": "样品应尽量现场测定。否则，应在 4℃以下冷藏避光保存，不超过 48 h。",
+      "citation": "HJ 1075-2019 第 7.2 条"
+    },
+    {
+      "key": "cold-sample-warm-up",
+      "text": "经冷藏保存的样品应放置至室温后测量，测量时应充分摇匀，并尽快将样品倒入样品池内，倒入时应沿着样品池缓慢倒入，避免产生气泡。",
+      "citation": "HJ 1075-2019 第 13.1 条"
+    },
+    {
+      "key": "cell-cleanliness",
+      "text": "仪器样品池的洁净度及是否有划痕会影响浊度的测量。应定期进行检查和清洁，有细微划痕的样品池可通过涂抹硅油薄膜并用柔软的无尘布擦拭来去除。",
+      "citation": "HJ 1075-2019 第 13.2 条"
+    },
+    {
+      "key": "applicability",
+      "text": "本标准适用于地表水、地下水和海水中浊度的测定。",
+      "citation": "HJ 1075-2019 第 1 章"
+    }
+  ]
+}

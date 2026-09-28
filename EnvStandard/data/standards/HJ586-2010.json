@@ -1,0 +1,274 @@
+{
+  "standardId": "HJ586-2010",
+  "name": "水质 游离氯和总氯的测定 N,N-二乙基-1,4-苯二胺分光光度法",
+  "issuer": "环境保护部",
+  "effectiveDate": "2010-12-01",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/201010/W020130204571950434641.pdf",
+    "publisher": "生态环境部",
+    "table": "第 1 章 适用范围、第 4 章 方法原理、第 8 章 样品、第 9 章 分析步骤、附录 A 现场测定法",
+    "retrievedAt": "2026-09-14",
+    "note": "数值与条款由人工从上述官方 PDF 转录并逐条核对；由 tools/verify_standards_sources.py 复核。"
+  },
+  "values": {
+    "high-cell-path": {
+      "value": 10,
+      "units": "mm",
+      "name": "高浓度样品的比色皿光程",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：对于高浓度样品，采用 10 mm 比色皿"
+    },
+    "high-mdl": {
+      "value": 0.03,
+      "units": "mg/L",
+      "name": "高浓度分光光度法的检出限（以 Cl₂ 计）",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：对于高浓度样品，采用 10 mm 比色皿，本方法的检出限（以 Cl₂ 计）为 0.03 mg/L"
+    },
+    "high-range-min": {
+      "value": 0.12,
+      "units": "mg/L",
+      "name": "高浓度分光光度法的测定范围下限",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：测定范围（以 Cl₂ 计）为 0.12～1.50 mg/L"
+    },
+    "high-range-max": {
+      "value": 1.5,
+      "units": "mg/L",
+      "name": "高浓度分光光度法的测定范围上限",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：测定范围（以 Cl₂ 计）为 0.12～1.50 mg/L"
+    },
+    "low-cell-path": {
+      "value": 50,
+      "units": "mm",
+      "name": "低浓度样品的比色皿光程",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：对于低浓度样品，采用 50 mm 比色皿"
+    },
+    "low-mdl": {
+      "value": 0.004,
+      "units": "mg/L",
+      "name": "低浓度分光光度法的检出限（以 Cl₂ 计）",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：对于低浓度样品，采用 50 mm 比色皿，本方法的检出限（以 Cl₂ 计）为 0.004 mg/L"
+    },
+    "low-range-min": {
+      "value": 0.016,
+      "units": "mg/L",
+      "name": "低浓度分光光度法的测定范围下限",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：测定范围（以 Cl₂ 计）为 0.016～0.20 mg/L"
+    },
+    "low-range-max": {
+      "value": 0.2,
+      "units": "mg/L",
+      "name": "低浓度分光光度法的测定范围上限",
+      "basis": "HJ 586-2010 第 1 章",
+      "citation": "HJ 586-2010 第 1 章：测定范围（以 Cl₂ 计）为 0.016～0.20 mg/L"
+    },
+    "field-mdl": {
+      "value": 0.04,
+      "units": "mg/L",
+      "name": "附录 A 现场测定法的检出限",
+      "basis": "HJ 586-2010 附录 A 第 A.1 条",
+      "citation": "HJ 586-2010 附录 A 第 A.1 条：本方法的检出限为 0.04 mg/L"
+    },
+    "field-loq": {
+      "value": 0.16,
+      "units": "mg/L",
+      "name": "附录 A 现场测定法的测定下限",
+      "basis": "HJ 586-2010 附录 A 第 A.1 条",
+      "citation": "HJ 586-2010 附录 A 第 A.1 条：本方法的检出限为 0.04 mg/L，测定下限为 0.16 mg/L"
+    },
+    "wavelength": {
+      "value": 515,
+      "units": "nm",
+      "name": "实验室分光光度法的测定波长",
+      "basis": "HJ 586-2010 第 4.1 条、第 9.1 条",
+      "citation": "HJ 586-2010 第 4.1 条：游离氯直接与 N,N-二乙基-1,4-苯二胺（DPD）发生反应，生成红色化合物，于 515 nm 波长处测定其吸光度"
+    },
+    "field-wavelength-tolerance": {
+      "value": 5,
+      "units": "nm",
+      "name": "现场便携式分光光度计的波长允许偏差",
+      "basis": "HJ 586-2010 附录 A 第 A.6.1 条",
+      "citation": "HJ 586-2010 附录 A 第 A.6.1 条：便携式分光光度计，具 515 nm±5 nm 波长"
+    },
+    "reaction-ph-min": {
+      "value": 6.2,
+      "units": "pH",
+      "name": "游离氯与 DPD 显色反应的 pH 下限",
+      "basis": "HJ 586-2010 第 4.1 条",
+      "citation": "HJ 586-2010 第 4.1 条：在 pH 为 6.2～6.5 条件下，游离氯直接与 DPD 发生反应"
+    },
+    "reaction-ph-max": {
+      "value": 6.5,
+      "units": "pH",
+      "name": "游离氯与 DPD 显色反应的 pH 上限",
+      "basis": "HJ 586-2010 第 4.1 条",
+      "citation": "HJ 586-2010 第 4.1 条：在 pH 为 6.2～6.5 条件下，游离氯直接与 DPD 发生反应"
+    },
+    "buffer-ph": {
+      "value": 6.5,
+      "units": "pH",
+      "name": "磷酸盐缓冲溶液的 pH",
+      "basis": "HJ 586-2010 第 6.11 条",
+      "citation": "HJ 586-2010 第 6.11 条：磷酸盐缓冲溶液：pH=6.5"
+    },
+    "dpd-concentration": {
+      "value": 1.1,
+      "units": "g/L",
+      "name": "DPD 溶液的配制浓度",
+      "basis": "HJ 586-2010 第 6.12 条",
+      "citation": "HJ 586-2010 第 6.12 条：N,N-二乙基-1,4-苯二胺硫酸盐（DPD）溶液：ρ=1.1 g/L"
+    },
+    "dpd-storage-temp-max": {
+      "value": 4,
+      "units": "℃",
+      "name": "DPD 溶液的保存温度上限",
+      "basis": "HJ 586-2010 第 6.12 条",
+      "citation": "HJ 586-2010 第 6.12 条：溶液装在棕色试剂瓶内，4℃保存"
+    },
+    "buffer-volume": {
+      "value": 15.0,
+      "units": "mL",
+      "name": "测定时加入的磷酸盐缓冲溶液体积",
+      "basis": "HJ 586-2010 第 9.2 条",
+      "citation": "HJ 586-2010 第 9.2 条：于 250 ml 锥形瓶中，依次加入 15.0 ml 磷酸盐缓冲溶液、5.0 ml DPD 溶液和 100 ml 水样"
+    },
+    "dpd-volume": {
+      "value": 5.0,
+      "units": "mL",
+      "name": "测定时加入的 DPD 溶液体积（高浓度曲线）",
+      "basis": "HJ 586-2010 第 9.2 条",
+      "citation": "HJ 586-2010 第 9.2 条：依次加入 15.0 ml 磷酸盐缓冲溶液、5.0 ml DPD 溶液和 100 ml 水样"
+    },
+    "low-dpd-volume": {
+      "value": 1.0,
+      "units": "mL",
+      "name": "测定时加入的 DPD 溶液体积（低浓度曲线）",
+      "basis": "HJ 586-2010 第 9.2 条注、第 9.1.2 条",
+      "citation": "HJ 586-2010 第 9.2 条注：进行低浓度样品游离氯测定时，应加入 1.0 ml DPD 溶液"
+    },
+    "sample-volume": {
+      "value": 100,
+      "units": "mL",
+      "name": "测定时取用的水样体积",
+      "basis": "HJ 586-2010 第 9.2 条",
+      "citation": "HJ 586-2010 第 9.2 条：依次加入 15.0 ml 磷酸盐缓冲溶液、5.0 ml DPD 溶液和 100 ml 水样"
+    },
+    "colorimetric-within-min": {
+      "value": 60,
+      "units": "min",
+      "name": "显色后完成比色分析的时限",
+      "basis": "HJ 586-2010 第 9.1.1 条",
+      "citation": "HJ 586-2010 第 9.1.1 条：于波长 515 nm 处，用 10 mm 比色皿测定各溶液的吸光度，于 60 min 内完成比色分析"
+    },
+    "fixative-ratio": {
+      "value": 1,
+      "units": "%（采样体积）",
+      "name": "不能现场测定时预先加入的 NaOH 溶液体积占比",
+      "basis": "HJ 586-2010 第 8.1 条",
+      "citation": "HJ 586-2010 第 8.1 条：可预先加入采样体积 1% 的 NaOH 溶液到棕色玻璃瓶中"
+    },
+    "fixative-ph-min": {
+      "value": 12,
+      "units": "pH",
+      "name": "加固定剂后水样应达到的 pH 下限",
+      "basis": "HJ 586-2010 第 8.1 条",
+      "citation": "HJ 586-2010 第 8.1 条：若样品呈酸性，应加大 NaOH 溶液的加入量，确保水样 pH 大于 12"
+    },
+    "storage-temp-max": {
+      "value": 4,
+      "units": "℃",
+      "name": "样品保存温度上限",
+      "basis": "HJ 586-2010 第 8.2 条",
+      "citation": "HJ 586-2010 第 8.2 条：水样用冷藏箱运送，在实验室内 4℃、避光条件下保存"
+    },
+    "storage-days-max": {
+      "value": 5,
+      "units": "d",
+      "name": "样品最长保存时间",
+      "basis": "HJ 586-2010 第 8.2 条",
+      "citation": "HJ 586-2010 第 8.2 条：在实验室内 4℃、避光条件下保存，5 d 内测定"
+    },
+    "calibration-points": {
+      "value": 7,
+      "units": "个",
+      "name": "校准曲线的浓度点数",
+      "basis": "HJ 586-2010 第 9.1.1、9.1.2 条",
+      "citation": "HJ 586-2010 第 9.1.1 条：分别吸取 0.00、1.00、2.00、3.00、5.00、10.0 和 15.0 ml 碘酸钾标准使用液Ⅰ"
+    }
+  },
+  "calibration": [
+    {
+      "mode": "high",
+      "cellPath": 10,
+      "units": "mg/L",
+      "points": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        1.0,
+        1.5
+      ],
+      "citation": "HJ 586-2010 第 9.1.1 条：各容量瓶中氯质量浓度 ρ(Cl₂) 分别为 0.00、0.10、0.20、0.30、0.50、1.00 和 1.50 mg/L"
+    },
+    {
+      "mode": "low",
+      "cellPath": 50,
+      "units": "mg/L",
+      "points": [
+        0.0,
+        0.02,
+        0.04,
+        0.08,
+        0.12,
+        0.16,
+        0.2
+      ],
+      "citation": "HJ 586-2010 第 9.1.2 条：各容量瓶中氯质量浓度 ρ(Cl₂) 分别为 0.00、0.02、0.04、0.08、0.12、0.16 和 0.20 mg/L"
+    }
+  ],
+  "qualitative": [
+    {
+      "key": "field-measurement-preference",
+      "text": "游离氯和总氯不稳定，样品应尽量现场测定，现场测定方法见附录 A。如样品不能现场测定，则需对样品加入固定剂保存。",
+      "citation": "HJ 586-2010 第 8.1 条"
+    },
+    {
+      "key": "sample-container",
+      "text": "可预先加入采样体积 1% 的 NaOH 溶液到棕色玻璃瓶中，采集水样使其充满采样瓶，立即加盖塞紧并密封，避免水样接触空气。",
+      "citation": "HJ 586-2010 第 8.1 条"
+    },
+    {
+      "key": "applicability-limit",
+      "text": "本标准适用于地表水、工业废水、医疗废水、生活污水、中水和污水再生的景观用水中的游离氯和总氯的测定。本标准不适用于测定较混浊或色度较高的水样。",
+      "citation": "HJ 586-2010 第 1 章"
+    },
+    {
+      "key": "dilution-above-upper",
+      "text": "对于游离氯或总氯浓度高于方法测定上限的样品，可适当稀释后进行测定。",
+      "citation": "HJ 586-2010 第 1 章"
+    },
+    {
+      "key": "interference-mn-cr",
+      "text": "对于含有氧化锰和六价铬的试样可通过测定两者含量消除其干扰。取 100 ml 试样，加 1.0 ml 亚砷酸钠溶液或硫代乙酰胺溶液，混匀，再加入 15.0 ml 磷酸盐缓冲溶液和 5.0 ml DPD 溶液，测定吸光度，记录质量浓度 ρ₃，相当于氧化锰和六价铬的干扰。",
+      "citation": "HJ 586-2010 第 9.2 条"
+    },
+    {
+      "key": "total-chlorine-definition",
+      "text": "总氯指以「游离氯」或「化合氯」，或两者共存形式存在的氯。现场测定总氯时，在加入磷酸盐缓冲溶液和 DPD 溶液后，还需加入推荐样品体积 1/10 的碘化钾溶液，混匀后比色测定。",
+      "citation": "HJ 586-2010 第 3.3 条、附录 A 第 A.7.4 条"
+    },
+    {
+      "key": "mercury-warning",
+      "text": "汞盐属剧毒化学品，操作时应按规定要求佩戴防护器具，避免接触皮肤和衣物。检测后的废液应做妥善的安全处理。",
+      "citation": "HJ 586-2010 第 1 章（警告）"
+    }
+  ]
+}

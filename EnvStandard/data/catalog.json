@@ -1,0 +1,203 @@
+{
+  "module": {
+    "name": "EnvStandard",
+    "title": "环境标准库",
+    "version": "2026-09-28",
+    "builtFrom": "EnvStandard/data/standards/*.json",
+    "disclaimer": "本模块是标准结构化索引、关系证据与教学资产导航，不替代标准全文、现行性核验、法定检测报告或行政决定。引用前请打开官方来源核对最新文本。"
+  },
+  "historicalNames": {
+    "HJ25.1-2014": "场地环境调查技术导则",
+    "HJ25.2-2014": "场地环境监测技术导则",
+    "HJT164-2004": "地下水环境监测技术规范",
+    "GB50325-2010": "民用建筑工程室内环境污染控制规范",
+    "GBT18883-2002": "室内空气质量标准"
+  },
+  "scopes": {
+    "GB12348-2008": "工业企业厂界噪声排放限值、监测与评价",
+    "GB16297-1996": "大气污染物综合排放限值与固定源排放监测",
+    "GB3096-2008": "声环境功能区质量限值",
+    "GB36600-2018": "建设用地第一类/第二类用地土壤污染风险筛选值与管制值",
+    "GB37822-2019": "工业企业 VOCs 无组织排放与设备、管线组件泄漏认定",
+    "GB50325-2020": "民用建筑工程室内环境污染控制",
+    "GB5085.3-2007": "危险废物浸出毒性鉴别限值",
+    "GB5749-2022": "生活饮用水常规指标与消毒剂指标",
+    "GBT14848-2017": "地下水质量分级与监测评价",
+    "GBT18883-2022": "室内空气质量指标与方法关联",
+    "HJ1075-2019": "水质浊度测定与仪器自检、光源选择",
+    "HJ1230-2021": "工业企业 VOCs 泄漏检测与修复作业参数",
+    "HJ164-2020": "地下水监测点、监测井、洗井、采样、保存与分析",
+    "HJ25.1-2019": "建设用地土壤污染状况调查程序与布点",
+    "HJ25.2-2019": "建设用地土壤污染风险管控和修复监测",
+    "HJ38-2017": "固定污染源废气总烃、甲烷和非甲烷总烃测定",
+    "HJ535-2009": "水质氨氮纳氏试剂分光光度法",
+    "HJ586-2010": "水质游离氯和总氯 DPD 分光光度法",
+    "HJ639-2012": "水质 VOCs 吹扫捕集/气相色谱-质谱法",
+    "HJ700-2014": "水质 65 种元素电感耦合等离子体质谱法",
+    "HJT167-2004": "室内环境空气质量监测技术",
+    "HJT299-2007": "固体废物浸出毒性浸出方法（硫酸硝酸法）",
+    "HJT397-2007": "固定源废气监测技术与采样布点"
+  },
+  "relations": [
+    {
+      "from": "HJ25.1-2019",
+      "to": "HJ25.1-2014",
+      "type": "替代 / 废止",
+      "status": "verified",
+      "evidence": "生态环境部公告明确：HJ 25.1-2019 自发布之日起实施；《场地环境调查技术导则》（HJ 25.1-2014）废止。",
+      "source": {"label": "生态环境部公告 2019 年第 33 号", "url": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk01/201912/t20191209_748356.html"}
+    },
+    {
+      "from": "HJ25.2-2019",
+      "to": "HJ25.2-2014",
+      "type": "替代 / 废止",
+      "status": "verified",
+      "evidence": "生态环境部公告明确：HJ 25.2-2019 自发布之日起实施；《场地环境监测技术导则》（HJ 25.2-2014）废止。",
+      "source": {"label": "生态环境部公告 2019 年第 33 号", "url": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk01/201912/t20191209_748356.html"}
+    },
+    {
+      "from": "HJ164-2020",
+      "to": "HJT164-2004",
+      "type": "替代 / 废止",
+      "status": "verified",
+      "evidence": "HJ 164-2020 正文载明：自本标准实施之日起，《地下水环境监测技术规范》（HJ/T 164-2004）废止。",
+      "source": {"label": "生态环境部官方 PDF", "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/202012/W020201203608473632069.pdf"}
+    },
+    {
+      "from": "GB50325-2020",
+      "to": "GB50325-2010",
+      "type": "替代 / 废止",
+      "status": "verified",
+      "evidence": "住房和城乡建设部公告明确：GB 50325-2020 自 2020 年 8 月 1 日起实施；原 GB 50325-2010 同时废止。",
+      "source": {"label": "中国政府网·住建部公告 2020 年第 46 号", "url": "https://www.gov.cn/zhengce/zhengceku/2020-07/28/content_5530688.htm"}
+    },
+    {
+      "from": "GBT18883-2022",
+      "to": "GBT18883-2002",
+      "type": "替代",
+      "status": "text-evidence",
+      "evidence": "GB/T 18883-2022 标准文本前言载明代替 GB/T 18883-2002；全国标准信息公共服务平台显示该标准现行、实施日期为 2023-02-01。关系证据仍应随标准全文版本复核。",
+      "source": {"label": "全国标准信息公共服务平台", "url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=6188E23AE55E8F557043401FC2EDC436"}
+    }
+  ],
+  "amendments": [
+    {
+      "scope": "全部已入库标准",
+      "status": "not-imported",
+      "title": "修改单尚未结构化入库",
+      "note": "本版本没有把修改单当成‘不存在’，只是尚未逐条接入。后续应按主管部门公告与全国标准信息公共服务平台登记，建立修改单号、发布日期、影响条款和适用范围。"
+    }
+  ],
+  "methods": [
+    {"id":"m-gb36600","standardIds":["GB36600-2018"],"name":"风险筛选值 / 管制值判定","kind":"限值判定","basis":"标准表 1 的筛选值和管制值，不是分析方法标准。","status":"catalogued"},
+    {"id":"m-hj251","standardIds":["HJ25.1-2019"],"name":"建设用地土壤污染状况调查","kind":"调查 / 布点","basis":"调查程序、资料收集、初步调查与布点逻辑。","status":"catalogued"},
+    {"id":"m-hj252","standardIds":["HJ25.2-2019"],"name":"建设用地土壤污染风险管控和修复监测","kind":"采样 / 监测","basis":"土壤与地下水监测布点、采样和质量控制。","status":"catalogued"},
+    {"id":"m-hj164","standardIds":["HJ164-2020"],"name":"地下水监测点、监测井、洗井与采样","kind":"采样规范","basis":"监测点布设、监测井建设、洗井、采样保存与分析项目。","status":"catalogued"},
+    {"id":"m-hj639","standardIds":["HJ639-2012"],"name":"吹扫捕集 / 气相色谱-质谱法","kind":"实验方法","basis":"标准名称与第 6～11 章方法条件、检出限和质控数据。","status":"catalogued"},
+    {"id":"m-hj700","standardIds":["HJ700-2014"],"name":"电感耦合等离子体质谱法（ICP-MS）","kind":"实验方法","basis":"标准名称与 ICP-MS 仪器、干扰校正和质控参数。","status":"catalogued"},
+    {"id":"m-hj535","standardIds":["HJ535-2009"],"name":"纳氏试剂分光光度法","kind":"实验方法","basis":"水质氨氮测定方法；标准数据层含试剂、仪器、校准与质控参数。","status":"catalogued"},
+    {"id":"m-hj586","standardIds":["HJ586-2010"],"name":"DPD 分光光度法","kind":"实验方法","basis":"游离氯和总氯测定；数据层含高、低浓度校准曲线。","status":"catalogued"},
+    {"id":"m-hj1075","standardIds":["HJ1075-2019"],"name":"浊度计法","kind":"实验方法","basis":"标准名称与浊度计自检、光源和测定范围参数。","status":"catalogued"},
+    {"id":"m-hj38","standardIds":["HJ38-2017"],"name":"气相色谱法（总烃、甲烷、非甲烷总烃）","kind":"实验方法","basis":"标准名称与总烃、甲烷双柱测定、氧峰扣除要求。","status":"catalogued"},
+    {"id":"m-hjt397","standardIds":["HJT397-2007"],"name":"固定源废气监测技术","kind":"采样规范","basis":"采样位置、采样平台、采样孔和采样点布设要求。","status":"catalogued"},
+    {"id":"m-hj1230","standardIds":["HJ1230-2021","GB37822-2019"],"name":"VOCs 泄漏检测与修复（LDAR）","kind":"现场检测 / 合规","basis":"泄漏认定浓度、检测器检查、校准气和现场作业流程。","status":"catalogued"},
+    {"id":"m-18883","standardIds":["GBT18883-2022"],"name":"室内空气指标对应方法","kind":"方法索引","basis":"标准数据层 methods[]；方法标准号按原文件保留，未在页面中猜补。","status":"catalogued"}
+  ],
+  "sampling": [
+    {"id":"s-soil","standardIds":["HJ25.1-2019","HJ25.2-2019"],"name":"建设用地土壤调查与监测采样","detail":"从资料收集、布点、初步调查到无扰动/VOCs 采样和质控。","links":["EnvLab/01-交互实验/01-采样布点/土壤采样布点-交互版.html","EnvWork/05-案例库/土壤调查/建设用地调查-HJ25评审自查一页纸SOP.html"]},
+    {"id":"s-groundwater","standardIds":["HJ164-2020","HJ25.2-2019","GBT14848-2017"],"name":"地下水监测井、洗井与采样","detail":"监测点布设、井体条件、洗井稳定与样品顺序。","links":["EnvLab/01-交互实验/01-采样布点/地下水洗井采样-交互版.html","EnvWork/04-操作规程/02-土壤地下水初步调查-操作规范.html"]},
+    {"id":"s-stack-gas","standardIds":["HJT397-2007","GB16297-1996"],"name":"固定源废气采样布点","detail":"采样平台、采样孔、采样位置与烟气参数测定。","links":["EnvLab/01-交互实验/01-采样布点/固定源废气采样-交互版.html","EnvLab/01-交互实验/06-大气污染控制/烟气参数测定-交互版.html"]},
+    {"id":"s-ldar","standardIds":["HJ1230-2021","GB37822-2019"],"name":"LDAR 现场检测","detail":"检测器检查、校准、密封点嗅探与泄漏判定。","links":["EnvLab/01-交互实验/06-大气污染控制/LDAR泄漏检测与修复-交互版.html"]},
+    {"id":"s-indoor","standardIds":["HJT167-2004","GBT18883-2022","GB50325-2020"],"name":"室内空气采样","detail":"室内空气质量监测的采样与记录入口；标准间的时长和项目关系需按具体场景核验。","links":["EnvLab/01-交互实验/01-采样布点/环境空气PM25采样-交互版.html"]}
+  ],
+  "assets": [
+    {"id":"a-soil-sample","type":"实验","name":"土壤采样布点 · 交互版","path":"EnvLab/01-交互实验/01-采样布点/土壤采样布点-交互版.html","tags":["土壤","布点","HJ 25"]},
+    {"id":"a-groundwater-sample","type":"实验","name":"地下水洗井采样 · 交互版","path":"EnvLab/01-交互实验/01-采样布点/地下水洗井采样-交互版.html","tags":["地下水","洗井","HJ 164"]},
+    {"id":"a-fixed-gas","type":"实验","name":"固定源废气采样 · 交互版","path":"EnvLab/01-交互实验/01-采样布点/固定源废气采样-交互版.html","tags":["废气","采样","HJT 397"]},
+    {"id":"a-ldar","type":"实验","name":"LDAR 泄漏检测与修复 · 交互版","path":"EnvLab/01-交互实验/06-大气污染控制/LDAR泄漏检测与修复-交互版.html","tags":["VOCs","LDAR","GB 37822"]},
+    {"id":"a-water-vocs","type":"实验","name":"环境空气 VOCs · 罐采样 GC-MS 全流程","path":"EnvLab/01-交互实验/02-检测实验/环境空气VOCs-罐采样GC-MS全流程.html","tags":["VOCs","GC-MS","实验流程"],"note":"该页是环境空气场景演示；HJ 639 是水质方法，页面导航不把两者误标成同一方法。"},
+    {"id":"a-water-heavy","type":"实验","name":"井水重金属 · 砷镉汞铅 · ICP-MS","path":"EnvLab/01-交互实验/02-检测实验/井水重金属-砷镉汞铅-ICP-MS.html","tags":["地下水","重金属","ICP-MS"]},
+    {"id":"a-turbidity","type":"实验","name":"浊度测定 · 交互版","path":"EnvLab/01-交互实验/02-检测实验/浊度测定-交互版.html","tags":["水质","浊度","HJ 1075"]},
+    {"id":"a-methane","type":"实验","name":"工业废气甲烷 · 吸附管 GC-FID","path":"EnvLab/01-交互实验/02-检测实验/工业废气甲烷-吸附管GC-FID.html","tags":["废气","甲烷","GC-FID"]},
+    {"id":"i-gcms","type":"仪器","name":"GC-MS 气质联用","path":"EnvLab/01-交互实验/03-仪器分析/GC-MS气质联用-交互版.html","tags":["GC-MS","VOCs"]},
+    {"id":"i-icpms","type":"仪器","name":"ICP-MS / 电感耦合等离子体质谱","path":"EnvLab/01-交互实验/03-仪器分析/iCapRQ-电感耦合等离子体质谱仪-交互版.html","tags":["ICP-MS","元素"]},
+    {"id":"i-uvvis","type":"仪器","name":"L5S 紫外可见分光光度计","path":"EnvLab/01-交互实验/03-仪器分析/L5S紫外可见分光光度计-交互版.html","tags":["分光光度法","水质"]},
+    {"id":"i-gcfid","type":"仪器","name":"气相色谱仪 / GC-FID","path":"EnvLab/01-交互实验/03-仪器分析/气相色谱仪-Agilent7820-7890-交互版.html","tags":["GC-FID","废气"]},
+    {"id":"sop-soil","type":"SOP","name":"建设用地调查-HJ25 评审自查一页纸","path":"EnvWork/05-案例库/土壤调查/建设用地调查-HJ25评审自查一页纸SOP.html","tags":["HJ 25","土壤","评审"]},
+    {"id":"sop-groundwater","type":"SOP","name":"土壤地下水初步调查 · 操作规范","path":"EnvWork/04-操作规程/02-土壤地下水初步调查-操作规范.html","tags":["地下水","调查","SOP"]},
+    {"id":"sop-lab","type":"SOP","name":"检测因子实验室交互方案","path":"EnvWork/03-工具速查/检测因子实验室交互方案.html","tags":["实验分组","质控","报告"]},
+    {"id":"r-lab-plan","type":"报告","name":"检测因子实验室交互方案 · 报告出口","path":"EnvWork/03-工具速查/检测因子实验室交互方案.html","tags":["报告","质控"],"note":"现阶段链接到实验室流程方案页；正式报告生成/审查引擎作为后续模块接入。"}
+  ],
+  "chains": [
+    {
+      "id":"chain-soil-groundwater",
+      "title":"建设用地土壤 / 地下水调查",
+      "theme":"soil",
+      "note":"这条链把风险筛选、调查布点、采样、仪器、评审 SOP 和报告出口串起来；标准限值仍以标准详情页的官方来源为准。",
+      "steps":[
+        {"type":"标准","label":"GB 36600-2018","ref":"GB36600-2018"},
+        {"type":"方法","label":"HJ 25.1 / HJ 25.2 调查与监测","ref":"HJ25.1-2019|HJ25.2-2019"},
+        {"type":"实验","label":"土壤采样布点","asset":"a-soil-sample"},
+        {"type":"仪器","label":"ICP-MS / 采样工具","asset":"i-icpms"},
+        {"type":"SOP","label":"HJ25 评审自查一页纸","asset":"sop-soil"},
+        {"type":"报告","label":"实验室方案与报告出口","asset":"r-lab-plan"}
+      ]
+    },
+    {
+      "id":"chain-groundwater",
+      "title":"地下水监测与评价",
+      "theme":"water",
+      "note":"GB/T 14848 给出评价分级，HJ 164 规定监测井、洗井和采样过程，HJ 700/HJ 639 等方法负责具体分析。",
+      "steps":[
+        {"type":"标准","label":"GB/T 14848-2017 地下水质量标准","ref":"GBT14848-2017"},
+        {"type":"方法","label":"HJ 164-2020 + HJ 700-2014","ref":"HJ164-2020|HJ700-2014"},
+        {"type":"实验","label":"地下水洗井采样","asset":"a-groundwater-sample"},
+        {"type":"仪器","label":"ICP-MS","asset":"i-icpms"},
+        {"type":"SOP","label":"土壤地下水初步调查规范","asset":"sop-groundwater"},
+        {"type":"报告","label":"实验室方案与报告出口","asset":"r-lab-plan"}
+      ]
+    },
+    {
+      "id":"chain-ldar",
+      "title":"VOCs 泄漏检测与修复",
+      "theme":"voc",
+      "note":"GB 37822 提供泄漏认定与 LDAR 适用条件，HJ 1230 提供现场检测与质量控制的作业参数。",
+      "steps":[
+        {"type":"标准","label":"GB 37822-2019","ref":"GB37822-2019"},
+        {"type":"方法","label":"HJ 1230-2021 LDAR 技术指南","ref":"HJ1230-2021"},
+        {"type":"实验","label":"LDAR 泄漏检测与修复","asset":"a-ldar"},
+        {"type":"仪器","label":"便携式 VOCs 检测仪（页面内模拟）","asset":"a-ldar"},
+        {"type":"SOP","label":"现场检测流程（交互演示）","asset":"a-ldar"},
+        {"type":"报告","label":"检测记录 / 修复闭环（待接报告引擎）","asset":"r-lab-plan"}
+      ]
+    },
+    {
+      "id":"chain-water-method",
+      "title":"水质因子 → 方法 → 实验 → 仪器",
+      "theme":"water",
+      "note":"这一条链展示的是可复用的实验资产映射；具体方法适用性仍要按水样类型、目标因子和标准正文核对。",
+      "steps":[
+        {"type":"标准","label":"GB 5749-2022 / HJ 1075-2019","ref":"GB5749-2022|HJ1075-2019"},
+        {"type":"方法","label":"浊度计法 / 分光光度法","ref":"HJ1075-2019|HJ535-2009|HJ586-2010"},
+        {"type":"实验","label":"浊度测定 / 水质检测","asset":"a-turbidity"},
+        {"type":"仪器","label":"紫外可见分光光度计","asset":"i-uvvis"},
+        {"type":"SOP","label":"实验分组与质控方案","asset":"sop-lab"},
+        {"type":"报告","label":"实验室方案与报告出口","asset":"r-lab-plan"}
+      ]
+    },
+    {
+      "id":"chain-stack-gas",
+      "title":"固定源废气采样与分析",
+      "theme":"air",
+      "note":"HJT 397 负责固定源废气监测技术与采样布点，HJ 38 负责总烃/甲烷/非甲烷总烃测定，GB 16297 提供排放限值背景。",
+      "steps":[
+        {"type":"标准","label":"GB 16297-1996","ref":"GB16297-1996"},
+        {"type":"方法","label":"HJ/T 397-2007 + HJ 38-2017","ref":"HJT397-2007|HJ38-2017"},
+        {"type":"实验","label":"固定源废气采样","asset":"a-fixed-gas"},
+        {"type":"仪器","label":"GC-FID / 烟尘自动测试仪","asset":"i-gcfid"},
+        {"type":"SOP","label":"采样与实验方案","asset":"sop-lab"},
+        {"type":"报告","label":"实验室方案与报告出口","asset":"r-lab-plan"}
+      ]
+    }
+  ]
+}

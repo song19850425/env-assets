@@ -1,0 +1,90 @@
+{
+  "standardId": "GB37822-2019",
+  "name": "挥发性有机物无组织排放控制标准",
+  "issuer": "生态环境部、国家市场监督管理总局",
+  "effectiveDate": "2019-07-01",
+  "units": "μmol/mol",
+  "unitNote": "PDF 文本层把「μmol/mol」提取成了「mmol/mol」，属字形映射问题。按同一标准体系的自洽性可确认单位应为 μmol/mol：HJ 1230-2021 第 3.15 条规定检测值「单位通常为 μmol/mol」，第 3.16 条以 10000 μmol/mol 界定严重泄漏点，第 6.1.2.1 条要求校准气为「泄漏认定浓度（1~1.1）倍」和「（10000~11000）μmol/mol」两种浓度。摩尔分数的物理上限为 1 mol/mol，故表 1 的「mmol/mol」在物理上不可能成立。",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/dqhjbh/dqgdwrywrwpfbz/201906/W020190606587693632696.pdf",
+    "publisher": "生态环境部",
+    "table": "第 8.2 条 表 1 设备与管线组件密封点的 VOCs 泄漏认定浓度",
+    "retrievedAt": "2026-09-13",
+    "note": "本文件由人工从上述官方 PDF 转录，逐值核对。请勿修改数值；如需变更请重新下载 PDF 核对。"
+  },
+  "values": {
+    "leak-definition.gas.default": {
+      "value": 5000,
+      "units": "μmol/mol",
+      "name": "泄漏认定浓度（气态 VOCs 物料、非重点地区）",
+      "basis": "GB 37822-2019 第 8.2 条 表 1",
+      "citation": "GB 37822-2019 第 8.2 条 表 1（气态 VOCs 物料）"
+    },
+    "leak-definition.gas.key-area": {
+      "value": 2000,
+      "units": "μmol/mol",
+      "name": "重点地区泄漏认定浓度（气态 VOCs 物料）",
+      "basis": "GB 37822-2019 第 8.2 条 表 1",
+      "citation": "GB 37822-2019 第 8.2 条 表 1（气态 VOCs 物料、重点地区）"
+    },
+    "leak-definition.light-liquid.default": {
+      "value": 5000,
+      "units": "μmol/mol",
+      "name": "泄漏认定浓度（挥发性有机液体 / 轻液、非重点地区）",
+      "basis": "GB 37822-2019 第 8.2 条 表 1",
+      "citation": "GB 37822-2019 第 8.2 条 表 1（液态 VOCs 物料 — 挥发性有机液体）"
+    },
+    "leak-definition.light-liquid.key-area": {
+      "value": 2000,
+      "units": "μmol/mol",
+      "name": "重点地区泄漏认定浓度（挥发性有机液体 / 轻液）",
+      "basis": "GB 37822-2019 第 8.2 条 表 1",
+      "citation": "GB 37822-2019 第 8.2 条 表 1（液态 VOCs 物料 — 挥发性有机液体、重点地区）"
+    },
+    "leak-definition.other-liquid.default": {
+      "value": 2000,
+      "units": "μmol/mol",
+      "name": "泄漏认定浓度（其他液态 VOCs 物料 / 重液、非重点地区）",
+      "basis": "GB 37822-2019 第 8.2 条 表 1",
+      "citation": "GB 37822-2019 第 8.2 条 表 1（液态 VOCs 物料 — 其他）"
+    },
+    "leak-definition.other-liquid.key-area": {
+      "value": 500,
+      "units": "μmol/mol",
+      "name": "重点地区泄漏认定浓度（其他液态 VOCs 物料 / 重液）",
+      "basis": "GB 37822-2019 第 8.2 条 表 1",
+      "citation": "GB 37822-2019 第 8.2 条 表 1（液态 VOCs 物料 — 其他、重点地区）"
+    },
+    "ldar-threshold-seal-points": {
+      "value": 2000,
+      "units": "个",
+      "name": "应开展泄漏检测与修复的密封点数量下限",
+      "basis": "GB 37822-2019 第 8.1 条",
+      "citation": "GB 37822-2019 第 8.1 条：密封点 ≥2000 个应开展 LDAR"
+    },
+    "visible-leak-also-counts": {
+      "value": 1,
+      "units": "布尔（1=是）",
+      "name": "密封点存在渗液、滴液等可见泄漏现象即认定泄漏",
+      "basis": "GB 37822-2019 第 8.2 条 a)",
+      "citation": "GB 37822-2019 第 8.2 条 a)：存在可见泄漏现象即认定泄漏，与浓度无关"
+    }
+  },
+  "qualitative": [
+    {
+      "key": "leak-definition-by-material-state",
+      "text": "泄漏认定浓度按【物料状态】区分，不按密封点类型区分：气态 VOCs 物料与挥发性有机液体（轻液）同为 5000 μmol/mol，其他液态 VOCs 物料（重液）为 2000 μmol/mol；重点地区相应降为 2000 / 500 μmol/mol。",
+      "citation": "GB 37822-2019 第 8.2 条 表 1"
+    },
+    {
+      "key": "industry-standard-takes-precedence",
+      "text": "已发布行业标准的行业按行业标准认定：石油炼制按 GB 31570、石油化工按 GB 31571、合成树脂按 GB 31572；其他行业未发布标准的，气体执行 GB 37822「气态 VOCs 物料」条件、轻液执行「挥发性有机液体」条件、重液执行「其他」条件。",
+      "citation": "HJ 1230-2021 第 6.3.1 条"
+    },
+    {
+      "key": "illegal-cases",
+      "text": "密封点 ≥2000 个但未开展 LDAR、未按规定频次检测、随机抽查 ≤100 个密封点中发现 2 个以上不在修复期内的密封点出现可见泄漏或超过泄漏认定浓度，均属违法行为。",
+      "citation": "GB 37822-2019 第 13.4 条"
+    }
+  ]
+}

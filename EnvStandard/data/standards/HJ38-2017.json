@@ -1,0 +1,282 @@
+{
+  "standardId": "HJ38-2017",
+  "name": "固定污染源废气 总烃、甲烷和非甲烷总烃的测定 气相色谱法",
+  "issuer": "环境保护部",
+  "effectiveDate": "2018-04-01",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/201801/W020180108566316243797.pdf",
+    "publisher": "生态环境部",
+    "table": "第 1 章 适用范围、第 3 章 术语和定义、第 4 章 方法原理、第 6 章 仪器和设备、第 7 章 样品、第 8 章 分析步骤、第 9 章 结果计算与表示",
+    "retrievedAt": "2026-09-14",
+    "note": "数值与条款由人工从上述官方 PDF 转录并逐条核对；由 tools/verify_standards_sources.py 复核。PDF 带 AES 加密，抽取需 cryptography 支持。"
+  },
+  "values": {
+    "mdl-thc": {
+      "value": 0.06,
+      "units": "mg/m³（以甲烷计）",
+      "name": "总烃、甲烷的方法检出限（进样体积 1.0 mL）",
+      "basis": "HJ 38-2017 第 1 章",
+      "citation": "HJ 38-2017 第 1 章：当进样体积为 1.0 ml 时，本方法测定总烃、甲烷的检出限均为 0.06 mg/m³（以甲烷计）"
+    },
+    "loq-thc": {
+      "value": 0.24,
+      "units": "mg/m³（以甲烷计）",
+      "name": "总烃、甲烷的测定下限",
+      "basis": "HJ 38-2017 第 1 章",
+      "citation": "HJ 38-2017 第 1 章：测定下限均为 0.24 mg/m³（以甲烷计）"
+    },
+    "mdl-nmhc": {
+      "value": 0.07,
+      "units": "mg/m³（以碳计）",
+      "name": "非甲烷总烃的方法检出限",
+      "basis": "HJ 38-2017 第 1 章",
+      "citation": "HJ 38-2017 第 1 章：非甲烷总烃的检出限为 0.07 mg/m³（以碳计）"
+    },
+    "loq-nmhc": {
+      "value": 0.28,
+      "units": "mg/m³（以碳计）",
+      "name": "非甲烷总烃的测定下限",
+      "basis": "HJ 38-2017 第 1 章",
+      "citation": "HJ 38-2017 第 1 章：测定下限为 0.28 mg/m³（以碳计）"
+    },
+    "injection-volume": {
+      "value": 1.0,
+      "units": "mL",
+      "name": "进样体积",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：进样量 1.0 ml"
+    },
+    "hydrocarbon-free-air-max": {
+      "value": 0.40,
+      "units": "mg/m³（以甲烷计）",
+      "name": "除烃空气的总烃含量上限",
+      "basis": "HJ 38-2017 第 5.1 条",
+      "citation": "HJ 38-2017 第 5.1 条：除烃空气：总烃含量（含氧峰）≤0.40 mg/m³（以甲烷计）"
+    },
+    "probe-temp": {
+      "value": 120,
+      "units": "℃",
+      "name": "采样时加热采样管应保持的温度",
+      "basis": "HJ 38-2017 第 7.1.1、7.1.2 条",
+      "citation": "HJ 38-2017 第 7.1.1 条：采样时将采样管加热并保持在 120 ℃±5 ℃（有防爆安全要求的除外）"
+    },
+    "probe-temp-tolerance": {
+      "value": 5,
+      "units": "℃",
+      "name": "采样管加热温度的允许偏差",
+      "basis": "HJ 38-2017 第 7.1.1 条",
+      "citation": "HJ 38-2017 第 7.1.1 条：采样时将采样管加热并保持在 120 ℃±5 ℃"
+    },
+    "purge-times-min": {
+      "value": 3,
+      "units": "次",
+      "name": "气袋/玻璃注射器采样前应用样品气清洗的最少次数",
+      "basis": "HJ 38-2017 第 7.1.1、7.1.2 条",
+      "citation": "HJ 38-2017 第 7.1.1 条：气袋须用样品气清洗至少 3 次"
+    },
+    "syringe-storage-hours-max": {
+      "value": 8,
+      "units": "h",
+      "name": "玻璃注射器保存样品的最长时间",
+      "basis": "HJ 38-2017 第 7.3 条",
+      "citation": "HJ 38-2017 第 7.3 条：玻璃注射器保存的样品，放置时间不超过 8 h"
+    },
+    "bag-storage-hours-max": {
+      "value": 48,
+      "units": "h",
+      "name": "气袋保存样品的最长时间",
+      "basis": "HJ 38-2017 第 7.3 条",
+      "citation": "HJ 38-2017 第 7.3 条：气袋保存的样品，放置时间不超过 48 h"
+    },
+    "methane-only-storage-days-max": {
+      "value": 7,
+      "units": "d",
+      "name": "仅测定甲烷时的最长保存时间",
+      "basis": "HJ 38-2017 第 7.3 条",
+      "citation": "HJ 38-2017 第 7.3 条：如仅测定甲烷，应在 7 d 内完成"
+    },
+    "inlet-temp": {
+      "value": 100,
+      "units": "℃",
+      "name": "进样口温度",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：进样口温度：100 ℃"
+    },
+    "column-temp": {
+      "value": 80,
+      "units": "℃",
+      "name": "柱温",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：柱温：80 ℃"
+    },
+    "detector-temp": {
+      "value": 200,
+      "units": "℃",
+      "name": "检测器温度",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：检测器温度：200 ℃"
+    },
+    "carrier-flow-packed-min": {
+      "value": 15,
+      "units": "mL/min",
+      "name": "填充柱载气流量下限",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：载气：氮气，填充柱流量为 15～25 ml/min"
+    },
+    "carrier-flow-packed-max": {
+      "value": 25,
+      "units": "mL/min",
+      "name": "填充柱载气流量上限",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：载气：氮气，填充柱流量为 15～25 ml/min"
+    },
+    "carrier-flow-capillary-min": {
+      "value": 8,
+      "units": "mL/min",
+      "name": "毛细管柱载气流量下限",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：毛细管柱流量为 8～10 ml/min"
+    },
+    "carrier-flow-capillary-max": {
+      "value": 10,
+      "units": "mL/min",
+      "name": "毛细管柱载气流量上限",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：毛细管柱流量为 8～10 ml/min"
+    },
+    "hydrogen-flow": {
+      "value": 30,
+      "units": "mL/min",
+      "name": "燃烧气（氢气）流量",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：燃烧气：氢气，流量约为 30 ml/min"
+    },
+    "air-flow": {
+      "value": 300,
+      "units": "mL/min",
+      "name": "助燃气（空气）流量",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：助燃气：空气，流量约为 300 ml/min"
+    },
+    "makeup-flow-min": {
+      "value": 15,
+      "units": "mL/min",
+      "name": "毛细管柱尾吹气流量下限",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：毛细管柱尾吹气：氮气，流量为 15～25 ml/min，不分流进样"
+    },
+    "makeup-flow-max": {
+      "value": 25,
+      "units": "mL/min",
+      "name": "毛细管柱尾吹气流量上限",
+      "basis": "HJ 38-2017 第 8.1 条",
+      "citation": "HJ 38-2017 第 8.1 条：毛细管柱尾吹气：氮气，流量为 15～25 ml/min"
+    },
+    "sample-heater-temp-min": {
+      "value": 120,
+      "units": "℃",
+      "name": "样品加热装置应能达到的最低温度",
+      "basis": "HJ 38-2017 第 6.7 条",
+      "citation": "HJ 38-2017 第 6.7 条：样品加热装置：能够将样品置于其中加热至不低于 120 ℃，温度控制精度为±5 ℃"
+    },
+    "sample-heater-tolerance": {
+      "value": 5,
+      "units": "℃",
+      "name": "样品加热装置的温度控制精度",
+      "basis": "HJ 38-2017 第 6.7 条",
+      "citation": "HJ 38-2017 第 6.7 条：温度控制精度为±5 ℃"
+    },
+    "syringe-volume-min": {
+      "value": 100,
+      "units": "mL",
+      "name": "采样用全玻璃注射器的最小容积",
+      "basis": "HJ 38-2017 第 6.1 条",
+      "citation": "HJ 38-2017 第 6.1 条：采样容器：全玻璃材质注射器，容积不小于 100 ml，清洗干燥后备用"
+    },
+    "packing-column-size": {
+      "value": 2,
+      "units": "m × 4 mm（内径）",
+      "name": "甲烷填充柱规格（不锈钢或硬质玻璃，内填充粒径 180～250 µm）",
+      "basis": "HJ 38-2017 第 6.6.1 条",
+      "citation": "HJ 38-2017 第 6.6.1 条：填充柱：甲烷柱，不锈钢或硬质玻璃材质，2m×4mm，内填充粒径 180～250 µm"
+    },
+    "capillary-column-size": {
+      "value": 30,
+      "units": "m × 0.53 mm × 25 µm",
+      "name": "甲烷毛细管柱规格（多孔层开口管分子筛柱）",
+      "basis": "HJ 38-2017 第 6.6.2 条",
+      "citation": "HJ 38-2017 第 6.6.2 条：毛细管柱：甲烷柱，30m×0.53mm×25µm 多孔层开口管分子筛柱或其他等效毛细管柱"
+    },
+    "calibration-levels": {
+      "value": 5,
+      "units": "个",
+      "name": "校准系列的浓度梯度数",
+      "basis": "HJ 38-2017 第 8.2.1 条",
+      "citation": "HJ 38-2017 第 8.2.1 条：用标准气体稀释气将甲烷标准气逐级稀释，配制 5 个浓度梯度"
+    },
+    "methane-molar-mass": {
+      "value": 16,
+      "units": "g/mol",
+      "name": "甲烷的摩尔质量（结果计算用）",
+      "basis": "HJ 38-2017 第 9.1 条",
+      "citation": "HJ 38-2017 第 9.1 条：ρ——样品中总烃或甲烷的质量浓度（以甲烷计），mg/m³；16——甲烷的摩尔质量，g/mol"
+    },
+    "carbon-molar-mass": {
+      "value": 12,
+      "units": "g/mol",
+      "name": "碳的摩尔质量（非甲烷总烃换算用）",
+      "basis": "HJ 38-2017 第 9.1 条",
+      "citation": "HJ 38-2017 第 9.1 条：12——碳的摩尔质量，g/mol"
+    },
+    "molar-volume": {
+      "value": 22.4,
+      "units": "L/mol",
+      "name": "标准状态（273.15 K，101.325 kPa）下气体的摩尔体积",
+      "basis": "HJ 38-2017 第 9.1 条",
+      "citation": "HJ 38-2017 第 9.1 条：22.4——标准状态（273.15K，101.325kPa）下气体的摩尔体积，L/mol"
+    }
+  },
+  "qualitative": [
+    {
+      "key": "principle",
+      "text": "将气体样品直接注入具氢火焰离子化检测器的气相色谱仪，分别在总烃柱和甲烷柱上测定总烃和甲烷的含量，两者之差即为非甲烷总烃的含量。同时以除烃空气代替样品，测定氧在总烃柱上的响应值，以扣除样品中的氧对总烃测定的干扰。",
+      "citation": "HJ 38-2017 第 4 章"
+    },
+    {
+      "key": "definition-thc",
+      "text": "总烃（THC）指在本标准规定的测定条件下，在气相色谱仪的氢火焰离子化检测器上有响应的气态有机化合物的总和。",
+      "citation": "HJ 38-2017 第 3.1 条"
+    },
+    {
+      "key": "definition-nmhc",
+      "text": "非甲烷总烃（NMHC）指在本标准规定的测定条件下，从总烃中扣除甲烷以后其他气态有机化合物的总和（除非另有说明，结果以碳计）。",
+      "citation": "HJ 38-2017 第 3.2 条"
+    },
+    {
+      "key": "sampling-reference",
+      "text": "固定污染源废气采样位置与采样点、采样频次和采样时间的确定、排气参数的测定和采样操作执行 GB/T 16157、HJ/T 397 和 HJ 732 的相关规定。",
+      "citation": "HJ 38-2017 第 7.1.1、7.1.2 条"
+    },
+    {
+      "key": "transport-blank",
+      "text": "将注入除烃空气的采样容器带至采样现场，与同批次采集的样品一起送回实验室分析。",
+      "citation": "HJ 38-2017 第 7.2 条"
+    },
+    {
+      "key": "sample-handling",
+      "text": "采集样品的玻璃注射器应小心轻放，防止破损，保持针头端向下状态放入样品保存箱内保存和运送。样品常温避光保存，采样后尽快完成分析。",
+      "citation": "HJ 38-2017 第 7.3 条"
+    },
+    {
+      "key": "oxygen-peak-correction",
+      "text": "测定总烃时应扣除氧峰面积；需以除烃空气代替样品测定氧在总烃柱上的响应值。",
+      "citation": "HJ 38-2017 第 8.3.2、9.1 条"
+    },
+    {
+      "key": "result-formula",
+      "text": "总烃、甲烷质量浓度 ρ = φ × 16 ÷ 22.4 × D（φ 为校准曲线浓度 µmol/mol，D 为稀释倍数）；非甲烷总烃质量浓度 ρNMHC = (ρTHC − ρM) × 12 ÷ 16。非甲烷总烃结果也可根据需要以甲烷计，并注明。",
+      "citation": "HJ 38-2017 第 9.1 条"
+    }
+  ]
+}

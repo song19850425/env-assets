@@ -1,0 +1,327 @@
+{
+  "standardId": "HJ700-2014",
+  "name": "水质 65 种元素的测定 电感耦合等离子体质谱法",
+  "issuer": "环境保护部",
+  "effectiveDate": "2014-07-01",
+  "units": "μg/L",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/201405/W020140523543423227755.pdf",
+    "publisher": "生态环境部",
+    "table": "第 1 章 适用范围、第 4 章 方法原理、第 8 章 样品、附录 A 方法检出限和测定下限、附录 B 干扰校正方程与内标物",
+    "retrievedAt": "2026-09-14",
+    "note": "数值与条款由人工从上述官方 PDF 转录并逐条核对；由 tools/verify_standards_sources.py 复核。 检出限与测定下限按标准原文照录为字符串（保留末尾 0，如 0.20 / 0.80），取值时再解析为数值。"
+  },
+  "coverage": {
+    "included": "附录 A 中与 GB 5085.3-2007 表 1 无机元素重合的 11 种元素（银、砷、钡、铍、镉、铬、铜、镍、铅、硒、锌）的检出限与测定下限；以及干扰校正方程、内标物、样品前处理条件。",
+    "excluded": "附录 A 的其余 54 种元素（铝、金、硼、铋、钙、铈、钴、铯、镝、铒、铕、铁、镓、钆、锗、铪、钬、铟、铱、钾、镧、锂、镥、镁、锰、钼、钠、铌、钕、磷、钯、镨、铂、铷、铼、铑、钌、锑、钪、钐、锡、锶、铽、碲、钍、钛、铊、铥、铀、钒、钨、钇、镱、锆）。",
+    "reason": "数据层按「剧本实际引用」收录。原表共 65 种元素。"
+  },
+  "columns": {
+    "mdl": "方法检出限/(μg/L)",
+    "loq": "测定下限/(μg/L)"
+  },
+  "limits": [
+    {
+      "seq": 1,
+      "name": "银",
+      "symbol": "Ag",
+      "mdl": "0.04",
+      "loq": "0.16",
+      "isotope": "107",
+      "internalStd": "Rh"
+    },
+    {
+      "seq": 2,
+      "name": "砷",
+      "symbol": "As",
+      "mdl": "0.12",
+      "loq": "0.48",
+      "isotope": "75",
+      "internalStd": "Ge"
+    },
+    {
+      "seq": 3,
+      "name": "钡",
+      "symbol": "Ba",
+      "mdl": "0.20",
+      "loq": "0.80",
+      "isotope": "135",
+      "internalStd": "In"
+    },
+    {
+      "seq": 4,
+      "name": "铍",
+      "symbol": "Be",
+      "mdl": "0.04",
+      "loq": "0.16",
+      "isotope": "9",
+      "internalStd": "Sc"
+    },
+    {
+      "seq": 5,
+      "name": "镉",
+      "symbol": "Cd",
+      "mdl": "0.05",
+      "loq": "0.20",
+      "isotope": "111 / 114",
+      "internalStd": "Rh / In"
+    },
+    {
+      "seq": 6,
+      "name": "铬",
+      "symbol": "Cr",
+      "mdl": "0.11",
+      "loq": "0.44",
+      "isotope": "52 / 53",
+      "internalStd": "Sc"
+    },
+    {
+      "seq": 7,
+      "name": "铜",
+      "symbol": "Cu",
+      "mdl": "0.08",
+      "loq": "0.32",
+      "isotope": "63 / 65",
+      "internalStd": "Ge"
+    },
+    {
+      "seq": 8,
+      "name": "镍",
+      "symbol": "Ni",
+      "mdl": "0.06",
+      "loq": "0.24",
+      "isotope": "60",
+      "internalStd": "Sc"
+    },
+    {
+      "seq": 9,
+      "name": "铅",
+      "symbol": "Pb",
+      "mdl": "0.09",
+      "loq": "0.36",
+      "isotope": "208",
+      "internalStd": "Re"
+    },
+    {
+      "seq": 10,
+      "name": "硒",
+      "symbol": "Se",
+      "mdl": "0.41",
+      "loq": "1.64",
+      "isotope": "77",
+      "internalStd": "Ge"
+    },
+    {
+      "seq": 11,
+      "name": "锌",
+      "symbol": "Zn",
+      "mdl": "0.67",
+      "loq": "2.68",
+      "isotope": "66",
+      "internalStd": "Ge"
+    }
+  ],
+  "values": {
+    "water-resistivity-min": {
+      "value": 18,
+      "units": "MΩ·cm",
+      "name": "实验用水电阻率下限（GB/T 6682 一级水）",
+      "basis": "HJ 700-2014 第 6.1 条",
+      "citation": "HJ 700-2014 第 6.1 条：实验用水：电阻率 ≥18MΩ·cm，其余指标满足 GB/T 6682 中的一级标准"
+    },
+    "filter-pore": {
+      "value": 0.45,
+      "units": "μm",
+      "name": "可溶性元素样品过滤用滤膜孔径",
+      "basis": "HJ 700-2014 第 7.4、8.2 条",
+      "citation": "HJ 700-2014 第 7.4 条：过滤装置，0.45μm 孔径水系微孔滤膜"
+    },
+    "discard-initial-filtrate": {
+      "value": 50,
+      "units": "mL",
+      "name": "过滤时可溶性元素样品应弃去的初始滤液体积",
+      "basis": "HJ 700-2014 第 8.2 条",
+      "citation": "HJ 700-2014 第 8.2 条：可溶性元素样品采集后立即用 0.45 μm 滤膜过滤，弃去初始的滤液 50mL"
+    },
+    "preservation-ph-max": {
+      "value": 2,
+      "units": "pH",
+      "name": "样品酸化后应达到的 pH 上限",
+      "basis": "HJ 700-2014 第 8.2 条",
+      "citation": "HJ 700-2014 第 8.2 条：加入适量硝酸将酸度调节至 pH＜2"
+    },
+    "hotplate-sample-volume": {
+      "value": 100.0,
+      "units": "mL",
+      "name": "电热板消解法的取样体积",
+      "basis": "HJ 700-2014 第 8.3.2.1 条",
+      "citation": "HJ 700-2014 第 8.3.2.1 条：准确量取（100.0±1.0）mL 摇匀后的样品于 250mL 聚四氟乙烯烧杯中"
+    },
+    "hotplate-nitric-acid-volume": {
+      "value": 2,
+      "units": "mL",
+      "name": "电热板消解法加入的硝酸溶液（1+1）体积",
+      "basis": "HJ 700-2014 第 8.3.2.1 条",
+      "citation": "HJ 700-2014 第 8.3.2.1 条：加入 2mL 硝酸溶液（6.6）和 1.0mL 盐酸溶液（6.7）于上述烧杯中"
+    },
+    "hotplate-hydrochloric-acid-volume": {
+      "value": 1.0,
+      "units": "mL",
+      "name": "电热板消解法加入的盐酸溶液（1+1）体积",
+      "basis": "HJ 700-2014 第 8.3.2.1 条",
+      "citation": "HJ 700-2014 第 8.3.2.1 条：加入 2mL 硝酸溶液和 1.0mL 盐酸溶液于上述烧杯中"
+    },
+    "hotplate-temp-max": {
+      "value": 85,
+      "units": "℃",
+      "name": "电热板消解法的加热温度上限",
+      "basis": "HJ 700-2014 第 8.3.2.1 条",
+      "citation": "HJ 700-2014 第 8.3.2.1 条：置于电热板上加热消解，加热温度不得高于 85℃"
+    },
+    "hotplate-reflux-min": {
+      "value": 30,
+      "units": "min",
+      "name": "电热板消解法保持轻微持续回流的时间",
+      "basis": "HJ 700-2014 第 8.3.2.1 条",
+      "citation": "HJ 700-2014 第 8.3.2.1 条：在烧杯口盖上表面皿以减少过多的蒸发，并保持轻微持续回流 30min"
+    },
+    "hotplate-final-volume": {
+      "value": 50,
+      "units": "mL",
+      "name": "电热板消解法消解液的定容体积",
+      "basis": "HJ 700-2014 第 8.3.2.1 条",
+      "citation": "HJ 700-2014 第 8.3.2.1 条：确保消解液转移至 50mL 容量瓶中，用去离子水定容"
+    },
+    "microwave-sample-volume": {
+      "value": 45.0,
+      "units": "mL",
+      "name": "微波消解法的取样体积",
+      "basis": "HJ 700-2014 第 8.3.2.2 条",
+      "citation": "HJ 700-2014 第 8.3.2.2 条：准确量取 45.0mL 摇匀后的样品于消解罐中"
+    },
+    "microwave-temp": {
+      "value": 170,
+      "units": "℃",
+      "name": "微波消解温度",
+      "basis": "HJ 700-2014 第 8.3.2.2 条",
+      "citation": "HJ 700-2014 第 8.3.2.2 条：在 170℃ 温度下微波消解 10 分钟"
+    },
+    "microwave-min": {
+      "value": 10,
+      "units": "min",
+      "name": "微波消解时间",
+      "basis": "HJ 700-2014 第 8.3.2.2 条",
+      "citation": "HJ 700-2014 第 8.3.2.2 条：在 170℃ 温度下微波消解 10 分钟"
+    },
+    "microwave-final-volume": {
+      "value": 100,
+      "units": "mL",
+      "name": "微波消解法消解液的定容体积",
+      "basis": "HJ 700-2014 第 8.3.2.2 条",
+      "citation": "HJ 700-2014 第 8.3.2.2 条：将消解液移至 100mL 容量瓶中，用去离子水定容至刻度"
+    },
+    "tuning-solution": {
+      "value": 10,
+      "units": "μg/L",
+      "name": "质谱仪调谐溶液浓度",
+      "basis": "HJ 700-2014 第 6.11 条",
+      "citation": "HJ 700-2014 第 6.11 条：质谱仪调谐溶液：ρ=10μg/L"
+    },
+    "internal-std-stock": {
+      "value": 100,
+      "units": "μg/L",
+      "name": "内标标准储备溶液浓度",
+      "basis": "HJ 700-2014 第 6.9 条",
+      "citation": "HJ 700-2014 第 6.9 条：内标标准储备溶液：ρ＝100μg/L"
+    }
+  },
+  "interferenceEquations": [
+    {
+      "isotope": "51V",
+      "equation": "51M - 3.127×(53M - 0.113×52M)",
+      "citation": "HJ 700-2014 表 B.2：51V　51M -3.127×（53M-0.113×52M）"
+    },
+    {
+      "isotope": "75As",
+      "equation": "75M - 3.127×(77M - 0.815×82M)",
+      "citation": "HJ 700-2014 表 B.2：75As　75M-3.127×(77M-0.815×82M)"
+    },
+    {
+      "isotope": "82Se",
+      "equation": "82M - 1.009×83M",
+      "citation": "HJ 700-2014 表 B.2：82Se　82M-1.009×83M"
+    },
+    {
+      "isotope": "98Mo",
+      "equation": "98M - 0.146×99M",
+      "citation": "HJ 700-2014 表 B.2：98Mo　98M-0.146×99M"
+    },
+    {
+      "isotope": "111Cd",
+      "equation": "111M - 1.073×108M - 0.712×106M",
+      "citation": "HJ 700-2014 表 B.2：111Cd　111M-1.073×108M-0.712×106M"
+    },
+    {
+      "isotope": "114Cd",
+      "equation": "114M - 0.027×118M - 1.63×108M",
+      "citation": "HJ 700-2014 表 B.2：114Cd　114M-0.027×118M-1.63×108M"
+    },
+    {
+      "isotope": "115In",
+      "equation": "115M - 0.016×118M",
+      "citation": "HJ 700-2014 表 B.2：115In　115M-0.016×118M"
+    },
+    {
+      "isotope": "208Pb",
+      "equation": "206M + 207M + 208M",
+      "citation": "HJ 700-2014 表 B.2：208Pb　206M+207M+208M"
+    }
+  ],
+  "qualitative": [
+    {
+      "key": "principle",
+      "text": "水样经预处理后，采用电感耦合等离子体质谱进行检测，根据元素的质谱图或特征离子进行定性，内标法定量。样品由载气带入雾化系统进行雾化后，以气溶胶形式进入等离子体的轴向通道，在高温和惰性气体中被充分蒸发、解离、原子化和电离，转化成的带电荷的正离子经离子采集系统进入质谱仪，质谱仪根据离子的质荷比即元素的质量数进行分离并定性、定量的分析。在一定浓度范围内，元素质量数处所对应的信号响应值与其浓度成正比。",
+      "citation": "HJ 700-2014 第 4 章"
+    },
+    {
+      "key": "scope",
+      "text": "本标准规定了测定水中 65 种元素的电感耦合等离子体质谱法。本标准适用于地表水、地下水、生活污水、低浓度工业废水中银、铝、砷、金……锌、锆的测定。本方法各元素的方法检出限为 0.02μg/L～19.6μg/L，测定下限为 0.08μg/L～78.4μg/L。",
+      "citation": "HJ 700-2014 第 1 章"
+    },
+    {
+      "key": "soluble-vs-total",
+      "text": "可溶性元素指未经酸化的样品，经 0.45μm 滤膜过滤后测得的元素含量；元素总量指未经过滤的样品经消解后测得的元素含量。可溶性元素样品和元素总量样品应分别采集。",
+      "citation": "HJ 700-2014 第 3.1、3.2、8.1 条"
+    },
+    {
+      "key": "interference-types",
+      "text": "ICP-MS 测定中的干扰分为质谱型干扰（同量异位素、多原子离子、双电荷离子）与非质谱型干扰（物理效应、基体效应）。质谱型干扰可通过干扰校正方程或碰撞反应池技术消除。",
+      "citation": "HJ 700-2014 第 5.1、5.2 条"
+    },
+    {
+      "key": "collision-cell-exemption",
+      "text": "在仪器配备碰撞反应池的条件下，选用碰撞反应池技术消除干扰时，可忽略表 B.2 中的干扰校正方程。",
+      "citation": "HJ 700-2014 表 B.2 注 2"
+    },
+    {
+      "key": "mercury-not-covered",
+      "text": "本标准的 65 种元素不含汞（Hg）—— 测汞需另选方法。因此 GB 5085.3-2007 表 1 序号 8「汞（以总汞计）」的分析方法指向该标准的附录 B，而非本标准。",
+      "citation": "HJ 700-2014 第 1 章（元素清单）；GB 5085.3-2007 表 1 序号 8"
+    },
+    {
+      "key": "standard-solution-grouping",
+      "text": "混合标准储备溶液按保存介质分组配制：5% 硝酸组（Al、As、Ba、Be、Bi、Cd、Cr、Co、Cu、Fe、Pb、Mn、Ni、Se、Ag、Sr、Tl、U、V、Zn 等）；10% 盐酸及 1% 硝酸组（Sb、Au、Hf、Ir、Pd、Pt、Rh、Ru、Te、Sn）；水及痕量硝酸、痕量氢氟酸组（B、Ge、Mo、Nb、P、Re、Ti、W、Zr）；2% 硝酸组（Ca、K、Mg、Na）。",
+      "citation": "HJ 700-2014 表 B.3"
+    },
+    {
+      "key": "blank-sample",
+      "text": "以实验用水代替样品，按照试样制备步骤制备实验室空白试样。",
+      "citation": "HJ 700-2014 第 8.4 条"
+    },
+    {
+      "key": "safety-warning",
+      "text": "配制及测定铍、砷、镉等剧毒致癌物质的标准溶液时，应避免与皮肤直接接触。盐酸、硝酸均具有强烈的化学腐蚀性和刺激性，操作时应按规定要求佩戴防护器具，并在通风橱中进行。",
+      "citation": "HJ 700-2014 第 1 章（警告）"
+    }
+  ]
+}

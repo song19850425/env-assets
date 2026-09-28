@@ -1,0 +1,279 @@
+{
+  "standardId": "HJ535-2009",
+  "name": "水质 氨氮的测定 纳氏试剂分光光度法",
+  "issuer": "环境保护部",
+  "effectiveDate": "2010-04-01",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/201001/W020180319535685015821.pdf",
+    "publisher": "生态环境部",
+    "table": "第 1 章 适用范围、第 2 章 方法原理、第 3 章 干扰及消除、第 6 章 样品、第 7 章 分析步骤、第 10 章 质量保证和质量控制",
+    "retrievedAt": "2026-09-14",
+    "sha256": "5d864521b2082165f074a8af8e08653022532ba7fcb68679ed5399905ceb2503",
+    "type": "scan",
+    "note": "生态环境部公开的发布稿为无文本层扫描件（中国环境监测总站另有文本版，但其字体映射缺字，不可靠）。本文件数值由逐行视觉转录，转录与复核方式见 transcription。"
+  },
+  "transcription": {
+    "method": "scan-visual",
+    "tool": "pypdf 抽取内嵌页面图像 → 放大后逐行视觉转录",
+    "at": "2026-09-14",
+    "pageRefs": {
+      "scope-and-principle": "正文第 1 页（PDF 第 5 页）",
+      "reagents-and-instruments": "正文第 2 页（PDF 第 6 页）",
+      "sample-and-procedure": "正文第 3 页（PDF 第 7 页）"
+    },
+    "machineCheck": "无文本层，改用锚点句与量值关系（检出限 < 测定下限 < 测定上限）比对（tools/verify_standards_sources.py 的 scan 通道）",
+    "note": "警告语与试剂配制细节以原页为准。"
+  },
+  "values": {
+    "mdl": {
+      "value": 0.025,
+      "units": "mg/L（以 N 计）",
+      "name": "方法检出限（50 ml 水样、20 mm 比色皿）",
+      "basis": "HJ 535-2009 第 1 章",
+      "citation": "HJ 535-2009 第 1 章：当水样体积为 50 ml，使用 20 mm 比色皿时，本方法的检出限为 0.025 mg/L"
+    },
+    "loq": {
+      "value": 0.10,
+      "units": "mg/L（以 N 计）",
+      "name": "方法测定下限",
+      "basis": "HJ 535-2009 第 1 章",
+      "citation": "HJ 535-2009 第 1 章：测定下限为 0.10 mg/L"
+    },
+    "upper-limit": {
+      "value": 2.0,
+      "units": "mg/L（以 N 计）",
+      "name": "方法测定上限",
+      "basis": "HJ 535-2009 第 1 章",
+      "citation": "HJ 535-2009 第 1 章：测定上限为 2.0 mg/L（均以 N 计）"
+    },
+    "wavelength": {
+      "value": 420,
+      "units": "nm",
+      "name": "显色后测定吸光度的波长",
+      "basis": "HJ 535-2009 第 2 章",
+      "citation": "HJ 535-2009 第 2 章：以游离态的氨或铵离子等形式存在的氨氮与纳氏试剂反应生成淡红棕色络合物，该络合物的吸光度与氨氮含量成正比，于波长 420 nm 处测量吸光度"
+    },
+    "cell-path": {
+      "value": 20,
+      "units": "mm",
+      "name": "比色皿光程",
+      "basis": "HJ 535-2009 第 5.1 条、第 1 章",
+      "citation": "HJ 535-2009 第 5.1 条：可见分光光度计，具 20 mm 比色皿"
+    },
+    "sample-volume": {
+      "value": 50,
+      "units": "mL",
+      "name": "测定时取用的水样体积",
+      "basis": "HJ 535-2009 第 7.2.1 条",
+      "citation": "HJ 535-2009 第 7.2.1 条：清洁水样：直接取 50 ml，按与校准曲线相同的步骤测量吸光度"
+    },
+    "colorimetric-wait-min": {
+      "value": 10,
+      "units": "min",
+      "name": "加入纳氏试剂后显色所需放置时间",
+      "basis": "HJ 535-2009 第 7.1 条",
+      "citation": "HJ 535-2009 第 7.1 条：加入纳氏试剂，摇匀。放置 10 min 后，在波长 420 nm 下，用 20 mm 比色皿，以水作参比，测量吸光度"
+    },
+    "nessler-volume-a": {
+      "value": 1.5,
+      "units": "mL",
+      "name": "纳氏试剂（HgCl₂-KI-KOH 法）的加入体积",
+      "basis": "HJ 535-2009 第 7.1 条",
+      "citation": "HJ 535-2009 第 7.1 条：再加入纳氏试剂 1.5 ml（4.4.1）或 1.0 ml（4.4.2）"
+    },
+    "nessler-volume-b": {
+      "value": 1.0,
+      "units": "mL",
+      "name": "纳氏试剂（HgI₂-KI-NaOH 法）的加入体积",
+      "basis": "HJ 535-2009 第 7.1 条",
+      "citation": "HJ 535-2009 第 7.1 条：再加入纳氏试剂 1.5 ml（4.4.1）或 1.0 ml（4.4.2）"
+    },
+    "tartrate-volume": {
+      "value": 1.0,
+      "units": "mL",
+      "name": "酒石酸钾钠溶液的加入体积",
+      "basis": "HJ 535-2009 第 7.1 条",
+      "citation": "HJ 535-2009 第 7.1 条：加入 1.0 ml 酒石酸钾钠溶液，摇匀，再加入纳氏试剂"
+    },
+    "tartrate-concentration": {
+      "value": 500,
+      "units": "g/L",
+      "name": "酒石酸钾钠溶液的配制浓度",
+      "basis": "HJ 535-2009 第 4.5 条",
+      "citation": "HJ 535-2009 第 4.5 条：酒石酸钾钠溶液，ρ=500 g/L"
+    },
+    "thiosulfate-concentration": {
+      "value": 3.5,
+      "units": "g/L",
+      "name": "硫代硫酸钠溶液的配制浓度",
+      "basis": "HJ 535-2009 第 4.6 条",
+      "citation": "HJ 535-2009 第 4.6 条：硫代硫酸钠溶液，ρ=3.5 g/L"
+    },
+    "thiosulfate-dose-step": {
+      "value": 0.5,
+      "units": "mL",
+      "name": "去除余氯时硫代硫酸钠溶液的投加步长",
+      "basis": "HJ 535-2009 第 6.2.1 条",
+      "citation": "HJ 535-2009 第 6.2.1 条：若样品中存在余氯，可加入适量的硫代硫酸钠溶液去除。每加 0.5 ml 可去除 0.25 mg 余氯"
+    },
+    "thiosulfate-removal": {
+      "value": 0.25,
+      "units": "mg（余氯）",
+      "name": "每 0.5 mL 硫代硫酸钠溶液可去除的余氯量",
+      "basis": "HJ 535-2009 第 6.2.1 条",
+      "citation": "HJ 535-2009 第 6.2.1 条：每加 0.5 ml 可去除 0.25 mg 余氯。用淀粉-碘化钾试纸检验余氯是否除尽"
+    },
+    "storage-ph-max": {
+      "value": 2,
+      "units": "pH",
+      "name": "保存水样应酸化至的 pH 上限",
+      "basis": "HJ 535-2009 第 6.1 条",
+      "citation": "HJ 535-2009 第 6.1 条：如需保存，应加硫酸使水样酸化至 pH<2"
+    },
+    "storage-temp-min": {
+      "value": 2,
+      "units": "℃",
+      "name": "水样保存温度下限",
+      "basis": "HJ 535-2009 第 6.1 条",
+      "citation": "HJ 535-2009 第 6.1 条：2～5 ℃ 下可保存 7 d"
+    },
+    "storage-temp-max": {
+      "value": 5,
+      "units": "℃",
+      "name": "水样保存温度上限",
+      "basis": "HJ 535-2009 第 6.1 条",
+      "citation": "HJ 535-2009 第 6.1 条：2～5 ℃ 下可保存 7 d"
+    },
+    "storage-days-max": {
+      "value": 7,
+      "units": "d",
+      "name": "酸化后水样的最长保存时间",
+      "basis": "HJ 535-2009 第 6.1 条",
+      "citation": "HJ 535-2009 第 6.1 条：应加硫酸使水样酸化至 pH<2，2～5 ℃ 下可保存 7 d"
+    },
+    "standard-stock": {
+      "value": 1000,
+      "units": "μg/mL",
+      "name": "氨氮标准贮备溶液浓度",
+      "basis": "HJ 535-2009 第 4.14.1 条",
+      "citation": "HJ 535-2009 第 4.14.1 条：氨氮标准贮备溶液，ρN=1000 μg/ml。称取 3.8190 g 氯化铵"
+    },
+    "standard-working": {
+      "value": 10,
+      "units": "μg/mL",
+      "name": "氨氮标准工作溶液浓度",
+      "basis": "HJ 535-2009 第 4.14.2 条",
+      "citation": "HJ 535-2009 第 4.14.2 条：氨氮标准工作溶液，ρN=10 μg/ml。吸取 5.00 ml 氨氮标准贮备溶液于 500 ml 容量瓶中，稀释至刻度。临用前配制"
+    },
+    "blank-absorbance-max": {
+      "value": 0.030,
+      "units": "吸光度",
+      "name": "试剂空白的吸光度上限（10 mm 比色皿）",
+      "basis": "HJ 535-2009 第 10.1 条",
+      "citation": "HJ 535-2009 第 10.1 条：试剂空白的吸光度应不超过 0.030（10 mm 比色皿）"
+    },
+    "calibration-points": {
+      "value": 8,
+      "units": "个",
+      "name": "校准曲线的浓度点数",
+      "basis": "HJ 535-2009 第 7.1 条",
+      "citation": "HJ 535-2009 第 7.1 条：在 8 个 50 ml 比色管中，分别加入 0.00、0.50、1.00、2.00、4.00、6.00、8.00 和 10.00 ml 氨氮标准工作溶液"
+    },
+    "distillation-rate": {
+      "value": 10,
+      "units": "mL/min",
+      "name": "预蒸馏的馏出液速率",
+      "basis": "HJ 535-2009 第 6.2.3 条",
+      "citation": "HJ 535-2009 第 6.2.3 条：加热蒸馏，使馏出液速率约为 10 ml/min"
+    },
+    "distillation-volume": {
+      "value": 200,
+      "units": "mL",
+      "name": "停止蒸馏时的馏出液体积",
+      "basis": "HJ 535-2009 第 6.2.3 条",
+      "citation": "HJ 535-2009 第 6.2.3 条：待馏出液达 200 ml 时，停止蒸馏，加水定容至 250 ml"
+    },
+    "distillation-final-volume": {
+      "value": 250,
+      "units": "mL",
+      "name": "馏出液定容体积",
+      "basis": "HJ 535-2009 第 6.2.3 条",
+      "citation": "HJ 535-2009 第 6.2.3 条：待馏出液达 200 ml 时，停止蒸馏，加水定容至 250 ml"
+    },
+    "distillation-ph-min": {
+      "value": 6.0,
+      "units": "pH",
+      "name": "预蒸馏前应调整到的 pH 下限",
+      "basis": "HJ 535-2009 第 6.2.3 条",
+      "citation": "HJ 535-2009 第 6.2.3 条：必要时，用氢氧化钠溶液或盐酸溶液调整 pH 至 6.0（指示剂呈黄色）～7.4（指示剂呈蓝色）"
+    },
+    "distillation-ph-max": {
+      "value": 7.4,
+      "units": "pH",
+      "name": "预蒸馏前应调整到的 pH 上限",
+      "basis": "HJ 535-2009 第 6.2.3 条",
+      "citation": "HJ 535-2009 第 6.2.3 条：调整 pH 至 6.0（指示剂呈黄色）～7.4（指示剂呈蓝色）"
+    },
+    "mgo-dose": {
+      "value": 0.25,
+      "units": "g",
+      "name": "预蒸馏时加入的轻质氧化镁量",
+      "basis": "HJ 535-2009 第 6.2.3 条",
+      "citation": "HJ 535-2009 第 6.2.3 条：加入 0.25 g 轻质氧化镁及数粒玻璃珠，立即连接氮球和冷凝管"
+    },
+    "flocculation-ph": {
+      "value": 10.5,
+      "units": "pH",
+      "name": "絮凝沉淀应调节到的 pH",
+      "basis": "HJ 535-2009 第 6.2.2 条",
+      "citation": "HJ 535-2009 第 6.2.2 条：100 ml 样品中加入 1 ml 硫酸锌溶液和 0.1～0.2 ml 氢氧化钠溶液，调节 pH 约为 10.5，混匀，放置使之沉淀"
+    }
+  },
+  "calibration": [
+    {
+      "mode": "standard",
+      "cellPath": 20,
+      "units": "μg（氨氮含量）",
+      "points": [0.0, 5.0, 10.0, 20.0, 40.0, 60.0, 80.0, 100.0],
+      "citation": "HJ 535-2009 第 7.1 条：其所对应的氨氮含量分别为 0.0、5.0、10.0、20.0、40.0、60.0、80.0 和 100 μg"
+    }
+  ],
+  "qualitative": [
+    {
+      "key": "principle",
+      "text": "以游离态的氨或铵离子等形式存在的氨氮与纳氏试剂反应生成淡红棕色络合物，该络合物的吸光度与氨氮含量成正比，于波长 420 nm 处测量吸光度。",
+      "citation": "HJ 535-2009 第 2 章"
+    },
+    {
+      "key": "interference-chlorine",
+      "text": "水样中含有悬浮物、余氯、钙镁等金属离子、硫化物和有机物时会产生干扰，含有此类物质时要作适当处理，以消除对测定的影响。若样品中存在余氯，可加入适量的硫代硫酸钠溶液去除，用淀粉-碘化钾试纸检验余氯是否除尽。",
+      "citation": "HJ 535-2009 第 3 章、第 6.2.1 条"
+    },
+    {
+      "key": "interference-metals",
+      "text": "在显色时加入适量的酒石酸钾钠溶液，可消除钙镁等金属离子的干扰。若水样浑浊或有颜色时可用预蒸馏法或絮凝沉淀法处理。",
+      "citation": "HJ 535-2009 第 3 章"
+    },
+    {
+      "key": "sample-container",
+      "text": "水样采集在聚乙烯瓶或玻璃瓶内，要尽快分析。",
+      "citation": "HJ 535-2009 第 6.1 条"
+    },
+    {
+      "key": "pre-distillation",
+      "text": "将 50 ml 硼酸溶液移入接收瓶内，确保冷凝管出口在硼酸溶液液面之下。分取 250 ml 样品，移入烧瓶中，加几滴溴百里酚蓝指示剂，必要时调整 pH，加入 0.25 g 轻质氧化镁及数粒玻璃珠，立即连接氮球和冷凝管。",
+      "citation": "HJ 535-2009 第 6.2.3 条"
+    },
+    {
+      "key": "blank-test",
+      "text": "用水代替水样，按与样品相同的步骤进行前处理和测定。",
+      "citation": "HJ 535-2009 第 7.3 条"
+    },
+    {
+      "key": "mercury-warning",
+      "text": "二氯化汞（HgCl₂）和碘化汞（HgI₂）为剧毒物质，避免经皮肤和口腔接触。",
+      "citation": "HJ 535-2009 第 1 章（警告）"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "standardId": "GB5749-2022",
+  "name": "生活饮用水卫生标准",
+  "issuer": "国家市场监督管理总局、国家标准化管理委员会",
+  "effectiveDate": "2023-04-01",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.nclarc.org.cn/storage/public/2025/02/24/GB%205749-2022%20%E7%94%9F%E6%B4%BB%E9%A5%AE%E7%94%A8%E6%B0%B4%E5%8D%AB%E7%94%9F%E6%A0%87%E5%87%86.pdf",
+    "publisher": "国家卫生健康委员会（转载国家标准全文扫描件）",
+    "officialPortal": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=99E9C17E3547A3C0CE2FD1FFD9F2F7BE",
+    "table": "表 1 生活饮用水水质常规指标及限值、表 2 生活饮用水消毒剂常规指标及要求",
+    "retrievedAt": "2026-09-14",
+    "sha256": "3889c1bbbfbd4fd86c34a72478d5cb128c78de1ba6c4de3be564c90c6f202d99",
+    "type": "scan",
+    "note": "强制性国标（GB），国标全文公开系统与疾控中心公开版本均为无文本层的扫描件；本文件数值由逐行视觉转录，转录与复核方式见 transcription。"
+  },
+  "transcription": {
+    "method": "scan-visual",
+    "tool": "pypdf 抽取内嵌页面图像 → 放大后逐行视觉转录",
+    "at": "2026-09-14",
+    "pageRefs": {
+      "table1-seq-1-13": "正文第 2 页（PDF 第 6 页）",
+      "table1-seq-14-39": "正文第 3 页（PDF 第 7 页）",
+      "table2-seq-40-43": "正文第 4 页（PDF 第 8 页）"
+    },
+    "machineCheck": "无文本层，改用条数 / 锚点句 / 表 2 余量关系（出厂水余量 > 末梢水余量）比对（tools/verify_standards_sources.py 的 scan 通道）",
+    "note": "表 1 注 a~e 与表 2 注 a~d 的文本以原页为准，脚注不作为可引用数值。表 3（扩展指标）与表 4（参考指标）未收录，见 coverage。"
+  },
+  "coverage": {
+    "included": "表 1 水质常规指标及限值（39 项）+ 表 2 消毒剂常规指标及要求（4 项）。剧本二的判定层只用这两张表。",
+    "excluded": "表 3 水质扩展指标及限值、表 4 水质参考指标及限值。",
+    "reason": "数据层按「剧本实际引用」收录。扩展指标与参考指标用于地区特征与特殊情况，剧本二不涉及；需要时按同一转录方式补录。"
+  },
+  "columns": {
+    "limit": "限值",
+    "contactTimeMin": "与水接触时间/min",
+    "factoryLimit": "出厂水限值/(mg/L)",
+    "factoryResidual": "出厂水余量/(mg/L)",
+    "tapResidual": "末梢水余量/(mg/L)"
+  },
+  "limits": [
+    { "seq": 1, "name": "总大肠菌群", "group": "一、微生物指标", "units": "MPN/100 mL 或 CFU/100 mL", "limit": "不应检出" },
+    { "seq": 2, "name": "大肠埃希氏菌", "group": "一、微生物指标", "units": "MPN/100 mL 或 CFU/100 mL", "limit": "不应检出" },
+    { "seq": 3, "name": "菌落总数", "group": "一、微生物指标", "units": "MPN/mL 或 CFU/mL", "limit": 100 },
+    { "seq": 4, "name": "砷", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.01 },
+    { "seq": 5, "name": "镉", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.005 },
+    { "seq": 6, "name": "铬（六价）", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.05 },
+    { "seq": 7, "name": "铅", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.01 },
+    { "seq": 8, "name": "汞", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.001 },
+    { "seq": 9, "name": "氰化物", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.05 },
+    { "seq": 10, "name": "氟化物", "group": "二、毒理学指标", "units": "mg/L", "limit": 1.0 },
+    { "seq": 11, "name": "硝酸盐", "alias": "以 N 计", "group": "二、毒理学指标", "units": "mg/L", "limit": 10 },
+    { "seq": 12, "name": "三氯甲烷", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.06 },
+    { "seq": 13, "name": "一氯二溴甲烷", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.1 },
+    { "seq": 14, "name": "二氯一溴甲烷", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.06 },
+    { "seq": 15, "name": "三溴甲烷", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.1 },
+    { "seq": 16, "name": "三卤甲烷", "alias": "三氯甲烷、一氯二溴甲烷、二氯一溴甲烷、三溴甲烷的总和", "group": "二、毒理学指标", "units": "无量纲（比值之和）", "limit": "该类化合物中各种化合物的实测浓度与其各自限值的比值之和不超过 1" },
+    { "seq": 17, "name": "二氯乙酸", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.05 },
+    { "seq": 18, "name": "三氯乙酸", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.1 },
+    { "seq": 19, "name": "溴酸盐", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.01 },
+    { "seq": 20, "name": "亚氯酸盐", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.7 },
+    { "seq": 21, "name": "氯酸盐", "group": "二、毒理学指标", "units": "mg/L", "limit": 0.7 },
+    { "seq": 22, "name": "色度", "alias": "铂钴色度单位", "group": "三、感官性状和一般化学指标", "units": "度", "limit": 15 },
+    { "seq": 23, "name": "浑浊度", "alias": "散射浑浊度单位", "group": "三、感官性状和一般化学指标", "units": "NTU", "limit": 1 },
+    { "seq": 24, "name": "臭和味", "group": "三、感官性状和一般化学指标", "units": "无量纲", "limit": "无异臭、异味" },
+    { "seq": 25, "name": "肉眼可见物", "group": "三、感官性状和一般化学指标", "units": "无量纲", "limit": "无" },
+    { "seq": 26, "name": "pH", "group": "三、感官性状和一般化学指标", "units": "无量纲", "limit": "不小于 6.5 且不大于 8.5" },
+    { "seq": 27, "name": "铝", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 0.2 },
+    { "seq": 28, "name": "铁", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 0.3 },
+    { "seq": 29, "name": "锰", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 0.1 },
+    { "seq": 30, "name": "铜", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 1.0 },
+    { "seq": 31, "name": "锌", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 1.0 },
+    { "seq": 32, "name": "氯化物", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 250 },
+    { "seq": 33, "name": "硫酸盐", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 250 },
+    { "seq": 34, "name": "溶解性总固体", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 1000 },
+    { "seq": 35, "name": "总硬度", "alias": "以 CaCO₃ 计", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 450 },
+    { "seq": 36, "name": "高锰酸盐指数", "alias": "以 O₂ 计", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 3 },
+    { "seq": 37, "name": "氨", "alias": "以 N 计", "group": "三、感官性状和一般化学指标", "units": "mg/L", "limit": 0.5 },
+    { "seq": 38, "name": "总 α 放射性", "group": "四、放射性指标", "units": "Bq/L", "limit": "0.5（指导值）" },
+    { "seq": 39, "name": "总 β 放射性", "group": "四、放射性指标", "units": "Bq/L", "limit": "1（指导值）" },
+
+    { "seq": 40, "table": "表 2", "name": "游离氯", "group": "消毒剂常规指标", "units": "mg/L", "contactTimeMin": "≥30", "factoryLimit": "≤2", "factoryResidual": "≥0.3", "tapResidual": "≥0.05" },
+    { "seq": 41, "table": "表 2", "name": "总氯", "group": "消毒剂常规指标", "units": "mg/L", "contactTimeMin": "≥120", "factoryLimit": "≤3", "factoryResidual": "≥0.5", "tapResidual": "≥0.05" },
+    { "seq": 42, "table": "表 2", "name": "臭氧", "group": "消毒剂常规指标", "units": "mg/L", "contactTimeMin": "≥12", "factoryLimit": "≤0.3", "factoryResidual": "—", "tapResidual": "≥0.02" },
+    { "seq": 43, "table": "表 2", "name": "二氧化氯", "group": "消毒剂常规指标", "units": "mg/L", "contactTimeMin": "≥30", "factoryLimit": "≤0.8", "factoryResidual": "≥0.1", "tapResidual": "≥0.02" }
+  ],
+  "qualitative": [
+    {
+      "key": "basic-requirements",
+      "text": "生活饮用水水质应符合下列基本要求：a) 生活饮用水中不应含有病原微生物；b) 生活饮用水中化学物质不应危害人体健康；c) 生活饮用水中放射性物质不应危害人体健康；d) 生活饮用水的感官性状良好；e) 生活饮用水应经消毒处理。",
+      "citation": "GB 5749-2022 第 4.1 条"
+    },
+    {
+      "key": "table2-applicability",
+      "text": "生活饮用水水质应符合表 1 和表 3 要求。出厂水和末梢水中消毒剂限值、消毒剂余量均应符合表 2 要求。",
+      "citation": "GB 5749-2022 第 4.2 条"
+    },
+    {
+      "key": "disinfectant-choice",
+      "text": "采用液氯、次氯酸钠、次氯酸钙消毒方式时，应测定游离氯；采用氯胺消毒方式时，应测定总氯；采用臭氧消毒方式时，应测定臭氧；采用二氧化氯消毒方式时，应测定二氧化氯。采用二氧化氯与氯混合消毒剂发生器消毒方式时，应测定二氧化氯和游离氯，两项指标均应满足限值要求，至少一项指标应满足余量要求。",
+      "citation": "GB 5749-2022 表 2 注 a~d"
+    },
+    {
+      "key": "disinfection-byproducts",
+      "text": "水处理工艺流程中预氧化或消毒方式决定应测定的消毒副产物：采用液氯、次氯酸钠及次氯酸钙消毒时，应测定三氯甲烷、一氯二溴甲烷、二氯一溴甲烷、三溴甲烷、三卤甲烷、二氯乙酸、三氯乙酸；采用臭氧时，应测定溴酸盐；采用二氧化氯时，应测定亚氯酸盐。当原水中含有上述污染物可能导致出厂水和末梢水的超标风险时，无论采用何种预氧化或消毒方式，都应对其进行测定。",
+      "citation": "GB 5749-2022 表 1 注 c"
+    },
+    {
+      "key": "small-supply-relaxation",
+      "text": "小型集中式供水和分散式供水因水源与净水技术受限时，菌落总数指标限值按 500 MPN/mL 或 500 CFU/mL 执行，氟化物指标限值按 1.2 mg/L 执行，硝酸盐（以 N 计）指标限值按 20 mg/L 执行，浑浊度指标限值按 3 NTU 执行。",
+      "citation": "GB 5749-2022 表 1 注 b"
+    },
+    {
+      "key": "sensory-relaxation-on-emergency",
+      "text": "当发生影响水质的突发性公共事件时，经风险评估，感官性状和一般化学指标可暂时适当放宽。",
+      "citation": "GB 5749-2022 表 1 注 d"
+    },
+    {
+      "key": "radioactivity-exceedance",
+      "text": "放射性指标超过指导值，应进行核素分析和评价，判定能否饮用。",
+      "citation": "GB 5749-2022 表 1 注 e"
+    }
+  ]
+}

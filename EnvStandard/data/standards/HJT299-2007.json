@@ -1,0 +1,219 @@
+{
+  "standardId": "HJT299-2007",
+  "name": "固体废物 浸出毒性浸出方法 硫酸硝酸法",
+  "issuer": "国家环境保护总局",
+  "effectiveDate": "2007-05-01",
+  "units": "多量纲，逐项标注",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/200704/W020120104548867264666.pdf",
+    "publisher": "生态环境部",
+    "table": "第 3 章 原理、第 5 章 仪器设备、第 6 章 样品的保存和处理、第 7 章 浸出步骤、第 8 章 质量保证",
+    "retrievedAt": "2026-09-14",
+    "note": "数值与条款由人工从上述官方 PDF 转录并逐条核对；由 tools/verify_standards_sources.py 复核。"
+  },
+  "values": {
+    "rotation-speed": {
+      "value": 30,
+      "units": "r/min",
+      "name": "翻转式振荡装置的转速",
+      "basis": "HJ/T 299-2007 第 5.1、7.4.2 条",
+      "citation": "HJ/T 299-2007 第 5.1 条：振荡设备：转速为 30±2 r/min 的翻转式振荡装置"
+    },
+    "rotation-speed-tolerance": {
+      "value": 2,
+      "units": "r/min",
+      "name": "转速允许偏差",
+      "basis": "HJ/T 299-2007 第 5.1 条",
+      "citation": "HJ/T 299-2007 第 5.1 条：转速为 30±2 r/min 的翻转式振荡装置"
+    },
+    "agitation-temp": {
+      "value": 23,
+      "units": "℃",
+      "name": "振荡温度",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：调节转速为 30±2 r/min，于 23±2℃ 下振荡 18±2 h"
+    },
+    "agitation-temp-tolerance": {
+      "value": 2,
+      "units": "℃",
+      "name": "振荡温度允许偏差",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：于 23±2℃ 下振荡 18±2 h"
+    },
+    "agitation-hours": {
+      "value": 18,
+      "units": "h",
+      "name": "振荡时间",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：于 23±2℃ 下振荡 18±2 h"
+    },
+    "agitation-hours-tolerance": {
+      "value": 2,
+      "units": "h",
+      "name": "振荡时间允许偏差",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：振荡 18±2 h"
+    },
+    "liquid-solid-ratio": {
+      "value": 10,
+      "units": "L/kg（液固比）",
+      "name": "浸提剂与样品的液固比",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：根据样品的含水率，按液固比为 10׃1（L/kg）计算出所需浸提剂的体积"
+    },
+    "filter-pore-min": {
+      "value": 0.6,
+      "units": "μm",
+      "name": "滤膜孔径下限",
+      "basis": "HJ/T 299-2007 第 5.3.3 条",
+      "citation": "HJ/T 299-2007 第 5.3.3 条：滤膜：玻纤滤膜或微孔滤膜，孔径 0.6-0.8 μm"
+    },
+    "filter-pore-max": {
+      "value": 0.8,
+      "units": "μm",
+      "name": "滤膜孔径上限",
+      "basis": "HJ/T 299-2007 第 5.3.3 条",
+      "citation": "HJ/T 299-2007 第 5.3.3 条：滤膜：玻纤滤膜或微孔滤膜，孔径 0.6-0.8 μm"
+    },
+    "sieve-pore": {
+      "value": 9.5,
+      "units": "mm",
+      "name": "样品破碎后应能通过的筛孔孔径",
+      "basis": "HJ/T 299-2007 第 5.10、7.2 条",
+      "citation": "HJ/T 299-2007 第 7.2 条：样品颗粒应可以通过 9.5mm 孔径的筛，对于粒径大的颗粒可通过破碎、切割或碾磨降低粒径"
+    },
+    "balance-precision": {
+      "value": 0.01,
+      "units": "g",
+      "name": "实验天平精度",
+      "basis": "HJ/T 299-2007 第 5.7 条",
+      "citation": "HJ/T 299-2007 第 5.7 条：实验天平：精度为±0.01g"
+    },
+    "extraction-bottle-volume": {
+      "value": 2,
+      "units": "L",
+      "name": "提取瓶容积（非挥发性和半挥发性物质）",
+      "basis": "HJ/T 299-2007 第 5.2.2 条",
+      "citation": "HJ/T 299-2007 第 5.2.2 条：提取瓶：2L 具旋盖和内盖的广口瓶，用于浸出样品中非挥发性和半挥发性物质"
+    },
+    "sample-mass-nonvoc-min": {
+      "value": 150,
+      "units": "g",
+      "name": "非挥发性物质浸出的取样量下限",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：称取 150-200g 样品，置于 2L 提取瓶中"
+    },
+    "sample-mass-nonvoc-max": {
+      "value": 200,
+      "units": "g",
+      "name": "非挥发性物质浸出的取样量上限",
+      "basis": "HJ/T 299-2007 第 7.4.2 条",
+      "citation": "HJ/T 299-2007 第 7.4.2 条：称取 150-200g 样品，置于 2L 提取瓶中"
+    },
+    "sample-mass-voc-min": {
+      "value": 40,
+      "units": "g（干基）",
+      "name": "挥发性有机物浸出的取样量下限",
+      "basis": "HJ/T 299-2007 第 7.3.1 条",
+      "citation": "HJ/T 299-2007 第 7.3.1 条：将样品冷却至 4℃，称取干基质量为 40-50g 的样品，快速转入 ZHE"
+    },
+    "sample-mass-voc-max": {
+      "value": 50,
+      "units": "g（干基）",
+      "name": "挥发性有机物浸出的取样量上限",
+      "basis": "HJ/T 299-2007 第 7.3.1 条",
+      "citation": "HJ/T 299-2007 第 7.3.1 条：称取干基质量为 40-50g 的样品"
+    },
+    "moisture-sample-mass-min": {
+      "value": 50,
+      "units": "g",
+      "name": "含水率测定取样量下限",
+      "basis": "HJ/T 299-2007 第 7.1 条",
+      "citation": "HJ/T 299-2007 第 7.1 条：称取 50-100g 样品置于具盖容器中，于 105℃ 下烘干"
+    },
+    "moisture-sample-mass-max": {
+      "value": 100,
+      "units": "g",
+      "name": "含水率测定取样量上限",
+      "basis": "HJ/T 299-2007 第 7.1 条",
+      "citation": "HJ/T 299-2007 第 7.1 条：称取 50-100g 样品"
+    },
+    "moisture-dry-temp": {
+      "value": 105,
+      "units": "℃",
+      "name": "含水率测定的烘干温度",
+      "basis": "HJ/T 299-2007 第 7.1 条",
+      "citation": "HJ/T 299-2007 第 7.1 条：于 105℃ 下烘干，恒重至两次称量值的误差小于±1%"
+    },
+    "moisture-repeat-error": {
+      "value": 1,
+      "units": "%",
+      "name": "含水率恒重判据（两次称量值误差上限）",
+      "basis": "HJ/T 299-2007 第 7.1 条",
+      "citation": "HJ/T 299-2007 第 7.1 条：恒重至两次称量值的误差小于±1%，计算样品含水率"
+    },
+    "dry-solid-threshold": {
+      "value": 9,
+      "units": "%",
+      "name": "干固体百分率阈值（≤该值时初始液相即为浸出液）",
+      "basis": "HJ/T 299-2007 第 7.3.3、7.4.1 条",
+      "citation": "HJ/T 299-2007 第 7.4.1 条：干固体百分率小于或等于 9% 的，所得到的初始液相即为浸出液，直接进行分析"
+    },
+    "preservation-temp-max": {
+      "value": 4,
+      "units": "℃",
+      "name": "样品与浸出液的冷藏保存温度上限",
+      "basis": "HJ/T 299-2007 第 6.1、7.4.3 条",
+      "citation": "HJ/T 299-2007 第 6.1 条：除非冷藏会使样品性质发生不可逆改变，样品应于 4°C 冷藏保存"
+    },
+    "blank-per-batch": {
+      "value": 20,
+      "units": "个样品",
+      "name": "每做多少个样品（或每批）至少做一个浸出空白",
+      "basis": "HJ/T 299-2007 第 8.2 条",
+      "citation": "HJ/T 299-2007 第 8.2 条：每做 20 个样或每批样品（样品量少于 20 个时）至少做一个浸出空白"
+    }
+  },
+  "qualitative": [
+    {
+      "key": "principle",
+      "text": "本方法以硝酸/硫酸混合溶液为浸提剂，模拟废物在不规范填埋处置、堆存、或经无害化处理后废物的土地利用时，其中的有害组分在酸性降水的影响下，从废物中浸出而进入环境的过程。",
+      "citation": "HJ/T 299-2007 第 3 章"
+    },
+    {
+      "key": "leaching-agent",
+      "text": "浸提剂 1#：将质量比为 2∶1 的浓硫酸和浓硝酸混合液加入到试剂水中（1 L 水约 2 滴），使 pH 为 3.20±0.05；浸提剂 2#：试剂水，用于测定氰化物和挥发性有机物的浸出毒性。",
+      "citation": "HJ/T 299-2007 第 4.5.1、4.5.2 条"
+    },
+    {
+      "key": "moisture-sample-not-reused",
+      "text": "进行含水率测定后的样品，不得用于浸出毒性试验。",
+      "citation": "HJ/T 299-2007 第 7.1 条"
+    },
+    {
+      "key": "voc-use-zhe",
+      "text": "测定样品中挥发性有机物时，为避免过筛时待测成分有损失，应使用刻度尺测量粒径；样品和降低粒径所用工具应进行冷却，并尽量避免将样品暴露在空气中。挥发性物质的过滤采用零顶空提取器（ZHE）。",
+      "citation": "HJ/T 299-2007 第 7.2、7.3.1、5.3.1 条"
+    },
+    {
+      "key": "leachate-filtration",
+      "text": "在压力过滤器上装好滤膜，用稀硝酸淋洗过滤器和滤膜，弃掉淋洗液，过滤并收集浸出液，于 4℃ 下保存。",
+      "citation": "HJ/T 299-2007 第 7.4.3 条"
+    },
+    {
+      "key": "digestion-for-metals",
+      "text": "除非消解会造成待测金属的损失，用于金属分析的浸出液应按分析方法的要求进行消解。",
+      "citation": "HJ/T 299-2007 第 7.4.4 条"
+    },
+    {
+      "key": "quality-assurance",
+      "text": "分析仪器应经过国家计量认证，并在有效期内使用。每做 20 个样或每批样品（样品量少于 20 个时）至少做一个浸出空白。每批样品至少做一个加标回收样品。",
+      "citation": "HJ/T 299-2007 第 8.1、8.2、8.3 条"
+    },
+    {
+      "key": "pressure-release",
+      "text": "在振荡过程中有气体产生时，应定时在通风橱中打开提取瓶，释放过度的压力。",
+      "citation": "HJ/T 299-2007 第 7.4.2 条"
+    }
+  ]
+}

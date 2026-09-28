@@ -1,0 +1,476 @@
+{
+  "standardId": "GB36600-2018",
+  "name": "土壤环境质量 建设用地土壤污染风险管控标准（试行）",
+  "issuer": "生态环境部、国家市场监督管理总局",
+  "effectiveDate": "2018-08-01",
+  "units": "mg/kg",
+  "source": {
+    "url": "https://www.mee.gov.cn/gkml/hbb/bgth/201801/W020180124502335901641.pdf",
+    "publisher": "生态环境部",
+    "table": "表 1 建设用地土壤污染风险筛选值和管制值（基本项目）",
+    "retrievedAt": "2026-09-13",
+    "note": "本文件由 tools/extract_gb36600.py 从上述官方 PDF 自动抽取，请勿手工修改数值"
+  },
+  "landUseTypes": {
+    "first": "第一类用地：GB 50137 规定的城市建设用地中的居住用地，以及公共管理与公共服务用地中的中小学用地、医疗卫生用地、社会福利设施用地，公园绿地中的社区公园或儿童公园用地等",
+    "second": "第二类用地：GB 50137 规定的城市建设用地中的工业用地、物流仓储用地、商业服务业设施用地、道路与交通设施用地、公用设施用地、绿地与广场用地等"
+  },
+  "columns": {
+    "screeningFirst": "筛选值（第一类用地）",
+    "screeningSecond": "筛选值（第二类用地）",
+    "interventionFirst": "管制值（第一类用地）",
+    "interventionSecond": "管制值（第二类用地）"
+  },
+  "limits": [
+    {
+      "seq": 1,
+      "name": "砷",
+      "cas": "7440-38-2",
+      "group": "重金属和无机物",
+      "screeningFirst": 20,
+      "screeningSecond": 60,
+      "interventionFirst": 120,
+      "interventionSecond": 140
+    },
+    {
+      "seq": 2,
+      "name": "镉",
+      "cas": "7440-43-9",
+      "group": "重金属和无机物",
+      "screeningFirst": 20,
+      "screeningSecond": 65,
+      "interventionFirst": 47,
+      "interventionSecond": 172
+    },
+    {
+      "seq": 3,
+      "name": "铬（六价）",
+      "cas": "18540-29-9",
+      "group": "重金属和无机物",
+      "screeningFirst": 3.0,
+      "screeningSecond": 5.7,
+      "interventionFirst": 30,
+      "interventionSecond": 78
+    },
+    {
+      "seq": 4,
+      "name": "铜",
+      "cas": "7440-50-8",
+      "group": "重金属和无机物",
+      "screeningFirst": 2000,
+      "screeningSecond": 18000,
+      "interventionFirst": 8000,
+      "interventionSecond": 36000
+    },
+    {
+      "seq": 5,
+      "name": "铅",
+      "cas": "7439-92-1",
+      "group": "重金属和无机物",
+      "screeningFirst": 400,
+      "screeningSecond": 800,
+      "interventionFirst": 800,
+      "interventionSecond": 2500
+    },
+    {
+      "seq": 6,
+      "name": "汞",
+      "cas": "7439-97-6",
+      "group": "重金属和无机物",
+      "screeningFirst": 8,
+      "screeningSecond": 38,
+      "interventionFirst": 33,
+      "interventionSecond": 82
+    },
+    {
+      "seq": 7,
+      "name": "镍",
+      "cas": "7440-02-0",
+      "group": "重金属和无机物",
+      "screeningFirst": 150,
+      "screeningSecond": 900,
+      "interventionFirst": 600,
+      "interventionSecond": 2000
+    },
+    {
+      "seq": 8,
+      "name": "四氯化碳",
+      "cas": "56-23-5",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.9,
+      "screeningSecond": 2.8,
+      "interventionFirst": 9,
+      "interventionSecond": 36
+    },
+    {
+      "seq": 9,
+      "name": "氯仿",
+      "cas": "67-66-3",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.3,
+      "screeningSecond": 0.9,
+      "interventionFirst": 5,
+      "interventionSecond": 10
+    },
+    {
+      "seq": 10,
+      "name": "氯甲烷",
+      "cas": "74-87-3",
+      "group": "挥发性有机物",
+      "screeningFirst": 12,
+      "screeningSecond": 37,
+      "interventionFirst": 21,
+      "interventionSecond": 120
+    },
+    {
+      "seq": 11,
+      "name": "1,1-二氯乙烷",
+      "cas": "75-34-3",
+      "group": "挥发性有机物",
+      "screeningFirst": 3,
+      "screeningSecond": 9,
+      "interventionFirst": 20,
+      "interventionSecond": 100
+    },
+    {
+      "seq": 12,
+      "name": "1,2-二氯乙烷",
+      "cas": "107-06-2",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.52,
+      "screeningSecond": 5,
+      "interventionFirst": 6,
+      "interventionSecond": 21
+    },
+    {
+      "seq": 13,
+      "name": "1,1-二氯乙烯",
+      "cas": "75-35-4",
+      "group": "挥发性有机物",
+      "screeningFirst": 12,
+      "screeningSecond": 66,
+      "interventionFirst": 40,
+      "interventionSecond": 200
+    },
+    {
+      "seq": 14,
+      "name": "顺-1,2-二氯乙烯",
+      "cas": "156-59-2",
+      "group": "挥发性有机物",
+      "screeningFirst": 66,
+      "screeningSecond": 596,
+      "interventionFirst": 200,
+      "interventionSecond": 2000
+    },
+    {
+      "seq": 15,
+      "name": "反-1,2-二氯乙烯",
+      "cas": "156-60-5",
+      "group": "挥发性有机物",
+      "screeningFirst": 10,
+      "screeningSecond": 54,
+      "interventionFirst": 31,
+      "interventionSecond": 163
+    },
+    {
+      "seq": 16,
+      "name": "二氯甲烷",
+      "cas": "75-09-2",
+      "group": "挥发性有机物",
+      "screeningFirst": 94,
+      "screeningSecond": 616,
+      "interventionFirst": 300,
+      "interventionSecond": 2000
+    },
+    {
+      "seq": 17,
+      "name": "1,2-二氯丙烷",
+      "cas": "78-87-5",
+      "group": "挥发性有机物",
+      "screeningFirst": 1,
+      "screeningSecond": 5,
+      "interventionFirst": 5,
+      "interventionSecond": 47
+    },
+    {
+      "seq": 18,
+      "name": "1,1,1,2-四氯乙烷",
+      "cas": "630-20-6",
+      "group": "挥发性有机物",
+      "screeningFirst": 2.6,
+      "screeningSecond": 10,
+      "interventionFirst": 26,
+      "interventionSecond": 100
+    },
+    {
+      "seq": 19,
+      "name": "1,1,2,2-四氯乙烷",
+      "cas": "79-34-5",
+      "group": "挥发性有机物",
+      "screeningFirst": 1.6,
+      "screeningSecond": 6.8,
+      "interventionFirst": 14,
+      "interventionSecond": 50
+    },
+    {
+      "seq": 20,
+      "name": "四氯乙烯",
+      "cas": "127-18-4",
+      "group": "挥发性有机物",
+      "screeningFirst": 11,
+      "screeningSecond": 53,
+      "interventionFirst": 34,
+      "interventionSecond": 183
+    },
+    {
+      "seq": 21,
+      "name": "1,1,1-三氯乙烷",
+      "cas": "71-55-6",
+      "group": "挥发性有机物",
+      "screeningFirst": 701,
+      "screeningSecond": 840,
+      "interventionFirst": 840,
+      "interventionSecond": 840
+    },
+    {
+      "seq": 22,
+      "name": "1,1,2-三氯乙烷",
+      "cas": "79-00-5",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.6,
+      "screeningSecond": 2.8,
+      "interventionFirst": 5,
+      "interventionSecond": 15
+    },
+    {
+      "seq": 23,
+      "name": "三氯乙烯",
+      "cas": "79-01-6",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.7,
+      "screeningSecond": 2.8,
+      "interventionFirst": 7,
+      "interventionSecond": 20
+    },
+    {
+      "seq": 24,
+      "name": "1,2,3-三氯丙烷",
+      "cas": "96-18-4",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.05,
+      "screeningSecond": 0.5,
+      "interventionFirst": 0.5,
+      "interventionSecond": 5
+    },
+    {
+      "seq": 25,
+      "name": "氯乙烯",
+      "cas": "75-01-4",
+      "group": "挥发性有机物",
+      "screeningFirst": 0.12,
+      "screeningSecond": 0.43,
+      "interventionFirst": 1.2,
+      "interventionSecond": 4.3
+    },
+    {
+      "seq": 26,
+      "name": "苯",
+      "cas": "71-43-2",
+      "group": "挥发性有机物",
+      "screeningFirst": 1,
+      "screeningSecond": 4,
+      "interventionFirst": 10,
+      "interventionSecond": 40
+    },
+    {
+      "seq": 27,
+      "name": "氯苯",
+      "cas": "108-90-7",
+      "group": "挥发性有机物",
+      "screeningFirst": 68,
+      "screeningSecond": 270,
+      "interventionFirst": 200,
+      "interventionSecond": 1000
+    },
+    {
+      "seq": 28,
+      "name": "1,2-二氯苯",
+      "cas": "95-50-1",
+      "group": "挥发性有机物",
+      "screeningFirst": 560,
+      "screeningSecond": 560,
+      "interventionFirst": 560,
+      "interventionSecond": 560
+    },
+    {
+      "seq": 29,
+      "name": "1,4-二氯苯",
+      "cas": "106-46-7",
+      "group": "挥发性有机物",
+      "screeningFirst": 5.6,
+      "screeningSecond": 20,
+      "interventionFirst": 56,
+      "interventionSecond": 200
+    },
+    {
+      "seq": 30,
+      "name": "乙苯",
+      "cas": "100-41-4",
+      "group": "挥发性有机物",
+      "screeningFirst": 7.2,
+      "screeningSecond": 28,
+      "interventionFirst": 72,
+      "interventionSecond": 280
+    },
+    {
+      "seq": 31,
+      "name": "苯乙烯",
+      "cas": "100-42-5",
+      "group": "挥发性有机物",
+      "screeningFirst": 1290,
+      "screeningSecond": 1290,
+      "interventionFirst": 1290,
+      "interventionSecond": 1290
+    },
+    {
+      "seq": 32,
+      "name": "甲苯",
+      "cas": "108-88-3",
+      "group": "挥发性有机物",
+      "screeningFirst": 1200,
+      "screeningSecond": 1200,
+      "interventionFirst": 1200,
+      "interventionSecond": 1200
+    },
+    {
+      "seq": 33,
+      "name": "间二甲苯+对二甲苯",
+      "cas": "108-38-3,106-42-3",
+      "group": "挥发性有机物",
+      "screeningFirst": 163,
+      "screeningSecond": 570,
+      "interventionFirst": 500,
+      "interventionSecond": 570
+    },
+    {
+      "seq": 34,
+      "name": "邻二甲苯",
+      "cas": "95-47-6",
+      "group": "挥发性有机物",
+      "screeningFirst": 222,
+      "screeningSecond": 640,
+      "interventionFirst": 640,
+      "interventionSecond": 640
+    },
+    {
+      "seq": 35,
+      "name": "硝基苯",
+      "cas": "98-95-3",
+      "group": "半挥发性有机物",
+      "screeningFirst": 34,
+      "screeningSecond": 76,
+      "interventionFirst": 190,
+      "interventionSecond": 760
+    },
+    {
+      "seq": 36,
+      "name": "苯胺",
+      "cas": "62-53-3",
+      "group": "半挥发性有机物",
+      "screeningFirst": 92,
+      "screeningSecond": 260,
+      "interventionFirst": 211,
+      "interventionSecond": 663
+    },
+    {
+      "seq": 37,
+      "name": "2-氯酚",
+      "cas": "95-57-8",
+      "group": "半挥发性有机物",
+      "screeningFirst": 250,
+      "screeningSecond": 2256,
+      "interventionFirst": 500,
+      "interventionSecond": 4500
+    },
+    {
+      "seq": 38,
+      "name": "苯并[a]蒽",
+      "cas": "56-55-3",
+      "group": "半挥发性有机物",
+      "screeningFirst": 5.5,
+      "screeningSecond": 15,
+      "interventionFirst": 55,
+      "interventionSecond": 151
+    },
+    {
+      "seq": 39,
+      "name": "苯并[a]芘",
+      "cas": "50-32-8",
+      "group": "半挥发性有机物",
+      "screeningFirst": 0.55,
+      "screeningSecond": 1.5,
+      "interventionFirst": 5.5,
+      "interventionSecond": 15
+    },
+    {
+      "seq": 40,
+      "name": "苯并[b]荧蒽",
+      "cas": "205-99-2",
+      "group": "半挥发性有机物",
+      "screeningFirst": 5.5,
+      "screeningSecond": 15,
+      "interventionFirst": 55,
+      "interventionSecond": 151
+    },
+    {
+      "seq": 41,
+      "name": "苯并[k]荧蒽",
+      "cas": "207-08-9",
+      "group": "半挥发性有机物",
+      "screeningFirst": 55,
+      "screeningSecond": 151,
+      "interventionFirst": 550,
+      "interventionSecond": 1500
+    },
+    {
+      "seq": 42,
+      "name": "䓛",
+      "cas": "218-01-9",
+      "group": "半挥发性有机物",
+      "screeningFirst": 490,
+      "screeningSecond": 1293,
+      "interventionFirst": 4900,
+      "interventionSecond": 12900
+    },
+    {
+      "seq": 43,
+      "name": "二苯并[a, h]蒽",
+      "cas": "53-70-3",
+      "group": "半挥发性有机物",
+      "screeningFirst": 0.55,
+      "screeningSecond": 1.5,
+      "interventionFirst": 5.5,
+      "interventionSecond": 15
+    },
+    {
+      "seq": 44,
+      "name": "茚并[1,2,3-cd]芘",
+      "cas": "193-39-5",
+      "group": "半挥发性有机物",
+      "screeningFirst": 5.5,
+      "screeningSecond": 15,
+      "interventionFirst": 55,
+      "interventionSecond": 151
+    },
+    {
+      "seq": 45,
+      "name": "萘",
+      "cas": "91-20-3",
+      "group": "半挥发性有机物",
+      "screeningFirst": 25,
+      "screeningSecond": 70,
+      "interventionFirst": 255,
+      "interventionSecond": 700
+    }
+  ]
+}
