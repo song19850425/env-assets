@@ -1,0 +1,67 @@
+{
+  "_comment": "EnvStandard 硬规则库。规则是数据不是代码：改规则不动引擎，便于 diff 与审计。所有判定都必须是字面比对或数值比对，绝不调用模型。",
+  "version": "2026-09-29",
+  "severity": {
+    "error": "会直接影响结论正确性，必须改",
+    "warn": "规范性或完整性缺陷，需说明或补做",
+    "info": "提示"
+  },
+  "rules": [
+    {
+      "id": "R-STD-01",
+      "name": "引用的标准号必须已入库",
+      "severity": "error",
+      "check": "standard_exists",
+      "why": "标准号写错或引用了不存在的标准，结论失去依据。库外标准无法核对，按未核实处理而不是放过。"
+    },
+    {
+      "id": "R-STD-02",
+      "name": "引用标准必须声明到条款/表格级",
+      "severity": "warn",
+      "check": "basis_declared",
+      "why": "只写标准号不写条款，无法复核取的是哪一个限值列。"
+    },
+    {
+      "id": "R-LIM-01",
+      "name": "报告写的限值必须与标准值一致",
+      "severity": "error",
+      "check": "limit_matches",
+      "why": "限值抄错是最隐蔽的一类错误 —— 差一位数结论就反过来，而人工审阅几乎发现不了。"
+    },
+    {
+      "id": "R-LIM-02",
+      "name": "达标结论必须与检测值和限值一致",
+      "severity": "error",
+      "check": "conclusion_consistent",
+      "why": "数字和结论分别由两套逻辑生成时，会出现「检测结果 5.2，结论写达标」这种自相矛盾。结论必须由数据推出来。"
+    },
+    {
+      "id": "R-MDL-01",
+      "name": "所选方法的测定下限必须低于所判定的标准限值",
+      "severity": "error",
+      "check": "loq_below_limit",
+      "why": "测定下限高于限值时，这个指标根本测不出来 —— 报「未检出」或报一个数字都不成立。必须改用能力更强的方法方式。"
+    },
+    {
+      "id": "R-HOLD-01",
+      "name": "样品保存时间不得超过标准规定",
+      "severity": "error",
+      "check": "holding_within_limit",
+      "why": "超期样品的检测结果不代表采样时的状态，数据无效。"
+    },
+    {
+      "id": "R-QC-01",
+      "name": "每批样品必须做空白",
+      "severity": "error",
+      "check": "qc_blank_required",
+      "why": "空白是整批数据有效性的前提。没有空白，无法判断是否存在系统污染。"
+    },
+    {
+      "id": "R-QC-02",
+      "name": "平行样比例不得低于标准规定",
+      "severity": "warn",
+      "check": "qc_parallel_ratio",
+      "why": "平行样比例不足时，精密度没有依据。"
+    }
+  ]
+}

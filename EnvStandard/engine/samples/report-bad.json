@@ -1,0 +1,42 @@
+{
+  "_comment": "教学构造样本：一份**植入真实类型错误**的报告摘要，用来验证引擎能否逐条抓出。数值均为构造，非真实检测结果。其中「苯限值写成 2.2」是 EnvLab 项目历史上真实发生过的错误（实际 1 mg/kg）。",
+  "report": {
+    "id": "DEMO-BAD-001",
+    "title": "某地块土壤与地下水检测报告摘要（构造样本 · 含植入错误）",
+    "lab": "某某检测有限公司"
+  },
+  "items": [
+    {
+      "factor": "苯",
+      "matrix": "soil",
+      "standard": "GB36600-2018",
+      "basis": { "landUse": "first", "kind": "screening" },
+      "statedLimit": 2.2,
+      "result": 5.2,
+      "conclusion": "达标",
+      "method": { "standard": "HJ639-2012", "mode": "sim" }
+    },
+    {
+      "factor": "四氯化碳",
+      "matrix": "groundwater",
+      "standard": "GBT14848-2017",
+      "basis": { "classLevel": "III" },
+      "statedLimit": 2.0,
+      "result": 1.8,
+      "conclusion": "达标",
+      "method": { "standard": "HJ639-2012", "mode": "scan" }
+    },
+    {
+      "factor": "苯",
+      "matrix": "groundwater",
+      "standard": "HJ 9999-2020",
+      "basis": { "classLevel": "III" },
+      "statedLimit": 10.0,
+      "result": 4.0,
+      "conclusion": "达标"
+    }
+  ],
+  "holdingStandard": "HJ1075-2019",
+  "holdingHours": 72,
+  "qc": { "blankCount": 0, "parallelCount": 1, "sampleCount": 30 }
+}
