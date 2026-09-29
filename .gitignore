@@ -1,0 +1,9 @@
+# 中间产物：官方 PDF 缓存、抽文、临时验证截图
+.cache/
+
+# 临时验证目录
+_verify/
+
+# Python
+__pycache__/
+*.pyc

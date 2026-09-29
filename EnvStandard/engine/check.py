@@ -34,6 +34,58 @@ STD_DIR = HERE.parent / "data" / "standards"
 RULES_PATH = HERE / "rules.json"
 
 
+# ------------------------------------------------------------------ 单位换算
+# 同量纲不同量级的单位必须能比，否则「μg/kg 的测定下限 vs mg/kg 的限值」
+# 这种最常见的场景反而判不了。不可通约时才报无法判定。
+#   key 的 μ 统一用 U+03BC 归一化后再查（PDF 里 U+00B5 / U+03BC 会混用）
+_UNITS: dict[str, tuple[str, float]] = {
+    # (量纲, 换算到该量纲基准值的系数)
+    # —— 质量/质量，基准 mg/kg
+    "mg/kg": ("mass/mass", 1.0),
+    "ug/kg": ("mass/mass", 0.001),
+    "g/kg": ("mass/mass", 1000.0),
+    "ng/kg": ("mass/mass", 1e-6),
+    # —— 质量/体积，基准 mg/L
+    "mg/l": ("mass/vol", 1.0),
+    "ug/l": ("mass/vol", 0.001),
+    "g/l": ("mass/vol", 1000.0),
+    "ng/l": ("mass/vol", 1e-6),
+    # —— 质量/体积（气），基准 mg/m3
+    "mg/m3": ("mass/vol-gas", 1.0),
+    "mg/m³": ("mass/vol-gas", 1.0),
+    "ug/m3": ("mass/vol-gas", 0.001),
+    "ug/m³": ("mass/vol-gas", 0.001),
+    "ng/m³": ("mass/vol-gas", 1e-6),
+    # —— 摩尔分数，基准 μmol/mol
+    "umol/mol": ("mole-fraction", 1.0),
+    "mmol/mol": ("mole-fraction", 1000.0),
+}
+
+
+def norm_units(u: str) -> str:
+    """归一化单位串：μ 两种码位统一、全角转半角、去空白、小写。"""
+    if not u:
+        return ""
+    s = u.strip()
+    s = s.replace("\u00b5", "\u03bc").replace("\u03bc", "u")   # μ → u
+    s = s.replace("³", "3").replace(" ", "").lower()
+    return s
+
+
+def to_base(value: float, units: str):
+    """换算到同量纲基准值。返回 (量纲, 基准值) 或 None（不可通约/未知）。"""
+    info = _UNITS.get(norm_units(units))
+    if not info:
+        return None
+    dim, factor = info
+    return dim, value * factor
+
+
+def _base_label(dim: str) -> str:
+    return {"mass/mass": "mg/kg", "mass/vol": "mg/L",
+            "mass/vol-gas": "mg/m³", "mole-fraction": "μmol/mol"}.get(dim, dim)
+
+
 # ------------------------------------------------------------------ 载入标准
 class Standards:
     def __init__(self, std_dir: Path):
@@ -170,13 +222,24 @@ class Engine:
             return None, "未声明所用方法标准", None
         if not self.stds.has(msid):
             return None, f"方法标准 {msid} 未入库，无法核对测定下限", None
-        mode = method.get("mode")  # scan / sim
-        key = {"scan": "loqScan", "sim": "loqSim"}.get(mode or "")
-        if not key:
-            return None, "未声明方法方式（mode 应为 scan 或 sim），无法确定用哪一档测定下限", None
+        mode = method.get("mode")  # scan / sim（仅对多方式方法有意义）
         row = self.stds.row(msid, item.get("factor"))
         if row is None:
             return None, f"{msid} 中没有「{item.get('factor')}」的检出限数据", None
+
+        # 列名有两套约定，都要认：
+        #   多方式方法（HJ 639 吹扫捕集/GC-MS）→ loqScan / loqSim
+        #   单方式方法（HJ 605 只有全扫描）    → loq
+        key = {"scan": "loqScan", "sim": "loqSim"}.get(mode or "")
+        note = ""
+        if key is None or row.get(key) is None:
+            if row.get("loq") is not None:
+                if mode:
+                    note = f"（{msid} 为单方式方法，只有一档测定下限，已按 loq 取值）"
+                key = "loq"
+            else:
+                return None, ("未声明方法方式（mode 应为 scan 或 sim），"
+                              f"且 {msid} 的该因子没有单一测定下限列，无法确定取哪一档"), None
         loq = row.get(key)
         sid = item.get("standard")
         lrow = self.stds.row(sid, item.get("factor"))
@@ -185,28 +248,43 @@ class Engine:
             return None, "无法定位所判定的标准限值", None
         limit = lrow.get(col)
 
-        # ---- 单位核对：行级 units 优先于标准级 ----
+        # ---- 单位核对：行级 units 优先于标准级；同量纲换算后比较 ----
         m_units = (self.stds.by_id.get(msid) or {}).get("units") or ""
         l_units = lrow.get("units") or (self.stds.by_id.get(sid) or {}).get("units") or ""
-        if m_units and l_units and m_units != l_units:
-            return None, (f"单位不一致，无法比较：方法 {msid} 是 {m_units}，"
+        conv_note = ""
+        try:
+            loq_f, lim_f = float(loq), float(limit)
+        except (TypeError, ValueError):
+            return None, f"测定下限或限值不是数值（{loq!r} / {limit!r}）", None
+
+        mb = to_base(loq_f, m_units)
+        lb = to_base(lim_f, l_units)
+        if mb and lb and mb[0] == lb[0]:
+            if norm_units(m_units) != norm_units(l_units):
+                conv_note = (f"（已按同量纲换算：{loq} {m_units} = "
+                             f"{mb[1]:g} {_base_label(mb[0])}，"
+                             f"{limit} {l_units} = {lb[1]:g} {_base_label(lb[0])}）")
+            loq_cmp, lim_cmp = mb[1], lb[1]
+        elif m_units and l_units and mb is None or lb is None:
+            return None, (f"单位无法换算，拒绝比较：方法 {msid} 是 {m_units}，"
                           f"判定标准 {sid} 是 {l_units}。"
                           f"请先确认方法是否适用于该介质 —— 给 {item.get('matrix', '该')} 样品"
                           f"引一个 {m_units} 的方法，本身可能就是错的"), {
                 "方法单位": m_units, "限值单位": l_units,
             }
+        else:
+            return None, (f"单位不一致且不可通约，无法比较：方法 {m_units} vs 判定标准 {l_units}"), {
+                "方法单位": m_units, "限值单位": l_units,
+            }
 
-        try:
-            loq_f, lim_f = float(loq), float(limit)
-        except (TypeError, ValueError):
-            return None, f"测定下限或限值不是数值（{loq!r} / {limit!r}）", None
         src_m = self.stds.source_of(msid)
-        ev = {"方法标准": msid, "方式": mode, "测定下限": loq, "单位": m_units,
+        ev = {"方法标准": msid, "方式": mode or "—", "测定下限": loq, "单位": m_units,
               "判定标准": sid, "限值": limit, "限值列": label,
               "方法出处": f"{msid} {src_m.get('table', '')}（序号 {row.get('seq', '?')}）"}
-        if loq_f >= lim_f:
-            return False, (f"方法能力不足：{mode} 方式测定下限 {loq} {m_units} ≥ 限值 {limit}"
-                           f" {l_units}（{label}），该指标测不出来，必须改用能力更强的方式"), ev
+        if loq_cmp >= lim_cmp:
+            return False, (f"方法能力不足：测定下限 {loq} {m_units} ≥ 限值 {limit}"
+                           f" {l_units}（{label}），该指标测不出来，必须改用能力更强的方式"
+                           + note + conv_note), ev
         return True, "", ev
 
     def _check_holding_within_limit(self, item):

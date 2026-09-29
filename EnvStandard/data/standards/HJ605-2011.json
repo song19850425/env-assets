@@ -1,0 +1,886 @@
+{
+  "standardId": "HJ605-2011",
+  "name": "土壤和沉积物 挥发性有机物的测定 吹扫捕集/气相色谱-质谱法",
+  "issuer": "环境保护部",
+  "effectiveDate": "2011-06-01",
+  "units": "μg/kg",
+  "unitNote": "表 A.1 的检出限与测定下限以 μg/kg 计（样品量 5 g、全扫描）。第 8 章校准与第 9 章计算涉及的标准溶液浓度用 μg/L，逐项标注。",
+  "source": {
+    "url": "https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/jcffbz/201102/W020130206497978086463.pdf",
+    "publisher": "生态环境部",
+    "table": "附录 A（规范性附录）表 A.1 目标物的检出限、测定下限和最小相对响应因子；第 8 章分析步骤；第 11.4 条质量保证和质量控制",
+    "retrievedAt": "2026-09-29",
+    "note": "表 A.1 由 tools/build_hj605.py 从上述官方 PDF 自动解析（71 行 × 3 列），并做行数、序号唯一性、测定下限=检出限×4、关键行数值断言。请勿手工修改数值。"
+  },
+  "coverage": {
+    "included": "附录 A 表 A.1 全部 71 行（65 种目标物 + 3 个替代物 + 3 个内标）的检出限、测定下限、最小相对响应因子；第 8 章仪器条件与校准要求；第 11.4 条质量保证和质量控制条款。",
+    "excluded": "附录 B（目标物定性定量离子）、附录 C 表 C.1（精密度与准确度）、附录 D（土壤和沉积物中 VOCs 的采样方法）。",
+    "reason": "数据层按「引擎与剧本实际引用」收录；需要时按同一方式补录。"
+  },
+  "columns": {
+    "mdl": "检出限（μg/kg）",
+    "loq": "测定下限（μg/kg）",
+    "minRrf": "最小相对响应因子",
+    "en": "英文名称"
+  },
+  "limits": [
+    {
+      "seq": 1,
+      "seqRaw": "1",
+      "name": "二氯二氟甲烷",
+      "en": "dichlorodifluoromethane",
+      "mdl": 0.4,
+      "loq": 1.6,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 2,
+      "seqRaw": "2",
+      "name": "氯甲烷",
+      "en": "chloromethane",
+      "mdl": 1.0,
+      "loq": 4.0,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 3,
+      "seqRaw": "3",
+      "name": "氯乙烯",
+      "en": "chloroethene",
+      "mdl": 1.0,
+      "loq": 4.0,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 4,
+      "seqRaw": "4",
+      "name": "溴甲烷",
+      "en": "bromomethane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 5,
+      "seqRaw": "5",
+      "name": "氯乙烷",
+      "en": "chloroethane",
+      "mdl": 0.8,
+      "loq": 3.2,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 6,
+      "seqRaw": "6",
+      "name": "三氯氟甲烷",
+      "en": "trichlorofluoromethane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 7,
+      "seqRaw": "7",
+      "name": "1,1-二氯乙烯",
+      "en": "1,1-dichloroethene",
+      "mdl": 1.0,
+      "loq": 4.0,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 8,
+      "seqRaw": "8",
+      "name": "丙酮",
+      "en": "acetone",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 9,
+      "seqRaw": "9",
+      "name": "碘甲烷",
+      "en": "iodo-methane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": null
+    },
+    {
+      "seq": 10,
+      "seqRaw": "10",
+      "name": "二硫化碳",
+      "en": "carbon disulfide",
+      "mdl": 1.0,
+      "loq": 4.0,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 11,
+      "seqRaw": "11",
+      "name": "二氯甲烷",
+      "en": "methylene chloride",
+      "mdl": 1.5,
+      "loq": 6.0,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 12,
+      "seqRaw": "12",
+      "name": "反式-1,2-二氯乙烯",
+      "en": "trans-1,2-dichloroethene",
+      "mdl": 1.4,
+      "loq": 5.6,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 13,
+      "seqRaw": "13",
+      "name": "1,1-二氯乙烷",
+      "en": "1,1-dichloroethane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.2
+    },
+    {
+      "seq": 14,
+      "seqRaw": "14",
+      "name": "2,2-二氯丙烷",
+      "en": "2,2-dichloropropane",
+      "mdl": 1.3,
+      "loq": 4.2,
+      "minRrf": null
+    },
+    {
+      "seq": 15,
+      "seqRaw": "15",
+      "name": "顺式-1,2-二氯乙烯",
+      "en": "cis-1,2-dichloroethene",
+      "mdl": 1.3,
+      "loq": 4.2,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 16,
+      "seqRaw": "16",
+      "name": "2-丁酮",
+      "en": "2-butanone",
+      "mdl": 3.2,
+      "loq": 13,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 17,
+      "seqRaw": "17",
+      "name": "溴氯甲烷",
+      "en": "bromochloromethane",
+      "mdl": 1.4,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 18,
+      "seqRaw": "18",
+      "name": "氯仿",
+      "en": "chloroform",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": 0.2
+    },
+    {
+      "seq": 19,
+      "seqRaw": "19",
+      "name": "二溴氟甲烷",
+      "en": "dibromofluoromethane",
+      "mdl": null,
+      "loq": null,
+      "minRrf": null
+    },
+    {
+      "seq": 20,
+      "seqRaw": "20",
+      "name": "1,1,1-三氯乙烷",
+      "en": "1,1,1-trichloroethane",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 21,
+      "seqRaw": "21",
+      "name": "四氯化碳",
+      "en": "carbon tetrachloride",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 22,
+      "seqRaw": "22",
+      "name": "1,1-二氯丙烯",
+      "en": "1,1-dichloropropene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 23,
+      "seqRaw": "23",
+      "name": "苯",
+      "en": "benzene",
+      "mdl": 1.9,
+      "loq": 7.6,
+      "minRrf": 0.5
+    },
+    {
+      "seq": 24,
+      "seqRaw": "24",
+      "name": "1,2-二氯乙烷",
+      "en": "1,2-dichloroethane",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 25,
+      "seqRaw": "25",
+      "name": "氟苯",
+      "en": "fluorobenzene",
+      "mdl": null,
+      "loq": null,
+      "minRrf": null
+    },
+    {
+      "seq": 26,
+      "seqRaw": "26",
+      "name": "三氯乙烯",
+      "en": "trichloroethylene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.2
+    },
+    {
+      "seq": 27,
+      "seqRaw": "27",
+      "name": "1,2-二氯丙烷",
+      "en": "1,2-dichloropropane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 28,
+      "seqRaw": "28",
+      "name": "二溴甲烷",
+      "en": "dibromomethane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 29,
+      "seqRaw": "29",
+      "name": "一溴二氯甲烷",
+      "en": "bromodichloromethane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": null
+    },
+    {
+      "seq": 30,
+      "seqRaw": "30",
+      "name": "4-甲基-2-戊酮",
+      "en": "4-methyl-2-pentanone",
+      "mdl": 1.8,
+      "loq": 7.2,
+      "minRrf": null
+    },
+    {
+      "seq": 31,
+      "seqRaw": "31",
+      "name": "甲苯-D8",
+      "en": "toluene-D8",
+      "mdl": null,
+      "loq": null,
+      "minRrf": null
+    },
+    {
+      "seq": 32,
+      "seqRaw": "32",
+      "name": "甲苯",
+      "en": "toluene",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": 0.4
+    },
+    {
+      "seq": 33,
+      "seqRaw": "33",
+      "name": "1,1,2-三氯乙烷",
+      "en": "1,1,2-trichloroethane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 34,
+      "seqRaw": "34",
+      "name": "四氯乙烯",
+      "en": "tetrachloroethylene",
+      "mdl": 1.4,
+      "loq": 5.6,
+      "minRrf": 0.2
+    },
+    {
+      "seq": 35,
+      "seqRaw": "35",
+      "name": "1,3-二氯丙烷",
+      "en": "1,3-dichloropropane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": null
+    },
+    {
+      "seq": 36,
+      "seqRaw": "36",
+      "name": "2-己酮",
+      "en": "2-hexanone",
+      "mdl": 3.0,
+      "loq": 12,
+      "minRrf": null
+    },
+    {
+      "seq": 37,
+      "seqRaw": "37",
+      "name": "二溴氯甲烷",
+      "en": "dibromochloromethane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 38,
+      "seqRaw": "38",
+      "name": "1,2-二溴乙烷",
+      "en": "1,2-dibromoethane",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": null
+    },
+    {
+      "seq": 39,
+      "seqRaw": "39",
+      "name": "氯苯-D5",
+      "en": "chlorobenzene-D5",
+      "mdl": null,
+      "loq": null,
+      "minRrf": null
+    },
+    {
+      "seq": 40,
+      "seqRaw": "40",
+      "name": "氯苯",
+      "en": "chlorobenzene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.5
+    },
+    {
+      "seq": 41,
+      "seqRaw": "41",
+      "name": "1,1,1,2-四氯乙烷",
+      "en": "1,1,1,2-tetrachloroethane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 42,
+      "seqRaw": "42",
+      "name": "乙苯",
+      "en": "ethylbenzene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 43,
+      "seqRaw": "43",
+      "name": "1,1,2-三氯丙烷",
+      "en": "1,1,2-trichloropropane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 44,
+      "seqRaw": "44/45",
+      "name": "间,对-二甲苯",
+      "en": "m,p-xylene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 46,
+      "seqRaw": "46",
+      "name": "邻-二甲苯",
+      "en": "o-xylene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.3
+    },
+    {
+      "seq": 47,
+      "seqRaw": "47",
+      "name": "苯乙烯",
+      "en": "styrene",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": 0.3
+    },
+    {
+      "seq": 48,
+      "seqRaw": "48",
+      "name": "溴仿",
+      "en": "bromoform",
+      "mdl": 1.5,
+      "loq": 6.0,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 49,
+      "seqRaw": "49",
+      "name": "异丙苯",
+      "en": "isopropylbenzene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.1
+    },
+    {
+      "seq": 50,
+      "seqRaw": "50",
+      "name": "4-溴氟苯",
+      "en": "4-bromofluorobenzene",
+      "mdl": null,
+      "loq": null,
+      "minRrf": null
+    },
+    {
+      "seq": 51,
+      "seqRaw": "51",
+      "name": "溴苯",
+      "en": "bromobenzene",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 52,
+      "seqRaw": "52",
+      "name": "1,1,2,2-四氯乙烷",
+      "en": "1,1,2,2-tetrachloroethane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": 0.3
+    },
+    {
+      "seq": 53,
+      "seqRaw": "53",
+      "name": "1,2,3-三氯丙烷",
+      "en": "1,2,3-trichloropropane",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 54,
+      "seqRaw": "54",
+      "name": "正丙苯",
+      "en": "n-propylbenzene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 55,
+      "seqRaw": "55",
+      "name": "2-氯甲苯",
+      "en": "2-chlorotoluene",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 56,
+      "seqRaw": "56",
+      "name": "1,3,5-三甲基苯",
+      "en": "1,3,5-trimethylbenzene",
+      "mdl": 1.4,
+      "loq": 5.6,
+      "minRrf": null
+    },
+    {
+      "seq": 57,
+      "seqRaw": "57",
+      "name": "4-氯甲苯",
+      "en": "4-chlorotoluene",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 58,
+      "seqRaw": "58",
+      "name": "叔丁基苯",
+      "en": "tert-butylbenzene",
+      "mdl": 1.2,
+      "loq": 4.8,
+      "minRrf": null
+    },
+    {
+      "seq": 59,
+      "seqRaw": "59",
+      "name": "1,2,4-三甲基苯",
+      "en": "1,2,4-trimethylbenzene",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 60,
+      "seqRaw": "60",
+      "name": "仲丁基苯",
+      "en": "sec-butylbenzene",
+      "mdl": 1.1,
+      "loq": 4.4,
+      "minRrf": null
+    },
+    {
+      "seq": 61,
+      "seqRaw": "61",
+      "name": "1,3-二氯苯",
+      "en": "1,3-dichlorobenzene",
+      "mdl": 1.5,
+      "loq": 6.0,
+      "minRrf": 0.6
+    },
+    {
+      "seq": 62,
+      "seqRaw": "62",
+      "name": "4-异丙基甲苯",
+      "en": "p-isopropyltoluene",
+      "mdl": 1.3,
+      "loq": 5.2,
+      "minRrf": null
+    },
+    {
+      "seq": 63,
+      "seqRaw": "63",
+      "name": "1,4-二氯苯-D4",
+      "en": "1,4-dichlorobenzene-D4",
+      "mdl": null,
+      "loq": null,
+      "minRrf": null
+    },
+    {
+      "seq": 64,
+      "seqRaw": "64",
+      "name": "1,4-二氯苯",
+      "en": "1,4-dichlorobenzene",
+      "mdl": 1.5,
+      "loq": 6.0,
+      "minRrf": 0.5
+    },
+    {
+      "seq": 65,
+      "seqRaw": "65",
+      "name": "正丁基苯",
+      "en": "n-butylbenzene",
+      "mdl": 1.7,
+      "loq": 6.8,
+      "minRrf": null
+    },
+    {
+      "seq": 66,
+      "seqRaw": "66",
+      "name": "1,2-二氯苯",
+      "en": "1,2-dichlorobenzene",
+      "mdl": 1.5,
+      "loq": 6.0,
+      "minRrf": 0.4
+    },
+    {
+      "seq": 67,
+      "seqRaw": "67",
+      "name": "1,2-二溴-3-氯丙烷",
+      "en": "1,2-dibromo-3-chloropropane",
+      "mdl": 1.9,
+      "loq": 7.6,
+      "minRrf": 0.05
+    },
+    {
+      "seq": 68,
+      "seqRaw": "68",
+      "name": "1,2,4-三氯苯",
+      "en": "1,2,4-trichlorobenzene",
+      "mdl": 0.3,
+      "loq": 1.2,
+      "minRrf": 0.2
+    },
+    {
+      "seq": 69,
+      "seqRaw": "69",
+      "name": "六氯丁二烯",
+      "en": "hexachlorobutadiene",
+      "mdl": 1.6,
+      "loq": 6.4,
+      "minRrf": null
+    },
+    {
+      "seq": 70,
+      "seqRaw": "70",
+      "name": "萘",
+      "en": "naphthalene",
+      "mdl": 0.4,
+      "loq": 1.6,
+      "minRrf": null
+    },
+    {
+      "seq": 71,
+      "seqRaw": "71",
+      "name": "1,2,3-三氯苯",
+      "en": "1,2,3-trichlorobenzene",
+      "mdl": 0.2,
+      "loq": 0.8,
+      "minRrf": null
+    }
+  ],
+  "values": {
+    "sample-mass": {
+      "value": 5,
+      "units": "g",
+      "name": "表 A.1 检出限对应的样品量",
+      "basis": "HJ 605-2011 附录 A",
+      "citation": "HJ 605-2011 附录 A：当样品量为 5 g、用标准四极杆质谱进行全扫描分析时，目标物的方法检出限为 0.2～3.2 μg/kg"
+    },
+    "mdl-range-min": {
+      "value": 0.2,
+      "units": "μg/kg",
+      "name": "全扫描方式方法检出限下限",
+      "basis": "HJ 605-2011 附录 A",
+      "citation": "HJ 605-2011 附录 A：目标物的方法检出限为 0.2～3.2 μg/kg"
+    },
+    "mdl-range-max": {
+      "value": 3.2,
+      "units": "μg/kg",
+      "name": "全扫描方式方法检出限上限",
+      "basis": "HJ 605-2011 附录 A",
+      "citation": "HJ 605-2011 附录 A：目标物的方法检出限为 0.2～3.2 μg/kg"
+    },
+    "pre-desorb-temp": {
+      "value": 180,
+      "units": "℃",
+      "name": "预脱附温度",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：预脱附温度 180℃；脱附温度 190℃；脱附时间 2 min；烘烤温度 200℃；烘烤时间 8 min"
+    },
+    "desorb-temp": {
+      "value": 190,
+      "units": "℃",
+      "name": "脱附温度",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：脱附温度 190℃"
+    },
+    "desorb-time": {
+      "value": 2,
+      "units": "min",
+      "name": "脱附时间",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：脱附时间 2 min"
+    },
+    "bake-temp": {
+      "value": 200,
+      "units": "℃",
+      "name": "烘烤温度",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：烘烤温度 200℃"
+    },
+    "bake-time": {
+      "value": 8,
+      "units": "min",
+      "name": "烘烤时间",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：烘烤时间 8 min"
+    },
+    "inlet-temp": {
+      "value": 200,
+      "units": "℃",
+      "name": "进样口温度",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：进样口温度 200℃"
+    },
+    "split-ratio": {
+      "value": 30,
+      "units": "∶1（分流比）",
+      "name": "分流比",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：分流比 30∶1"
+    },
+    "column-flow": {
+      "value": 1.5,
+      "units": "ml/min",
+      "name": "柱流量（恒流模式）",
+      "basis": "HJ 605-2011 第 8 章 分析步骤（仪器参考条件）",
+      "citation": "HJ 605-2011 第 8 章：柱流量（恒流模式）1.5 ml/min"
+    },
+    "calib-series-levels": {
+      "value": 5,
+      "units": "个",
+      "name": "标准系列浓度点数",
+      "basis": "HJ 605-2011 第 8.2 条 校准曲线的绘制",
+      "citation": "HJ 605-2011 第 8.2 条：配制目标物和替代物质量浓度分别为 5.00、20.0、50.0、100 和 200 μg/L 的标准系列"
+    },
+    "internal-std-conc": {
+      "value": 25,
+      "units": "μg/ml",
+      "name": "内标标准溶液浓度",
+      "basis": "HJ 605-2011 第 5.5 条",
+      "citation": "HJ 605-2011 第 5.5 条：内标标准溶液 ρ=25 μg/ml；宜选用氟苯、氯苯-D5 和 1,4-二氯苯-D4 作为内标"
+    },
+    "surrogate-conc": {
+      "value": 25,
+      "units": "μg/ml",
+      "name": "替代物标准溶液浓度",
+      "basis": "HJ 605-2011 第 5.6 条",
+      "citation": "HJ 605-2011 第 5.6 条：替代物标准溶液 ρ=25 μg/ml；宜选用二溴氟甲烷、甲苯-D8 和 4-溴氟苯作为替代物"
+    },
+    "calib-verify-recovery-min": {
+      "value": 80,
+      "units": "%",
+      "name": "校准确认标准溶液测定值与加入浓度比值的下限",
+      "basis": "HJ 605-2011 第 11.4 条（前段）",
+      "citation": "HJ 605-2011 第 11.4 条：校准确认标准溶液中目标物的测定值与加入浓度值的比值在 80%～120%，否则在分析样品前应采取校正措施"
+    },
+    "calib-verify-recovery-max": {
+      "value": 120,
+      "units": "%",
+      "name": "校准确认标准溶液测定值与加入浓度比值的上限",
+      "basis": "HJ 605-2011 第 11.4 条（前段）",
+      "citation": "HJ 605-2011 第 11.4 条：比值在 80%～120%"
+    },
+    "rrf-rsd-max": {
+      "value": 20,
+      "units": "%",
+      "name": "相对响应因子（RRF）的相对标准偏差上限",
+      "basis": "HJ 605-2011 第 8.2.2.1 条",
+      "citation": "HJ 605-2011 第 8.2.2.1 条：标准系列目标物（或替代物）相对响应因子（RRF）的相对标准偏差（RSD）应小于等于 20%"
+    },
+    "corr-coef-min": {
+      "value": 0.99,
+      "units": "无量纲",
+      "name": "线性或非线性校准曲线的相关系数下限",
+      "basis": "HJ 605-2011 第 8.2.2.2 条",
+      "citation": "HJ 605-2011 第 8.2.2.2 条：线性、非线性校准曲线相关系数大于等于 0.99"
+    },
+    "surrogate-recovery-min": {
+      "value": 70,
+      "units": "%",
+      "name": "替代物加标回收率下限",
+      "basis": "HJ 605-2011 第 11.4.4 条",
+      "citation": "HJ 605-2011 第 11.4.4 条：所有样品中替代物加标回收率均应在 70%～130%，否则应重复分析该样品"
+    },
+    "surrogate-recovery-max": {
+      "value": 130,
+      "units": "%",
+      "name": "替代物加标回收率上限",
+      "basis": "HJ 605-2011 第 11.4.4 条",
+      "citation": "HJ 605-2011 第 11.4.4 条：替代物加标回收率均应在 70%～130%"
+    },
+    "blank-spike-recovery-min": {
+      "value": 70,
+      "units": "%",
+      "name": "空白加标样品目标物回收率下限（出现基体效应时）",
+      "basis": "HJ 605-2011 第 11.4.4 条",
+      "citation": "HJ 605-2011 第 11.4.4 条：若重复测定替代物回收率仍不合格，说明样品存在基体效应。此时应分析一个空白加标样品，其中的目标物回收率应在 70%～130%"
+    },
+    "blank-spike-recovery-max": {
+      "value": 130,
+      "units": "%",
+      "name": "空白加标样品目标物回收率上限（出现基体效应时）",
+      "basis": "HJ 605-2011 第 11.4.4 条",
+      "citation": "HJ 605-2011 第 11.4.4 条：空白加标样品中目标物回收率应在 70%～130%"
+    },
+    "parallel-surrogate-deviation-max": {
+      "value": 25,
+      "units": "%",
+      "name": "平行样中替代物相对偏差上限",
+      "basis": "HJ 605-2011 第 11.4.4 条",
+      "citation": "HJ 605-2011 第 11.4.4 条：平行样品中替代物相对偏差应在 25% 以内"
+    },
+    "qc-batch-size": {
+      "value": 20,
+      "units": "个",
+      "name": "平行分析或基体加标分析的批内样品数上限",
+      "basis": "HJ 605-2011 第 11.4.4 条",
+      "citation": "HJ 605-2011 第 11.4.4 条：每批样品（最多 20 个）应选择一个样品进行平行分析或基体加标分析"
+    },
+    "holding-temp-max": {
+      "value": 4,
+      "units": "℃",
+      "name": "样品保存与运输温度上限",
+      "basis": "HJ 605-2011 第 7 章 样品",
+      "citation": "HJ 605-2011 第 7 章：样品采集后应冷藏运输，运回实验室后应尽快分析；实验室内样品存放区域应无有机物干扰，在 4℃ 以下保存"
+    },
+    "extract-holding-days-max": {
+      "value": 14,
+      "units": "d",
+      "name": "提取液最长保存时间",
+      "basis": "HJ 605-2011 第 7 章 注 5",
+      "citation": "HJ 605-2011 第 7 章 注 5：若提取液不能立即分析，可于 4℃ 以下暗处保存，保存时间为 14 d，分析前应恢复至室温"
+    },
+    "parallel-samples-min": {
+      "value": 3,
+      "units": "份",
+      "name": "每份样品至少采集的平行样份数（用于初筛判定）",
+      "basis": "HJ 605-2011 第 7 章 样品",
+      "citation": "HJ 605-2011 第 7 章：所有样品均应至少采集 3 份平行样"
+    }
+  },
+  "qualitative": [
+    {
+      "key": "blank-control-criteria",
+      "text": "空白试验分析结果应满足如下任一条件的最大者：（1）目标物浓度小于方法检出限；（2）目标物浓度小于相关环保标准限值的 5%；（3）目标物浓度小于样品分析结果的 5%。若空白试验未满足以上要求，则应采取措施排除污染并重新分析同批样品。",
+      "citation": "HJ 605-2011 第 11.4.1 条"
+    },
+    {
+      "key": "tenax-degradation-warning",
+      "text": "当分析空白试验样品时发现苯和苯乙烯出现异常高值，表明 Tenax 可能变质失效，需进行确认，必要时需更换捕集管。",
+      "citation": "HJ 605-2011 第 11.4.1 条"
+    },
+    {
+      "key": "transport-and-whole-blank",
+      "text": "每批样品应至少采集一个运输空白和一个全程序空白样品。若怀疑样品受到污染，则需分析该空白样品，其测定结果应满足空白试验的控制指标，否则需查找原因，采取措施排除污染后重新采集样品分析。",
+      "citation": "HJ 605-2011 第 11.4.2 条"
+    },
+    {
+      "key": "instrument-check-interval",
+      "text": "每批样品分析之前或 24 h 之内，需进行仪器性能检查，测定校准确认标准溶液和空白试验样品。",
+      "citation": "HJ 605-2011 第 11.4.3 条"
+    },
+    {
+      "key": "batch-qc-selection",
+      "text": "每批样品（最多 20 个）应选择一个样品进行平行分析或基体加标分析。所有样品中替代物加标回收率均应在 70%～130%，否则应重复分析该样品。若重复测定替代物回收率仍不合格，说明样品存在基体效应。此时应分析一个空白加标样品，其中的目标物回收率应在 70%～130%。若初步判定样品中含有目标物，则须分析一个平行样，平行样品中替代物相对偏差应在 25% 以内。",
+      "citation": "HJ 605-2011 第 11.4.4 条"
+    },
+    {
+      "key": "cross-contamination-check",
+      "text": "在分析完高含量样品后，应分析一个或多个空白试验样品检查交叉污染。",
+      "citation": "HJ 605-2011 第 12.2 条"
+    },
+    {
+      "key": "ketone-purge-temp",
+      "text": "酮类物质的吹扫温度升至 80℃，吹扫捕集效率和回收率可明显提高。",
+      "citation": "HJ 605-2011 第 12.5 条"
+    }
+  ]
+}

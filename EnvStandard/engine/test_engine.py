@@ -56,15 +56,20 @@ def main() -> None:
 
     print("样本 A · 引用正确、结论自洽")
     a = eng.run(load("report-ok.json"))
-    ok("不报任何 error", a["error_count"] == 0, f"error_count={a['error_count']}")
+    ok("状态为 PASS（0 错误 0 无法判定）",
+       a["status"] == "PASS" and a["undetermined_count"] == 0,
+       f"{a['status']} err={a['error_count']} undet={a['undetermined_count']}")
+    ok("可核查程度为 HIGH", a["confidence_band"] == "HIGH", a["confidence_band"])
     ok("苯的限值核对通过（1 = 1）", find(a, "R-LIM-01", "苯") is None)
     ok("四氯化碳的测定下限核对通过（SIM 1.6 < 2.0）", find(a, "R-MDL-01", "四氯化碳") is None)
     ok("保存时限通过（24h < 48h）", find(a, "R-HOLD-01", "整批") is None)
     ok("空白数量通过（1 ≥ 1）", find(a, "R-QC-01", "整批") is None)
     ok("平行样比例通过（2/12=16.7% ≥ 10%）", find(a, "R-QC-02", "整批") is None)
-    f_hj605 = find(a, "R-MDL-01", "苯")
-    ok("HJ 605 未入库 → 报「无法判定」而不是放过",
-       f_hj605 is not None and f_hj605["verdict"] == "UNDETERMINED", str(f_hj605))
+    # 补库前这里报「HJ605-2011 未入库」；补库后应通过。
+    # 苯：HJ 605 测定下限 7.6 μg/kg = 0.0076 mg/kg < GB 36600 第一类用地筛选值 1 mg/kg
+    ok("土壤苯的方法能力核对通过（μg/kg 与 mg/kg 同量纲换算后比较）",
+       find(a, "R-MDL-01", "苯") is None,
+       str(find(a, "R-MDL-01", "苯")))
 
     print("\n样本 B · 植入 6 处错误")
     b = eng.run(load("report-bad.json"))
@@ -130,6 +135,33 @@ def main() -> None:
             ok(f"{name} 不崩且给出状态", r["status"] in ("PASS", "PARTIAL", "FAIL"), str(r)[:80])
         except Exception as e:  # noqa: BLE001
             ok(f"{name} 不崩", False, f"{type(e).__name__}: {e}")
+
+    print("\n单位换算（同量纲必须能比，不可通约必须拒绝）")
+    from check import to_base, norm_units  # noqa: E402
+    ok("mg/kg 与 μg/kg 同量纲", (to_base(1, "mg/kg") or ("",))[0] == (to_base(1000, "μg/kg") or ("",))[0])
+    ok("1 mg/kg = 1000 μg/kg（换算后相等）",
+       abs(to_base(1, "mg/kg")[1] - to_base(1000, "μg/kg")[1]) < 1e-9)
+    ok("mg/L 与 μg/L 同量纲且差 1000 倍",
+       abs(to_base(1, "mg/L")[1] - to_base(1000, "μg/L")[1]) < 1e-9)
+    ok("μ 的两种码位归一化后等价（U+00B5 / U+03BC）",
+       norm_units("\u00b5g/L") == norm_units("\u03bcg/L"))
+    ok("μg/L 与 mg/kg 不可通约（质量/体积 vs 质量/质量）",
+       (to_base(1, "μg/L") or ("a",))[0] != (to_base(1, "mg/kg") or ("b",))[0])
+    ok("未知单位返回 None，不瞎比", to_base(1, "NTU") is None)
+
+    # 端到端：μg/kg 的方法下限 vs mg/kg 的限值，应换算后判定通过
+    cross = eng.run({
+        "items": [{
+            "factor": "苯", "matrix": "soil", "standard": "GB36600-2018",
+            "basis": {"landUse": "first", "kind": "screening"},
+            "statedLimit": 1, "result": 0.5, "conclusion": "达标",
+            "method": {"standard": "HJ605-2011"},
+        }],
+        "qc": {"blankCount": 1, "parallelCount": 2, "sampleCount": 12},
+    })
+    f = find(cross, "R-MDL-01", "苯")
+    ok("HJ 605 测定下限 7.6 μg/kg（=0.0076 mg/kg）< GB 36600 限值 1 mg/kg → 通过",
+       f is None, str(f))
 
     print("\n反向测试：把判据改掉，引擎应当不再报错")
     tampered = json.loads(RULES_PATH.read_text(encoding="utf-8"))
