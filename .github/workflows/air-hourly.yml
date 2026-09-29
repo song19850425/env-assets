@@ -4,7 +4,7 @@
 # 本机定时任务关机即停，因此必须由云端采集；报告同理 —— 本机不跑，公开页就停在旧日期。
 #
 # 部署位置：env-assets/.github/workflows/air-hourly.yml
-# 模块目录：env-assets/08-大气管家/豫北每日一页纸/
+# 模块目录：env-assets/EnvData/08-大气管家/豫北每日一页纸/
 #   采集脚本  scripts/air_collect.py        （小时点位值 + 气象 → data-hourly/*.jsonl）
 #   看板脚本  scripts/report_cloud_hourly.py（读 data-hourly → hourly/index.html）
 #   日报脚本  scripts/report_cloud.py       （→ daily/）
@@ -13,7 +13,7 @@
 #
 # 公开页（GitHub Pages，推送后自动重建）：
 #   https://song19850425.github.io/env-assets/air.html  ← 短链入口
-#   https://song19850425.github.io/env-assets/08-大气管家/豫北每日一页纸/
+#   https://song19850425.github.io/env-assets/EnvData/08-大气管家/豫北每日一页纸/
 #
 # ✅ 跨境可达性已实测确认（2026-09-24）：海外 runner 能正常访问 air.cnemc.cn:18007，
 #    首轮运行 success，4/4 城市、117 条记录、零错误。原"头号未验证风险"已排除。
@@ -48,7 +48,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '08-大气管家/豫北每日一页纸/scripts/**'
+      - 'EnvData/08-大气管家/豫北每日一页纸/scripts/**'
       - '.github/workflows/air-hourly.yml'
 
 permissions:
@@ -76,26 +76,26 @@ jobs:
           python-version: '3.12'
 
       - name: 采集（点位小时值 + 气象）
-        run: python "08-大气管家/豫北每日一页纸/scripts/air_collect.py" "08-大气管家/豫北每日一页纸/data-hourly"
+        run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/air_collect.py" "EnvData/08-大气管家/豫北每日一页纸/data-hourly"
 
       - name: 打印健康状态（首轮用于确认跨境可达性）
         run: |
           echo "=== _health.json ==="
-          cat "08-大气管家/豫北每日一页纸/data-hourly/_health.json"
+          cat "EnvData/08-大气管家/豫北每日一页纸/data-hourly/_health.json"
 
       - name: 压缩历史（保留近 3 天明文，更早的 gzip）
         run: |
-          cd "08-大气管家/豫北每日一页纸/data-hourly"
+          cd "EnvData/08-大气管家/豫北每日一页纸/data-hourly"
           find . -name '[0-9]*.jsonl' -mtime +3 -exec gzip -f {} \;
 
       - name: 生成小时序列看板（读 data-hourly JSONL，Pages 上随采集自动刷新）
-        run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud_hourly.py"
+        run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud_hourly.py"
 
       - name: 生成日报（云端出报，本机关机也能刷新公开页）
-        run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
+        run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
 
       - name: 生成周报 / 月报（周期报告，按"内容不变不落盘"避免 hourly 空提交）
-        run: python "08-大气管家/豫北每日一页纸/scripts/report_cloud_period.py"
+        run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud_period.py"
 
       # if: always() —— 上游任一步失败（如跨境取数抖动）时，本次已采到的数据仍要提交，
       # 否则一小时的数据白采；同时该 run 依旧显示失败，告警不会被静默。
@@ -104,7 +104,7 @@ jobs:
         run: |
           git config user.name  "air-bot"
           git config user.email "air-bot@users.noreply.github.com"
-          git add -A "08-大气管家/豫北每日一页纸"
+          git add -A "EnvData/08-大气管家/豫北每日一页纸"
           if git diff --cached --quiet; then
             echo "无变更，跳过提交"
           else
