@@ -7,3 +7,4 @@ _verify/
 # Python
 __pycache__/
 *.pyc
+EnvStandard/extract/sample/variants/

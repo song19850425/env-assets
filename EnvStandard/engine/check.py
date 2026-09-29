@@ -62,6 +62,18 @@ _UNITS: dict[str, tuple[str, float]] = {
 }
 
 
+def _same_number(a, b) -> bool:
+    """数值比较，不是字符串比较。
+
+    ⚠ 「报告写 1.0，标准是 1」是**相等**，不是抄错。
+    用 str() 比会把 1 vs 1.0、20 vs 20.0 全判成错 —— 端到端测试抓出来的假阳性。
+    """
+    try:
+        return abs(float(a) - float(b)) < 1e-9
+    except (TypeError, ValueError):
+        return str(a).strip() == str(b).strip()
+
+
 def norm_units(u: str) -> str:
     """归一化单位串：μ 两种码位统一、全角转半角、去空白、小写。"""
     if not u:
@@ -150,6 +162,11 @@ class Engine:
     # ---- 单条规则的实现：全部是字面/数值比对 ----
     def _check_standard_exists(self, item):
         sid = item.get("standard")
+        # ⚠ 必须区分两种「取不到」：
+        #   sid 为空  → 抽取层没抽到，是**未定**，不是错（报错会掩盖真正的缺失）
+        #   sid 有值但不在库 → 报告引用了一个无法核对的号，这才是**错**
+        if not sid:
+            return None, "未声明评价依据标准号（抽取层未取到）", None
         if not self.stds.has(sid):
             return False, f"标准 {sid} 不在已入库标准中（无法核对，按未核实处理）", None
         return True, "", None
@@ -162,6 +179,8 @@ class Engine:
 
     def _check_limit_matches(self, item):
         sid, factor = item.get("standard"), item.get("factor")
+        if not sid:
+            return None, "未声明评价依据标准号，无法核对限值", None
         row = self.stds.row(sid, factor)
         if row is None:
             return None, f"{sid} 的表中找不到「{factor}」，无法核对限值", None
@@ -180,12 +199,14 @@ class Engine:
             "标准值": true_val, "报告写的": stated,
             "出处": f"{sid} {src.get('table', '')}（序号 {row.get('seq', '?')}）",
         }
-        if str(true_val) != str(stated):
+        if not _same_number(true_val, stated):
             return False, f"限值抄错：报告写 {stated}，标准是 {true_val}（{label}）", ev
         return True, "", ev
 
     def _check_conclusion_consistent(self, item):
         sid, factor = item.get("standard"), item.get("factor")
+        if not sid:
+            return None, "未声明评价依据标准号，无法核对结论", None
         row = self.stds.row(sid, factor)
         if row is None:
             return None, f"{sid} 的表中找不到「{factor}」，无法核对结论", None
@@ -371,6 +392,12 @@ class Engine:
                 ok, detail, ev = fn(item)
                 if ok is True:
                     continue
+                # ⚠ 把抽取层标出的「为什么取不到」带过来。
+                #   否则引擎只会说「未声明所用方法标准」，而抽取层其实知道原因
+                #   （「报告列出 3 个方法却没说是哪个因子用哪个」）——
+                #   丢掉这条，人工复核就得多查一轮。
+                if ok is None and idx is not None and item.get("pending"):
+                    detail = f'{detail}｜抽取层备注：{"；".join(item["pending"])}'
                 # ⚠ 定位必须带 item 下标：同一因子可能在一份报告里出现多次
                 #   （如土壤苯与地下水苯），只按因子名定位会互相覆盖。
                 if idx is None:

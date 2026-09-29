@@ -1,0 +1,104 @@
+{
+  "_comment": "构造报告的正确答案。抽取层输出要与此比对。",
+  "report": {
+    "id": "DEMO-2026-0929-001",
+    "title": "某某地块土壤及地下水环境质量检测"
+  },
+  "items": [
+    {
+      "factor": "苯",
+      "matrix": "soil",
+      "standard": "GB36600-2018",
+      "basis": {
+        "landUse": "first",
+        "kind": "screening"
+      },
+      "statedLimit": 1.0,
+      "result": 5.2,
+      "conclusion": "超标",
+      "limitText": "1.0（第一类用地筛选值）",
+      "unit": "mg/kg"
+    },
+    {
+      "factor": "四氯化碳",
+      "matrix": "soil",
+      "standard": "GB36600-2018",
+      "basis": {
+        "landUse": "first",
+        "kind": "screening"
+      },
+      "statedLimit": 0.9,
+      "result": 0.4,
+      "conclusion": "达标",
+      "limitText": "0.9（第一类用地筛选值）",
+      "unit": "mg/kg"
+    },
+    {
+      "factor": "砷",
+      "matrix": "soil",
+      "standard": "GB36600-2018",
+      "basis": {
+        "landUse": "first",
+        "kind": "screening"
+      },
+      "statedLimit": 20.0,
+      "result": 18.0,
+      "conclusion": "达标",
+      "limitText": "20（第一类用地筛选值）",
+      "unit": "mg/kg"
+    },
+    {
+      "factor": "铅",
+      "matrix": "soil",
+      "standard": "GB36600-2018",
+      "basis": {
+        "landUse": "first",
+        "kind": "screening"
+      },
+      "statedLimit": 400.0,
+      "result": 510.0,
+      "conclusion": "超标",
+      "limitText": "400（第一类用地筛选值）",
+      "unit": "mg/kg"
+    },
+    {
+      "factor": "四氯化碳",
+      "matrix": "groundwater",
+      "standard": "GBT14848-2017",
+      "basis": {
+        "classLevel": "III"
+      },
+      "statedLimit": 2.0,
+      "result": 1.8,
+      "conclusion": "达标",
+      "limitText": "2.0（Ⅲ类）",
+      "unit": "μg/L"
+    },
+    {
+      "factor": "苯",
+      "matrix": "groundwater",
+      "standard": "GBT14848-2017",
+      "basis": {
+        "classLevel": "III"
+      },
+      "statedLimit": 10.0,
+      "result": 4.6,
+      "conclusion": "达标",
+      "limitText": "10.0（Ⅲ类）",
+      "unit": "μg/L"
+    },
+    {
+      "factor": "三氯乙烯",
+      "matrix": "groundwater",
+      "standard": "GBT14848-2017",
+      "basis": {
+        "classLevel": "III"
+      },
+      "statedLimit": 70.0,
+      "result": 12.5,
+      "conclusion": "达标",
+      "limitText": "70.0（Ⅲ类）",
+      "unit": "μg/L"
+    }
+  ]
+}
