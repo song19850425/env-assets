@@ -15,45 +15,11 @@ git 里堆满无意义的 diff，出了问题也说不清哪一份才是"对"的
 模块内归档叫「0917_to_0923.html」（去前缀）。云端若各按各的写法，
 同一个板块就会攒出两套重复文件。故 archive_name() 也放这里。
 
-目录相对深度**不再写死**：回链层数由 _back_to_root() 按模块实际位置算出来。
-2026-09-28 模块随站点重组下沉到 EnvData/ 下之后，写死的 ../../ 全部指错一层，
-线上 4 个导航页同时出现「返回总目录」死链 —— 层数一旦写死，目录一动就复发。
+目录相对深度固定：模块/<子目录>/index.html 与 模块/index.html，
+回链分别用 ../ 与 ../../（deploy 与云端目录结构相同，故可共用）。
 """
 import os
 import re
-
-_HERE = os.path.dirname(os.path.abspath(__file__))
-
-
-def _find_repo_root(start):
-    """向上找含 .git 的最近目录作为仓库根；AIR_ROOT 可显式覆盖。
-
-    本机与云端都是完整 checkout（云端 workflow 先 actions/checkout），
-    因此 .git 一定在；找不到时退回「模块的上级的上级」，保证不会返回 None。
-    """
-    env = os.environ.get("AIR_ROOT")
-    if env:
-        return os.path.abspath(env)
-    d = os.path.abspath(start)
-    for _ in range(8):
-        if os.path.isdir(os.path.join(d, ".git")):
-            return d
-        parent = os.path.dirname(d)
-        if parent == d:
-            break
-        d = parent
-    return os.path.dirname(os.path.dirname(os.path.dirname(start)))
-
-
-ROOT = _find_repo_root(_HERE)
-
-
-def _back_to_root(target_dir):
-    """从 target_dir 回到仓库根所需的 "../" 串（根目录本身返回 ""）。"""
-    rel = os.path.relpath(ROOT, os.path.abspath(target_dir)).replace("\\", "/")
-    if rel in (".", ""):
-        return ""
-    return "../" * len([p for p in rel.split("/") if p and p != "."])
 
 # 模块内四个板块：(子目录, 本地文件名前缀, 显示名)
 # daily6 = 默认档案日报（郑州/新乡/洛阳/焦作/济源/三门峡，run_daily 默认档案产物，
@@ -168,8 +134,8 @@ def section_index(sub_dir, prefix, label):
 <h1>大气管家 · %s · %s</h1>
 <div class="note">%s。页面由自动化流水线每日自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。</div>
 <ul>%s</ul>
-<p style="margin-top:16px"><a href="../index.html">← 返回模块目录</a> ｜ <a href="%sindex.html">env-assets 总目录</a></p>
-</div></body></html>""" % (CITY_NOTE.get(prefix, "豫北四市"), _CSS.replace("LI_MARGIN", "6px"), CITY_NOTE.get(prefix, "豫北四市"), label, SOURCE_NOTE, items, _back_to_root(sub_dir))
+<p style="margin-top:16px"><a href="../index.html">← 返回模块目录</a> ｜ <a href="../../../index.html">env-assets 总目录</a></p>
+</div></body></html>""" % (CITY_NOTE.get(prefix, "豫北四市"), _CSS.replace("LI_MARGIN", "6px"), CITY_NOTE.get(prefix, "豫北四市"), label, SOURCE_NOTE, items)
     return write_if_changed(os.path.join(sub_dir, "index.html"), html)
 
 
@@ -193,6 +159,6 @@ def module_home(module_dir, sections=SECTIONS):
 <h1>大气管家 · 空气质量报告<br>豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）＋ 默认档案六市（郑州 · 新乡 · 洛阳 · 焦作 · 济源 · 三门峡）</h1>
 <div class="note">%s。全部页面由自动化流水线自动生成，未经人工审定，仅供技术交流参考，不作为行政决策或处罚依据。周期口径：日报=当日实时；周报=最近 7 个完整日；月报=平台开放历史窗口（整月口径随本地数据库积累切换）；小时看板=近 7 天逐时点位值。</div>
 <ul>%s</ul>
-<p style="margin-top:16px"><a href="%sindex.html">← 返回 env-assets 总目录</a></p>
-</div></body></html>""" % (_CSS.replace("LI_MARGIN", "8px"), SOURCE_NOTE, secs, _back_to_root(module_dir))
+<p style="margin-top:16px"><a href="../../index.html">← 返回 env-assets 总目录</a></p>
+</div></body></html>""" % (_CSS.replace("LI_MARGIN", "8px"), SOURCE_NOTE, secs)
     return write_if_changed(os.path.join(module_dir, "index.html"), html)
