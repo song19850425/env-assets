@@ -72,6 +72,7 @@ env-assets/
 ├── assets/                         站内资源（二维码、图标）
 ├── index.html                      首页（搜索 + 分类筛选）
 ├── about.html                      项目大纲 ← 先看这个
+├── business.html                   商务合作（机构授权 / 定制开发 / 培训）
 ├── build_about.py                  about.html 生成器
 ├── LICENSE                         CC BY-NC-SA 4.0
 └── README.md                       本文件

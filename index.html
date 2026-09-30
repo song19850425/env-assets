@@ -113,6 +113,24 @@ kbd{background:#16233c;border:1px solid #23375a;border-radius:4px;
 @media(max-width:640px){.qr-foot{gap:14px;padding:15px 16px;margin-top:34px}
   .qr-foot-img,.qr-foot-ph{width:112px;height:112px}}
 @media(max-width:860px){.pnav{grid-template-columns:1fr}.std-entry{align-items:flex-start;gap:4px 12px}.std-entry-d{flex-basis:100%}}
+/* ---- 首页给机构负责人的一屏 ---- */
+.boss{margin:22px 0 4px;border:1px solid #4a3a1e;border-left:3px solid #d69b38;border-radius:13px;
+  background:linear-gradient(115deg,#1a1509,#0f1a2e);padding:18px 20px}
+.boss-h{font-size:16px;font-weight:700;color:#ffe4a8;margin:0 0 8px}
+.boss-p{font-size:13.5px;color:#c9b48c;margin:0 0 12px;line-height:1.75}
+.boss-p b{color:#f3d394}
+.boss ul{margin:0 0 14px;padding-left:0;list-style:none;max-height:none;overflow:visible}
+.boss li{font-size:13.5px;color:#b3c6dc;margin:7px 0;padding-left:18px;position:relative}
+.boss li:before{content:"▸";position:absolute;left:0;color:#d69b38}
+.boss li b{color:#e0edf8}
+.boss-cta{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.boss-cta a{display:inline-block;font-size:13px;border-radius:9px;padding:8px 16px;
+  text-decoration:none;transition:.15s}
+.boss-cta .primary{background:#173052;border:1px solid #3b8fd6;color:#cfeaff;font-weight:600}
+.boss-cta .primary:hover{background:#1d4070}
+.boss-cta .ghost{border:1px solid #4a3a1e;color:#f3d394}
+.boss-cta .ghost:hover{border-color:#d69b38;color:#ffe4a8}
+@media(max-width:640px){.boss{padding:15px 16px}.boss-cta a{flex:1 1 auto;text-align:center}}
 </style>
 </head>
 <body>
@@ -124,6 +142,24 @@ kbd{background:#16233c;border:1px solid #23375a;border-radius:4px;
 全库纯静态单文件 HTML，无构建步骤、无外部依赖，拷走就能用，断网也能跑。<br>
 库内案例与企业信息<b>均已脱敏</b>；标准引用均标注出处，以官方现行版本为准。<br>
 <span style="display:inline-block;margin-top:9px">第一次来？先看 <a href="about.html" style="color:#7dd3fc;font-weight:600">项目大纲：这个库是做什么的、按什么构架组织 →</a></span>
+</div>
+
+<div class="boss">
+  <div class="boss-h">如果你是检测机构的负责人</div>
+  <p class="boss-p">
+    招一个能独立上岗的检测员，老师傅手把手带三个月起步，还不一定留得住。<br>
+    评审前突击补记录、报告里引用了失效标准被开不符合项 —— 这些坑，每个机构都踩过。
+  </p>
+  <ul>
+    <li><b>新人培训标准化</b>：78 个交互实验 + 仪器操作培训，新人自己点开就能练，不再看老师傅有没有空</li>
+    <li><b>评审有底气</b>：CMA / CNAS 核查表、申报合规核对工具，对着一条条过，缺什么补什么</li>
+    <li><b>标准不出错</b>：24 份标准结构化入库，引用哪条、现行还是废止，查一下就知道</li>
+    <li><b>零运维成本</b>：单文件网页，拷进内网就能用，不用买服务器、不用请人维护</li>
+  </ul>
+  <div class="boss-cta">
+    <a class="primary" href="business.html">查看商务合作 →</a>
+    <a class="ghost" href="business.html#trial">先免费试用 5 件 →</a>
+  </div>
 </div>
 
 
@@ -216,7 +252,7 @@ kbd{background:#16233c;border:1px solid #23375a;border-radius:4px;
 </section>
 <footer>
 共 <b>106</b> 件可交互资产 ｜ 全部为单文件静态 HTML，无需安装任何环境<br>
-个人学习 / 教学 / 内部培训可自由使用；商业使用或集成进产品请联系仓库主人。<br>
+个人学习 / 教学 / 内部培训可自由使用；商业使用或集成进产品见 <a href="business.html">商务合作</a>。<br>
 本库内容不构成法定检测报告，不替代具备资质的第三方检测机构出具的结果。
 </footer>
 </div>
