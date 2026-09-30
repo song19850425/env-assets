@@ -58,7 +58,7 @@ env-assets/
 ├── EnvWork/                       干活 · 帮环境从业人员干活
 │   ├── 03-工具速查/                12 件（含 CMA/CNAS 核查表 4 件）
 │   ├── 04-操作规程/                4 件
-│   ├── 05-案例库/                  3 件 + 可复用模板
+│   ├── 05-案例库/                  3 件（11 个真实脱敏案例 + 商务模板）
 │   └── 07-碳汇与碳市场/            2 件
 ├── EnvStandard/                   查标准 · 环境标准库
 │   ├── index.html                  标准库页面（单文件、离线可用）
@@ -140,7 +140,7 @@ env-assets/
 
 - **在线库**：https://song19850425.github.io/env-assets/
 - **项目大纲**：https://song19850425.github.io/env-assets/about.html
-- **邮箱**：jinghao.song@gmail.com
+- **邮箱**：jinghao.song [at] gmail.com　（把 `[at]` 换成 `@`）
 - **公众号**：见在线页底部的二维码（长按识别）
 
 <!-- CONTACT -->
