@@ -72,6 +72,7 @@ env-assets/
 ├── assets/                         站内资源（二维码、图标）
 ├── index.html                      首页（搜索 + 分类筛选）
 ├── about.html                      项目大纲 ← 先看这个
+├── guide.html                      机构选型指南（按机构类型各挑 10 件）
 ├── business.html                   商务合作（机构授权 / 定制开发 / 培训）
 ├── build_about.py                  about.html 生成器
 ├── LICENSE                         CC BY-NC-SA 4.0
@@ -98,6 +99,9 @@ env-assets/
   `build_about.py` 会拿首页口径与磁盘实际文件数对拍，不一致就拒绝生成 —— 这样数字漂不了。
 - **EnvStandard 的页面是生成的**：改数据或模板后跑 `python EnvStandard/build_envstandard.py`，
   它会校验标准 ID、资产路径、关系引用和 HTTPS 来源。不要手改 `EnvStandard/index.html`。
+- **guide.html 也是生成的**：跑 `python build_guide.py`。它把「三类机构各该先看哪 10 件」
+  写成数据，**生成时逐条校验资产路径存在** —— 资产改名/移动会让生成器直接报错，
+  不会让发给客户的清单里出现死链。
 - **about.html 也是生成的**：跑 `python build_about.py`。大纲里每个环节引用的路径都会校验存在性。
 - **质控训练室也是生成的**：跑 `python build_qc_trainer.py`。它的判据（平行样相对偏差上限、
   试剂空白吸光度上限、声学校准偏差上限……）**全部从 `EnvStandard/data/standards/*.json` 现读**，

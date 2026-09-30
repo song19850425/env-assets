@@ -1,0 +1,312 @@
+# -*- coding: utf-8 -*-
+"""生成 guide.html（机构选型指南 · 先看这几件）。
+
+为什么生成而不是手写
+--------------------
+这一页的每条链接都必须指向**真实存在的资产**。手写清单会随着资产改名/移动而悄悄失效，
+而这一页恰恰是要发给客户的 —— 死链会当场掉价。
+
+所以：清单在这里是**数据**，生成时逐条校验路径存在，不存在就拒绝生成。
+
+跑法：python build_guide.py
+"""
+
+from __future__ import annotations
+
+import io
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+OUTPUT = ROOT / "guide.html"
+
+BASE = "https://song19850425.github.io/env-assets/"
+
+# (名称, 相对路径, 一句「解决什么」)
+LISTS = [
+    {
+        "key": "a", "tab": "成熟 CMA 机构", "color": "#38bdf8",
+        "who": "20~80 人、有独立质量室、有 LIMS。已经在为软件花钱，最可能是客户。",
+        "items": [
+            ("CMA 现场核查总表（2023 版）", "EnvWork/03-工具速查/CMA-CNAS核查表/00-CMA现场核查总表（2023版）.html",
+             "评审前自查对着过一遍，缺什么补什么"),
+            ("CNAS-CL01 现场核查总表", "EnvWork/03-工具速查/CMA-CNAS核查表/01-CNAS-CL01现场核查总表.html",
+             "走 CNAS 认可的话，用这份"),
+            ("CMA 与 CNAS 双体系对照表", "EnvWork/03-工具速查/CMA-CNAS核查表/02-CMA与CNAS双体系对照表.html",
+             "两套体系条款对应关系，不用来回翻"),
+            ("角色化核查清单", "EnvWork/03-工具速查/CMA-CNAS核查表/03-角色化核查清单.html",
+             "按岗位分：技术负责人查什么、质量负责人查什么"),
+            ("质量控制训练室", "EnvLab/03-质量控制/质量控制训练室.html",
+             "四关判读训练：平行样 / 空白 / 校准 / 异常处置，判据逐条带标准出处"),
+            ("EnvStandard 标准库", "EnvStandard/index.html",
+             "24 份标准结构化入库，333 项检测因子、466 项规定参数，逐条可溯源"),
+            ("监测方案智能生成器", "EnvWork/03-工具速查/监测方案智能生成器.html",
+             "按土壤 / 地下水 / 废水 / 废气 / 噪声场景出方案"),
+            ("第三方检测机构合规管理 · 操作规范", "EnvWork/04-操作规程/26-第三方检测机构合规管理-操作规范.html",
+             "机构自身合规的作业规范样板"),
+            ("水质评价标准速查表", "EnvWork/03-工具速查/水质评价标准速查表.html",
+             "写报告时对着查，不用翻标准原文"),
+            ("检测因子实验室交互方案", "EnvWork/03-工具速查/检测因子实验室交互方案.html",
+             "一批样品从接样到出报告的完整流程设计"),
+        ],
+    },
+    {
+        "key": "b", "tab": "新筹建 / 小机构", "color": "#fbbf24",
+        "who": "20 人以下、体系在建或刚拿证。最缺培训，痛点最痛。",
+        "items": [
+            ("仪器操作培训（6 台，逐步走查）", "EnvLab/02-仪器培训/操作规程页/",
+             "AAS / 紫外 / 天平 / 培养箱 / 生物安全柜 / 大气采样器，新人可以自己先点一遍"),
+            ("COD 检测实验 · 从水样到报告", "EnvLab/01-交互实验/02-检测实验/COD检测实验-从水样到报告.html",
+             "一条完整的链路：从拿到水样到出报告，最适合新人建立整体感"),
+            ("水质四项（COD / 氨氮 / 总磷 / 总氮）", "EnvLab/01-交互实验/02-检测实验/水质四项-COD氨氮总磷总氮实验.html",
+             "四项常规指标一次走完"),
+            ("土壤采样布点", "EnvLab/01-交互实验/01-采样布点/土壤采样布点-交互版.html",
+             "布点方案怎么定，拖一拖就看出来"),
+            ("地表水采样布点", "EnvLab/01-交互实验/01-采样布点/地表水采样布点-交互版.html",
+             "断面怎么选、点位怎么排"),
+            ("固定源废气采样", "EnvLab/01-交互实验/01-采样布点/固定源废气采样-交互版.html",
+             "废气采样最容易在细节上出错"),
+            ("水和废水采样填表向导", "EnvWork/03-工具速查/采样字段模板/水和废水采样填表向导.html",
+             "原始记录表怎么填，一步步来"),
+            ("土壤地下水初步调查 · 操作规范", "EnvWork/04-操作规程/02-土壤地下水初步调查-操作规范.html",
+             "拿到一个土壤调查项目，从哪开始"),
+            ("质量控制训练室", "EnvLab/03-质量控制/质量控制训练室.html",
+             "质控不是补流程，是报告能不能签字的判据"),
+            ("CMA 现场核查总表（2023 版）", "EnvWork/03-工具速查/CMA-CNAS核查表/00-CMA现场核查总表（2023版）.html",
+             "即使还没到评审，先看看将来要过哪些关"),
+        ],
+    },
+    {
+        "key": "c", "tab": "高校 / 培训机构", "color": "#8b5cf6",
+        "who": "环境专业实训课、机构内训。决策快，适合做案例。",
+        "items": [
+            ("78 个交互实验（按主题筛选）", "index.html#envlab",
+             "首页按「交互式实验」筛，采样布点 / 检测实验 / 仪器分析 / 环境评价 / 修复 / 大气 / 执法"),
+            ("环境质量综合体检中心", "EnvLab/01-交互实验/04-环境评价/环境质量综合体检中心.html",
+             "把水气土声几个维度合起来评价，适合做课程大作业"),
+            ("「读懂」系列 7 件", "EnvLab/01-交互实验/04-环境评价/",
+             "读懂一个厂 / 一条河 / 一个湖 / 一场雨 / 一块地 / 一片天，一节一个主题"),
+            ("仪器操作培训（6 台）", "EnvLab/02-仪器培训/操作规程页/",
+             "实训课前先让学生自己点一遍，课上省一半时间"),
+            ("检测实验（12 个完整流程）", "EnvLab/01-交互实验/02-检测实验/",
+             "从 COD 到 ICP-MS、GC-MS，都有可操作页面"),
+            ("质量控制训练室", "EnvLab/03-质量控制/质量控制训练室.html",
+             "四关判读训练，自带计分 —— 可以直接当课后作业"),
+            ("EnvStandard 标准库", "EnvStandard/index.html",
+             "让学生自己查标准、对条款，比背讲义有用"),
+            ("案例库（11 个真实脱敏案例）", "EnvWork/05-案例库/",
+             "每个案例都是真实踩过的坑，带量化红线"),
+            ("实验分组任务单（可下发各实验组）", "EnvWork/03-工具速查/实验分组任务单（可下发各实验组）.html",
+             "一次实验怎么分组、各组做什么，直接打印下发"),
+            ("项目大纲（这个库按什么组织）", "about.html",
+             "按第三方检测实验室的主体构架组织的 11 个环节"),
+        ],
+    },
+]
+
+HTML = r'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>机构选型指南 · 先看这 10 件 · 环境检测数字资产库</title>
+<meta name="description" content="给第三方检测机构、新筹建实验室、高校实训的选型指南：从 106 件资产里各挑 10 件，按机构类型排好优先级，点开即用。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:dark}
+body{margin:0;background:#0b1220;color:#e6edf7;
+  font-family:"Noto Sans SC","Microsoft YaHei",-apple-system,sans-serif;line-height:1.75}
+a{color:#7dd3fc;text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:980px;margin:0 auto;padding:40px 22px 70px}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:#69c5f0;text-transform:uppercase;font-weight:700}
+h1{font-size:29px;line-height:1.3;margin:6px 0 10px}
+.lede{font-size:15.5px;color:#a9bcd8;margin:0 0 6px;max-width:780px}
+.lede b{color:#e6f5ff}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;gap:6px;border:1px solid #23375a;border-radius:9px;
+  padding:7px 13px;font-size:12.5px;color:#9db3d1;background:#0f1a2e;white-space:nowrap}
+.back:hover{border-color:#4aa8d8;color:#cfeaff;text-decoration:none}
+.note-box{border:1px solid #24415e;background:linear-gradient(115deg,#0e2137,#0b182b);
+  border-radius:13px;padding:15px 18px;color:#aec3dc;font-size:13px;margin:20px 0 6px}
+.note-box strong{color:#e7f5ff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 4px}
+.tab{border:1px solid #23375a;background:#0f1a2e;color:#9db3d1;border-radius:10px;
+  padding:9px 17px;font:inherit;font-size:13.5px;cursor:pointer;transition:.15s}
+.tab:hover{border-color:#4aa8d8;color:#cfeaff}
+.tab.on{background:var(--tc,#173052);border-color:var(--tc2,#3b8fd6);color:#e6f5ff;font-weight:600}
+.panel{display:none}.panel.on{display:block}
+.who{border-left:3px solid var(--pc,#38bdf8);background:#0d1b2d;border-radius:0 10px 10px 0;
+  padding:11px 15px;font-size:13.5px;color:#9fb4cf;margin:14px 0 6px}
+.who b{color:#dbe8f5}
+ol.items{list-style:none;counter-reset:i;padding:0;margin:12px 0}
+ol.items li{counter-increment:i;position:relative;padding:12px 0 12px 44px;
+  border-bottom:1px solid #16283e}
+ol.items li:last-child{border-bottom:none}
+ol.items li:before{content:counter(i);position:absolute;left:0;top:12px;
+  width:26px;height:26px;border-radius:50%;background:#0c263b;border:1px solid #2b5979;
+  color:#8fd9f6;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.items .nm{font-size:14.5px;font-weight:600;color:#e6f5ff}
+ol.items .nm a{color:#e6f5ff}
+ol.items .nm a:hover{color:#7dd3fc}
+ol.items .why{font-size:13px;color:#8ba0bd;margin-top:3px}
+.copy{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0 0}
+.copy button{border:1px solid #3b8fd6;background:#173052;color:#cfeaff;border-radius:9px;
+  padding:8px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.copy button:hover{background:#1d4070}
+.copy .tip{font-size:12px;color:#6e88a5}
+.qr-foot{display:flex;align-items:center;gap:20px;margin-top:34px;padding:18px 20px;
+  border:1px solid #1b3550;border-radius:13px;background:#0d1b2d;flex-wrap:wrap}
+.qr-foot-img{width:132px;height:132px;display:block;border-radius:10px;background:#fff;flex:0 0 auto}
+.qr-foot-ph{display:none;width:132px;height:132px;border:1px dashed #2c4a66;border-radius:10px;
+  align-items:center;justify-content:center;text-align:center;font-size:12px;color:#6e88a5;flex:0 0 auto}
+.qr-foot-txt{min-width:220px;flex:1 1 300px}
+.qr-foot-t{font-size:15px;font-weight:700;color:#e6f5ff;margin-bottom:5px}
+.qr-foot-d{font-size:12.5px;color:#9fb4cf;line-height:1.7;max-width:560px}
+.qr-foot-n{font-size:11.5px;color:#6e88a5;margin-top:6px}
+footer{margin-top:24px;border-top:1px solid #1b3550;padding-top:15px;color:#66819e;font-size:12px}
+@media(max-width:640px){
+  .wrap{padding:26px 15px 55px}h1{font-size:23px}.lede{font-size:14.5px}
+  .tab{padding:8px 13px;font-size:13px}
+  ol.items li{padding-left:36px}
+  .qr-foot{gap:14px;padding:15px 16px}.qr-foot-img,.qr-foot-ph{width:112px;height:112px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <div class="eyebrow">Guide / 选型指南</div>
+      <h1>106 件里，你这几件最该先看</h1>
+    </div>
+    <a class="back" href="index.html">← 返回数字资产库</a>
+  </div>
+
+  <p class="lede">
+    全部 106 件都是公开的，但<b>一次发全部等于没发</b> —— 没人会自己从 106 件里挑。
+  </p>
+  <p class="lede" style="font-size:14px;color:#8ba0bd">
+    所以按机构类型各挑了 10 件，<b>按优先级排好</b>。你是哪一类，点上面那个标签。
+  </p>
+
+  <div class="note-box">
+    <strong>怎么用：</strong>选一个标签 → 从头往下点 → 哪件点开不知道干嘛，记下来告诉我。
+    我要的正是这个 —— <strong>哪几件是真有用的，哪几件是我自己以为有用</strong>。
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  __PANELS__
+
+  <div class="copy">
+    <button id="copyBtn" type="button">复制本页链接</button>
+    <span class="tip">发给同事 / 发到群里，别人打开就能看</span>
+  </div>
+
+  <section class="qr-foot" aria-label="关注公众号">
+    <img class="qr-foot-img" src="assets/公众号二维码.jpg" alt="公众号二维码"
+         width="132" height="132" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="qr-foot-ph">二维码<br>待放置</div>
+    <div class="qr-foot-txt">
+      <div class="qr-foot-t">环境检测 · 数字资产库</div>
+      <div class="qr-foot-d">长按识别二维码关注公众号，获取标准速查表、交互实验与工具更新。</div>
+      <div class="qr-foot-n">交流 / 定制课程 / 工具合作，也可在公众号留言。</div>
+    </div>
+  </section>
+
+  <footer>
+    本页清单由 <code>build_guide.py</code> 生成，每条链接在生成时校验文件存在。<br>
+    库内内容不构成法定检测报告，不替代具备资质的第三方检测机构出具的结果。
+  </footer>
+</div>
+
+<script>
+var URLS = __URLS__;
+var tabs = document.getElementById('tabs');
+Object.keys(URLS).forEach(function(k, i){
+  var b = document.createElement('button');
+  b.className = 'tab' + (i === 0 ? ' on' : '');
+  b.textContent = URLS[k].tab;
+  b.dataset.k = k;
+  b.style.setProperty('--tc', URLS[k].color + '22');
+  b.style.setProperty('--tc2', URLS[k].color);
+  tabs.appendChild(b);
+});
+tabs.addEventListener('click', function(e){
+  var b = e.target.closest('.tab'); if (!b) return;
+  tabs.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(function(p){
+    p.classList.toggle('on', p.dataset.k === b.dataset.k);
+  });
+});
+document.getElementById('copyBtn').addEventListener('click', function(){
+  var btn = this;
+  var url = location.href;
+  var done = function(){ btn.textContent = '已复制 ✓'; setTimeout(function(){ btn.textContent = '复制本页链接'; }, 1800); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done, function(){ window.prompt('手动复制：', url); });
+  } else { window.prompt('手动复制：', url); }
+});
+</script>
+</body>
+</html>
+'''
+
+
+def esc(s: str) -> str:
+    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+             .replace('"', "&quot;"))
+
+
+def main() -> None:
+    # ---- 校验每条路径 ----
+    bad = []
+    for g in LISTS:
+        for name, path, _why in g["items"]:
+            p = path.split("#")[0]
+            if not (ROOT / p).exists():
+                bad.append(f"{g['tab']} → {name} → {path}")
+    if bad:
+        print("[guide] ★ 清单里有不存在的路径：")
+        for b in bad:
+            print("        ", b)
+        raise SystemExit("[guide] 选型指南必须指向真实资产，请先修正清单")
+
+    # ---- 渲染 ----
+    panels, urls = [], {}
+    for i, g in enumerate(LISTS):
+        urls[g["key"]] = {"tab": g["tab"], "color": g["color"]}
+        rows = []
+        for name, path, why in g["items"]:
+            href = BASE + path
+            rows.append(
+                f'<li><div class="nm"><a href="{esc(href)}" target="_blank" rel="noopener">'
+                f'{esc(name)}</a></div><div class="why">{esc(why)}</div></li>'
+            )
+        panels.append(
+            f'<div class="panel{" on" if i == 0 else ""}" data-k="{g["key"]}" '
+            f'style="--pc:{g["color"]}">'
+            f'<p class="who"><b>适合谁：</b>{esc(g["who"])}</p>'
+            f'<ol class="items">{"".join(rows)}</ol></div>'
+        )
+
+    html = HTML.replace("__PANELS__", "".join(panels))
+    html = html.replace("__URLS__", __import__("json").dumps(urls, ensure_ascii=False,
+                                                          separators=(",", ":")))
+    left = re.findall(r"__[A-Z_]+__", html)
+    if left:
+        raise SystemExit(f"[guide] 模板还有未替换的占位符：{set(left)}")
+    if "**" in html:
+        raise SystemExit("[guide] 生成物里有 Markdown 粗体（**），HTML 不会渲染，请改用 <b>")
+
+    OUTPUT.write_text(html, encoding="utf-8", newline="\n")
+    total = sum(len(g["items"]) for g in LISTS)
+    print(f"[guide] {len(LISTS)} 类机构 · {total} 条清单，路径全部校验通过")
+    print(f"[guide] 输出 {OUTPUT}  {len(html.encode('utf-8'))} bytes")
+
+
+if __name__ == "__main__":
+    main()

@@ -650,6 +650,8 @@ def render(data: dict) -> str:
                 ' <span class="n">站内资源</span>')
     tree.append('<br>├─ <span class="l2"><a href="index.html">index.html</a></span>'
                 ' <span class="n">首页（搜索 + 分类）</span>')
+    tree.append('<br>├─ <span class="l2"><a href="guide.html">guide.html</a></span>'
+                ' <span class="n">选型指南（按机构类型挑 10 件）</span>')
     tree.append('<br>├─ <span class="l2"><a href="business.html">business.html</a></span>'
                 ' <span class="n">商务合作</span>')
     tree.append('<br>└─ <span class="l2"><a href="about.html">about.html</a></span>'
