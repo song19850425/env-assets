@@ -1,5 +1,5 @@
 {
- "last_run": "2026-10-01 10:05:46",
+ "last_run": "2026-10-01 10:15:40",
  "tz": "Asia/Shanghai",
  "ok": true,
  "reports": {
@@ -16,21 +16,21 @@
    "review": true,
    "forecast_cities": 4,
    "neighbor_cities": 6,
-   "at": "2026-10-01 10:04:49"
+   "at": "2026-10-01 10:15:21"
   },
   "weekly": {
    "ok": true,
    "period": "2026-09-24 ~ 2026-09-30",
    "file": "0924_to_0930.html",
    "written": 0,
-   "at": "2026-10-01 10:05:46"
+   "at": "2026-10-01 10:15:40"
   },
   "monthly": {
    "ok": true,
    "period": "2026-09-17 ~ 2026-09-30",
    "file": "2026-10.html",
    "written": 0,
-   "at": "2026-10-01 10:05:46"
+   "at": "2026-10-01 10:15:40"
   },
   "hourly": {
    "ok": true,
@@ -44,7 +44,7 @@
     "2026-10-01T09:00"
    ],
    "written": true,
-   "at": "2026-10-01 10:04:39"
+   "at": "2026-10-01 10:15:10"
   },
   "yuxi": {
    "ok": true,
@@ -59,7 +59,21 @@
    "review": true,
    "forecast_cities": 6,
    "neighbor_cities": 5,
-   "at": "2026-10-01 10:05:42"
+   "at": "2026-10-01 10:15:33"
+  },
+  "hourly-yuxi": {
+   "ok": true,
+   "days": 7,
+   "files": 7,
+   "stations": 306,
+   "weather": 288,
+   "hours": 39,
+   "window": [
+    "2026-09-25T02:00",
+    "2026-10-01T09:00"
+   ],
+   "written": true,
+   "at": "2026-10-01 10:15:10"
   }
  },
  "stale": [],
