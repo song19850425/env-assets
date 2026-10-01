@@ -135,6 +135,33 @@ def _num(v, dec=0):
         return "—"
 
 
+# ── 区域自称（"豫北四市" / "豫西六市"）────────────────────────────────
+# 同一份渲染器服务两套档案（豫北日报模块 + 豫西日报板块），页面自称一律现算，不写死。
+# 为什么用模块级当前值而不是逐函数传参：这些字符串散布在 6 个绘图函数里，
+# 逐个传参要改十几处调用点；本模块是"调一次渲染一张静态页"的纯函数集合，
+# 单进程内不存在并发，模块级最省事也最不容易漏掉（2026-10-01 加豫西看板时改）。
+_REGION = "本地各市"
+_CN_NUM = {2: "两", 3: "三", 4: "四", 5: "五", 6: "六", 7: "七", 8: "八", 9: "九", 10: "十"}
+
+
+def region_label():
+    """当前页面的区域自称，例：豫北四市 / 豫西六市（由 render_hourly 入口按档案设定）"""
+    return _REGION
+
+
+def _set_region(cities, region_name=""):
+    global _REGION
+    n = len(cities or [])
+    _REGION = "%s%s市" % (region_name or "", _CN_NUM.get(n, str(n)))
+    return _REGION
+
+
+def _city_short(city):
+    """'三门峡市' → '三门峡'（页眉城市列用全称，避免 [:2] 写成"三门"）"""
+    c = str(city or "")
+    return c[:-1] if c.endswith("市") else c
+
+
 # ================================================================ 折线
 def line_chart(series, xs, y_unit, height=240, width=980, note="",
                bands=False, ref_lines=None, ymin=0.0):
@@ -270,7 +297,7 @@ def situation_map(points, width=980, height=470, note=""):
     """区域态势图：按真实经纬度定位的相对位置**示意图**（不画行政边界）。
 
     points: [dict(name, lat, lon, aqi, wd, ws, kind, tp)]
-            kind='main' 本地四市（气泡大、带风矢）；kind='neighbor' 上风向邻居（气泡小、淡）。
+            kind='main' 本地城市（气泡大、带风矢）；kind='neighbor' 上风向邻居（气泡小、淡）。
     投影：等距圆柱 + 纬度余弦校正（保证东西向不被拉扁），按包围盒等比缩放并居中。
     """
     pts = [p for p in points if p.get("lat") is not None and p.get("lon") is not None]
@@ -397,11 +424,11 @@ def situation_map(points, width=980, height=470, note=""):
     g.append("</svg>")
 
     lg = ["<div class='legend' style='margin-top:8px'>"
-          "<b>实心大泡</b>＝豫北四市（泡内数字＝该市最近时点实时 AQI，各市时点可能不同；"
+          "<b>实心大泡</b>＝%s（泡内数字＝该市最近时点实时 AQI，各市时点可能不同；"
           "深蓝箭头＝风矢，指向<b>下游</b>、长度随风速增大），"
           "箭头与该市 AQI 取<b>同一小时</b>，<b>悬停</b>可见时点、等级与风速风向；"
           "<b>虚线小泡</b>＝上风向邻居城市（若本窗口已采到；仅显示其当前 AQI，"
-          "暂未采其气象，故无风矢）。</div>"]
+          "暂未采其气象，故无风矢）。</div>" % region_label()]
     lg.append("<div class='legend' style='margin-top:6px'>"
               "<b>AQI 等级</b>："
               + " ".join("<span style='display:inline-block;margin-right:10px;font-size:12.2px;color:#41504a'>"
@@ -455,9 +482,9 @@ def aqi_matrix(series_val, xs, cities):
     return ("<div class='tscroll'><table class='mxt'><thead><tr>"
             "<th style='padding:2px 6px;font-size:10.5px'>城市 \\ 时</th>" + hdr +
             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table></div>"
-            "<div class='legend'>格色＝AQI 等级（同上方色阶），格内＝该时点四市<b>点位平均</b> AQI"
+            "<div class='legend'>格色＝AQI 等级（同上方色阶），格内＝该时点%s<b>点位平均</b> AQI"
             "（HJ 663-2013）；<span style='color:#c98b8b'>淡红「·」＝该小时未采到</span>。"
-            "鼠标悬停任一格可看完整信息。</div>")
+            "鼠标悬停任一格可看完整信息。</div>" % region_label())
 
 
 # ================================================================ 昼夜切换（小时廓线）
@@ -526,15 +553,16 @@ def hour_profile(series, note=""):
         "margin-right:5px;border-radius:2px'></i>%s</span>" % (c, _esc(nm))
         for nm, c, _ in series)
     return ("<div class='tscroll'>" + "".join(g) + "</div><div class='legend'>" + legend
-            + " <span class='sub2'>横轴＝钟点（0–23 时），纵轴＝四市点位平均浓度；"
-            "同一横坐标下两条线的交叉即「夜间颗粒物 / 午后臭氧」的昼夜切换。" + note + "</span></div>")
+            + " <span class='sub2'>横轴＝钟点（0–23 时），纵轴＝%s点位平均浓度；"
+            "同一横坐标下两条线的交叉即「夜间颗粒物 / 午后臭氧」的昼夜切换。" % region_label()
+            + note + "</span></div>")
 
 
 # ================================================================ 区域分化度
 def divergence_chart(series_val, xs, cities, height=210, width=980):
-    """四市 AQI 极差比 = 该时点最高市 AQI / 最低市 AQI。
+    """区域 AQI 极差比 = 该时点最高市 AQI / 最低市 AQI。
 
-    项目内既有经验阈值：≤1.25 → 区域同步型（四市趋同，倾向区域传输/大范围过程）；
+    项目内既有经验阈值：≤1.25 → 区域同步型（各市趋同，倾向区域传输/大范围过程）；
     ≥1.50 → 分化明显（倾向局地排放、单城特征）。只在该时点≥3 市有值时才计算。
     """
     pts = []
@@ -604,13 +632,13 @@ def divergence_chart(series_val, xs, cities, height=210, width=980):
     med = vals_sorted[len(vals_sorted) // 2]
     return ("<div class='tscroll'>" + "".join(g) + "</div>"
             "<div class='legend'>曲线＝该时点<b>最高市 AQI ÷ 最低市 AQI</b>（≥3 市有值才计）。"
-            "比值越接近 1 说明四市越趋同。本窗口 %d 个有效时点："
+            "比值越接近 1 说明%s越趋同。本窗口 %d 个有效时点："
             "<b>中位数 %.2f</b>，其中 <b>≤1.25（同步型）%d 个</b>、"
             "<b>≥1.50（分化型）%d 个</b>。"
-            " <span class='sub2'>⚠️ 该比值是<b>相对指标</b>：四市 AQI 都很低时，"
+            " <span class='sub2'>⚠️ 该比值是<b>相对指标</b>：%s AQI 都很低时，"
             "分母小会把比值放大（图上个别尖峰即此因），故应看<b>中位数与整体形态</b>，"
             "不可拿单点比值下结论。阈值为项目内经验值，非国标。</span></div>"
-            % (len(pts), med, sync_n, div_n))
+            % (region_label(), len(pts), med, sync_n, div_n, region_label()))
 
 
 # ================================================================ 首要污染物构成
@@ -726,11 +754,11 @@ def _bearing(lat1, lon1, lat2, lon2):
 
 
 def wind_rose(samples, coords, neighbors, width=980, height=452):
-    """samples: [(wd, ws)] 逐时风记录（四市汇总）。
+    """samples: [(wd, ws)] 逐时风记录（本档案各市汇总）。
 
     玫瑰方位＝**风的来向**（wd 的定义就是"风从哪个方位吹来"）；
     径向长度＝该来向出现频率；分段色＝本项目风速分级（静稳/一般/有利）。
-    环外蓝色弧段＝各上风向邻居相对本地四市的方位角范围（由真实经纬度算得），
+    环外蓝色弧段＝各上风向邻居相对本地城市的方位角范围（由真实经纬度算得），
     与玫瑰叠看，就能读出"空气从哪个上风向邻居来的频率有多高、且是不是静稳"。
     """
     SEC, HW = 16, 10.4
@@ -802,7 +830,7 @@ def wind_rose(samples, coords, neighbors, width=980, height=452):
                  " text-anchor='middle'>%s</text>" % (x, y + 4, _DIR16[i]))
 
     # 上风向邻居方位角弧段（取最小覆盖弧，避免跨 0° 时画成整圈）
-    # 标签分层：豫北六邻居的方位角高度集中（北—东北一簇、西—西北一簇），
+    # 标签分层：上风向邻居的方位角高度集中（北—东北一簇、西—西北一簇），
     # 同位半径平铺会直接叠字（实测"邢台""邯郸"糊成一团），故按角距贪心分层。
     hats = []
     for nm, ll in (neighbors or {}).items():
@@ -822,8 +850,9 @@ def wind_rose(samples, coords, neighbors, width=980, height=452):
         large = 1 if span > 180 else 0
         g.append("<path d='M%.1f,%.1f A%.1f,%.1f 0 %d 1 %.1f,%.1f' fill='none' stroke='#41678a'"
                  " stroke-width='4' stroke-linecap='round' stroke-opacity='0.5'>"
-                 "<title>%s：相对本地四市的方位角 %.0f°–%.0f°</title></path>"
-                 % (x1, y1, R + 7, R + 7, large, x2, y2, _esc(nm), lo, (lo + span) % 360))
+                 "<title>%s：相对%s的方位角 %.0f°–%.0f°</title></path>"
+                 % (x1, y1, R + 7, R + 7, large, x2, y2, _esc(nm), region_label(), lo,
+                    (lo + span) % 360))
         hats.append(((lo + span / 2.0) % 360.0, nm))
     hats.sort()
     levels = []
@@ -853,7 +882,7 @@ def wind_rose(samples, coords, neighbors, width=980, height=452):
         for nm, _hi, col in WIND_CLASSES)
     return ("<div class='tscroll'>" + "".join(g) + "</div><div class='legend'>" + legend
             + " <span class='sub2'>方位＝<b>风的来向</b>；径向＝出现频率（共 %d 条逐时记录）；"
-            "蓝色弧段＝各上风向邻居相对本地四市的方位角范围。</span></div>"
+            "蓝色弧段＝各上风向邻居相对%s的方位角范围。</span></div>"
             "<div class='legend'>本窗口主导来向：<b>%s</b>；"
             "其中<b>静稳（&lt;2.0 m/s）占 %.0f%%</b> —— 该比例越高，"
             "越说明本窗口的污染累积发生在不利于扩散的条件下。"
@@ -861,7 +890,7 @@ def wind_rose(samples, coords, neighbors, width=980, height=452):
             "（非国控站实测、非点位尺度），模式存在系统偏差："
             "<b>只读频率与相对大小，不得引用绝对风速或作合规判据</b>。"
             "引用任何风数字都必须同时交代风向、地表粗糙度、采样高度与数据源。</span></div>"
-            % (tot, top_txt, 100 * calm))
+            % (tot, region_label(), top_txt, 100 * calm))
 
 
 # ================================================================ 覆盖网格
@@ -901,17 +930,124 @@ def coverage_grid(tp_counts, city_n):
             "<th style='padding:3px 7px;font-size:11px'>日期 \\ 时</th>" + hdr +
             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table></div>"
             "<div class='legend'>深绿格＝该小时已采，格内数字为该小时入库的<b>点位记录条数</b>"
-            "（含四市国控点；采集到邻居城市时会更多）；<span style='color:#c98b8b'>淡红「·」＝该小时完全缺失</span>，"
-            "平台无小时级历史接口，<b>缺失的小时永久无法回补</b>。</div>")
+            "（含%s国控点；采集到邻居城市时会更多）；<span style='color:#c98b8b'>淡红「·」＝该小时完全缺失</span>，"
+            "平台无小时级历史接口，<b>缺失的小时永久无法回补</b>。</div>" % region_label())
+
+
+# ================================================================ 当前实况（逐市快照）
+def realtime_panel(series_val, wval, cities, pri_map=None, q_map=None):
+    """当前实况：各市**各自最近一个有时点的值**聚成一张快照卡，摆在页首。
+
+    为什么不是"取全区域同一个时点"：采集掉线是常态，各市最后有值的时点常常不同；
+    硬取同一时点会把掉线城市整卡变成空白，反而看不出"它现在怎么样"。
+    折中做法是每张卡**自己写明时点**，不假装全区域同一时刻 —— 读数的人一眼能看到
+    「郑州 09:00 / 洛阳 08:00」这种差异本身就是重要信息。
+
+    差值只在该市上一个时点相邻（≤2 小时）时才给，否则宁可不给（跨大缺口算差值＝编数）。
+    """
+    pri_map = pri_map or {}
+    q_map = q_map or {}
+
+    def av(store, city, key, tp):
+        if not tp:
+            return None
+        return (store.get((city, key)) or {}).get(tp)
+
+    items = []
+    for c in cities:
+        d = series_val.get((c, "aqi")) or {}
+        tp = max(d) if d else None
+        items.append((c, tp, (d.get(tp) if tp else None)))
+    have = [it for it in items if it[2] is not None]
+    if not have:
+        return "<p class='sub2'>暂无 AQI 数据。</p>"
+
+    hi_c, hi_tp, hi_v = max(have, key=lambda x: x[2])
+    lo_c, _lo_tp, lo_v = min(have, key=lambda x: x[2])
+    ratio = (hi_v / lo_v) if lo_v else None
+    over = sorted([(c, v) for c, _tp, v in have if v > 100], key=lambda x: -x[1])
+
+    def card_live(c, tp, v):
+        if v is None:
+            return ("<div class='lc'><div class='lb'><b>%s</b><span>本窗口无数据</span></div>"
+                    "<div class='lw'>该市在本窗口未采到 AQI（平台掉线或尚未开始采集）。</div></div>"
+                    % _esc(_city_short(c)))
+        nm, col = grade(v)
+        d = series_val.get((c, "aqi")) or {}
+        prev = [k for k in sorted(d) if k < tp]
+        delta = ""
+        if prev:
+            ptp = prev[-1]
+            gap = (_to_dt(tp) - _to_dt(ptp)).total_seconds() / 3600.0
+            if gap <= 2.0:
+                dv = v - d[ptp]
+                if abs(dv) < 0.5:
+                    seg = "<span style='color:#71807a'>→ 持平</span>"
+                else:
+                    seg = ("<span style='color:%s;font-weight:600'>%s %.0f</span>"
+                           % ("#c0392b" if dv > 0 else "#2f6b4f",
+                              "↑" if dv > 0 else "↓", abs(dv)))
+                delta = seg + "<i style='font-style:normal;color:#a9b6ae'> vs %s</i>" % _hh(ptp)
+            else:
+                delta = "<span style='color:#a9b6ae'>上一点 %s（间隔太大，不给差值）</span>" % _hh(ptp)
+        ws = av(wval, c, "wind_speed", tp)
+        wd = av(wval, c, "wind_dir", tp)
+        if wd is not None and ws is not None:
+            wind = "%s（%s°）%s m/s" % (_wd_cn(wd), _num(wd), _num(ws, 1))
+        elif ws is not None:
+            wind = "%s m/s" % _num(ws, 1)
+        else:
+            wind = "未采到"
+        pri = str(pri_map.get((c, tp)) or "").strip()
+        if not pri:
+            # AQI≤50 时平台本就不返回首要污染物（干净日的正常表现），
+            # 与「接口没返回」必须分开说，否则把"天干净"读成"数据烂"。
+            pri = "无（AQI≤50 平台不给）" if v <= 50 else "缺字段（接口未返回）"
+        kv = "".join(
+            "<div class='kv'><i>%s</i><span>%s</span></div>" % (k, val) for k, val in (
+                ("首要污染物", _esc(pri)),
+                ("PM2.5 / PM10", "%s / %s" % (_num(av(series_val, c, "pm25", tp)),
+                                              _num(av(series_val, c, "pm10", tp)))),
+                ("O₃-8h（当前值口径）", _num(av(series_val, c, "o3_8h", tp))),
+                ("风向风速", _esc(wind)),
+            ))
+        return ("<div class='lc'><div class='lb'><b>%s</b><span>%s</span></div>"
+                "<div class='lv'><span class='na' style='color:%s'>%s</span>"
+                "<span class='lg' style='background:%s'>%s</span>"
+                "<span class='sub2' style='margin-left:auto'>%s</span></div>%s"
+                "<div class='lw'>点位平均 AQI（HJ 663-2013）· 平台实时未审核值</div></div>"
+                % (_esc(_city_short(c)),
+                   ("%s %s" % (_dd(tp), _hh(tp))) if tp else "—",
+                   col, _num(v), col, _esc(nm), delta, kv))
+
+    head = ("<div class='note'><b>当前实况</b>：各市取<b>自己最近一个有值的时点</b>"
+            "（每张卡右上角标出该市时点，各市可能不同）；区域最高 <b>"
+            + _esc(_city_short(hi_c)) + " " + _num(hi_v) + "</b>（" + _esc(grade(hi_v)[0]) + "）、"
+            "最低 <b>" + _esc(_city_short(lo_c)) + " " + _num(lo_v) + "</b>（"
+            + _esc(grade(lo_v)[0]) + "），极差比 <b>"
+            + (("%.2f" % ratio) if ratio else "—") + "</b>；AQI&gt;100（轻度污染及以上）<b>"
+            + str(len(over)) + "</b> 市："
+            + ("、".join("%s %s" % (_esc(_city_short(c)), _num(v)) for c, v in over) or "无")
+            + "。<br><span class='sub2'>AQI 为<b>点位平均</b>的<b>实时小时值</b>（未经审核），"
+            "与日报的日均口径不同，不可直接互换；差值＝该市与上一相邻（≤2 小时）时点之差，"
+            "<span style='color:#c0392b'>红 ↑ 表示变差</span>、"
+            "<span style='color:#2f6b4f'>绿 ↓ 表示变好</span>。"
+            "⚠️ 极差比是<b>相对指标</b>：各市 AQI 都低时分母小会把比值放大"
+            "（本页各市同处「优」时出现 2 以上属正常），只看相对格局、不可据此下结论。"
+            "AQI≤50 时平台本就不给首要污染物，此处标为「无（AQI≤50 平台不给）」"
+            "而非缺失，二者不可混读。</span></div>")
+    return head + ("<div class='live'>"
+                   + "".join(card_live(c, tp, v) for c, tp, v in items) + "</div>")
 
 
 # ================================================================ 主渲染
 def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=True,
-                  back_link=None, coords=None, neighbors=None):
+                  back_link=None, coords=None, neighbors=None, region_name=None):
     """hourly_rows: station_hourly 字典行（**可含邻居城市**）；weather_rows: city_hourly_weather 行
 
-    只有 cities（本地四市）参与指标/图表/清单统计；其余城市仅用于区域态势图定位。
+    只有 cities（本档案本地城市）参与指标/图表/清单统计；其余城市仅用于区域态势图定位。
     coords: {城市: (纬度, 经度)}；neighbors: {城市: (纬度, 经度)} 上风向邻居（仅上图）。
+    region_name: 区域短名（"豫北"/"豫西"），页面自称由它 + 城市数拼出（不写死）。
 
     generated_at 必须写成「生成：YYYY-MM-DD HH:MM」形式 —— 云端每小时重跑，
     这个字段会被 index_pages.STAMP_RE 抹掉后再比对，否则每个整点都会因时间戳变化
@@ -922,6 +1058,8 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
     cities = [c for c in (cities or [])]
     coords = dict(coords or {})
     neighbors = dict(neighbors or {})
+    REGION = _set_region(cities, region_name)        # 供下方各绘图函数取用（页面自称）
+    CITY_LIST = " / ".join(_city_short(c) for c in cities)
 
     # 城市 × 时点 点位平均（HJ 663-2013）。聚合覆盖所有城市，统计只认 cities。
     agg = {}
@@ -950,6 +1088,20 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
         for k in WX_KEYS:
             if r.get(k) is not None:
                 wval.setdefault((c, k), {})[tp] = r[k]
+
+    # 原始字段（不聚合）：首要污染物 / 平台等级名 —— 供「当前实况」逐市快照直接引用。
+    # 用 setdefault 而非覆盖：同一时点有多个点位时，只保留第一条非空值，
+    # 避免后面的 None 把前面已拿到的值冲掉。
+    pri_map, q_map = {}, {}
+    for r in hourly_rows:
+        c, tp = r.get("city"), r.get("timepoint")
+        if c not in cities or not tp:
+            continue
+        p = r.get("primary_pollutant")
+        if p not in (None, "", "NA", "—", "－"):
+            pri_map.setdefault((c, tp), p)
+        if r.get("quality"):
+            q_map.setdefault((c, tp), r.get("quality"))
 
     xs = sorted(tp_counts)
 
@@ -981,7 +1133,7 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
         hi_c = max(latest_vals, key=lambda k: latest_vals[k])
         lo_c = min(latest_vals, key=lambda k: latest_vals[k])
         span_ratio = (latest_vals[hi_c] / latest_vals[lo_c]) if latest_vals[lo_c] else None
-        hi_txt = "%s %.0f" % (_esc(hi_c[:2]), latest_vals[hi_c])
+        hi_txt = "%s %.0f" % (_esc(_city_short(hi_c)), latest_vals[hi_c])
         ratio_txt = ("%.2f" % span_ratio) if span_ratio else "—"
     else:
         hi_txt, ratio_txt = "—", "—"
@@ -995,8 +1147,8 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
     cards = ("<div class='cards'>"
              + card("库内时点数", "%d" % n_hours, "窗口 %s" % win_txt)
              + card("小时覆盖率", "%.0f%%" % cov, "窗口共 %d 小时" % span_h)
-             + card("点位记录", "%d" % n_rec, "四市国控点位小时值")
-             + card("最新时点·区域最高", hi_txt, "四市点位平均 AQI（HJ 663）")
+             + card("点位记录", "%d" % n_rec, "%s国控点位小时值" % REGION)
+             + card("最新时点·区域最高", hi_txt, "%s点位平均 AQI（HJ 663）" % REGION)
              + card("最新时点·极差比", ratio_txt, "≤1.25 倾向区域同步")
              + card("覆盖城市", "%d" % len(set(c for v in tp_counts.values() for c in v)),
                     "按 HJ 663 点位平均")
@@ -1026,7 +1178,7 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
     else:
         map_html = "<p class='sub2'>坐标或 AQI 数据不足，暂无法绘制区域态势图。</p>"
 
-    # ---------- 风场：四市汇总的风玫瑰（只用落在观测窗口内的时点，排除纯预报帧）
+    # ---------- 风场：本档案各市汇总的风玫瑰（只用落在观测窗口内的时点，排除纯预报帧）
     rose_samples = []
     for c in cities:
         ws_d = wval.get((c, "wind_speed")) or {}
@@ -1057,7 +1209,8 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
                     "与本图口径不同，不可直接比对超标）。")
             refs = [(160, "国标二级 160（日最大8h）", "#c0392b")]
         if key == "aqi":
-            note = "城市值＝该时点四市国控点位 AQI 平均（HJ 663-2013）；背景色带＝AQI 等级（HJ 633-2012）。"
+            note = ("城市值＝该时点%s国控点位 AQI 平均（HJ 663-2013）；"
+                    "背景色带＝AQI 等级（HJ 633-2012）。" % REGION)
             bands = True
         if key == "pm25":
             refs = [(75, "国标二级 75（24h均值）", "#c0392b")]
@@ -1066,10 +1219,10 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
         charts.append("<h2>%s</h2>%s" % (_esc(label), line_chart(s, xs, unit, note=note,
                                                               bands=bands, ref_lines=refs)))
 
-    # ---------- 昼夜切换（四市平均，PM2.5 vs O₃-8h）
+    # ---------- 昼夜切换（本档案各市平均，PM2.5 vs O₃-8h）
     prof = []
-    for key, label, col in (("pm25", "PM2.5（四市平均）", "#b3541e"),
-                            ("o3_8h", "O₃-8h（四市平均·当前值口径）", "#2b6cb0")):
+    for key, label, col in (("pm25", "PM2.5（%s平均）" % REGION, "#b3541e"),
+                            ("o3_8h", "O₃-8h（%s平均·当前值口径）" % REGION, "#2b6cb0")):
         byhour = {}
         for tp in xs:
             vs = [(series_val.get((c, key)) or {}).get(tp) for c in cities]
@@ -1107,6 +1260,9 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
     table = ("<div class='tscroll'><table><thead><tr><th>时点</th>" + th +
              "</tr></thead><tbody>" + "".join(trs) + "</tbody></table></div>")
 
+    # ---------- 当前实况（放在页首：打开本页第一眼要回答的就是"现在什么情况"）
+    live_html = realtime_panel(series_val, wval, cities, pri_map, q_map)
+
     stamp = ""
     if sample:
         stamp = "<div class='stamp'>AI草稿<br>未经审定</div>"
@@ -1114,32 +1270,33 @@ def render_hourly(hourly_rows, weather_rows, cities, generated_at=None, sample=T
     html = []
     html.append("<!DOCTYPE html><html lang='zh-CN'><head><meta charset='utf-8'>")
     html.append("<meta name='viewport' content='width=device-width,initial-scale=1'>")
-    html.append("<title>豫北四市 · 小时序列看板 · %s</title><style>%s</style></head><body><div class='page'>"
-                % (_dd(xs[-1]) if xs else "", CSS))
-    html.append("<div class='hd'><div><h1>豫北四市大气 · 小时序列看板</h1>"
-                "<div class='sub'>安阳 / 濮阳 / 鹤壁 / 新乡 ｜ 国控点位小时值 ｜ 生成：%s</div></div>%s</div>"
-                % (now, stamp))
+    html.append("<title>%s · 小时序列看板 · %s</title><style>%s</style></head><body><div class='page'>"
+                % (REGION, _dd(xs[-1]) if xs else "", CSS))
+    html.append("<div class='hd'><div><h1>%s大气 · 小时序列看板</h1>"
+                "<div class='sub'>%s ｜ 国控点位小时值 ｜ 生成：%s</div></div>%s</div>"
+                % (REGION, CITY_LIST, now, stamp))
     html.append("<div class='note'><b>口径与来源（必读）</b><br>"
                 "① 数据来自生态环境部全国城市空气质量实时发布平台（air.cnemc.cn:18007）的<b>未审核实时数据</b>，"
                 "正式结论应以总站／省级审核后数据为准；<br>"
                 "② 城市评价值按 <b>HJ 663-2013 点位平均法</b>计算，非最差点位；<br>"
                 "③ <b>O₃-8h 为平台按当前小时推算值</b>，与「日最大 8 小时滑动平均」不是同一口径，仅作筛查；<br>"
                 "④ 平台不提供小时级历史接口 —— <b>未采集的小时永久丢失、无法回补</b>，故本页同时呈现「采到了哪些小时」；<br>"
-                "⑤ 第 1 节区域态势图为<b>相对位置示意图</b>，未绘制行政边界，不可用于边界认定。</div>")
-    html.append("<h2>一、区域态势（谁在哪个方位·上风向是谁·当前谁更脏）</h2>" + map_html)
-    html.append("<h2>二、风场（16 方位风玫瑰：来向频率 × 风速分级）</h2>" + rose_html)
-    html.append("<h2>三、关键指标</h2>" + cards)
-    html.append("<h2>四、逐时趋势（AQI / PM2.5 / O₃-8h / 气象）</h2>")
+                "⑤ 区域态势图（第 2 节）为<b>相对位置示意图</b>，未绘制行政边界，不可用于边界认定。</div>")
+    html.append("<h2>一、当前实况（各市最近时点 · 一眼看现在）</h2>" + live_html)
+    html.append("<h2>二、区域态势（谁在哪个方位·上风向是谁·当前谁更脏）</h2>" + map_html)
+    html.append("<h2>三、风场（16 方位风玫瑰：来向频率 × 风速分级）</h2>" + rose_html)
+    html.append("<h2>四、关键指标</h2>" + cards)
+    html.append("<h2>五、逐时趋势（AQI / PM2.5 / O₃-8h / 气象）</h2>")
     for ch in charts:
         html.append(ch)
-    html.append("<h2>五、城市 × 小时 AQI 矩阵</h2>" + aqi_matrix(series_val, xs, cities))
-    html.append("<h2>六、颗粒物与臭氧的昼夜切换</h2>" + profile_html)
-    html.append("<h2>七、区域分化度（四市同步还是单城局地）</h2>"
+    html.append("<h2>六、城市 × 小时 AQI 矩阵</h2>" + aqi_matrix(series_val, xs, cities))
+    html.append("<h2>七、颗粒物与臭氧的昼夜切换</h2>" + profile_html)
+    html.append("<h2>八、区域分化度（%s同步还是单城局地）</h2>" % REGION
                 + divergence_chart(series_val, xs, cities))
-    html.append("<h2>八、首要污染物构成</h2>"
+    html.append("<h2>九、首要污染物构成</h2>"
                 + stacked_primary(hourly_rows, cities))
-    html.append("<h2>九、采集覆盖（缺哪些小时一眼可见）</h2>" + coverage_grid(tp_counts, cities))
-    html.append("<h2>十、逐时城市 AQI 透视（点位平均）</h2>" + table)
+    html.append("<h2>十、采集覆盖（缺哪些小时一眼可见）</h2>" + coverage_grid(tp_counts, cities))
+    html.append("<h2>十一、逐时城市 AQI 透视（点位平均）</h2>" + table)
     html.append("<div class='ft'>本页由自动化流水线按采集到的数据自动生成，未经人工审定，"
                 "仅供技术交流参考，不作为行政决策或处罚依据。<br>"
                 "数据区间 %s。折线 X 轴按<b>真实时间比例</b>定位、间隔超 2 小时即断开 —— "
@@ -1181,6 +1338,18 @@ table.mxt td.mx0{padding:0;height:22px;font-size:9.6px;text-align:center;backgro
 table.mxt td.mxlbl{padding:0 7px;font-size:11px;color:#41504a;background:#f7faf7;white-space:nowrap;border-bottom:none}
 table.mxt tr.mxsep td{height:8px;background:transparent;border:none}
 .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.live{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.live .lc{border:1px solid #e3e8e4;border-radius:11px;overflow:hidden;background:#fbfcfa}
+.live .lb{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+ background:#1f3b2c;color:#fff;padding:7px 12px}
+.live .lb b{font-size:14px}
+.live .lb span{font-size:11px;opacity:.85;white-space:nowrap}
+.live .lv{display:flex;align-items:center;gap:9px;padding:9px 12px 4px;flex-wrap:wrap}
+.live .lv .na{font-size:26px;font-weight:700;line-height:1.1}
+.live .lv .lg{font-size:11.6px;padding:2px 8px;border-radius:20px;color:#fff;font-weight:600;white-space:nowrap}
+.live .kv{display:flex;justify-content:space-between;gap:8px;padding:2px 12px;font-size:12px;color:#41504a}
+.live .kv i{font-style:normal;color:#71807a;white-space:nowrap}
+.live .lw{padding:6px 12px 10px;font-size:11.4px;color:#9aa8a0}
 .ft{margin-top:18px;padding-top:11px;border-top:1px solid #e3e8e4;font-size:11.8px;color:#7c8a83}
 @media(max-width:900px){.cards{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.cards{grid-template-columns:1fr}.page{padding:18px 15px}}
@@ -1192,4 +1361,6 @@ table.mxt tr.mxsep td{height:8px;background:transparent;border:none}
   .tscroll{overflow:visible}
   svg{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+@media(max-width:900px){.live{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.live{grid-template-columns:1fr}}
 """

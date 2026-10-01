@@ -30,6 +30,8 @@ CONFIG = {
     "db_path": "data/air.db",
     "out_dir": "out/yuxi",
     "out_prefix": "大气管家豫西日报",
+    # 小时序列看板的线上板块目录（模块内子目录名；两套档案各有一张，见 index_pages.HOURLY_BOARDS）
+    "hourly_dir": "hourly-yuxi",
     "source": "https://air.cnemc.cn:18007  中国环境监测总站·全国城市空气质量实时发布平台",
     "weather_source": "https://api.open-meteo.com   Open-Meteo（免密钥，ECMWF/ICON 模式，小时级）",
     # 省外上风向城市：只用于传输研判取数，不参与本地六市的指标/卡片/清单。
@@ -82,6 +84,7 @@ PROFILES = {
         "db_path": "data/air.db",
         "out_dir": "out/yubei",
         "out_prefix": "大气管家豫北日报",
+        "hourly_dir": "hourly",
         "source": "https://air.cnemc.cn:18007  中国环境监测总站·全国城市空气质量实时发布平台",
         "weather_source": "https://api.open-meteo.com   Open-Meteo（免密钥，ECMWF/ICON 模式，小时级）",
     },

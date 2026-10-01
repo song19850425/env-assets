@@ -80,6 +80,18 @@ CITY_NOTE = {
 
 SOURCE_NOTE = "数据来源：中国环境监测总站·全国城市空气质量实时发布平台（air.cnemc.cn:18007）"
 
+# 小时序列看板入口（模块内子目录, 显示名, 说明）。
+# 为什么列在这里：看板不走"归档"那一套（单页、无 latest），入口只在本文件生成；
+# 两套档案各有一张（豫北 = hourly，豫西 = hourly-yuxi），
+# **只在目录里确实有 index.html 时才输出链接** —— 否则本机 deploy 的死链自检会把它当死链
+# （云端先产出、本机后对齐，两侧结果自然一致）。
+HOURLY_BOARDS = [
+    ("hourly", "小时序列看板 · 豫北四市 · 最近 7 天",
+     "逐时点位值 + 采集覆盖 + 气象；含「缺了哪些小时」"),
+    ("hourly-yuxi", "小时序列看板 · 豫西六市 · 最近 7 天",
+     "逐时点位值 + 采集覆盖 + 气象；含「缺了哪些小时」"),
+]
+
 # 目录页与模块首页仅 li 间距不同（8px vs 6px），其余完全一致。
 # 首尾的换行是刻意的：模板里 <style> 与 </style> 各自独占一行，去掉就会与线上不符。
 _CSS = """
@@ -181,8 +193,9 @@ def section_index(sub_dir, prefix, label):
 def module_home(module_dir, sections=SECTIONS):
     """生成模块首页 <模块>/index.html（各板块入口 + 归档期数）。返回是否写入。
 
-    小时序列看板是单页（无归档），由**云端** report_cloud_hourly.py 生成到 模块/hourly/index.html；
-    本机 deploy 只重建导航页、不产出该文件。故入口**只在文件确实存在时**才输出 ——
+    小时序列看板是单页（无归档），由**云端** report_cloud_hourly.py 生成到
+    模块/<hourly_dir>/index.html（两套档案各一张）；本机 deploy 只重建导航页、
+    不产出该文件。故入口**只在文件确实存在时**才输出（见 HOURLY_BOARDS）——
     否则本机 deploy 的死链自检会把它当成死链（云端先产出、本机后对齐，两侧结果自然一致）。
     """
     secs = ""
@@ -190,9 +203,9 @@ def module_home(module_dir, sections=SECTIONS):
         n = len(dated_files(os.path.join(module_dir, sub)))
         secs += "<li><a href='%s/latest.html'>%s · 最新一期</a> ｜ <a href='%s/index.html'>归档（%d 期）</a></li>" % (
             sub, label, sub, n)
-    if os.path.exists(os.path.join(module_dir, "hourly", "index.html")):
-        secs += ("<li><a href='hourly/index.html'>小时序列看板 · 最近 7 天</a>"
-                 "（逐时点位值 + 采集覆盖 + 气象；含「缺了哪些小时」）</li>")
+    for sub, label, note in HOURLY_BOARDS:
+        if os.path.exists(os.path.join(module_dir, sub, "index.html")):
+            secs += "<li><a href='%s/index.html'>%s</a>（%s）</li>" % (sub, label, note)
     html = """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
 <title>大气管家 · 豫北每日一页纸</title><style>%s</style></head><body><div class="page">
 <h1>大气管家 · 空气质量报告<br>豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）＋ 豫西六市（郑州 · 新乡 · 洛阳 · 焦作 · 济源 · 三门峡）</h1>

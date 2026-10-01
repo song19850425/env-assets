@@ -21,10 +21,15 @@
       （页面时间戳写成「生成：YYYY-MM-DD HH:MM」，会被 STAMP_RE 抹掉后再比对）。
 
 输入：<模块>/data-hourly/YYYY-MM-DD.jsonl(.gz)（air_collect.py 产出；k=s 点位 / k=w 气象）
-输出：<模块>/hourly/index.html，以及健康档案 <模块>/_health_report.json 的 hourly 条目
+输出：<模块>/<hourly_dir>/index.html（档案决定：豫北 → hourly/，豫西 → hourly-yuxi/），
+      以及健康档案 <模块>/_health_report.json 的对应条目
 退出码：0 成功（含"窗口内无数据则跳过"）；1 完全没有可用数据
 用法：python report_cloud_hourly.py
-环境变量：AIR_MODULE_DIR / AIR_DATA_DIR / AIR_HOURLY_DIR / AIR_HOURLY_DAYS
+环境变量：AIR_PROFILE 选档案（yubei|yuxi）；AIR_MODULE_DIR / AIR_DATA_DIR /
+          AIR_HOURLY_DIR / AIR_HOURLY_DAYS
+
+同一份脚本被 workflow 跑两遍，即为两套档案各出一张"当前实况"看板
+（各自只统计本档案城市，别的档案城市在过滤阶段就被剔除）。
 """
 import glob
 import gzip
@@ -38,7 +43,6 @@ from datetime import datetime, timedelta
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODULE = os.environ.get("AIR_MODULE_DIR") or os.path.dirname(HERE)   # …/豫北每日一页纸
 DATA_DIR = os.environ.get("AIR_DATA_DIR") or os.path.join(MODULE, "data-hourly")
-HOURLY_DIR = os.environ.get("AIR_HOURLY_DIR") or os.path.join(MODULE, "hourly")
 DAYS = int(os.environ.get("AIR_HOURLY_DAYS") or 7)
 
 # 与 report_cloud.py 同一套：让镜像副本保持项目内的导入路径，
@@ -69,7 +73,12 @@ from report.hourly_page import render_hourly                  # noqa: E402
 from report.index_pages import write_report, module_home, SECTIONS  # noqa: E402
 from report.health import merge as health_merge                # noqa: E402
 
-CFG = PROFILES["yubei"]
+CFG = PROFILES[os.environ.get("AIR_PROFILE", "yubei")]
+SECTION = CFG.get("section", "daily")
+# 看板输出目录按档案走（豫北 hourly/、豫西 hourly-yuxi/）——
+# workflow 里同一份脚本跑两遍，各出一张看板（见 config.PROFILES[*]["hourly_dir"]）。
+HOURLY_SUB = CFG.get("hourly_dir") or "hourly"
+HOURLY_DIR = os.environ.get("AIR_HOURLY_DIR") or os.path.join(MODULE, HOURLY_SUB)
 
 
 def _lines(path):
@@ -146,23 +155,24 @@ def main():
     hourly, weather, files = load_window(data_dir, DAYS)
     # 只保留本档案城市 + 已配置的上风向邻居。
     # 为什么必须过滤（2026-10-01）：云端采集池已从豫北四城扩到九城（豫西日报也要数据），
-    # 而本看板的城市池概念是"本地四市（统计）+ 上风向邻居（定位）"——
-    # 不过滤就会把郑州/洛阳等与本档案无关的城市画进区域态势图，
-    # 读者会以为它们是豫北的上风向城市（图上有、风玫瑰弧段却没有，自相矛盾）。
+    # 而本看板的城市池概念是"本地城市（统计）+ 上风向邻居（定位）"——
+    # 不过滤就会把别的档案的城市画进区域态势图，
+    # 读者会以为它们是本档案的上风向城市（图上有、风玫瑰弧段却没有，自相矛盾）。
     keep = set(cities) | set((CFG.get("neighbor_coords") or {}).keys())
     hourly = [r for r in hourly if r.get("city") in keep]
     weather = [r for r in weather if r.get("city") in keep]
     if not hourly and not weather:
-        print("[跳过] %s 近 %d 天无可用记录" % (data_dir, DAYS))
-        health_merge(MODULE, "hourly", {"ok": False, "days": DAYS,
-                                        "error": "窗口内无记录：%s" % data_dir})
+        print("[跳过] %s 近 %d 天无可用记录（板块 %s）" % (data_dir, DAYS, HOURLY_SUB))
+        health_merge(MODULE, HOURLY_SUB, {"ok": False, "days": DAYS,
+                                          "error": "窗口内无记录：%s" % data_dir})
         return 1
 
     tps = sorted({r["timepoint"] for r in hourly})
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     html = render_hourly(hourly, weather, cities, generated_at=now, sample=True,
                          back_link="../index.html",
-                         coords=CFG.get("coords"), neighbors=CFG.get("neighbor_coords"))
+                         coords=CFG.get("coords"), neighbors=CFG.get("neighbor_coords"),
+                         region_name=CFG.get("region_name"))
 
     os.makedirs(HOURLY_DIR, exist_ok=True)
     path = os.path.join(HOURLY_DIR, "index.html")
@@ -171,15 +181,15 @@ def main():
           % (len(files), len(hourly), len(weather), len(tps)))
     if tps:
         print("[看板] 窗口 %s ~ %s（近 %d 天）" % (tps[0], tps[-1], DAYS))
-    print("[看板] hourly/index.html %s（%.1f KB）"
-          % ("已更新" if written else "内容未变，跳过写入",
+    print("[看板] %s/index.html %s（%.1f KB）"
+          % (HOURLY_SUB, "已更新" if written else "内容未变，跳过写入",
              os.path.getsize(path) / 1024.0))
 
     # 模块首页补上"小时序列看板"入口（该文件已存在时才会输出链接，故不会产生死链）
     if module_home(MODULE, SECTIONS):
         print("[看板] 模块 index.html 已重建（含看板入口）")
 
-    health_merge(MODULE, "hourly", {
+    health_merge(MODULE, HOURLY_SUB, {
         "ok": True, "days": DAYS, "files": len(files),
         "stations": len(hourly), "weather": len(weather),
         "hours": len(tps), "window": [tps[0], tps[-1]] if tps else [],

@@ -93,6 +93,11 @@ jobs:
       - name: 生成小时序列看板（读 data-hourly JSONL，Pages 上随采集自动刷新）
         run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud_hourly.py"
 
+      - name: 生成小时序列看板 · 豫西六市（同一套渲染，板块 hourly-yuxi/）
+        env:
+          AIR_PROFILE: yuxi
+        run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud_hourly.py"
+
       - name: 生成日报 · 豫北四市（云端出报，本机关机也能刷新公开页）
         run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
 
