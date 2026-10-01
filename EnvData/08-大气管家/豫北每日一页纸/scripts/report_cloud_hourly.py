@@ -121,7 +121,11 @@ def load_window(data_dir, days):
                 hourly.append({
                     "city": city, "timepoint": tp,
                     "station_name": r.get("st", ""), "station_code": r.get("code", ""),
-                    "aqi": r.get("aqi"), "pm25": r.get("pm25"), "o3_8h": r.get("o3_8h"),
+                    "aqi": r.get("aqi"), "quality": r.get("q"),
+                    "primary_pollutant": r.get("pri"),
+                    "pm25": r.get("pm25"), "pm10": r.get("pm10"),
+                    "o3_8h": r.get("o3_8h"), "no2": r.get("no2"),
+                    "so2": r.get("so2"), "co": r.get("co"),
                 })
             elif k == "w":
                 key = ("w", city, tp)
@@ -130,7 +134,8 @@ def load_window(data_dir, days):
                 seen.add(key)
                 weather.append({
                     "city": city, "timepoint": tp,
-                    "wind_speed": r.get("ws"), "blh": r.get("blh"),
+                    "wind_speed": r.get("ws"), "wind_dir": r.get("wd"),
+                    "blh": r.get("blh"), "temp": r.get("t"), "rh": r.get("rh"),
                 })
     return hourly, weather, files
 
@@ -139,6 +144,14 @@ def main():
     data_dir = DATA_DIR
     cities = CFG["cities"]
     hourly, weather, files = load_window(data_dir, DAYS)
+    # 只保留本档案城市 + 已配置的上风向邻居。
+    # 为什么必须过滤（2026-10-01）：云端采集池已从豫北四城扩到九城（豫西日报也要数据），
+    # 而本看板的城市池概念是"本地四市（统计）+ 上风向邻居（定位）"——
+    # 不过滤就会把郑州/洛阳等与本档案无关的城市画进区域态势图，
+    # 读者会以为它们是豫北的上风向城市（图上有、风玫瑰弧段却没有，自相矛盾）。
+    keep = set(cities) | set((CFG.get("neighbor_coords") or {}).keys())
+    hourly = [r for r in hourly if r.get("city") in keep]
+    weather = [r for r in weather if r.get("city") in keep]
     if not hourly and not weather:
         print("[跳过] %s 近 %d 天无可用记录" % (data_dir, DAYS))
         health_merge(MODULE, "hourly", {"ok": False, "days": DAYS,
@@ -148,7 +161,8 @@ def main():
     tps = sorted({r["timepoint"] for r in hourly})
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     html = render_hourly(hourly, weather, cities, generated_at=now, sample=True,
-                         back_link="../index.html")
+                         back_link="../index.html",
+                         coords=CFG.get("coords"), neighbors=CFG.get("neighbor_coords"))
 
     os.makedirs(HOURLY_DIR, exist_ok=True)
     path = os.path.join(HOURLY_DIR, "index.html")

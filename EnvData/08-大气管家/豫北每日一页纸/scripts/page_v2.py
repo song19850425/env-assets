@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""交付层 V2：豫北四市大气研判日报（在 V1 一页纸风格上增强）。
+"""交付层 V2：大气研判日报（在 V1 一页纸风格上增强）——豫北 / 豫西两套档案共用。
+
+区域名称（"豫北四市"/"豫西六市"）与副标题城市列表**一律由 cfg + cities 现算**，
+不写死。为什么（2026-10-01 实测缺陷）：本文件此前把标题与副标题写死成"豫北四市
+大气研判日报 / 安阳·濮阳·鹤壁·新乡"，当同一套版式用于六市档案时，产出的日报
+标题写着豫北、副标题列着另外四个城市，而正文却是郑州/洛阳/焦作的数据 ——
+版式共用而不做参数化，就是这个结果。
 
 相对静态原型 V2.0 的修正：
  1. 样本数动态统计（原版硬编码 20，实际 21，漏一个点位）
@@ -29,6 +35,25 @@ def fmt(v, d=0):
     if v is None:
         return "—"
     return ("%.*f" % (d, v))
+
+
+_CN_NUM = {1: "一", 2: "两", 3: "三", 4: "四", 5: "五", 6: "六",
+           7: "七", 8: "八", 9: "九", 10: "十"}
+
+
+def region_label(cfg, cities):
+    """档案区域短名 + 城市数，例：豫北四市 / 豫西六市。
+
+    cfg["region_name"] 缺省时退化成"六市"这种纯数量说法（不会出现空名）。
+    """
+    rn = (cfg.get("region_name") or "").strip()
+    return "%s%s市" % (rn, _CN_NUM.get(len(cities), len(cities)))
+
+
+def short(city):
+    """'三门峡市' → '三门峡'（副标题/正文里用全称，避免 [:2] 把三门峡写成"三门"）"""
+    c = str(city or "")
+    return c[:-1] if c.endswith("市") else c
 
 
 def _hh(tp, base_date=None):
@@ -77,7 +102,7 @@ def _review_section(review, region_rev, cities):
         anom_cls = "" if anom is None else ("bad" if anom > 0 else "ok")
         rows += ("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
                  "<td>%s</td><td class='%s'>%s</td><td>%s</td><td>%s</td></tr>") % (
-            c["city"][:2], ref["date"], chip(ref["aqi"]),
+            short(c["city"]), ref["date"], chip(ref["aqi"]),
             (ref["primary"] or "—"),
             fmt(r["aqi_mean14"], 1), anom_cls, anom_txt,
             ("%s%%" % r["o3_share"]) if r["o3_share"] is not None else "—",
@@ -122,7 +147,7 @@ def _forecast_section(forecast, bias, cities, timepoint):
             continue
         rows += ("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
                  "<td>%s</td><td>%s</td><td>%s</td></tr>") % (
-            c["city"][:2],
+            short(c["city"]),
             fmt(f["peak_aqi"], 0) + "（%s）" % _hh(f["peak_tp"], base),
             lv_tag(f["peak_aqi"]),
             f["primary_main"] + ("（%d/%d 小时）" % (f["primary_main_n"], f["n"]) if f["n"] else ""),
@@ -141,7 +166,7 @@ def _forecast_section(forecast, bias, cities, timepoint):
                 continue
             ratio = (b["mod"] / b["obs"]) if b["obs"] else None
             brows += "<tr><td>%s</td><td>%s</td><td>%s</td><td class='%s'>%s</td></tr>" % (
-                b["city"][:2], fmt(b["obs"], 1), fmt(b["mod"], 1),
+                short(b["city"]), fmt(b["obs"], 1), fmt(b["mod"], 1),
                 "bad" if (ratio or 1) > 1.3 else "ok",
                 ("%.2f×" % ratio) if ratio else "—")
         if brows:
@@ -175,6 +200,11 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     sample = cfg.get("sample", True)
     stamp = "<div class='stamp'>AI 草稿<br>未经审定</div>" if sample else ""
+    REG = region_label(cfg, cities)          # 例：豫北四市 / 豫西六市（全文区域自称）
+    TITLE = "%s大气研判日报" % REG
+    # 副标题城市列表按**档案固定顺序**（cfg["cities"]），不按 AQI 排序 ——
+    # cities 入参是"按实时 AQI 降序"的研判结果，照它拼会让页眉城市顺序每个小时换一次。
+    SUB_CITIES = " · ".join(short(c) for c in (cfg.get("cities") or [x["city"] for x in cities]))
 
     total_n = sum(c["n"] for c in cities)
     total_rt = sum(c["exceed_rt_cnt"] for c in cities)
@@ -183,14 +213,14 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 
     # ── 总体研判 ──
     # 实时高值的描述必须由数据决定，不能写死。原版固定写"整体呈普遍抬升"，
-    # 在四市均为"良"（如 17:00 帧 55–92）时就与实际不符 —— 属于凭空下结论。
+    # 在各市均为"良"（如 17:00 帧 55–92）时就与实际不符 —— 属于凭空下结论。
     rt_max = max((c["aqi_rt"] or 0) for c in cities)
     if total_rt:
         rt_desc = "其中 <b>%d 个</b>已高于 100，按高值点位清单跟进" % total_rt
     elif rt_max > 80:
         rt_desc = "均在 100 以下，但最高已到 %.0f，属需留意的高位良" % rt_max
     else:
-        rt_desc = "四市均处优良水平，无高值点位"
+        rt_desc = "%s均处优良水平，无高值点位" % REG
 
     # O₃ 只要出现筛查命中，就必须说明口径差异 —— 否则读者会当成"当日已超标"
     _o3_screen = any(h[3] for c in cities for e in c["exceed_dy"] for h in e["hits"])
@@ -212,29 +242,42 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
         % str(timepoint)[11:16]
     ) if _hh_int < 10 else ""
 
+    # 缺城市提示：某个档案城市整城没取到点位时，必须显式写出来。
+    # 否则页面照常渲染，只是那个城市从卡片/表格里"消失"了——
+    # 读者会以为该市数据是"没超标的空白"，而不是"没取到"（2026-10-01 云端豫西日报实测触发）。
+    _miss = [short(c["city"]) for c in cities if not c["n"]]
+    miss_note = (
+        "<p class='legend'><b>⚠️ 本次未取得以下城市的点位数据：%s。</b>"
+        "相关城市在卡片、双口径对照与点位清单中为空白，<b>不代表该市未超标</b>；"
+        "请以补采后的版本为准（补充数据失败不影响其余城市结论的有效性）。</p>"
+        % "、".join(_miss)
+    ) if _miss else ""
+
     verdict = (
-        "<p><b>实时口径</b>：%d 个点位中有 <b>%d 个</b>当前 AQI&gt;100，四市实时城市 AQI "
+        "<p><b>实时口径</b>：%d 个点位中有 <b>%d 个</b>当前 AQI&gt;100，%s实时城市 AQI "
         "由高到低为 %s，%s。</p>"
         "<p><b>日均（达标）口径</b>：改用平台 24h 滑动均值对照 GB 3095-2012 二级限值后，"
         "超标点位仅 <b>%d 个</b>——%s。"
         "两套口径差异显著，引用时须注明所用口径。</p>"
-        "%s%s<p>%s</p>"
+        "%s%s%s<p>%s</p>"
     ) % (
-        total_n, total_rt,
-        "、".join("%s %.0f" % (c["city"][:2], c["aqi_rt"]) for c in
-                  sorted(cities, key=lambda c: c["aqi_rt"] or 0, reverse=True)),
+        total_n, total_rt, REG,
+        "、".join("%s %s" % (short(c["city"]),
+                            "—" if c["aqi_rt"] is None else "%.0f" % c["aqi_rt"])
+                  for c in sorted(cities, key=lambda c: c["aqi_rt"] or 0, reverse=True)),
         rt_desc,
         total_dy,
         ("；".join("<b>%s %s</b>（%s）" % (
-            e["city"][:2], e["station"],
+            short(e["city"]), e["station"],
             "、".join("%s %g μg/m³ &gt; %d" % (h[0], h[1], h[2]) for h in e["hits"]))
             for e in [x for c in cities for x in c["exceed_dy"]]) if total_dy else "全部点位日均口径达标"),
         morning_note,
         o3_note,
+        miss_note,
         region["text"].replace("**", ""),
     )
 
-    # ── 四市卡片 ──
+    # ── 城市卡片（数量随档案城市数，标题不写"四市"）──
     cards = ""
     for c in cities:
         cards += """
@@ -264,7 +307,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 <td>%s</td><td>%s</td>
 <td>%s / %s</td>
 <td>%s（%s）</td></tr>""" % (
-            c["city"][:2],
+            short(c["city"]),
             fmt(c["aqi_rt"], 1), fmt(c["aqi_dy"], 1), fmt(c["point_avg_aqi"], 1),
             _hl(c["pm25_mean"], -1), _hl(c["pm25_24h_mean"], GB["pm25_24h"]),
             _hl(c["pm10_mean"], -1), _hl(c["pm10_24h_mean"], GB["pm10_24h"]),
@@ -289,7 +332,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
             mark = "<span class='dyex'>超日均限值·%s</span>" % lab if lab else ""
             detail += ("<tr%s><td>%s</td><td>%s%s</td><td>%s</td><td>%s</td>"
                        "<td>%s</td><td>%s</td><td>%s</td></tr>") % (
-                warn, c["city"][:2], s["station_name"], mark, chip(s["aqi"]),
+                warn, short(c["city"]), s["station_name"], mark, chip(s["aqi"]),
                 fmt(s["pm25"]), _hl(s["pm25_24h"], GB["pm25_24h"]),
                 _hl(s["pm10"], -1), _hl(s["o3_8h"], -1))
 
@@ -300,7 +343,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 <td>%s</td><td>%s</td>
 <td>%s</td><td>%s</td>
 <td>%s</td><td>%s</td></tr>""" % (
-            c["city"][:2],
+            short(c["city"]),
             fmt(c["pm25_mean"]), fmt(c["pm25_24h_mean"], 1),
             fmt(c["pm10_mean"]), fmt(c["pm10_24h_mean"], 1),
             fmt(c["o3_8h_mean"], 1), fmt(c["o3_8h_max"], 1),
@@ -330,22 +373,29 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
         if bad:
             wind_para += ("<p><b>气象条件</b>：%s 的扩散条件判为「不利」——%s。"
                           "低风速叠加低边界层，污染物水平输送与垂直扩散同时受阻，"
-                          "是本次四市同步抬升的直接气象成因。</p>"
-                          ) % ("、".join(x[0][:2] for x in bad),
+                          "是本次%s同步抬升的直接气象成因。</p>"
+                          ) % ("、".join(short(x[0]) for x in bad),
                                "；".join("%s 风速 %s m/s、边界层 %s m"
-                                        % (x[0][:2],
+                                        % (short(x[0]),
                                            (winds.get(x[0]) or {}).get("wind_speed"),
                                            "%.0f" % (winds.get(x[0]) or {}).get("blh", 0))
-                                        for x in bad))
+                                        for x in bad), REG)
         else:
             wind_para += "<p><b>气象条件</b>：各市扩散条件未达不利等级，气象对污染的贡献有限。</p>"
         if n_tp:
             wind_para += ("<p><b>传输研判</b>：%d 个城市的上风向城市浓度高于本地，"
                           "存在输入性传输迹象，需结合轨迹模型复核。</p>" % n_tp)
         elif n_no:
+            # 盲区说明必须与实际城市池一致：已配邻居还写"省外上风向未纳入"就是自相矛盾
+            if cfg.get("neighbors"):
+                blind = ("风向扇形内未纳入城市池的市，本次无法判定其传输贡献"
+                         "（城市池已含本地 %d 市 ＋ 上风向 %d 市）。"
+                         % (len(cities), len(cfg["neighbors"])))
+            else:
+                blind = "风向扇形内无已纳入城市的市，存在省外传输盲区，需扩充周边城市后方可定论。"
             wind_para += ("<p><b>传输研判</b>：%d 个城市的上风向城市浓度并不高于本地，"
                           "<b>不支持</b>输入性传输为主导，本次高值更符合静稳条件下的本地累积与二次转化；"
-                          "风向扇形内无已纳入城市的市，存在省外传输盲区，需扩充周边城市后方可定论。</p>" % n_no)
+                          "%s</p>" % (n_no, blind))
 
     verdict += wind_para   # 气象结论并入"今日研判"
 
@@ -391,7 +441,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 <td>%s</td>
 <td>%s</td><td>%s（%s）</td><td>%s</td><td>%s</td><td>%s</td>
 <td><span class="lv %s">%s</span></td></tr>""" % (
-            c["city"][:2],
+            short(c["city"]),
             "—" if w.get("wind_speed") is None else "%.1f" % w["wind_speed"],
             "—" if w.get("wind_dir") is None else "%.0f°" % w["wind_dir"],
             w.get("wind_dir_cn", "—"),
@@ -408,6 +458,15 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 
     wind_section = ""
     if wind_rows:
+        # 城市池说明必须照实写：配了上风向城市却说"省外上风向未纳入"，读者一核对就废掉整页可信度
+        if cfg.get("neighbors"):
+            pool_note = ("传输研判城市池＝本地 %d 市 ＋ 省外上风向 %d 市（%s），"
+                         "<b>仅在池内城市之间成立</b>；池外城市仍可能构成盲区。"
+                         % (len(cities), len(cfg["neighbors"]),
+                            "、".join(short(c) for c in cfg["neighbors"])))
+        else:
+            pool_note = ("传输研判<b>仅在已纳入的 %d 个城市内成立</b>，"
+                         "省外上风向城市未纳入，存在盲区。" % len(cities))
         wind_section = """
 <h2>八、气象条件与区域传输</h2>
 <div class="tscroll"><table>
@@ -416,17 +475,16 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 %s</table></div>
 <div class="legend">气象数据来自 Open-Meteo（免密钥模式产品，城市尺度），时点对齐 %s。
 风速低于 %.1f m/s 判静稳、边界层低于 %.0f m 判垂直扩散受限、湿度≥80%% 且低风速标注"高湿静稳"——
-以上均为<b>经验阈值</b>，非国家标准限值。传输研判<b>仅在已纳入的 %d 个城市内成立</b>，
-省外上风向城市未纳入，存在盲区。</div>
-%s""" % (wind_rows, timepoint, 2.0, 300.0, len(cities), wind_notes)
+以上均为<b>经验阈值</b>，非国家标准限值。%s</div>
+%s""" % (wind_rows, timepoint, 2.0, 300.0, pool_note, wind_notes)
 
     return """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>豫北四市大气研判日报 · %s</title><style>%s</style></head><body><div class="page">
+<title>%s · %s</title><style>%s</style></head><body><div class="page">
 <div class="hd">
   <div>
-    <h1>豫北四市大气研判日报</h1>
-    <div class="sub">安阳 · 濮阳 · 鹤壁 · 新乡 ｜ 数据时点：%s ｜ 生成：%s</div>
+    <h1>%s</h1>
+    <div class="sub">%s ｜ 数据时点：%s ｜ 生成：%s</div>
   </div>%s
 </div>
 
@@ -437,7 +495,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 <h2>三、今日实况研判</h2>
 <div class="verdict">%s</div>
 
-<h2>四、四市核心指标</h2>
+<h2>四、%s核心指标</h2>
 <div class="cards">%s</div>
 
 <h2>五、双口径对照（口径差异是引用结论的关键）</h2>
@@ -464,7 +522,7 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 
 <h2>九、污染成因研判框架</h2>
 <div class="legend">以下每条均挂可自动复算的判别指标；指标不足时不出结论。PM10/PM2.5≥%.1f 判扬尘型，
-同城点位极差比≥%.1f 判局地特征，四市均值极差比≤%.2f 判区域同步。</div>
+同城点位极差比≥%.1f 判局地特征，%s均值极差比≤%.2f 判区域同步。</div>
 %s
 
 <h2>十、管控行动任务</h2>
@@ -489,13 +547,13 @@ def render_v2(cities, region, causes, action_list, timepoint, cfg, evidence, win
 大气管家 · 大气环境第三方服务 · %s
 </div>
 </div></body></html>""" % (
-        timepoint, CSS, timepoint, now, stamp,
+        TITLE, timepoint, CSS, TITLE, SUB_CITIES, timepoint, now, stamp,
         note_html,
         review_sec, fcst_sec,
-        verdict, cards, cmp_rows,
+        verdict, REG, cards, cmp_rows,
         total_n, detail, pol,
         wind_section,
-        2.0, 1.5, 1.25,
+        2.0, 1.5, REG, 1.25,
         cause, acts, ev, timepoint,
         cfg.get("source", ""), cfg.get("weather_source", ""),
         "（样报演示）" if sample else "", now[:10],

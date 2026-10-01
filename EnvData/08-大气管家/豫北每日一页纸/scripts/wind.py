@@ -89,8 +89,13 @@ def stability(wind_speed, blh):
     return (level, "；".join(parts))
 
 
-def transport(target, wind_dir, coords, air_by_city):
-    """区域传输研判。air_by_city: {city: {"pm25_mean":..., "aqi_rt":...}}"""
+def transport(target, wind_dir, coords, air_by_city, has_neighbors=False):
+    """区域传输研判。air_by_city: {city: {"pm25_mean":..., "aqi_rt":...}}
+
+    has_neighbors: 本档案是否已配置省外上风向城市池。仅用于"扇形内无城市"这一条
+    结论的措辞 —— 池里已经放了邻居却还写"需扩充周边城市后方可判定"，
+    读者一核对就整页不可信（2026-10-01 修正）。
+    """
     ups = upwind_cities(target, wind_dir, coords)
     tgt = air_by_city.get(target, {})
     t_pm = tgt.get("pm25_mean")
@@ -98,10 +103,15 @@ def transport(target, wind_dir, coords, air_by_city):
     if not ups:
         if wind_dir is None:
             return {"ups": [], "verdict": "待核（无风向）", "lines": ["缺少风向数据，无法判定上风向。"]}
-        return {"ups": [], "verdict": "无同组上风向城市",
-                "lines": ["风向 %s，上风向扇形（±%.0f°）内无已纳入的城市，"
-                          "存在省外传输盲区，需扩充周边城市后方可判定。"
-                          % (compass(wind_dir), HALF_WIDTH)]}
+        if has_neighbors:
+            note = ("风向 %s，上风向扇形（±%.0f°）内无城市池内的城市，"
+                    "本次无法据此判定传输贡献（池外城市仍可能构成盲区）。"
+                    % (compass(wind_dir), HALF_WIDTH))
+        else:
+            note = ("风向 %s，上风向扇形（±%.0f°）内无已纳入的城市，"
+                    "存在省外传输盲区，需扩充周边城市后方可判定。"
+                    % (compass(wind_dir), HALF_WIDTH))
+        return {"ups": [], "verdict": "无同组上风向城市", "lines": [note]}
     names = "、".join("%s（%s，方位 %s，夹角 %.0f°）" % (u["city"], u["compass"], u["bearing"], u["diff"])
                      for u in ups)
     lines.append("主导风向为 %s（%.0f°），上风向已纳入城市：%s。" % (compass(wind_dir), wind_dir, names))

@@ -25,7 +25,7 @@ from calc.brief import (POLL_CN, DISPERSION_LOCAL, DISPERSION_REGION, GB3095_2,
 from calc.forecast import forecast_summary
 from calc.review import region_review
 from calc.wind import WIND_CALM, compass, stability, transport
-from report.page_v2 import render_v2
+from report.page_v2 import render_v2, short
 
 BASE_URL = "https://air.cnemc.cn:18007/CityData/GetAQIDataPublishLive"
 
@@ -60,7 +60,7 @@ def build_wind(briefs, weather, cfg, extra_air=None):
         w = weather.get(c["city"]) or {}
         ws, blh, wd = w.get("wind_speed"), w.get("blh"), w.get("wind_dir")
         level, desc = stability(ws, blh)
-        tp = transport(c["city"], wd, coords, air)
+        tp = transport(c["city"], wd, coords, air, has_neighbors=bool(cfg.get("neighbors")))
         out[c["city"]] = {
             "wind_speed": ws, "wind_dir": wd, "wind_dir_cn": compass(wd),
             "wind_gust": w.get("wind_gust"), "blh": blh, "temp": w.get("temp"),
@@ -121,19 +121,19 @@ def _extra_evidence(timepoint, review, region_rev, fcst, bias, neighbor_air, cfg
             ev.append("⚠️ <b>模式偏差自检（同日同时刻，实测城市均值 vs 模式值）</b>：%s。"
                       "模式在本市存在系统性偏差，故预报节的绝对值<b>只能用于比较时段高低</b>，"
                       "未做 MOS（模式输出统计）订正前不得作为预测值引用。"
-                      % "；".join("%s %.1f→%.1f" % (b["city"][:2], b["obs"], b["mod"]) for b in got))
+                      % "；".join("%s %.1f→%.1f" % (short(b["city"]), b["obs"], b["mod"]) for b in got))
     if cfg.get("neighbors"):
         if neighbor_air:
             ev.append("传输研判城市池：本地 %d 市 + 省外上风向 %d 市（%s），共 %d 市。"
                       "邻居城市浓度取自实时接口同小时城市均值，与本地口径一致。"
                       % (len(cfg["cities"]), len(neighbor_air),
-                         "、".join(c[:2] for c in sorted(neighbor_air)),
+                         "、".join(short(c) for c in sorted(neighbor_air)),
                          len(cfg["cities"]) + len(neighbor_air)))
         else:
             ev.append("⚠️ 传输研判城市池：本次<b>未取得省外上风向城市数据</b>"
                       "（配置已列 %s），上风向判定仅在本地 %d 市内成立，"
                       "结论可能因盲区而偏保守（「判不出」不等于「没有传输」）。"
-                      % ("、".join(c[:2] for c in cfg["neighbors"]), len(cfg["cities"])))
+                      % ("、".join(short(c) for c in cfg["neighbors"]), len(cfg["cities"])))
     return ev
 
 
@@ -150,7 +150,7 @@ def evidence_chain(rows, cities, timepoint, cfg, weather=None, werr=None, raw_no
         "抓取时点（平台 TimePoint）：<b>%s</b>；本页生成时刻：<b>%s</b>"
         % (timepoint, datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
         "样本数：<b>%d</b> 个点位（%s）"
-        % (len(rows), "、".join("%s %d" % (c[:2], n_by_city[c]) for c in cities)),
+        % (len(rows), "、".join("%s %d" % (short(c), n_by_city[c]) for c in cities)),
         "缺测（返回 NA）统计：%s" % ("、".join("%s %d 个" % (k, v) for k, v in na.items()) if na else "<b>无缺测</b>"),
         "达标判定依据：GB 3095-2012 二级限值 PM2.5 24h %d、PM10 24h %d、O₃-8h %d μg/m³；"
         "城市 AQI 依据 HJ 663-2013 点位平均法。" % (GB3095_2["pm25_24h"], GB3095_2["pm10_24h"], GB3095_2["o3_8h"]),
@@ -167,12 +167,18 @@ def evidence_chain(rows, cities, timepoint, cfg, weather=None, werr=None, raw_no
         ev.insert(2, "气象接口：<code>api.open-meteo.com/v1/forecast</code>（免密钥，ECMWF/ICON 模式再分析+预报，"
                      "取 <code>wind_speed_10m / wind_direction_10m / boundary_layer_height / relative_humidity_2m</code> 等）")
         ev.insert(3, "气象命中：<b>%d</b> 个城市（%s），时点对齐 <b>%s</b>；单位：风速 m/s、风向 °（气象风向＝风的来向）、"
-                     "边界层高度 m。" % (len(got), "、".join(c[:2] for c in got), timepoint))
+                     "边界层高度 m。" % (len(got), "、".join(short(c) for c in got), timepoint))
         ev.append("气象数据性质：模式产品、<b>城市尺度</b>代表性，非国控点位本地实测气象，"
                   "与点位微环境存在差异；用于研判趋势与传输方向，不作为合规判据。")
-        ev.append("传输研判盲区：上风向判定仅在<span>已纳入的 %d 个城市</span>内成立，"
-                  "省外上风向城市（邯郸、邢台、聊城、菏泽、焦作、长治、晋城等）未纳入，可能存在传输盲区。"
-                  % len(cities))
+        if cfg.get("neighbors"):
+            ev.append("传输研判城市池：本地 %d 市 ＋ 省外上风向 %d 市（%s），"
+                      "上风向判定仅在该池内成立；池外城市仍可能构成盲区"
+                      "（「判不出」不等于「没有传输」）。"
+                      % (len(cities), len(cfg["neighbors"]),
+                         "、".join(short(c) for c in cfg["neighbors"])))
+        else:
+            ev.append("传输研判盲区：上风向判定仅在<span>已纳入的 %d 个城市</span>内成立，"
+                      "本档案<b>未配置省外上风向城市</b>，可能存在传输盲区。" % len(cities))
         ev.append("阈值属性：静稳/边界层/高湿静稳等阈值均为<b>经验阈值</b>，非国家标准限值，仅用于辅助研判。")
     else:
         ev.append("气象数据缺失：本版<b>未取得</b>风向风速与边界层数据，成因研判已相应降级为"
@@ -234,21 +240,21 @@ def print_summary(result, timepoint, n_rows):
         "城市", "实时AQI", "日均AQI", "点位均", "PM2.5", "24h", "高值点", "超标点"))
     for c in result["briefs"]:
         print("%-4s %8s %8s %8s | %6s %6s | %6d %6d" % (
-            c["city"][:2], c["aqi_rt"], c["aqi_dy"], c["point_avg_aqi"],
+            short(c["city"]), c["aqi_rt"], c["aqi_dy"], c["point_avg_aqi"],
             c["pm25_mean"], c["pm25_24h_mean"], c["exceed_rt_cnt"], c["exceed_dy_cnt"]))
     print("[区域] %s" % result["region"]["text"].replace("**", ""))
     for c in result["briefs"]:
         w = result["winds"].get(c["city"]) or {}
         if w:
             print("[气象] %-4s %s（%s）风速 %s m/s ｜ 扩散 %s ｜ 传输：%s" % (
-                c["city"][:2], w.get("wind_dir_cn"), w.get("wind_dir"),
+                short(c["city"]), w.get("wind_dir_cn"), w.get("wind_dir"),
                 "—" if w.get("wind_speed") is None else "%.1f" % w["wind_speed"],
                 w.get("level"), (w.get("transport") or {}).get("verdict", "—")))
     print("[成因] " + "；".join(
-        "%s %s" % (c["city"][:2], (c["reasons"][0] if c["reasons"] else "待核"))
+        "%s %s" % (short(c["city"]), (c["reasons"][0] if c["reasons"] else "待核"))
         for c in result["causes"]))
     print("[行动] " + "；".join(
-        "%s %s" % (a["city"][:2], a["acts"][0]) for a in result["actions"]))
+        "%s %s" % (short(a["city"]), a["acts"][0]) for a in result["actions"]))
 
 
 def primary_cn(poll):

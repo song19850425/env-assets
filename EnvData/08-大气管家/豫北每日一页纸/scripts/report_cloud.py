@@ -11,11 +11,15 @@
 两边的编排与模板都来自 report/daily_report.py，口径唯一。
 
 输入：<data-hourly>/YYYY-MM-DD.jsonl（air_collect.py 的产出，含点位 k=s 与气象 k=w 两类记录）
-输出：<模块>/daily/<日期>.html + latest.html + index.html + 模块首页 index.html，
-      以及健康档案 <模块>/_health_report.json 的 daily 条目
+输出：<模块>/<板块>/<日期>.html + latest.html + index.html + 模块首页 index.html
+      （板块由档案决定：yubei → daily/，yuxi → yuxi/），
+      以及健康档案 <模块>/_health_report.json 的对应条目
+
+环境变量 AIR_PROFILE 选择档案（默认 yubei）；同一份脚本被 workflow 跑两遍，
+两套档案各自出报、各自归档，互不覆盖。
 
 渲染/研判/证据链不在这里重写：直接复用同目录的**镜像副本**（由 deploy_github.sync_cloud_scripts 同步）
-    config.py         ← 项目 config.py（PROFILES["yubei"]）
+    config.py         ← 项目 config.py（PROFILES["yubei"] / PROFILES["yuxi"]）
     daily_report.py   ← 项目 report/daily_report.py（编排：研判 → 证据链 → 渲染）
     page_v2.py        ← 项目 report/page_v2.py（版式）
     brief.py / wind.py← 项目 calc/（研判与气象逻辑）
@@ -29,8 +33,8 @@
 时区：runner 是 UTC，脚本启动即切到 Asia/Shanghai —— 否则页面"生成时间"比北京时间少 8 小时。
 
 退出码：0 成功；1 无可用数据（让 workflow 显红，便于告警）
-用法：python report_cloud.py [daily 输出目录]
-环境变量：AIR_DATA_DIR / AIR_DAILY_DIR / AIR_MODULE_DIR 可覆盖输入输出目录
+用法：python report_cloud.py [输出目录]
+环境变量：AIR_PROFILE 选档案（yubei|yuxi）；AIR_DATA_DIR / AIR_DAILY_DIR / AIR_MODULE_DIR 可覆盖输入输出目录
 """
 import glob
 import gzip
@@ -82,11 +86,15 @@ from report.index_pages import (SECTIONS, section_index,      # noqa: E402
                                module_home, write_report)
 from report.health import merge as health_merge               # noqa: E402
 
-# 与项目 config.PROFILES["yubei"] 同源（镜像副本）
-CFG = PROFILES["yubei"]
+# 与项目 config.PROFILES 同源（镜像副本）。
+# 档案选择：AIR_PROFILE=yubei（默认，豫北四市 → daily/）或 yuxi（豫西六市 → yuxi/）。
+# 为什么做成变量：workflow 里同一份脚本要跑两遍，各出一个板块的日报；
+# 把档案写死就等于只能有一个档案（2026-10-01 加豫西日报时的改动）。
+CFG = PROFILES[os.environ.get("AIR_PROFILE", "yubei")]
+SECTION = CFG.get("section", "daily")
 
-DAILY_PREFIX = {sub: prefix for sub, prefix, _ in SECTIONS}["daily"]
-DAILY_LABEL = {sub: label for sub, _p, label in SECTIONS}["daily"]
+DAILY_PREFIX = {sub: prefix for sub, prefix, _ in SECTIONS}[SECTION]
+DAILY_LABEL = {sub: label for sub, _p, label in SECTIONS}[SECTION]
 
 # 云端可溯源到什么程度，就写什么 —— 不夸大
 RAW_NOTE = ("云端采集留存的是精简字段（<code>data-hourly/&lt;日期&gt;.jsonl</code>，含各点位原始数值），"
@@ -323,12 +331,29 @@ def main():
     tp, recs = load_latest(data_dir)
     if not tp or not recs:
         print("[跳过] 未取到点位数据：%s" % data_dir)
-        health_merge(MODULE, "daily", {"ok": False, "error": "未取到点位数据：%s" % data_dir})
+        health_merge(MODULE, SECTION, {"ok": False, "error": "未取到点位数据：%s" % data_dir})
         return 1
 
     cities = CFG["cities"]
-    rows = to_rows(recs)
+    # 只保留本档案城市。为什么必须过滤（2026-10-01）：采集池已从豫北四城扩到九城
+    # （豫西日报也要数据），不过滤的话豫北日报的"样本数 N 个点位"会把豫西的 33 个点位
+    # 一起数进去（54 个），缺测统计与全部图表口径随之污染 —— 数字看着正常，其实是错的。
+    rows = [r for r in to_rows(recs) if r.get("city") in cities]
+    # 缺城市就不发布：页眉写着"豫西六市"，正文却只有两个市的数据，读者无法从页面上
+    # 看出"另外四个城市没采到"（只会当成没数据）。云端采集池是按小时固定跑的，
+    # 缺城市 = 采集那一步出了问题，正确反应是让 workflow 显红、下一小时重试，
+    # 而不是先发一份残缺的日报上去（最新一期保持旧版更诚实）。
+    got = {r.get("city") for r in rows}
+    lacking = [c for c in cities if c not in got]
+    if lacking or not rows:
+        msg = "缺城市：%s" % "、".join(lacking) if lacking else "本档案城市无数据"
+        print("[跳过] 时点 %s 缺 %d 个本档案城市（%s）—— 暂不发布（板块 %s）"
+              % (tp, len(lacking), "、".join(lacking) or "全部", SECTION))
+        health_merge(MODULE, SECTION, {"ok": False, "timepoint": tp,
+                                       "error": msg, "cities_got": sorted(got)})
+        return 1
     weather, missing, aligned = _read_weather(data_dir, tp, cities)
+    weather = {c: w for c, w in weather.items() if c in cities}
     review, neighbor_air, fcst = _supplementary(CFG, cities, tp[:10])
     result = build(CFG, rows, tp, weather=weather,
                    werr=["%s 无气象记录" % c for c in missing], raw_note=RAW_NOTE,
@@ -340,16 +365,16 @@ def main():
     for name in ("%s.html" % day, "latest.html"):
         if write_report(os.path.join(out_dir, name), result["html"]):
             written += 1
-            print("  [写入] daily/%s" % name)
+            print("  [写入] %s/%s" % (SECTION, name))
     n = write_index(out_dir)
     if module_home(MODULE, SECTIONS):
-        print("  [写入] 模块 index.html（三板块入口）")
+        print("  [写入] 模块 index.html（各板块入口）")
 
-    print("[日报] %s → daily/%s.html（+ latest.html，归档 %d 期，本次写入 %d 个文件）"
-          % (tp, day, n, written))
+    print("[日报] %s → %s/%s.html（+ latest.html，归档 %d 期，本次写入 %d 个文件）"
+          % (tp, SECTION, day, n, written))
     print_summary(result, tp, len(rows))
 
-    health_merge(MODULE, "daily", {
+    health_merge(MODULE, SECTION, {
         "ok": True, "timepoint": tp, "stations": len(rows),
         "weather_cities": len(weather), "weather_aligned": aligned,
         "period": day, "file": "%s.html" % day, "written": written,

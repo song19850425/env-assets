@@ -6,9 +6,9 @@
 # 部署位置：env-assets/.github/workflows/air-hourly.yml
 # 模块目录：env-assets/EnvData/08-大气管家/豫北每日一页纸/
 #   采集脚本  scripts/air_collect.py        （小时点位值 + 气象 → data-hourly/*.jsonl）
-#   看板脚本  scripts/report_cloud_hourly.py（读 data-hourly → hourly/index.html）
-#   日报脚本  scripts/report_cloud.py       （→ daily/）
-#   周期脚本  scripts/report_cloud_period.py（→ weekly/ monthly/）
+#   看板脚本  scripts/report_cloud_hourly.py（读 data-hourly → hourly/index.html，豫北四市）
+#   日报脚本  scripts/report_cloud.py       （AIR_PROFILE=yubei → daily/；=yuxi → yuxi/）
+#   周期脚本  scripts/report_cloud_period.py（→ weekly/ monthly/，豫北四市）
 #   ⚠️ scripts/ 下全部由项目 deploy_github.py 自动镜像，勿手工改仓库内副本
 #
 # 公开页（GitHub Pages，推送后自动重建）：
@@ -18,6 +18,8 @@
 # ✅ 跨境可达性已实测确认（2026-09-24）：海外 runner 能正常访问 air.cnemc.cn:18007，
 #    首轮运行 success，4/4 城市、117 条记录、零错误。原"头号未验证风险"已排除。
 #    若日后 ok=false 且错误为超时/连接失败，再改用国内节点方案（见同目录 scf_handler.py）。
+# 2026-10-01 城市池由 4 城（豫北）扩到 9 城（豫北四市 + 豫西六市，新乡共用），
+#    目的是让豫西日报也能在云端每小时刷新；采集耗时随之增加，但仍是同一批 HTTP 请求。
 #
 # 已知行为（GitHub 官方文档）：
 #  - 最小间隔 5 分钟；cron 为尽力而为，高峰延迟 5–30 分钟属正常，无 SLA
@@ -31,7 +33,7 @@
 #      GET https://api.github.com/repos/song19850425/env-assets/actions/workflows/air-hourly.yml/runs
 #    或本机一行命令：py .cloud_sim/watch_cloud_run.py 600
 
-name: 大气管家 · 豫北小时采集
+name: 大气管家 · 小时采集与出报
 
 on:
   schedule:
@@ -91,7 +93,14 @@ jobs:
       - name: 生成小时序列看板（读 data-hourly JSONL，Pages 上随采集自动刷新）
         run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud_hourly.py"
 
-      - name: 生成日报（云端出报，本机关机也能刷新公开页）
+      - name: 生成日报 · 豫北四市（云端出报，本机关机也能刷新公开页）
+        run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
+
+      # 同一份脚本跑第二遍即出豫西日报：档案用环境变量切换（见 report_cloud.py 的
+      # AIR_PROFILE / config.PROFILES），不复制第二份脚本 —— 复制就意味着两套口径要各自维护。
+      - name: 生成日报 · 豫西六市（同一套口径，板块 yuxi/）
+        env:
+          AIR_PROFILE: yuxi
         run: python "EnvData/08-大气管家/豫北每日一页纸/scripts/report_cloud.py"
 
       - name: 生成周报 / 月报（周期报告，按"内容不变不落盘"避免 hourly 空提交）
