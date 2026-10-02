@@ -1,79 +1,79 @@
 {
- "last_run": "2026-10-02 21:58:55",
+ "last_run": "2026-10-03 03:14:11",
  "tz": "Asia/Shanghai",
  "ok": true,
  "reports": {
   "daily": {
    "ok": true,
-   "timepoint": "2026-10-02T21:00",
+   "timepoint": "2026-10-03T02:00",
    "stations": 21,
    "weather_cities": 4,
-   "weather_aligned": "2026-10-02T21:00",
-   "period": "2026-10-02",
-   "file": "2026-10-02.html",
+   "weather_aligned": "2026-10-03T02:00",
+   "period": "2026-10-03",
+   "file": "2026-10-03.html",
    "written": 2,
-   "archive_count": 10,
+   "archive_count": 11,
    "review": true,
    "forecast_cities": 4,
    "neighbor_cities": 6,
-   "at": "2026-10-02 21:58:35"
+   "at": "2026-10-03 03:13:51"
   },
   "weekly": {
    "ok": true,
-   "period": "2026-09-25 ~ 2026-10-01",
-   "file": "0925_to_1001.html",
-   "written": 0,
-   "at": "2026-10-02 21:58:55"
+   "period": "2026-09-26 ~ 2026-10-02",
+   "file": "0926_to_1002.html",
+   "written": 3,
+   "at": "2026-10-03 03:14:11"
   },
   "monthly": {
    "ok": true,
-   "period": "2026-09-18 ~ 2026-10-01",
+   "period": "2026-09-19 ~ 2026-10-02",
    "file": "2026-10.html",
-   "written": 0,
-   "at": "2026-10-02 21:58:55"
+   "written": 2,
+   "at": "2026-10-03 03:14:11"
   },
   "hourly": {
    "ok": true,
    "days": 7,
    "files": 7,
-   "stations": 819,
+   "stations": 735,
    "weather": 672,
-   "hours": 39,
+   "hours": 35,
    "window": [
-    "2026-09-26T02:00",
-    "2026-10-02T21:00"
+    "2026-09-27T00:00",
+    "2026-10-03T02:00"
    ],
    "written": true,
-   "at": "2026-10-02 21:58:17"
+   "at": "2026-10-03 03:13:26"
   },
   "yuxi": {
    "ok": true,
-   "timepoint": "2026-10-02T21:00",
+   "timepoint": "2026-10-03T02:00",
    "stations": 40,
    "weather_cities": 6,
-   "weather_aligned": "2026-10-02T21:00",
-   "period": "2026-10-02",
-   "file": "2026-10-02.html",
+   "weather_aligned": "2026-10-03T02:00",
+   "period": "2026-10-03",
+   "file": "2026-10-03.html",
    "written": 2,
-   "archive_count": 10,
+   "archive_count": 11,
    "review": true,
    "forecast_cities": 6,
    "neighbor_cities": 5,
-   "at": "2026-10-02 21:58:46"
+   "at": "2026-10-03 03:14:05"
   },
   "hourly-yuxi": {
    "ok": true,
    "days": 7,
    "files": 7,
-   "stations": 537,
-   "weather": 408,
-   "hours": 39,
+   "stations": 542,
+   "weather": 528,
+   "hours": 35,
    "window": [
-    "2026-09-26T02:00",
-    "2026-10-02T21:00"
+    "2026-09-27T00:00",
+    "2026-10-03T02:00"
    ],
    "written": true,
-   "at": "2026-10-02 21:58:17"
+   "at": "2026-10-03 03:13:27"
   }
  },
  "stale": [],
