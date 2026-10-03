@@ -1,11 +1,13 @@
 {
- "last_run": "2026-10-03 21:19:44+0800",
- "last_run_utc": "2026-10-03T13:20:09Z",
- "records_fetched": 270,
- "records_new": 54,
- "stations_ok": 9,
+ "last_run": "2026-10-04 01:27:11+0800",
+ "last_run_utc": "2026-10-03T17:27:48Z",
+ "records_fetched": 259,
+ "records_new": 259,
+ "stations_ok": 8,
  "cities": 9,
- "errors": [],
+ "errors": [
+  "郑州市: 接口返回空"
+ ],
  "detail": {
   "安阳市": {
    "ok": true,
@@ -28,8 +30,8 @@
    "weather": 24
   },
   "郑州市": {
-   "ok": true,
-   "n": 11,
+   "ok": false,
+   "err": "接口返回空",
    "weather": 24
   },
   "洛阳市": {
