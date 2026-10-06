@@ -1,14 +1,14 @@
 {
- "last_run": "2026-10-06 16:54:49",
+ "last_run": "2026-10-06 23:54:24",
  "tz": "Asia/Shanghai",
  "ok": true,
  "reports": {
   "daily": {
    "ok": true,
-   "timepoint": "2026-10-06T16:00",
+   "timepoint": "2026-10-06T23:00",
    "stations": 21,
    "weather_cities": 4,
-   "weather_aligned": "2026-10-06T16:00",
+   "weather_aligned": "2026-10-06T23:00",
    "period": "2026-10-06",
    "file": "2026-10-06.html",
    "written": 2,
@@ -16,42 +16,42 @@
    "review": true,
    "forecast_cities": 4,
    "neighbor_cities": 6,
-   "at": "2026-10-06 16:54:31"
+   "at": "2026-10-06 23:54:02"
   },
   "weekly": {
    "ok": true,
    "period": "2026-09-29 ~ 2026-10-05",
    "file": "0929_to_1005.html",
    "written": 0,
-   "at": "2026-10-06 16:54:49"
+   "at": "2026-10-06 23:54:24"
   },
   "monthly": {
    "ok": true,
    "period": "2026-09-22 ~ 2026-10-05",
    "file": "2026-10.html",
    "written": 0,
-   "at": "2026-10-06 16:54:49"
+   "at": "2026-10-06 23:54:24"
   },
   "hourly": {
    "ok": true,
    "days": 7,
    "files": 7,
-   "stations": 735,
+   "stations": 756,
    "weather": 672,
-   "hours": 35,
+   "hours": 36,
    "window": [
     "2026-09-30T04:00",
-    "2026-10-06T16:00"
+    "2026-10-06T23:00"
    ],
    "written": true,
-   "at": "2026-10-06 16:54:17"
+   "at": "2026-10-06 23:53:48"
   },
   "yuxi": {
    "ok": true,
-   "timepoint": "2026-10-06T16:00",
+   "timepoint": "2026-10-06T23:00",
    "stations": 40,
    "weather_cities": 6,
-   "weather_aligned": "2026-10-06T16:00",
+   "weather_aligned": "2026-10-06T23:00",
    "period": "2026-10-06",
    "file": "2026-10-06.html",
    "written": 2,
@@ -59,21 +59,21 @@
    "review": true,
    "forecast_cities": 6,
    "neighbor_cities": 5,
-   "at": "2026-10-06 16:54:44"
+   "at": "2026-10-06 23:54:16"
   },
   "hourly-yuxi": {
    "ok": true,
    "days": 7,
    "files": 7,
-   "stations": 1114,
+   "stations": 1154,
    "weather": 888,
-   "hours": 35,
+   "hours": 36,
    "window": [
     "2026-09-30T04:00",
-    "2026-10-06T16:00"
+    "2026-10-06T23:00"
    ],
    "written": true,
-   "at": "2026-10-06 16:54:17"
+   "at": "2026-10-06 23:53:48"
   }
  },
  "stale": [],
