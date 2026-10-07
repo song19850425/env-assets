@@ -325,12 +325,8 @@ def _supplementary(cfg, cities, today):
 
 def main():
     data_dir = os.environ.get("AIR_DATA_DIR") or DATA_DIR
-    # 2026-10-07 修复：输出目录必须跟档案走（yubei → daily/，yuxi → yuxi/）。
-    # 之前硬编码 DAILY_DIR，workflow 里第二遍（AIR_PROFILE=yuxi）把第一遍刚写好的
-    # daily/*.html 直接覆盖 —— 豫西日报永远只有 1 期，豫北日报被静默覆盖（2026-10-01 起）。
     out_dir = (sys.argv[1] if len(sys.argv) > 1
-               else os.environ.get("AIR_DAILY_DIR")
-               or os.path.join(MODULE, CFG["section"]))
+               else os.environ.get("AIR_DAILY_DIR") or DAILY_DIR)
 
     tp, recs = load_latest(data_dir)
     if not tp or not recs:
