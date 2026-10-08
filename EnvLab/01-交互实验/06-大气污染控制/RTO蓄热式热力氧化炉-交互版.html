@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTO 蓄热式热力氧化炉 · REGENERATIVE THERMAL OXIDIZER</title>
+<style>
+:root{
+  --bg:#0d0a08; --panel:#1a1410; --panel2:#130f0c; --line:rgba(224,168,120,.16);
+  --text:#f6ede4; --muted:#b5a08a; --dim:#7d6a58;
+  --cyan:#22d3ee; --blue:#38bdf8; --green:#34d399; --red:#fb7185; --amber:#fbbf24;
+  --orange:#f97316; --flame:#fb923c; --accent:#f97316;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(1200px 700px at 18% -10%, rgba(249,115,22,.08), transparent 60%),
+             radial-gradient(900px 600px at 95% 110%, rgba(251,146,60,.05), transparent 60%), var(--bg);
+  color:var(--text); font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:22px 16px 30px;
+}
+#loader{position:fixed; inset:0; background:var(--bg); z-index:50; display:flex; flex-direction:column; gap:14px;
+  align-items:center; justify-content:center; transition:opacity .6s}
+#loader.done{opacity:0; pointer-events:none}
+#loader .t{font-size:15px; letter-spacing:.35em; color:var(--muted)}
+#loader .bar{width:180px; height:3px; background:#2b1f16; border-radius:99px; overflow:hidden}
+#loader .bar i{display:block; height:100%; width:40%; border-radius:inherit;
+  background:linear-gradient(90deg,var(--accent),#fbbf24); animation:ld 1s ease-in-out infinite alternate}
+@keyframes ld{from{transform:translateX(-60%)}to{transform:translateX(280%)}}
+header{width:100%; max-width:1180px; margin-bottom:16px}
+.kicker{font-size:11px; letter-spacing:.3em; color:var(--accent); margin-bottom:6px}
+h1{font-size:clamp(22px,3.4vw,32px); letter-spacing:.02em; margin-bottom:6px}
+h1 .en{color:var(--dim); font-weight:400; font-size:.62em; letter-spacing:.14em; margin-left:10px}
+.sub{color:var(--muted); font-size:13px; line-height:1.7; max-width:960px}
+.sub b{color:#fdba74; font-weight:600}
+.stage{width:100%; max-width:1180px; display:grid; grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr); gap:16px}
+@media(max-width:900px){.stage{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--line);
+  border-radius:16px; padding:16px; box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.card h2{font-size:12px; letter-spacing:.25em; color:var(--dim); margin-bottom:12px; font-weight:600}
+#scene{position:relative; border-radius:12px; overflow:hidden; background:#0f0b09; border:1px solid var(--line)}
+#scene svg{display:block; width:100%; height:auto}
+#chartView{display:none}
+#chartView.on{display:block}
+#sceneView.hidden{display:none}
+.dl-card{position:absolute; right:12px; bottom:12px; background:rgba(15,9,5,.93); border:1px solid var(--line);
+  border-radius:12px; padding:11px 14px; backdrop-filter:blur(3px); text-align:center; min-width:186px}
+.dl-card .dl-t{font-size:11.5px; color:var(--muted); letter-spacing:.12em; margin-bottom:4px}
+.dl-card .dl-v{font-size:30px; font-weight:800; font-variant-numeric:tabular-nums; color:#fdba74}
+.dl-card .dl-v small{font-size:12px; color:var(--dim); font-weight:400}
+.dl-card .dl-bar{width:162px; height:7px; background:#2b1f16; border-radius:99px; margin:8px auto 4px; position:relative}
+.dl-card .dl-bar i{position:absolute; top:0; bottom:0; left:0; width:0%; background:linear-gradient(90deg,#f97316,#fbbf24); border-radius:99px}
+.dl-card .dl-bar .mk{position:absolute; top:-3px; bottom:-3px; width:2px; background:#fb7185; opacity:.9}
+.dl-card .dl-cap{font-size:10px; color:var(--dim)}
+.scen-row{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px}
+.scen{border:1px solid var(--line); background:rgba(224,168,120,.05); color:var(--text); border-radius:10px;
+  padding:10px 8px; font-size:12px; cursor:pointer; text-align:center; transition:.15s; line-height:1.5}
+.scen small{display:block; color:var(--dim); font-size:10px; margin-top:2px}
+.scen:hover{border-color:var(--accent)}
+.scen.on{border-color:var(--accent); background:rgba(249,115,22,.1); box-shadow:0 0 0 1px var(--accent) inset}
+.ctl{margin-bottom:13px}
+.ctl .lab{font-size:11px; color:var(--muted); letter-spacing:.1em; margin-bottom:7px; display:flex; justify-content:space-between}
+.ctl .lab .key{color:var(--dim)}
+.btns{display:flex; gap:7px; flex-wrap:wrap}
+.pbtn{flex:1; min-width:70px; border:1px solid var(--line); background:rgba(224,168,120,.05); color:var(--text);
+  border-radius:8px; padding:8px 4px; font-size:12px; cursor:pointer; transition:.15s; white-space:nowrap}
+.pbtn:hover{border-color:var(--accent)}
+.pbtn.on{border-color:var(--accent); background:rgba(249,115,22,.12); color:#fdba74; font-weight:700}
+.reads{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0}
+.read{background:rgba(15,9,5,.6); border:1px solid var(--line); border-radius:10px; padding:9px 6px; text-align:center}
+.read .v{font-size:19px; font-weight:800; font-variant-numeric:tabular-nums; color:#fdba74}
+.read .v small{font-size:11px; color:var(--dim); font-weight:400}
+.read .k{font-size:10px; color:var(--dim); margin-top:3px}
+.judge{border-radius:10px; padding:11px 12px; font-size:13px; font-weight:700; text-align:center; margin-bottom:12px;
+  border:1px solid var(--line); background:rgba(224,168,120,.06); color:var(--muted); transition:.25s}
+.judge.ok{border-color:rgba(52,211,153,.6); background:rgba(52,211,153,.1); color:#9eeacb}
+.judge.bad{border-color:rgba(251,113,133,.6); background:rgba(251,113,133,.1); color:#ffc1cb}
+.judge.warn{border-color:rgba(251,191,36,.6); background:rgba(251,191,36,.1); color:#ffe18a}
+#narrate{background:rgba(15,9,5,.6); border:1px solid var(--line); border-left:3px solid var(--accent);
+  border-radius:8px; padding:11px 12px; font-size:12.5px; line-height:1.75; color:#eddfd2; min-height:86px; transition:opacity .18s}
+#narrate .who{color:var(--accent); font-weight:700; margin-right:6px}
+.legend{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; font-size:10.5px; color:var(--dim)}
+.legend i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:4px; vertical-align:-1px}
+.keys{margin-top:12px; font-size:10.5px; color:var(--dim); line-height:2}
+.keys b{display:inline-block; min-width:52px; color:var(--muted); font-weight:600}
+.keys code{background:#2b1f16; border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-size:10px; color:#f0dcc8}
+.method-note{margin-top:10px; font-size:13px; color:#c4b09c; line-height:1.8;
+  border-top:1px solid var(--line); padding-top:9px}
+.method-note b{color:var(--muted)}
+footer{width:100%; max-width:1180px; margin-top:16px; color:var(--dim); font-size:11px; line-height:1.9;
+  border-top:1px solid var(--line); padding-top:12px}
+footer b{color:var(--muted)}
+/* ---- 站内导航 ---- */
+.backrow{width:100%;max-width:1180px;margin:0 auto 12px}
+.back{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;font-size:12.5px;color:var(--muted);background:var(--panel);text-decoration:none}
+.back:hover{border-color:var(--amber);color:var(--text)}
+.qr-foot{display:flex;align-items:center;gap:20px;width:100%;max-width:1180px;margin:30px auto 0;
+  padding:18px 20px;border:1px solid var(--line);border-radius:13px;background:var(--panel);flex-wrap:wrap}
+.qr-foot-img{width:132px;height:132px;display:block;border-radius:10px;background:#fff;flex:0 0 auto}
+.qr-foot-ph{display:none;width:132px;height:132px;border:1px dashed var(--line);border-radius:10px;
+  align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--dim);flex:0 0 auto}
+.qr-foot-txt{min-width:220px;flex:1 1 300px}
+.qr-foot-t{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px}
+.qr-foot-d{font-size:12.5px;color:var(--muted);line-height:1.7;max-width:560px}
+.qr-foot-n{font-size:11.5px;color:var(--dim);margin-top:6px}
+@media(max-width:640px){.qr-foot{gap:14px;padding:15px 16px}.qr-foot-img,.qr-foot-ph{width:112px;height:112px}}
+</style>
+</head>
+<body>
+<div id="loader"><div class="t">RTO 启动中…</div><div class="bar"><i></i></div></div>
+
+<div class="backrow"><a class="back" href="../../../index.html">← 返回数字资产库</a></div>
+<header>
+  <div class="kicker">RTO · 蓄热式热力氧化 · 无人值守运行</div>
+  <h1>RTO 蓄热式热力氧化炉<span class="en">REGENERATIVE THERMAL OXIDIZER</span></h1>
+  <p class="sub">VOCs 废气 → 蓄热床预热 → 燃烧室高温氧化（≥760℃）→ 蓄热床回收热量 → 达标排放。
+  两个蓄热床交替吸热放热，<b>切换阀每 90 秒换向一次</b>，出口非甲烷总烃稳定控制在 <b>60 mg/m³ 以内</b>。</p>
+</header>
+
+<div class="stage">
+  <div class="card">
+    <h2>RTO 工艺流程 · PROCESS FLOW</h2>
+    <div id="scene">
+      <div id="sceneView">
+        <svg id="field" viewBox="0 0 640 470" role="img" aria-label="RTO 蓄热式热力氧化炉工艺流程图">
+          <rect x="0" y="0" width="640" height="470" fill="#0f0b09"/>
+          <g id="plant"></g>
+          <g id="flows"></g>
+          <text x="16" y="356" fill="#7d6a58" font-size="11">实时日志</text>
+          <g id="log"></g>
+        </svg>
+        <div class="dl-card">
+          <div class="dl-t">出口非甲烷总烃（CEMS）</div>
+          <div class="dl-v" id="dlV">0.0<small> mg/m³</small></div>
+          <div class="dl-bar"><i id="dlBar"></i><span class="mk" style="left:100%"></span></div>
+          <div class="dl-cap">红线：60 mg/m³ 排放限值</div>
+        </div>
+      </div>
+      <div id="chartView">
+        <svg id="chart" viewBox="0 0 640 430" role="img" aria-label="出口非甲烷总烃曲线"></svg>
+      </div>
+    </div>
+    <div class="method-note"><b>方法依据：</b>氧化率 = 温度因子 × 停留时间因子 × 蓄热效率因子；出口浓度 = 进口浓度 ×(1−氧化率) + 未处理旁通量。切换阀按固定周期换向，异常事件（阀卡涩 / 炉温不足 / 陶瓷堵塞）按固定时刻插入运行时间轴。</div>
+  </div>
+
+  <div class="card">
+    <h2>运行控制台 · CONSOLE</h2>
+    <div class="scen-row" id="scenRow"></div>
+    <div class="ctl">
+      <div class="lab"><span>切换周期</span><span class="key">60 / 90 / 120 s</span></div>
+      <div class="btns" id="nRow"></div>
+    </div>
+    <div class="ctl">
+      <div class="lab"><span>燃烧室温度</span><span class="key">760 / 800 / 850 ℃</span></div>
+      <div class="btns" id="pRow"></div>
+    </div>
+    <div class="reads">
+      <div class="read"><div class="v" id="rT">0<small> h</small></div><div class="k">已运行</div></div>
+      <div class="read"><div class="v" id="rProg">0<small> %</small></div><div class="k">周期进度</div></div>
+      <div class="read"><div class="v" id="rStage">–</div><div class="k">当前环节</div></div>
+      <div class="read"><div class="v" id="rQc">–</div><div class="k">排放状态</div></div>
+      <div class="read"><div class="v" id="rEta">–<small> ℃</small></div><div class="k">燃烧室温度</div></div>
+      <div class="read"><div class="v" id="rMan">–</div><div class="k">人工介入</div></div>
+    </div>
+    <div class="judge" id="judge">运行待启动…</div>
+    <div id="narrate"><span class="who">值班员</span><span id="narrTxt">选择场景，启动运行周期。</span></div>
+    <div class="legend">
+      <span><i style="background:#8a7a68"></i>未处理废气</span>
+      <span><i style="background:#fb923c"></i>高温净气</span>
+      <span><i style="background:#7dd3fc"></i>预热后废气</span>
+      <span><i style="background:#fb7185"></i>异常 / 超标</span>
+    </div>
+    <div class="keys">
+      <div><b>空格</b><code>Space</code> 切换场景</div>
+      <div><b>曲线</b><code>V</code> 浓度曲线 <b style="min-width:34px">暂停</b><code>P</code></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>教学简化模型</b>：炉体尺寸比例、各环节耗时、温度与浓度数值均为演示假设，非实测数据；切换周期为便于演示已缩短。真实 RTO 受废气组分、风量、蓄热体特性、停留时间与切换制度约束，不作为设计、运行或排期依据。三床式另设吹扫阶段，此处按两床式简化。
+</footer>
+
+<section class="qr-foot" aria-label="关注公众号">
+  <img class="qr-foot-img" src="../../../assets/公众号二维码.jpg" alt="公众号二维码"
+       width="132" height="132" loading="lazy"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+  <div class="qr-foot-ph">二维码<br>待放置</div>
+  <div class="qr-foot-txt">
+    <div class="qr-foot-t">环境检测 · 数字资产库</div>
+    <div class="qr-foot-d">长按识别二维码关注公众号，获取标准速查表、交互实验与工具更新。</div>
+    <div class="qr-foot-n">交流 / 定制课程 / 工具合作，也可在公众号留言。</div>
+  </div>
+</section>
+
+<script>
+"use strict";
+/* ================= 基础 ================= */
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const FAST=/[?&]fast=1/.test(location.search);
+const SPEED=parseFloat(new URLSearchParams(location.search).get('speed')||'0.22');
+const NS="http://www.w3.org/2000/svg";
+
+/* ================= 场景与参数 ================= */
+const SCENS=[
+  {name:"基准运行", sub:"全程零人工"},
+  {name:"切换阀卡涩", sub:"换向失败"},
+  {name:"炉温不足", sub:"未达起燃温度"},
+  {name:"蓄热陶瓷堵塞", sub:"压降升高"},
+];
+const NN=[60,90,120], PP=[760,800,850];
+const STAGE_NAMES=["废气引入","蓄热预热","高温氧化","蓄热回收","阀组切换","达标排放"];
+const HL_MAP=[
+  ["inlet"],
+  ["bedA"],
+  ["chamber"],
+  ["bedB"],
+  ["valve"],
+  ["outlet","stack","cems"],
+];
+let S={scen:0, N:1, P:1};
+let run=null, paused=false;
+const CYC_=()=>NN[S.N], TEMP_=()=>PP[S.P];
+const LIMIT=60;              // 出口 NMHC 红线 mg/m³
+const CIN=300;               // 进口 NMHC 浓度
+
+/* 运行周期模型（24h 一个班次） */
+function stageDur(){
+  const cyc=CYC_(), T=TEMP_();
+  const base=[1.5, 3, 8, 3, 2, 6.5];
+  const f=cyc/90;                       // 切换周期越长，单周期蓄热效率越低
+  const g=1+(850-T)/300;                // 温度越低，升温越慢
+  const d=base.map((x,i)=>i===1||i===3?x*f:x*g);
+  if(S.scen===1)d[4]+=3;                // 阀卡涩：需人工处理
+  if(S.scen===2)d[2]+=3.5;              // 炉温不足：升温耗时
+  if(S.scen===3){ d[1]+=2; d[3]+=2; }                 // 陶瓷堵塞：压降大
+  return d;
+}
+function stageBounds(){const d=stageDur(), b=[0]; d.forEach(x=>b.push(b[b.length-1]+x)); return b;}
+function totalT(){const b=BND(); return b[b.length-1];}
+function stageAt(t){const b=BND(); for(let i=0;i<6;i++)if(t<b[i+1])return i; return 5;}
+
+/* 边界缓存：避免每个函数各自声明，漏一个就是 b is not defined
+   用 var 而非 let —— let 有 TDZ，函数提升后若在声明行执行前被调用会炸 */
+var BOUNDS=null;
+function BND(){ if(BOUNDS===null)BOUNDS=stageBounds(); return BOUNDS; }
+
+/* 炉温：正常维持设定值，炉温不足场景掉下来 */
+function tempAt(t){
+  const T=TEMP_(), b=BND();
+  let v=T;
+  if(S.scen===2 && t>b[2]) v = T - 190*(1-Math.exp(-(t-b[2])/3.5));
+  return v;
+}
+/* 氧化率 */
+function etaAt(t){
+  const T=tempAt(t), cyc=CYC_(), b=BND();
+  let e = 0.86 + (T-760)/100*0.045 + (90-cyc)/60*0.012;
+  if(S.scen===1 && t>b[4]) e -= 0.42*(1-Math.exp(-(t-b[4])/1.6));   // 阀卡涩：未处理旁通
+  if(S.scen===2 && t>b[2]) e -= 0.30*(1-Math.exp(-(t-b[2])/3));     // 炉温不足
+  if(S.scen===3 && t>b[1]) e -= 0.16*(1-Math.exp(-(t-b[1])/4));     // 陶瓷堵塞
+  return clamp(e, 0.05, 0.995);
+}
+function outAt(t){ return CIN*(1-etaAt(t)); }
+function maxOut(){let m=0; for(let i=0;i<=240;i++)m=Math.max(m,outAt(totalT()*i/240)); return m;}
+
+function events(){
+  const b=BND(), ev=[];
+  const push=(t,text,warn)=>ev.push({t,text,warn:!!warn,fired:false});
+  push(0,`📋 运行周期 #RTO-20260721-01 启动 · 切换周期 ${CYC_()}s · 炉温 ${TEMP_()}℃`);
+  push(0.1,`🏭 VOCs 废气引入 · 进口非甲烷总烃 ${CIN} mg/m³`);
+  push(b[1],"♨️ A 床蓄热体放热 · 废气被预热至 700℃ 以上");
+  push(b[2],"🔥 燃烧室高温氧化 · 停留时间约 0.8 s");
+  push(b[3],"🌡️ B 床蓄热体吸热 · 回收净气热量");
+  push(b[4],"🔁 切换阀换向 · 气流反向");
+  if(S.scen===1){
+    push(b[4],"⚠️ 切换阀动作超时 · 换向失败",true);
+    push(b[4]+1.0,"🚨 部分废气未经处理直接旁通",true);
+    push(b[4]+2.0,"🔴 需要人工介入：检修切换阀",true);
+  }
+  if(S.scen===2){
+    push(b[2]+0.8,"🌡️ 燃烧室温度持续下降 · 低于 760℃",true);
+    push(b[2]+1.6,"⚠️ 氧化不完全 · 出口浓度上升",true);
+    push(b[2]+2.6,"🔴 需要人工介入：检查燃烧器 / 补燃气",true);
+  }
+  if(S.scen===3){
+    push(b[1],"📈 床层压降升高 · 蓄热陶瓷疑似积灰堵塞",true);
+    push(b[1]+2.0,"⚠️ 处理风量下降 · 氧化率降低",true);
+  }
+  push(b[4]+0.5,"📡 CEMS 数据上传 · 生态环境平台");
+  push(b[5],"📜 运行台账自动生成 · 电子签");
+  return ev.sort((a,c)=>a.t-c.t);
+}
+
+/* ================= 工艺流程图（设备级） ================= */
+function drawStatic(){
+  const g=$("plant"); g.innerHTML="";
+  const LN="rgba(224,168,120,.55)", FL="rgba(224,168,120,.06)";
+  const P=(id,d,f)=>`<path id="${id}" d="${d}" fill="${f===undefined?FL:f}" stroke="${LN}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  let s="";
+
+  /* 燃烧室 */
+  s+=P("eq-chamber","M140 68 h280 v50 h-280 z","rgba(249,115,22,.10)");
+  s+=`<g id="flame"></g>`;
+  s+=`<text x="280" y="60" text-anchor="middle" fill="#fdba74" font-size="11">燃烧室</text>`;
+  s+=`<text id="tCham" x="280" y="98" text-anchor="middle" fill="#fdba74" font-size="13" font-weight="700">800 ℃</text>`;
+
+  /* 两个蓄热床 */
+  s+=P("eq-bedA","M165 132 h90 v136 h-90 z","rgba(224,168,120,.06)");
+  s+=P("eq-bedB","M305 132 h90 v136 h-90 z","rgba(224,168,120,.06)");
+  s+=`<g id="fillA"></g><g id="fillB"></g>`;
+  s+=`<text x="210" y="152" text-anchor="middle" fill="#b5a08a" font-size="10">蓄热床 A</text>`;
+  s+=`<text x="350" y="152" text-anchor="middle" fill="#b5a08a" font-size="10">蓄热床 B</text>`;
+  /* 陶瓷填充示意（静态底纹） */
+  for(const x0 of [165,305]){
+    for(let r=0;r<7;r++){
+      for(let c=0;c<5;c++){
+        s+=`<circle cx="${x0+12+c*17}" cy="${166+r*16}" r="4" fill="rgba(224,168,120,.22)"/>`;
+      }
+    }
+  }
+  /* 床与燃烧室的连接 */
+  s+=`<path d="M210 132 v-14 h0" stroke="${LN}" stroke-width="1.6" fill="none"/>`;
+  s+=`<path d="M350 132 v-14 h0" stroke="${LN}" stroke-width="1.6" fill="none"/>`;
+
+  /* 切换阀组：用方向箭头直接示出气流走向 */
+  s+=P("eq-valve","M180 286 h200 v44 h-200 z","rgba(56,189,248,.07)");
+  s+=`<g id="arrows"></g>`;
+  s+=`<text x="222" y="344" text-anchor="middle" fill="#fdba74" font-size="10">进气</text>`;
+  s+=`<text x="280" y="344" text-anchor="middle" fill="#7d6a58" font-size="9">换向阀</text>`;
+  s+=`<text x="338" y="344" text-anchor="middle" fill="#7dd3fc" font-size="10">出气</text>`;
+  /* 床底到阀 */
+  s+=`<path d="M210 268 v18" stroke="${LN}" stroke-width="1.6" fill="none"/>`;
+  s+=`<path d="M350 268 v18" stroke="${LN}" stroke-width="1.6" fill="none"/>`;
+
+  /* 废气进口 / 净气出口 */
+  s+=P("eq-inlet","M20 296 h160 v26 h-160 z","rgba(138,122,104,.18)");
+  s+=`<path d="M180 309 h0" stroke="${LN}" stroke-width="1.6"/>`;
+  s+=`<path d="M26 309 h12 m-6 -5 l6 5 l-6 5" fill="none" stroke="#8a7a68" stroke-width="2.2"/>`;
+  s+=`<text x="100" y="338" text-anchor="middle" fill="#b5a08a" font-size="10.5">VOCs 废气</text>`;
+
+  s+=P("eq-outlet","M380 296 h130 v26 h-130 z","rgba(125,211,252,.10)");
+  s+=`<text x="445" y="338" text-anchor="middle" fill="#b5a08a" font-size="10.5">净气出口</text>`;
+
+  /* 烟囱 + CEMS */
+  s+=P("eq-stack","M530 176 h34 v120 h-34 z");
+  s+=`<rect x="528" y="170" width="38" height="8" fill="rgba(224,168,120,.20)" stroke="${LN}" stroke-width="1.1"/>`;
+  s+=`<path d="M547 170 v-16 m-5 6 l5 -6 l5 6" fill="none" stroke="#7dd3fc" stroke-width="2.4"/>`;
+  s+=`<text x="596" y="160" fill="#7dd3fc" font-size="10">达标排放</text>`;
+  s+=P("eq-cems","M576 240 h46 v26 h-46 z");
+  s+=`<path d="M576 253 h-12" stroke="${LN}" stroke-width="1.6"/>`;
+  s+=`<text x="599" y="257" text-anchor="middle" fill="#7d6a58" font-size="9">CEMS</text>`;
+  s+=`<path d="M510 309 h20" stroke="${LN}" stroke-width="1.6" fill="none"/>`;
+
+  g.innerHTML=s;
+
+  /* 火焰（燃烧室内） */
+  const fg=$("flame"); let fs="";
+  for(let i=0;i<7;i++){
+    const x=196+i*28;
+    fs+=`<path id="fl${i}" d="M${x} 112 q5 -16 10 0 q-5 8 -10 0 z" fill="#fb923c" opacity=".85"/>`;
+  }
+  fg.innerHTML=fs;
+
+  /* 气流流线（12 条） */
+  const gf=$("flows"); gf.innerHTML="";
+  for(let i=0;i<12;i++){
+    gf.innerHTML+=`<line id="air${i}" x1="0" y1="0" x2="0" y2="0"
+      stroke="#8a7a68" stroke-width="3.2" stroke-linecap="round" opacity="0"/>`;
+  }
+  $("log").innerHTML="";
+}
+
+/* 两条气流路径：phase 0 = 左进右出，phase 1 = 右进左出 */
+const PATH0=[
+  [20,309],[180,309],[210,309],[210,268],[210,150],[210,124],[280,124],
+  [350,124],[350,150],[350,268],[350,309],[380,309],[445,309],[510,309],[547,309],[547,140]
+];
+const PATH1=[
+  [20,309],[180,309],[350,309],[350,268],[350,150],[350,124],[280,124],
+  [210,124],[210,150],[210,268],[210,309],[380,309],[445,309],[510,309],[547,309],[547,140]
+];
+function pathAtU(u, ph){
+  const A=(ph===0?PATH0:PATH1);
+  const seg=1/(A.length-1);
+  const i=clamp(Math.floor(u/seg),0,A.length-2);
+  const f=(u-i*seg)/seg;
+  const a=A[i], b=A[i+1];
+  return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f];
+}
+/* 画折线箭头：pts=[[x,y],...]，末端带三角。折线比单段斜线方向更明确 */
+function polyArrow(pts,col){
+  const n=pts.length, [x2,y2]=pts[n-1], [x1,y1]=pts[n-2];
+  const ang=Math.atan2(y2-y1,x2-x1), L=9, W=5;
+  const bx=x2-Math.cos(ang)*L, by=y2-Math.sin(ang)*L;
+  const px=Math.cos(ang+Math.PI/2)*W, py=Math.sin(ang+Math.PI/2)*W;
+  let d="M"+pts[0][0]+" "+pts[0][1];
+  for(let i=1;i<n-1;i++) d+="L"+pts[i][0]+" "+pts[i][1];
+  d+="L"+bx.toFixed(1)+" "+by.toFixed(1);
+  return `<g><path d="${d}" fill="none" stroke="${col}" stroke-width="2.6"`
+    + ` stroke-linecap="round" stroke-linejoin="round"/>`
+    + `<path d="M${x2} ${y2} L${(bx+px).toFixed(1)} ${(by+py).toFixed(1)}`
+    + ` L${(bx-px).toFixed(1)} ${(by-py).toFixed(1)} z" fill="${col}"/></g>`;
+}
+function setEq(id,state){
+  const el=document.getElementById(id); if(!el)return;
+  const col=["rgba(224,168,120,.30)","#f97316","#34d399","#fb7185"][state];
+  el.setAttribute("stroke",col);
+  el.setAttribute("stroke-width",state?2.4:1.6);
+}
+
+/* ================= 运行控制 ================= */
+function startRun(){
+  BOUNDS=null;
+  run={t:0, T:totalT(), ev:events(), done:false,
+       rate:totalT()/(FAST?4:25), peak:0, minT:9999};
+  drawStatic(); syncUI();
+  narr(NARR[S.scen].run);
+}
+function applyScen(i){S.scen=i; paused=false; startRun();}
+function applyParam(k,v){S[k]=v; paused=false; startRun();}
+function narr(t){const n=$("narrate"); n.style.opacity=0;
+  setTimeout(()=>{$("narrTxt").textContent=t; n.style.opacity=1;},160);}
+function addLog(text,warn){
+  const g=$("log");
+  const lines=[...g.children];
+  const el=document.createElementNS(NS,"text");
+  el.setAttribute("x","16"); el.setAttribute("y",(372+lines.length*17).toFixed(0));
+  el.setAttribute("fill",warn?"#fb7185":"#b5a08a"); el.setAttribute("font-size","11.5");
+  el.textContent=`${fmtH(run.t)} ${text}`;
+  g.appendChild(el);
+  while(g.children.length>5)g.removeChild(g.children[0]);
+  [...g.children].forEach((c,i)=>c.setAttribute("y",(372+i*17).toFixed(0)));
+}
+const fmtH=h=>{const H=Math.floor(h),M=Math.floor(h%1*60);
+  return `${String((10+H)%24).padStart(2,"0")}:${String(M).padStart(2,"0")}`;};
+
+function syncUI(){
+  $("scenRow").innerHTML=SCENS.map((s,i)=>
+    `<button class="scen${i===S.scen?" on":""}" data-s="${i}">${s.name}<small>${s.sub}</small></button>`).join("");
+  $("nRow").innerHTML=NN.map((n,i)=>
+    `<button class="pbtn${i===S.N?" on":""}" data-n="${i}">${n} s</button>`).join("");
+  $("pRow").innerHTML=PP.map((v,i)=>
+    `<button class="pbtn${i===S.P?" on":""}" data-p="${i}">${v} ℃</button>`).join("");
+  document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>applyScen(+b.dataset.s));
+  document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>applyParam("N",+b.dataset.n));
+  document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>applyParam("P",+b.dataset.p));
+}
+
+const NARR={
+  0:{run:"系统启动：切换周期 90 秒、炉温 800℃，两个蓄热床开始交替工作。今晚 RTO 可以不用人守着。",
+      end:"全程零人工，出口非甲烷总烃稳定在红线以下。结论：无人值守成立——前提是切换阀听话。"},
+  1:{run:"切换阀动作超时，没换过来。注意：废气会从没关严的那一侧直接旁通出去。",
+      end:"未处理废气旁通，出口瞬间超标。结论：切换阀是 RTO 的头号故障点，一卡就直排。"},
+  2:{run:"燃烧室温度在掉，已经跌破 760℃。低于起燃温度，VOCs 就烧不干净了。",
+      end:"炉温不足导致氧化不完全。结论：RTO 的达标前提是温度，温度的前提是燃烧器和燃气。"},
+  3:{run:"床层压降升高，蓄热陶瓷积灰了。风量下降——氧化率跟着降。",
+      end:"陶瓷堵塞使处理能力下降。结论：蓄热体不是终身件，积灰会让整台设备的效率慢慢垮掉。"},
+};
+function finalJudge(){
+  const T=totalT(), pk=maxOut();
+  const tt=tempAt(T);
+  const map={
+    0:{k:"ok",  t:`稳定达标 · 出口峰值 ${pk.toFixed(1)} mg/m³ · 炉温 ${tt.toFixed(0)}℃ · 全程零人工`},
+    1:{k:"bad", t:`超标排放 · 出口峰值 ${pk.toFixed(1)} mg/m³（切换阀卡涩、废气旁通）`},
+    2:{k:"bad", t:`氧化不完全 · 出口峰值 ${pk.toFixed(1)} mg/m³（炉温跌至 ${tt.toFixed(0)}℃）`},
+    3:{k:"warn",t:`效率下降 · 出口峰值 ${pk.toFixed(1)} mg/m³，需清理蓄热陶瓷`},
+  }[S.scen];
+  return{k:map.k, title:map.t, body:NARR[S.scen].end};
+}
+
+/* ================= 主循环 ================= */
+let lastTs=0, chartTick=0, animT=0;
+function tick(ts){
+  requestAnimationFrame(tick);
+  if(!run)return;
+  const dt=Math.min(0.12,(ts-lastTs)/1000||0); lastTs=ts;
+  if(!paused){
+    animT+=dt;
+    if(!run.done){
+      run.t+=dt*run.rate;
+      run.ev.forEach(e=>{if(!e.fired&&run.t>=e.t){e.fired=true; addLog(e.text,e.warn);}});
+      if(run.t>=run.T){run.t=run.T; run.done=true; onDone();}
+    }
+    updateScene();
+    if($("chartView").classList.contains("on")&&(chartTick++%20===0))drawChart();
+  }
+  updateReads();
+}
+/* 切换相位：每 12 秒（演示用）换向一次 */
+const SWITCH_T=12;
+function phaseNow(){ return Math.floor(animT/SWITCH_T)%2; }
+
+function updateScene(){
+  const b=BND(), t=run.t;
+  const s=stageAt(Math.min(t,run.T-1e-6));
+  const out=outAt(t);
+  const ph=phaseNow();
+
+  /* 设备高亮 */
+  const abnormal=(S.scen===1&&t>b[4])||(S.scen===2&&t>b[2])||(S.scen===3&&t>b[1]);
+  ["chamber","bedA","bedB","valve","inlet","outlet","stack","cems"].forEach(id=>setEq(id,0));
+  for(let i=0;i<s;i++) HL_MAP[i].forEach(id=>setEq(id,2));
+  HL_MAP[s].forEach(id=>setEq(id,abnormal?3:1));
+  if(S.scen===1) setEq("valve",3);
+  if(S.scen===2) setEq("chamber",3);
+  if(S.scen===3) setEq("bedA",3), setEq("bedB",3);
+
+  /* 蓄热床冷热：进气侧放热(冷) 出气侧吸热(热) */
+  const hotA = (ph===1), hotB = (ph===0);
+  const ca = hotA ? "rgba(249,115,22,.22)" : "rgba(125,211,252,.10)";
+  const cb = hotB ? "rgba(249,115,22,.22)" : "rgba(125,211,252,.10)";
+  const fa=$("fillA"), fb=$("fillB");
+  if(fa) fa.innerHTML=`<rect x="168" y="158" width="84" height="107" fill="${ca}"/>`;
+  if(fb) fb.innerHTML=`<rect x="308" y="158" width="84" height="107" fill="${cb}"/>`;
+  /* 换向阀：用箭头示出「进气去哪、出气从哪来」。
+     周期0：进气→A床（左上）、B床→出气（右下）
+     周期1：进气→B床（右上，跨过）、A床→出气（右下，跨过） */
+  const ag=$("arrows");
+  if(ag){
+    const IN="#fdba74", OUT="#7dd3fc";
+    ag.innerHTML = (ph===0)
+      // 进气→A床（右后上）；B床→出气（下后右）
+      ? polyArrow([[190,316],[212,316],[212,292]], IN)
+      + polyArrow([[348,292],[348,322],[372,322]], OUT)
+      // 进气→B床（右跨后上）；A床→出气（下后右跨）
+      : polyArrow([[190,316],[346,316],[346,292]], IN)
+      + polyArrow([[214,292],[214,322],[372,322]], OUT);
+  }
+  /* 切换前 0.9 秒，阀组框高亮预警 */
+  const vb=$("eq-valve");
+  if(vb){
+    const near=(animT % SWITCH_T) > SWITCH_T-0.9;
+    vb.setAttribute("stroke", near ? "#fb923c" : "rgba(224,168,120,.55)");
+    vb.setAttribute("stroke-width", near ? 3 : 1.6);
+  }
+
+  /* 燃烧室温度显示 */
+  const tc=$("tCham");
+  if(tc) tc.textContent = tempAt(t).toFixed(0)+" ℃";
+
+  /* 火焰跳动 */
+  const fl=$("flame");
+  if(fl){
+    [...fl.children].forEach((c,i)=>{
+      const k=1+0.22*Math.sin(animT*7+i*1.1);
+      c.setAttribute("opacity", (0.55+0.35*Math.abs(Math.sin(animT*5+i))).toFixed(2));
+      c.setAttribute("transform", `translate(0,${(1-k)*6}) scale(1 ${k.toFixed(3)})`);
+      c.setAttribute("transform-origin", `${196+i*28} 112`);
+    });
+  }
+
+  /* 气流流线：沿当前相位路径流动 */
+  const nv=$("flows").children.length;
+  const ALEN=20;
+  for(let i=0;i<nv;i++){
+    const v=$("flows").children[i]; if(!v)continue;
+    const u=(animT*SPEED + i/nv) % 1;
+    const [x,yy]=pathAtU(u, ph);
+    const e=0.006;
+    const [ax,ay]=pathAtU(Math.max(0,u-e), ph);
+    const [bx,by]=pathAtU(Math.min(1,u+e), ph);
+    const ang=Math.atan2(by-ay,bx-ax);
+    const hx=Math.cos(ang)*ALEN/2, hy=Math.sin(ang)*ALEN/2;
+    v.setAttribute("x1",(x-hx).toFixed(1)); v.setAttribute("y1",(yy-hy).toFixed(1));
+    v.setAttribute("x2",(x+hx).toFixed(1)); v.setAttribute("y2",(yy+hy).toFixed(1));
+    /* 颜色按所在区段：进口段灰、床内→燃烧室升温、燃烧室后橙、出口净气 */
+    let col="#8a7a68";
+    if(yy<132) col="#fb923c";                       // 燃烧室内
+    else if(yy>=132 && yy<268) col = (out>LIMIT?"#fb7185":"#fdba74");  // 床内
+    else if(x>380) col = out>LIMIT ? "#fb7185" : "#7dd3fc";
+    v.setAttribute("stroke", col);
+    const fade=Math.min(u/0.08,(1-u)/0.08,1);
+    v.setAttribute("opacity",(0.88*fade).toFixed(2));
+  }
+}
+function updateReads(){
+  const t=run.t, T=run.T, s=stageAt(Math.min(t,T-1e-6));
+  const out=outAt(t), tt=tempAt(t);
+  run.peak=Math.max(run.peak||0,out);
+  run.minT=Math.min(run.minT===undefined?9999:run.minT, tt);
+  $("rT").innerHTML=t.toFixed(1)+"<small> h</small>";
+  $("rProg").innerHTML=(t/T*100).toFixed(0)+"<small> %</small>";
+  $("rStage").textContent=STAGE_NAMES[s];
+  const qc=$("rQc");
+  if(out>LIMIT){qc.textContent="超标";qc.style.color="#fb7185";}
+  else if(out>LIMIT*0.8){qc.textContent="偏高";qc.style.color="#fbbf24";}
+  else{qc.textContent="达标";qc.style.color="";}
+  const tEl=$("rEta");
+  tEl.innerHTML=tt.toFixed(0)+"<small> ℃</small>";
+  tEl.style.color = tt<760 ? "#fb7185" : "";
+  const man=$("rMan");
+  const manNeed=(S.scen===1&&t>BND()[4]+1.0)||(S.scen===2&&t>BND()[2]+2.6);
+  man.textContent=manNeed?"是":"否";
+  man.style.color=manNeed?"#fb7185":"";
+  $("dlV").innerHTML=out.toFixed(1)+"<small> mg/m³</small>";
+  const pct=clamp(out/LIMIT*100,0,140);
+  $("dlBar").style.width=Math.min(pct,100).toFixed(1)+"%";
+  $("dlBar").style.background=out>LIMIT?"#fb7185":"linear-gradient(90deg,#f97316,#fbbf24)";
+}
+function onDone(){
+  const j=finalJudge();
+  const el=$("judge");
+  el.className="judge "+j.k; el.textContent=j.title+" —— "+j.body;
+  narr(j.body);
+  drawChart();
+}
+
+/* ================= 曲线视图 ================= */
+function toggleChart(){
+  const cv=$("chartView"), sv=$("sceneView");
+  const on=!cv.classList.contains("on");
+  cv.classList.toggle("on",on); sv.classList.toggle("hidden",on);
+  if(on)drawChart();
+}
+function drawChart(){
+  const svg=$("chart"), W=640, H=430, L=56, R=18, T=30, BOT=44;
+  const TM=Math.max(26,totalT()+2);
+  const CM=320;
+  const X=t=>L+(t/TM)*(W-L-R), Y=v=>T+(1-v/CM)*(H-T-BOT);
+  const b=BND(), cols=["#8a7a68","#f97316","#fb923c","#fbbf24","#38bdf8","#34d399"];
+  let s=`<rect x="0" y="0" width="${W}" height="${H}" fill="#0f0b09"/>`;
+  s+=`<text x="${L}" y="20" fill="#b5a08a" font-size="12">出口非甲烷总烃曲线 · 60 mg/m³ 排放红线</text>`;
+  for(let i=0;i<6;i++)
+    s+=`<rect x="${X(b[i]).toFixed(1)}" y="${T}" width="${(X(b[i+1])-X(b[i])).toFixed(1)}" height="${H-T-BOT}" fill="${cols[i]}" opacity=".07"/>`;
+  for(let v=0;v<=CM;v+=80){
+    s+=`<line x1="${L}" y1="${Y(v)}" x2="${W-R}" y2="${Y(v)}" stroke="rgba(224,168,120,.14)"/>`;
+    s+=`<text x="${L-8}" y="${Y(v)+4}" text-anchor="end" fill="#7d6a58" font-size="10">${v}</text>`;
+  }
+  for(let t=0;t<=TM;t+=4)
+    s+=`<text x="${X(t)}" y="${H-BOT+18}" text-anchor="middle" fill="#7d6a58" font-size="10">${t}h</text>`;
+  s+=`<line x1="${L}" y1="${Y(LIMIT)}" x2="${W-R}" y2="${Y(LIMIT)}" stroke="#fb7185" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+  s+=`<text x="${W-R}" y="${Y(LIMIT)-6}" text-anchor="end" fill="#fb7185" font-size="10">60 mg/m³ 红线</text>`;
+  const Tt=totalT();
+  let d="";
+  for(let i=0;i<=240;i++){const t=Tt*i/240;d+=(i?"L":"M")+X(t).toFixed(1)+","+Y(clamp(outAt(t),0,CM)).toFixed(1);}
+  s+=`<path d="${d}" fill="none" stroke="#fb923c" stroke-width="2"/>`;
+  s+=`<text x="${X(Tt/2)}" y="${Y(CM)-4}" text-anchor="middle" fill="#7d6a58" font-size="10">峰值 ${maxOut().toFixed(1)} mg/m³</text>`;
+  svg.innerHTML=s;
+}
+
+/* ================= 键盘 ================= */
+addEventListener("keydown",e=>{
+  if(e.key===" "){e.preventDefault(); applyScen((S.scen+1)%SCENS.length);}
+  else if(e.key>="1"&&e.key<="3")applyParam("N",+e.key-1);
+  else if(e.key>="4"&&e.key<="6")applyParam("P",+e.key-4);
+  else if(e.key==="v"||e.key==="V")toggleChart();
+  else if(e.key==="p"||e.key==="P"){paused=!paused; narr(paused?"已暂停，再按 P 继续。":"运行继续。");}
+});
+
+/* ================= 启动 ================= */
+addEventListener("load",()=>{
+  setTimeout(()=>$("loader").classList.add("done"),900);
+  startRun();
+  requestAnimationFrame(tick);
+});
+</script>
+</body>
+</html>
