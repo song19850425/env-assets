@@ -71,6 +71,50 @@
   .contact-mail a { color:#1d5aa0; font-size:13px; text-decoration:none; }
   .contact-hint { font-size:11px; color:#999; margin-top:4px; }
 
+
+  /* 火点日报专栏 */
+  #fpBtn { cursor:pointer; }
+  #fire-panel { position:fixed; top:0; right:0; bottom:0; width:min(340px,92vw);
+    background:#fff; z-index:2000; box-shadow:-4px 0 18px rgba(0,0,0,.18);
+    transform:translateX(105%); transition:transform .28s ease; display:flex; flex-direction:column; }
+  #fire-panel.show { transform:none; }
+  .fp-head { display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; background:#9a3412; color:#fff; font-size:15px; }
+  #fp-close { cursor:pointer; font-size:18px; padding:2px 8px; }
+  .fp-body { overflow-y:auto; padding:12px 14px 20px; }
+  .fp-sec { margin-bottom:16px; }
+  .fp-title { font-size:13px; font-weight:700; color:#7c2d12; margin-bottom:8px;
+    border-left:3px solid #ea580c; padding-left:8px; }
+  .fp-sub { font-weight:400; color:#999; font-size:11px; margin-left:6px; }
+  .fp-big { display:flex; align-items:baseline; gap:6px; margin:4px 0 8px; }
+  .fp-big b { font-size:42px; color:#c2410c; line-height:1; }
+  .fp-big span { color:#999; font-size:12px; }
+  .fp-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .fp-chip { font-size:11px; background:#fff7ed; border:1px solid #fed7aa;
+    color:#9a3412; border-radius:20px; padding:3px 10px; }
+  .fp-type { display:flex; justify-content:space-between; font-size:12px;
+    padding:6px 2px; border-bottom:1px dashed #f0e0d0; }
+  .fp-type b { color:#c2410c; }
+  .fp-bar-row { display:flex; align-items:center; gap:8px; font-size:11px; margin:4px 0; }
+  .fp-bar-date { width:52px; color:#666; flex:none; }
+  .fp-bar-track { flex:1; background:#fef3e8; border-radius:4px; height:16px; position:relative; }
+  .fp-bar-fill { background:linear-gradient(90deg,#fb923c,#ea580c); border-radius:4px; height:100%; }
+  .fp-bar-num { width:30px; text-align:right; color:#9a3412; font-weight:700; flex:none; }
+  .fp-day { border:1px solid #f0e0d0; border-radius:8px; margin-bottom:8px; overflow:hidden; }
+  .fp-day summary { cursor:pointer; padding:8px 10px; font-size:12px; font-weight:600;
+    background:#fff7ed; color:#7c2d12; list-style:none; display:flex; justify-content:space-between; }
+  .fp-day summary::-webkit-details-marker { display:none; }
+  .fp-fire { font-size:11px; padding:6px 10px; border-top:1px solid #faf0e6;
+    display:flex; justify-content:space-between; gap:6px; }
+  .fp-fire .t { color:#666; } .fp-fire .g { color:#c2410c; }
+  .fp-note { font-size:11px; color:#aaa; line-height:1.8; text-align:center; padding:8px 0; }
+  @media (min-width:900px) {
+    #fire-panel { top:120px; bottom:24px; right:16px; border-radius:14px;
+      transform:translateX(calc(100% + 24px)); border:1px solid #fed7aa; }
+    #fire-panel.show { transform:none; }
+    .fp-head { border-radius:14px 14px 0 0; }
+  }
+
   .sim-badge { font-size:11px; background:#fef3e8; color:#c2410c;
     border:1px dashed #c2410c; border-radius:8px; padding:3px 7px;
     align-self:center; white-space:nowrap; }
@@ -134,6 +178,7 @@
   <div class="legend-item" id="dataBtn" style="background:#e8f5ee;color:#1a5c3a;font-weight:700;">📥 录入数值</div><span class="sim-badge" title="站点AQI为模拟演示数据（六参数模拟，暂无公开实时接口）；火点为NASA FIRMS真实数据；气象为Open-Meteo实时数据">模拟</span>
   <div class="legend-item" id="wxBtn" style="background:#e8f0fb;color:#1d5aa0;font-weight:700;">🌬 气象图层</div>
   <div class="legend-item" id="fireBtn" style="background:#fef3e8;color:#c2410c;font-weight:700;">🔥 火点(<span id="fire-count">0</span>)</div>
+  <div class="legend-item" id="fpBtn" style="background:#fff7ed;color:#9a3412;font-weight:700;border:1px solid #fed7aa;">📋 火点日报</div>
   <div class="stats">共 <b id="total">42</b> 站</div>
 </div>
 
@@ -152,6 +197,30 @@
   </div>
 </div>
 
+
+<div id="fire-panel">
+  <div class="fp-head"><b>🔥 区域火点日报</b><span id="fp-close">✕</span></div>
+  <div class="fp-body">
+    <div class="fp-sec">
+      <div class="fp-title">本期火点（近2天）<span class="fp-sub" id="fp-updated"></span></div>
+      <div class="fp-big"><b id="fp-count">–</b><span>个火点</span></div>
+      <div class="fp-chips" id="fp-chips"></div>
+    </div>
+    <div class="fp-sec">
+      <div class="fp-title">火情分类</div>
+      <div id="fp-types"></div>
+    </div>
+    <div class="fp-sec">
+      <div class="fp-title">历史趋势<span class="fp-sub">每日火点数</span></div>
+      <div id="fp-trend"></div>
+    </div>
+    <div class="fp-sec">
+      <div class="fp-title">历史明细</div>
+      <div id="fp-history"></div>
+    </div>
+    <div class="fp-note">数据源：NASA FIRMS VIIRS 375m<br>范围：洛阳市界外扩50km · 每日自动更新</div>
+  </div>
+</div>
 <div id="data-panel">
   <h3>📥 录入站点六参数</h3>
   <p>每行一个站点，格式：<b>站点名,PM2.5,PM10,SO2,NO2,CO,O3</b>（CO单位mg/m³，其余μg/m³），AQI自动计算。站点名可简写。<br>例：河滨街道站,42,68,12,35,0.9,120<br>也可只录AQI：<b>站点名,AQI</b>（例：河滨街道站,58）</p>
@@ -437,8 +506,8 @@ function popupHtml(s){
 stations.forEach(s => {
   const hollow = s.layer === 'lx'; // 邻县乡镇：示意点，空心虚线
   const m = L.circleMarker([s.lat, s.lng], hollow ? {
-    radius: sizeMap[s.layer], color:'#9b59b6', weight:2.5, dashArray:'5 4',
-    fillColor:'#9b59b6', fillOpacity:.12
+    radius: sizeMap[s.layer]+2, color:'#8e44ad', weight:3, dashArray:'6 4',
+    fillColor:'#9b59b6', fillOpacity:.3
   } : {
     radius: sizeMap[s.layer], color:'#fff', weight:2,
     fillColor: colorMap[s.layer], fillOpacity: .95
@@ -455,7 +524,7 @@ function refreshValues(){
   stations.forEach(s => {
     const gc = aqiColor(s.aqi);
     if (s.layer === 'lx') {
-      s._marker.setStyle({ fillColor:'#9b59b6', fillOpacity:.12 }); // 示意点保持空心
+      s._marker.setStyle({ fillColor:'#9b59b6', fillOpacity:.3, color:'#8e44ad', weight:3 }); // 示意点保持空心虚线
     } else {
       s._marker.setStyle({ fillColor: gc || colorMap[s.layer] });
     }
@@ -489,7 +558,8 @@ document.getElementById('labelToggle').addEventListener('click', function(){
 
 /* ===== 火点图层（数据由 fire/fetch_firms.py 自动更新）===== */
 const FIRES = [{"lat": 35.33308, "lng": 111.39093, "date": "2026-10-08", "time": "442", "frp": 3.67, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.33371, "lng": 111.39196, "date": "2026-10-08", "time": "442", "frp": 7.78, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.40432, "lng": 111.404, "date": "2026-10-08", "time": "442", "frp": 3.99, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.40461, "lng": 111.40213, "date": "2026-10-08", "time": "442", "frp": 3.37, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 33.90554, "lng": 112.91862, "date": "2026-10-08", "time": "622", "frp": 2.08, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.77842, "lng": 111.71393, "date": "2026-10-08", "time": "622", "frp": 4.21, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.87714, "lng": 110.7239, "date": "2026-10-08", "time": "622", "frp": 6.54, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.87881, "lng": 110.72124, "date": "2026-10-08", "time": "622", "frp": 5.76, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.884, "lng": 110.67689, "date": "2026-10-08", "time": "622", "frp": 7.49, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.89106, "lng": 110.65424, "date": "2026-10-08", "time": "622", "frp": 7.93, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.00006, "lng": 110.95348, "date": "2026-10-08", "time": "622", "frp": 4.34, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.10059, "lng": 110.72569, "date": "2026-10-08", "time": "622", "frp": 5.58, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.18201, "lng": 111.89668, "date": "2026-10-08", "time": "622", "frp": 9.03, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.1833, "lng": 111.89781, "date": "2026-10-08", "time": "622", "frp": 6.87, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.22467, "lng": 111.19415, "date": "2026-10-08", "time": "622", "frp": 4.73, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.22729, "lng": 111.19261, "date": "2026-10-08", "time": "622", "frp": 2.21, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.37683, "lng": 113.44747, "date": "2026-10-08", "time": "1841", "frp": 1.49, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.43028, "lng": 113.47781, "date": "2026-10-08", "time": "1841", "frp": 2.13, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.43471, "lng": 113.47391, "date": "2026-10-08", "time": "1841", "frp": 2.13, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.8013, "lng": 113.44555, "date": "2026-10-08", "time": "1843", "frp": 1.45, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.85442, "lng": 112.96609, "date": "2026-10-08", "time": "1843", "frp": 0.8, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.85868, "lng": 113.00266, "date": "2026-10-08", "time": "1843", "frp": 0.91, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.90295, "lng": 112.90385, "date": "2026-10-08", "time": "1843", "frp": 0.66, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.90381, "lng": 112.91908, "date": "2026-10-08", "time": "1843", "frp": 2.96, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.00166, "lng": 112.96267, "date": "2026-10-08", "time": "1843", "frp": 1.22, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.27483, "lng": 112.80334, "date": "2026-10-08", "time": "1843", "frp": 0.82, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.27568, "lng": 112.80164, "date": "2026-10-08", "time": "1843", "frp": 0.86, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.30452, "lng": 112.48375, "date": "2026-10-08", "time": "1843", "frp": 0.54, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.31187, "lng": 112.56281, "date": "2026-10-08", "time": "1843", "frp": 0.37, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.32076, "lng": 113.33739, "date": "2026-10-08", "time": "1843", "frp": 0.57, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.32273, "lng": 112.8999, "date": "2026-10-08", "time": "1843", "frp": 0.92, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.32822, "lng": 113.1806, "date": "2026-10-08", "time": "1843", "frp": 0.5, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.40078, "lng": 112.57375, "date": "2026-10-08", "time": "1843", "frp": 1.31, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.52794, "lng": 112.23792, "date": "2026-10-08", "time": "1843", "frp": 1.25, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.66414, "lng": 111.03096, "date": "2026-10-08", "time": "1843", "frp": 1.39, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.66746, "lng": 111.0318, "date": "2026-10-08", "time": "1843", "frp": 1.39, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.80762, "lng": 111.79459, "date": "2026-10-08", "time": "1843", "frp": 0.85, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.04568, "lng": 112.53429, "date": "2026-10-08", "time": "1843", "frp": 1.67, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.0465, "lng": 112.52972, "date": "2026-10-08", "time": "1843", "frp": 1.67, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.04733, "lng": 112.52512, "date": "2026-10-08", "time": "1843", "frp": 0.44, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.08461, "lng": 112.54789, "date": "2026-10-08", "time": "1843", "frp": 0.82, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.08509, "lng": 112.55455, "date": "2026-10-08", "time": "1843", "frp": 1.69, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.0872, "lng": 112.55338, "date": "2026-10-08", "time": "1843", "frp": 0.82, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.1524, "lng": 112.5897, "date": "2026-10-08", "time": "1843", "frp": 1.04, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.15911, "lng": 112.57241, "date": "2026-10-08", "time": "1843", "frp": 1.14, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.28069, "lng": 111.31216, "date": "2026-10-08", "time": "1843", "frp": 0.76, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.34021, "lng": 111.08179, "date": "2026-10-08", "time": "1843", "frp": 0.78, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.37193, "lng": 112.46548, "date": "2026-10-08", "time": "1843", "frp": 0.52, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.37533, "lng": 112.46643, "date": "2026-10-08", "time": "1843", "frp": 0.16, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.40284, "lng": 111.29723, "date": "2026-10-08", "time": "1843", "frp": 0.73, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.40615, "lng": 111.29807, "date": "2026-10-08", "time": "1843", "frp": 0.73, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.4128, "lng": 111.29975, "date": "2026-10-08", "time": "1843", "frp": 1.07, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41352, "lng": 111.29546, "date": "2026-10-08", "time": "1843", "frp": 1.07, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41446, "lng": 111.29817, "date": "2026-10-08", "time": "1843", "frp": 2.2, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41705, "lng": 111.30329, "date": "2026-10-08", "time": "1843", "frp": 1.81, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41965, "lng": 111.30843, "date": "2026-10-08", "time": "1843", "frp": 1.6, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.48243, "lng": 111.34671, "date": "2026-10-08", "time": "1843", "frp": 0.97, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.99992, "lng": 110.95069, "date": "2026-10-08", "time": "622", "frp": 2.0, "conf": "l", "sat": "N", "dn": "D"}];
-const FIRES_UPDATED = '20261009_1633';
+const FIRES_UPDATED = '20261009_1636';
+const FIRE_HISTORY = [{"date": "2026-10-09", "count": 58, "hi": 57, "day": 17, "night": 41, "types": {"待核实": 14, "山火疑似": 6, "秸秆焚烧疑似": 2, "夜间火点": 36}, "fires": [{"lat": 35.33308, "lng": 111.39093, "date": "2026-10-08", "time": "442", "frp": 3.67, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.33371, "lng": 111.39196, "date": "2026-10-08", "time": "442", "frp": 7.78, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.40432, "lng": 111.404, "date": "2026-10-08", "time": "442", "frp": 3.99, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.40461, "lng": 111.40213, "date": "2026-10-08", "time": "442", "frp": 3.37, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 33.90554, "lng": 112.91862, "date": "2026-10-08", "time": "622", "frp": 2.08, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.77842, "lng": 111.71393, "date": "2026-10-08", "time": "622", "frp": 4.21, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.87714, "lng": 110.7239, "date": "2026-10-08", "time": "622", "frp": 6.54, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.87881, "lng": 110.72124, "date": "2026-10-08", "time": "622", "frp": 5.76, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.884, "lng": 110.67689, "date": "2026-10-08", "time": "622", "frp": 7.49, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 34.89106, "lng": 110.65424, "date": "2026-10-08", "time": "622", "frp": 7.93, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.00006, "lng": 110.95348, "date": "2026-10-08", "time": "622", "frp": 4.34, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.10059, "lng": 110.72569, "date": "2026-10-08", "time": "622", "frp": 5.58, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.18201, "lng": 111.89668, "date": "2026-10-08", "time": "622", "frp": 9.03, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.1833, "lng": 111.89781, "date": "2026-10-08", "time": "622", "frp": 6.87, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.22467, "lng": 111.19415, "date": "2026-10-08", "time": "622", "frp": 4.73, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.22729, "lng": 111.19261, "date": "2026-10-08", "time": "622", "frp": 2.21, "conf": "n", "sat": "N", "dn": "D"}, {"lat": 35.37683, "lng": 113.44747, "date": "2026-10-08", "time": "1841", "frp": 1.49, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.43028, "lng": 113.47781, "date": "2026-10-08", "time": "1841", "frp": 2.13, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.43471, "lng": 113.47391, "date": "2026-10-08", "time": "1841", "frp": 2.13, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.8013, "lng": 113.44555, "date": "2026-10-08", "time": "1843", "frp": 1.45, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.85442, "lng": 112.96609, "date": "2026-10-08", "time": "1843", "frp": 0.8, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.85868, "lng": 113.00266, "date": "2026-10-08", "time": "1843", "frp": 0.91, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.90295, "lng": 112.90385, "date": "2026-10-08", "time": "1843", "frp": 0.66, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 33.90381, "lng": 112.91908, "date": "2026-10-08", "time": "1843", "frp": 2.96, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.00166, "lng": 112.96267, "date": "2026-10-08", "time": "1843", "frp": 1.22, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.27483, "lng": 112.80334, "date": "2026-10-08", "time": "1843", "frp": 0.82, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.27568, "lng": 112.80164, "date": "2026-10-08", "time": "1843", "frp": 0.86, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.30452, "lng": 112.48375, "date": "2026-10-08", "time": "1843", "frp": 0.54, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.31187, "lng": 112.56281, "date": "2026-10-08", "time": "1843", "frp": 0.37, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.32076, "lng": 113.33739, "date": "2026-10-08", "time": "1843", "frp": 0.57, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.32273, "lng": 112.8999, "date": "2026-10-08", "time": "1843", "frp": 0.92, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.32822, "lng": 113.1806, "date": "2026-10-08", "time": "1843", "frp": 0.5, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.40078, "lng": 112.57375, "date": "2026-10-08", "time": "1843", "frp": 1.31, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.52794, "lng": 112.23792, "date": "2026-10-08", "time": "1843", "frp": 1.25, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.66414, "lng": 111.03096, "date": "2026-10-08", "time": "1843", "frp": 1.39, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.66746, "lng": 111.0318, "date": "2026-10-08", "time": "1843", "frp": 1.39, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.80762, "lng": 111.79459, "date": "2026-10-08", "time": "1843", "frp": 0.85, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.04568, "lng": 112.53429, "date": "2026-10-08", "time": "1843", "frp": 1.67, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.0465, "lng": 112.52972, "date": "2026-10-08", "time": "1843", "frp": 1.67, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.04733, "lng": 112.52512, "date": "2026-10-08", "time": "1843", "frp": 0.44, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.08461, "lng": 112.54789, "date": "2026-10-08", "time": "1843", "frp": 0.82, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.08509, "lng": 112.55455, "date": "2026-10-08", "time": "1843", "frp": 1.69, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.0872, "lng": 112.55338, "date": "2026-10-08", "time": "1843", "frp": 0.82, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.1524, "lng": 112.5897, "date": "2026-10-08", "time": "1843", "frp": 1.04, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.15911, "lng": 112.57241, "date": "2026-10-08", "time": "1843", "frp": 1.14, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.28069, "lng": 111.31216, "date": "2026-10-08", "time": "1843", "frp": 0.76, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.34021, "lng": 111.08179, "date": "2026-10-08", "time": "1843", "frp": 0.78, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.37193, "lng": 112.46548, "date": "2026-10-08", "time": "1843", "frp": 0.52, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.37533, "lng": 112.46643, "date": "2026-10-08", "time": "1843", "frp": 0.16, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.40284, "lng": 111.29723, "date": "2026-10-08", "time": "1843", "frp": 0.73, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.40615, "lng": 111.29807, "date": "2026-10-08", "time": "1843", "frp": 0.73, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.4128, "lng": 111.29975, "date": "2026-10-08", "time": "1843", "frp": 1.07, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41352, "lng": 111.29546, "date": "2026-10-08", "time": "1843", "frp": 1.07, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41446, "lng": 111.29817, "date": "2026-10-08", "time": "1843", "frp": 2.2, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41705, "lng": 111.30329, "date": "2026-10-08", "time": "1843", "frp": 1.81, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.41965, "lng": 111.30843, "date": "2026-10-08", "time": "1843", "frp": 1.6, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 35.48243, "lng": 111.34671, "date": "2026-10-08", "time": "1843", "frp": 0.97, "conf": "n", "sat": "N", "dn": "N"}, {"lat": 34.99992, "lng": 110.95069, "date": "2026-10-08", "time": "622", "frp": 2.0, "conf": "l", "sat": "N", "dn": "D"}]}];
 function bjTime(dateStr, timeStr){
   // FIRMS 时间为 UTC，换算为北京时间
   const t = String(timeStr).padStart(4,'0');
@@ -536,6 +606,61 @@ document.getElementById('fireBtn').addEventListener('click', function(){
   if (fireOn) map.addLayer(fireLayer); else map.removeLayer(fireLayer);
 });
 renderFires();
+
+/* ===== 火点日报专栏 ===== */
+function fireType(f){
+  if (f.frp >= 30) return '较大火情';
+  if (f.lat < 34.0) return '山火疑似';
+  if (f.dn === 'N') return '夜间火点';
+  if (f.frp < 3) return '秸秆焚烧疑似';
+  return '待核实';
+}
+function renderFirePanel(){
+  document.getElementById('fp-count').textContent = FIRES.length;
+  document.getElementById('fp-updated').textContent = FIRES_UPDATED ? '更新 ' + FIRES_UPDATED : '';
+  const hi = FIRES.filter(f=>f.conf==='h'||f.conf==='n').length;
+  const day = FIRES.filter(f=>f.dn==='D').length;
+  const night = FIRES.filter(f=>f.dn==='N').length;
+  document.getElementById('fp-chips').innerHTML =
+    `<span class="fp-chip">中高置信 ${hi}</span>` +
+    `<span class="fp-chip">☀️ 白天 ${day}</span>` +
+    `<span class="fp-chip">🌙 夜间 ${night}</span>`;
+  const types = {};
+  FIRES.forEach(f=>{ const t=fireType(f); types[t]=(types[t]||0)+1; });
+  const order = ['秸秆焚烧疑似','山火疑似','夜间火点','较大火情','待核实'];
+  document.getElementById('fp-types').innerHTML = order.filter(t=>types[t])
+    .map(t=>`<div class="fp-type"><span>${t}</span><b>${types[t]} 个</b></div>`).join('')
+    || '<div style="font-size:12px;color:#999;">暂无</div>';
+  const hist = FIRE_HISTORY.slice(-14);
+  const mx = Math.max.apply(null, hist.map(r=>r.count).concat([1]));
+  document.getElementById('fp-trend').innerHTML = hist.length ? hist.map(r=>
+    `<div class="fp-bar-row"><span class="fp-bar-date">${r.date.slice(5)}</span>` +
+    `<div class="fp-bar-track"><div class="fp-bar-fill" style="width:${Math.max(3,r.count/mx*100)}%"></div></div>` +
+    `<span class="fp-bar-num">${r.count}</span></div>`).join('')
+    : '<div style="font-size:12px;color:#999;">历史收集中，每日更新后累积</div>';
+  const days = hist.slice().reverse();
+  document.getElementById('fp-history').innerHTML = days.map((r,idx)=>{
+    let inner;
+    if (r.fires && r.fires.length) {
+      inner = r.fires.slice(0,60).map(f=>
+        `<div class="fp-fire"><span class="t">${bjTime(f.date,f.time).slice(5)}</span>` +
+        `<span>${f.lat.toFixed(3)},${f.lng.toFixed(3)}</span>` +
+        `<span>${f.frp}MW</span><span class="g">${fireType(f)}</span></div>`).join('')
+        + (r.fires.length>60 ? `<div class="fp-fire"><span class="t">…仅显示前60个</span></div>` : '');
+    } else {
+      inner = `<div class="fp-fire"><span class="t">明细已归档，仅保留汇总</span></div>`;
+    }
+    return `<details class="fp-day"${idx===0?' open':''}>` +
+      `<summary><span>${r.date}</span><span>${r.count} 个火点</span></summary>${inner}</details>`;
+  }).join('') || '<div style="font-size:12px;color:#999;">暂无历史</div>';
+}
+document.getElementById('fpBtn').addEventListener('click', ()=>{
+  renderFirePanel();
+  document.getElementById('fire-panel').classList.add('show');
+});
+document.getElementById('fp-close').addEventListener('click', ()=>{
+  document.getElementById('fire-panel').classList.remove('show');
+});
 
 // 数值录入
 const dataPanel = document.getElementById('data-panel');
