@@ -663,6 +663,8 @@ function guessFire(f){
     var s = f.cause + (f.cause_conf ? '（置信度 ' + f.cause_conf + '）' : '');
     if (f.reasons && f.reasons.length)
       s += '<br><span style="color:#94a3b8;font-size:11px;">依据：' + f.reasons.join('；') + '</span>';
+    if (f.hist && f.hist.dates && f.hist.dates.length)
+      s += '<br><span style="color:#64748b;font-size:11px;">该点位近' + (f.hist.win||60) + '天出现日期：' + f.hist.dates.join('、') + '</span>';
     return s;
   }
   if (f.frp >= 30) return '火点强度很高，疑似较大火情';
@@ -898,10 +900,11 @@ applyData(simLines().join('\n'), '模拟数据');
 </script>
 <script>(function(){var a=document.querySelectorAll("a.elmail");for(var i=0;i<a.length;i++){var u=a[i].getAttribute("data-u"),d=a[i].getAttribute("data-d");if(!u||!d)continue;var e=u+"@"+d;a[i].href="mailto:"+e;a[i].textContent=e;}})();</script>
 
-<!-- FIRMS 近实时火点 + 历史：CI 抓取 → 静态 JSON，页面联网读取 -->
+<!-- FIRMS 近实时火点 + 历史：CI 抓取 → 静态 JSON，页面联网读取（每 10 分钟自动刷新） -->
 <script>
 (function(){
   var CITY = '开封';
+  function loadFires(){
   fetch('data/fires-henan.json', {cache:'no-store'})
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(function(d){
@@ -911,7 +914,7 @@ applyData(simLines().join('\n'), '模拟数据');
           var g = wgs2gcj(f.lng, f.lat);
           return {lat:+g[1].toFixed(5), lng:+g[0].toFixed(5), frp:f.frp, conf:f.conf, sat:f.sat,
                   date:f.date, time:f.time, dn:f.dn,
-                  cause:f.cause, cause_conf:f.cause_conf, reasons:f.reasons};
+                  cause:f.cause, cause_conf:f.cause_conf, reasons:f.reasons, hist:f.hist};
         });
         FIRES.length = 0; conv.forEach(function(f){ FIRES.push(f); });
       }
@@ -924,6 +927,9 @@ applyData(simLines().join('\n'), '模拟数据');
       console.log('FIRMS 火点已加载：' + ((list&&list.length)||0) + ' 条（' + CITY + '）');
     })
     .catch(function(e){ console.warn('FIRMS 火点加载失败：', e); });
+  }
+  loadFires();
+  setInterval(loadFires, 10*60*1000);
 })();
 </script>
 

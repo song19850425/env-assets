@@ -58,7 +58,9 @@ jobs:
       - name: 抓取 FIRMS 火点（按市归属）
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
-          FIRMS_DAYS: '1'
+          FIRMS_DAYS: '2'
+          FIRMS_SNAPSHOT_DAYS: '2'
+          FIRMS_HISTORY_DAYS: '60'
         run: python "EnvData/火点监测/scripts/fetch_firms.py"
 
       - name: 提交并推送
