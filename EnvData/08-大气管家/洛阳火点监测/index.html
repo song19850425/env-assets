@@ -203,7 +203,6 @@ body { background:#05080f; color:#e2e8f0; }
 #wxBtn { background:rgba(20,40,80,.9) !important; color:#7dd3fc !important; }
 #fireBtn { background:rgba(80,30,10,.9) !important; color:#fb923c !important; }
 #fpBtn { background:rgba(80,30,10,.9) !important; color:#fdba74 !important; border:1px solid rgba(251,146,60,.4) !important; }
-#satBtn { background:rgba(20,30,80,.9) !important; color:#93c5fd !important; }
 .sim-badge { background:rgba(80,30,10,.9); color:#fb923c; border-color:#fb923c; }
 .stats { color:#64748b !important; }
 /* 站名标签暗色 */
@@ -238,6 +237,15 @@ body { background:#05080f; color:#e2e8f0; }
 .disclaimer { background:#05080f; color:#475569; }
 .contact { background:#05080f; border-top:1px solid rgba(148,163,184,.12); }
 .contact-name { color:#e2e8f0; }
+/* 底图切换面板 */
+#bm-panel { position:fixed; z-index:1600; background:rgba(10,15,25,.95);
+  border:1px solid rgba(34,211,238,.25); border-radius:12px; padding:8px;
+  display:none; backdrop-filter:blur(8px); min-width:150px; }
+#bm-panel.show { display:block; }
+.bm-opt { padding:9px 14px; border-radius:8px; font-size:13px; color:#cbd5e1;
+  cursor:pointer; white-space:nowrap; }
+.bm-opt:hover { background:rgba(34,211,238,.12); }
+.bm-opt.active { background:rgba(34,211,238,.18); color:#22d3ee; font-weight:700; }
 /* 数据录入面板暗色 */
 #data-panel { background:#0f172a; color:#e2e8f0; }
 #data-panel h3 { color:#7dd3fc; }
@@ -284,24 +292,27 @@ body { background:#05080f; color:#e2e8f0; }
   <div class="frp-labels"><span>LOW</span><span>HIGH</span></div>
   <div class="lg-row hint">圆点越大越亮，火越强</div>
   <div class="hud-kicker" style="margin-top:10px">STATIONS</div>
-  <div class="lg-row"><span class="lg-dot" style="background:#27ae60"></span>站点 AQI（数字为AQI值）</div>
+  <div class="lg-row"><span class="lg-dot" style="background:#c0392b"></span>国控站 AQI（数字为AQI值）</div>
   <div class="lg-row hint">点击站点查看六参数</div>
   <div class="lg-row hint">数据源：NASA FIRMS · 近48小时</div>
 </div>
 <div id="hud-coords">–</div>
 
 <div class="toolbar">
-  <div class="legend-item" data-layer="gk"><div class="legend-dot" style="background:#c0392b"></div>国控</div>
-  <div class="legend-item" data-layer="xk"><div class="legend-dot" style="background:#2980b9"></div>县控</div>
-  <div class="legend-item" data-layer="xz"><div class="legend-dot" style="background:#27ae60"></div>乡镇站(14)</div>
-  <div class="legend-item" data-layer="zb"><div class="legend-dot" style="background:#95a5a6"></div>周边背景</div>
-  <div class="legend-item" data-layer="lx"><div class="legend-dot" style="background:#fff;border:2px dashed #9b59b6;"></div>邻县乡镇(9)<span style="font-size:10px;color:#999;">示意</span></div>
-  <div class="legend-item" id="labelToggle" style="background:#dfe9f7;color:#1d5aa0;font-weight:700;">站名：仅乡镇</div>
+  <div class="legend-item" data-layer="gk"><div class="legend-dot" style="background:#c0392b"></div>国控站(10)</div>
+  <div class="legend-item" id="labelToggle" style="background:#dfe9f7;color:#1d5aa0;font-weight:700;">站名：开</div>
   <div class="legend-item" id="dataBtn" style="background:#e8f5ee;color:#1a5c3a;font-weight:700;">📥 录入数值</div><span class="sim-badge" title="站点AQI为模拟演示数据（六参数模拟，暂无公开实时接口）；火点为NASA FIRMS真实数据；气象为Open-Meteo实时数据">模拟</span>
   <div class="legend-item" id="wxBtn" style="background:#e8f0fb;color:#1d5aa0;font-weight:700;">🌬 气象图层</div>
   <div class="legend-item" id="fireBtn" style="background:#fef3e8;color:#c2410c;font-weight:700;">🔥 火点(<span id="fire-count">0</span>)</div>
   <div class="legend-item" id="fpBtn" style="background:#fff7ed;color:#9a3412;font-weight:700;border:1px solid #fed7aa;">📋 火点日报</div>
-  <div class="legend-item off" id="satBtn" style="background:#eef4ff;color:#1e3a8a;font-weight:700;">🛰 卫星图</div>
+  <div class="legend-item" id="bmBtn" style="background:#1e293b;color:#7dd3fc;font-weight:700;border:1px solid rgba(34,211,238,.35);">🗺 底图</div>
+<div id="bm-panel">
+  <div class="bm-opt active" data-bm="gaode">🗺 高德街道</div>
+  <div class="bm-opt" data-bm="sat">🛰 高德卫星</div>
+  <div class="bm-opt" data-bm="dark">🌙 暗色</div>
+  <div class="bm-opt" data-bm="tencent">🗺 腾讯街道</div>
+  <div class="bm-opt" data-bm="osm">🗺 OSM</div>
+</div>
   <div class="stats">共 <b id="total">42</b> 站</div>
 </div>
 
@@ -426,7 +437,7 @@ setInterval(()=>{ if(wxOn) loadWeather(); },30*60*1000);
 </script>
 <script>
 // 站点数据
-const stations = [
+let stations = [
   { name:'河南科技大学西苑校区', level:'国控', layer:'gk', lng:112.40, lat:34.66,
     detail:'洛阳涧西区 · 国控考核点', vendor:'力合科技运维', device:'六参数国标法' },
   { name:'市委党校', level:'国控', layer:'gk', lng:112.38, lat:34.67, detail:'洛阳涧西区', vendor:'力合科技', device:'六参数国标法' },
@@ -477,6 +488,7 @@ const stations = [
   { name:'嵩县·饭坡镇站', level:'邻县', layer:'lx', lng:112.21706, lat:34.18617, detail:'嵩县 · 西南接壤（位置示意）', vendor:'—', device:'六参数' },
   { name:'宜阳·白杨镇站', level:'邻县', layer:'lx', lng:112.23212, lat:34.38907, detail:'宜阳县 · 西接壤（位置示意）', vendor:'—', device:'六参数' },
 ];
+stations = stations.filter(s => s.layer === 'gk'); // 火点页面只显示国控站
 
 const colorMap = { gk:'#c0392b', xk:'#2980b9', xz:'#27ae60', zb:'#95a5a6' };
 const sizeMap = { gk:9, xk:8, xz:7, zb:6 };
@@ -533,72 +545,78 @@ function shortName(n){ return n.replace('监测站','').replace('站',''); }
 // 初始化地图
 const map = L.map('map', { zoomControl:true }).setView([34.42, 112.43], 10);
 
-// 底图源：自动故障切换（高德 -> 腾讯 -> OSM）
-const providers = [
-  { name:'暗色', url:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    sub:'abcd', attr:'© OpenStreetMap © CARTO', tms:false },
-  { name:'高德', url:'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+// 底图：手动切换（默认高德街道），故障时自动顺延
+const baseMaps = {
+  gaode:  { name:'高德街道', url:'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
     sub:'1234', attr:'© 高德地图 AutoNavi', tms:false },
-  { name:'腾讯', url:'https://rt{s}.map.gtimg.com/realtimerender?z={z}&x={x}&y={y}&type=vector&style=0',
+  sat:    { name:'高德卫星', url:'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
+    sub:'1234', attr:'© 高德地图 AutoNavi', tms:false },
+  dark:   { name:'暗色', url:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    sub:'abcd', attr:'© OpenStreetMap © CARTO', tms:false },
+  tencent:{ name:'腾讯街道', url:'https://rt{s}.map.gtimg.com/realtimerender?z={z}&x={x}&y={y}&type=vector&style=0',
     sub:'0123', attr:'© 腾讯地图 Tencent', tms:true },
-  { name:'OSM', url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  osm:    { name:'OSM', url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     sub:'abc', attr:'© OpenStreetMap', tms:false },
-];
-let pi = 0, errCount = 0, tileCount = 0, switching = false;
+};
+const bmOrder = ['gaode','sat','dark','tencent','osm'];
+let bmKey = 'gaode', bmLayer = null, errCount = 0, tileCount = 0, switching = false, autoTried = [];
 const tileStatus = L.control({ position:'bottomleft' });
 tileStatus.onAdd = function(){
   const d = L.DomUtil.create('div');
   d.id = 'tile-status';
-  d.style.cssText = 'background:rgba(255,255,255,.9);padding:2px 8px;border-radius:6px;font-size:10px;color:#666;';
+  d.style.cssText = 'background:rgba(10,15,25,.85);padding:2px 8px;border-radius:6px;font-size:10px;color:#7dd3fc;border:1px solid rgba(34,211,238,.2);';
   d.textContent = '底图加载中…';
   return d;
 };
 tileStatus.addTo(map);
 function setStatus(t){ const el = document.getElementById('tile-status'); if (el) el.textContent = t; }
-
-const satProvider = { name:'高德卫星', url:'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
-  sub:'1234', attr:'© 高德地图 AutoNavi', tms:false };
-function makeLayer(p, noFailover){
+function makeLayer(p){
   const ly = L.tileLayer(p.url, { subdomains:p.sub, maxZoom:18, attribution:p.attr, tms:p.tms });
-  ly.on('tileload', () => {
-    tileCount++;
-    setStatus(`底图：${p.name} · 已加载${tileCount}张`);
-  });
+  ly.on('tileload', () => { tileCount++; setStatus(`底图：${p.name} · 已加载${tileCount}张`); });
   ly.on('tileerror', () => {
     errCount++;
     setStatus(`底图：${p.name} · 加载失败${errCount}张…`);
-    if (!noFailover && errCount >= 6 && !switching && pi < providers.length - 1) {
+    if (errCount >= 6 && !switching) {
       switching = true;
-      pi++;
-      map.removeLayer(baseLayer);
-      baseLayer = makeLayer(providers[pi]);
-      baseLayer.addTo(map);
-      errCount = 0; tileCount = 0; switching = false;
-      setStatus(`已切换底图源：${providers[pi].name}`);
-    } else if (errCount >= 6 && (noFailover || pi >= providers.length - 1)) {
-      setStatus('底图加载失败：请检查网络后刷新，或用系统浏览器打开本文件');
+      autoTried.push(bmKey);
+      const next = bmOrder.find(k => !autoTried.includes(k));
+      if (next) {
+        setBasemap(next, true);
+      } else {
+        autoTried = [];
+        setStatus('底图加载失败：请检查网络后刷新，或用系统浏览器打开本文件');
+      }
+      switching = false;
     }
   });
   return ly;
 }
-let baseLayer = makeLayer(providers[0]);
-baseLayer.addTo(map);
-// 卫星图切换
-let satMode = false, satLayer = null;
-document.getElementById('satBtn').addEventListener('click', function(){
-  satMode = !satMode;
-  this.classList.toggle('off', !satMode);
-  errCount = 0; tileCount = 0;
-  if (satMode) {
-    map.removeLayer(baseLayer);
-    if (!satLayer) satLayer = makeLayer(satProvider, true);
-    satLayer.addTo(map);
-    this.textContent = '🛰 卫星图：开';
-  } else {
-    map.removeLayer(satLayer);
-    baseLayer.addTo(map);
-    this.textContent = '🛰 卫星图';
-  }
+function setBasemap(key, auto){
+  if (!baseMaps[key]) return;
+  if (!auto) autoTried = [];
+  if (bmLayer) map.removeLayer(bmLayer);
+  bmKey = key; errCount = 0; tileCount = 0; switching = false;
+  bmLayer = makeLayer(baseMaps[key]);
+  bmLayer.addTo(map);
+  document.querySelectorAll('.bm-opt').forEach(el => el.classList.toggle('active', el.dataset.bm === key));
+  setStatus(`底图：${baseMaps[key].name}${auto ? '（自动切换）' : ''}`);
+}
+setBasemap('gaode');
+// 底图面板开关
+const bmPanel = document.getElementById('bm-panel');
+document.getElementById('bmBtn').addEventListener('click', function(e){
+  e.stopPropagation();
+  const r = this.getBoundingClientRect();
+  bmPanel.style.left = Math.min(r.left, window.innerWidth - 170) + 'px';
+  bmPanel.style.top = (r.bottom + 6) + 'px';
+  bmPanel.classList.toggle('show');
+});
+document.querySelectorAll('.bm-opt').forEach(el => el.addEventListener('click', () => {
+  setBasemap(el.dataset.bm);
+  bmPanel.classList.remove('show');
+}));
+document.addEventListener('click', e => {
+  if (!bmPanel.contains(e.target)) bmPanel.classList.remove('show');
 });
 
 // 各图层组
@@ -696,9 +714,9 @@ updateStats(); // 初始化计数
 // 站名开关
 document.getElementById('labelToggle').addEventListener('click', function(){
   allLabel = !allLabel;
-  Object.keys(labelOn).forEach(k => labelOn[k] = allLabel ? true : (k === 'xz'));
+  Object.keys(labelOn).forEach(k => labelOn[k] = allLabel);
   stations.forEach(refreshLabel);
-  this.textContent = allLabel ? '站名：全开' : '站名：仅乡镇';
+  this.textContent = allLabel ? '站名：开' : '站名：关';
 });
 
 /* ===== 火点图层（数据由 fire/fetch_firms.py 自动更新）===== */
@@ -772,6 +790,12 @@ document.getElementById('fireBtn').addEventListener('click', function(){
   if (fireOn) map.addLayer(fireLayer); else map.removeLayer(fireLayer);
 });
 renderFires();
+// 初始视图：国控站 + 火点一起适配
+(function(){
+  const pts = stations.map(s => [s.lat, s.lng]);
+  FIRES.forEach(f => pts.push([f.lat, f.lng]));
+  if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.08));
+})();
 // HUD：时钟
 function tickClock(){
   const d = new Date(Date.now() + 8*3600*1000 - new Date().getTimezoneOffset()*60000);
