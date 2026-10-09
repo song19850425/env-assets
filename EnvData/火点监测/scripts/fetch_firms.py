@@ -247,6 +247,21 @@ def main():
             continue
         cities.setdefault(city, []).append(f)
 
+    # 每日明细归档（仅省内）：data/daily/<日期>.json，供周报/明细导出；保留 35 天
+    daily_dir = OUT_JSON.parent / "daily"
+    daily_dir.mkdir(parents=True, exist_ok=True)
+    by_day = defaultdict(list)
+    for f, city in pairs:
+        if city != "省外" and f["date"]:
+            by_day[f["date"]].append({**f, "city": city})
+    for dt, lst in by_day.items():
+        (daily_dir / f"{dt}.json").write_text(
+            json.dumps(lst, ensure_ascii=False), encoding="utf-8")
+    keep_from = (bj_now() - timedelta(days=35)).strftime("%Y-%m-%d")
+    for p in daily_dir.glob("*.json"):
+        if p.stem < keep_from:
+            p.unlink()
+
     # 各市每日计数（用本次抓到的全部日期，回补时也能填充历史）
     history = prev.get("history") or {}
     by_date = defaultdict(lambda: defaultdict(int))
