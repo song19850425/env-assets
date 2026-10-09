@@ -146,7 +146,7 @@ def build_inject(name, boundary_expr, fire_mode):
         "        FIRES.length = 0; conv.forEach(function(f){ FIRES.push(f); });\n"
         "      }\n"
         + history_js +
-        "      FIRES_UPDATED = (d.updated_utc||'').replace('T',' ').replace('Z',' UTC') + ' · FIRMS';\n"
+        "      FIRES_UPDATED = (d.updated_utc||'').slice(5,16).replace('T',' ') + ' UTC';\n"
         "      renderFires(); updateHudStats();\n"
         "      console.log('FIRMS 火点已加载：' + ((list&&list.length)||0) + ' 条（' + CITY + '）');\n"
         "    })\n"
@@ -203,12 +203,38 @@ def apply_page(template, cfg):
         "const ly = L.tileLayer(p.url, { subdomains:p.sub, maxZoom:18, attribution:p.attr, tms:p.tms });",
         "const ly = L.tileLayer(p.url, { subdomains:p.sub, maxZoom:18, attribution:p.attr, tms:p.tms, className: p.cls||'' });")
 
-    # 5. 暗色滤镜 + 访问计数器样式
-    dark_css = ("<style>.gj-dark{filter:invert(1) hue-rotate(180deg) brightness(.92) "
-                "contrast(.95) saturate(.65)!important}"
-                ".hud-visits{font-family:ui-monospace,monospace;font-size:12px;color:#7dd3fc;"
-                "border-left:1px solid rgba(148,163,184,.25);padding-left:10px;white-space:nowrap}</style>\n</head>")
+    # 5. 暗色滤镜 + 访问计数器样式 + HUD 卡片/工具栏可用性调整
+    dark_css = (
+        "<style>"
+        ".gj-dark{filter:invert(1) hue-rotate(180deg) brightness(.92) contrast(.95) saturate(.65)!important}"
+        ".hud-visits{font-family:ui-monospace,monospace;font-size:12px;color:#7dd3fc;"
+        "border-left:1px solid rgba(148,163,184,.25);padding-left:10px;white-space:nowrap}"
+        # HUD 统计卡：更紧凑，避免遮挡下方工具栏
+        "#hud-stats{width:232px;padding:11px 14px}"
+        ".hud-kicker{font-size:9px;letter-spacing:1px;margin-bottom:6px;white-space:nowrap}"
+        ".hud-num{font-size:30px}"
+        ".hud-num2{font-size:16px;margin-top:5px}"
+        ".hud-label{font-size:9px;margin:2px 0 4px}"
+        ".hud-status{margin-top:8px;padding-top:8px;font-size:10px}"
+        ".hud-sync{font-size:9px;margin-top:4px;line-height:1.5}"
+        # 工具栏：下移到卡片之下（不遮挡），并放大选项卡，更好点按
+        ".toolbar{margin-top:200px!important;padding:10px 14px!important;gap:8px!important;"
+        "flex-wrap:wrap!important;align-items:center!important}"
+        ".legend-item{font-size:14px!important;padding:7px 14px!important;border-radius:10px!important;"
+        "display:inline-flex!important;align-items:center!important;gap:6px!important}"
+        ".legend-dot{width:12px!important;height:12px!important}"
+        ".stats{font-size:13px!important}"
+        # 头部变高，地图相应缩短，避免整页纵向滚动
+        "#map{height:calc(100vh - 336px)!important;min-height:360px}"
+        "@media(max-width:820px){.toolbar{margin-top:96px!important}"
+        "#map{height:calc(100vh - 232px)!important}"
+        ".legend-item{font-size:13px!important;padding:6px 10px!important}}"
+        "</style>\n</head>"
+    )
     html = html.replace("</head>", dark_css, 1)
+
+    # 5a. HUD 文案精简（卡片更矮，不遮挡）
+    html = html.replace("SATELLITE FEED · VIIRS SNPP 375m", "SATELLITE FEED · VIIRS 375m")
 
     # 5b. UI：经纬度移到左下角；底图状态移到右下；标题栏加访问计数器
     html = html.replace(
@@ -288,7 +314,7 @@ def apply_page(template, cfg):
         "title=\"站点AQI为模拟演示数据（手动录入后为真实值）；火点为NASA FIRMS近实时数据；气象为Open-Meteo实时数据\"")
 
     # 12. HUD 同步文字
-    html = html.replace("每日08:15自动更新", "每小时自动更新（FIRMS 近实时）")
+    html = html.replace("每日08:15自动更新", "每小时更新")
 
     # 12b. HUD 统计 IIFE → 可重入函数
     html = re.sub(
