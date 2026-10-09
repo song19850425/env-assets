@@ -254,6 +254,8 @@ body { background:#05080f; color:#e2e8f0; }
   .hud-clock { font-size:12px; padding-left:8px; white-space:nowrap; }
   #hud-coords { bottom:8px; font-size:11px; } }
 
+
+  .visit-counter { font-size:11px; color:#475569; margin-top:4px; }
 </style>
 </head>
 <body>
@@ -315,6 +317,7 @@ body { background:#05080f; color:#e2e8f0; }
     <div class="contact-name">小宋的环保笔记</div>
     <div class="contact-mail">📧 <a href="mailto:jinghao.song@gmail.com">jinghao.song@gmail.com</a></div>
     <div class="contact-hint">扫码关注公众号 · 邮件联系合作</div>
+    <div class="visit-counter">👁 本页访问 <span id="busuanzi_value_page_pv">–</span> 次</div>
   </div>
 </div>
 
@@ -922,5 +925,6 @@ document.getElementById('data-demo').addEventListener('click', () => {
 // 上线版：站点暂无公开实时接口，加载时自动填入六参数模拟数据（±15%浮动）
 applyData(simLines().join('\n'), '模拟数据');
 </script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </body>
 </html>
