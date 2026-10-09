@@ -1,0 +1,75 @@
+# 河南火点监测 · FIRMS 近实时抓取（云端，每小时）
+#
+# 为什么放云端：FIRMS 需要 MAP_KEY，且密钥绝不能进公开仓库 → 放 GitHub Secrets，
+# 由 Action 在服务端调用，把结果写成静态 JSON 提交进仓库；页面联网读这份 JSON。
+# 这样零密钥泄露、零浏览器跨域问题。
+#
+# 部署位置：env-assets/.github/workflows/fire-hourly.yml
+# 模块目录：env-assets/EnvData/火点监测/
+#   抓取脚本  scripts/fetch_firms.py     （河南 bbox → 按市归属 → data/fires-henan.json）
+#   市界数据  geo/*.geojson              （11 市 + 全省县界，供脚本做点落多边形归属）
+#   数据产物  data/fires-henan.json
+#
+# 时效说明：FIRMS 为卫星过境后的近实时(NRT)产品，延迟约 3~4 小时，一天刷新多次；
+# 本工作流每小时拉一次，页面永远展示 FIRMS 能给到的最新一版。做不到分钟级。
+#
+# 必需 Secret：FIRMS_MAP_KEY（在 https://firms.modaps.eosdis.nasa.gov/api/ 免费申请）
+#
+# 已知行为（同 air-hourly.yml）：cron 为尽力而为，高峰延迟属正常；仅默认分支生效；
+# 公开仓库 60 天无活动会自动停用计划任务（本工作流每次有数据就提交，天然保持活跃）。
+
+name: 河南火点 · FIRMS 抓取
+
+on:
+  schedule:
+    - cron: '17 * * * *'      # 每小时第 17 分（避开整点调度高峰）
+  workflow_dispatch:          # 支持手动 / API 触发
+
+  # 脚本或本工作流有改动时跑一次，等于自动冒烟测试（新建 workflow 的 cron 不一定立刻生效）。
+  # 机器人自身的提交用 data(fire): 前缀，配合下面 jobs 的 if 守卫，不会自激。
+  push:
+    branches: [main]
+    paths:
+      - 'EnvData/火点监测/scripts/**'
+      - 'EnvData/火点监测/geo/**'
+      - '.github/workflows/fire-hourly.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fire-hourly
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'data(fire)')
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 抓取 FIRMS 火点（按市归属）
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          FIRMS_DAYS: '1'
+        run: python "EnvData/火点监测/scripts/fetch_firms.py"
+
+      - name: 提交并推送
+        if: always()
+        run: |
+          git config user.name  "fire-bot"
+          git config user.email "fire-bot@users.noreply.github.com"
+          git add "EnvData/火点监测/data/fires-henan.json"
+          if git diff --cached --quiet; then
+            echo "无变更，跳过提交"
+          else
+            git commit -m "data(fire): FIRMS 火点更新 $(date -u +%FT%TZ)"
+            git push
+          fi
