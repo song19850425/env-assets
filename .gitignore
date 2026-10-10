@@ -11,3 +11,6 @@ EnvStandard/extract/sample/variants/
 
 # 火点周报为本地生成物，不入库
 EnvData/火点监测/data/weekly/
+
+# 火点晨检卡为本地/定时生成物，不入库（19 张/天约 13MB）
+EnvData/火点监测/cards/

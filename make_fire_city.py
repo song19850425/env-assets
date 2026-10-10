@@ -290,8 +290,8 @@ def build_inject(name, boundary_expr, fire_mode):
         "<script>\n"
         "(function(){\n"
         "  var CITY = '" + name + "';\n"
-        "  function loadFires(){\n"
-        "  fetch('data/fires-henan.json', {cache:'no-store'})\n"
+        "  function loadFires(cb){\n"
+        "  fetch('data/fires-henan.json?t=' + Date.now(), {cache:'no-store'})\n"
         "    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })\n"
         "    .then(function(d){\n"
         "      var list = " + list_expr + ";\n"
@@ -308,11 +308,13 @@ def build_inject(name, boundary_expr, fire_mode):
         "      FIRES_UPDATED = (d.updated_utc||'').slice(5,16).replace('T',' ') + ' UTC';\n"
         "      renderFires(); updateHudStats();\n"
         "      console.log('FIRMS 火点已加载：' + ((list&&list.length)||0) + ' 条（' + CITY + '）');\n"
+        "      if(cb) cb(true, (list&&list.length)||0);\n"
         "    })\n"
-        "    .catch(function(e){ console.warn('FIRMS 火点加载失败：', e); });\n"
+        "    .catch(function(e){ console.warn('FIRMS 火点加载失败：', e); if(cb) cb(false, 0); });\n"
         "  }\n"
         "  loadFires();\n"
-        "  setInterval(loadFires, 30*60*1000);\n"
+        "  setInterval(function(){ loadFires(); }, 30*60*1000);\n"
+        "  window.__loadFires = loadFires;   // 供「📜 获取日志」里的「获取当前数据」按钮调用\n"
         "})();\n"
         "</script>\n"
         + modal_js +
@@ -325,7 +327,7 @@ def build_inject(name, boundary_expr, fire_mode):
         "    return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]; }); }\n"
         "  var TRIG = {schedule:'定时', workflow_dispatch:'手动', push:'推送触发'};\n"
         "  function loadLog(){\n"
-        "    fetch('data/fetch-log.json', {cache:'no-store'})\n"
+        "    fetch('data/fetch-log.json?t=' + Date.now(), {cache:'no-store'})\n"
         "      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })\n"
         "      .then(function(log){\n"
         "        if(!Array.isArray(log) || !log.length){\n"
@@ -358,6 +360,25 @@ def build_inject(name, boundary_expr, fire_mode):
         "  }\n"
         "  btn.addEventListener('click', function(){ panel.classList.add('show'); loadLog(); });\n"
         "  document.getElementById('lp-close').addEventListener('click', function(){ panel.classList.remove('show'); });\n"
+        "  var rf = document.getElementById('lp-refresh'), rmsg = document.getElementById('lp-refresh-msg');\n"
+        "  if(rf) rf.addEventListener('click', function(){\n"
+        "    var label = rf.textContent;\n"
+        "    rf.disabled = true; rf.textContent = '⏳ 获取中…';\n"
+        "    if(rmsg){ rmsg.className = 'lp-hint'; rmsg.textContent = ''; }\n"
+        "    var t0 = Date.now();\n"
+        "    function done(ok, n){\n"
+        "      rf.disabled = false; rf.textContent = label;\n"
+        "      var sec = ((Date.now() - t0)/1000).toFixed(1);\n"
+        "      if(rmsg){\n"
+        "        rmsg.className = 'lp-hint' + (ok ? '' : ' err');\n"
+        "        rmsg.textContent = ok\n"
+        "          ? ('✅ 已获取最新数据 · ' + n + ' 条火点 · 用时 ' + sec + ' 秒 · ' + new Date().toLocaleTimeString('zh-CN'))\n"
+        "          : ('❌ 获取失败（' + sec + ' 秒），请检查网络后重试');\n"
+        "      }\n"
+        "      loadLog();\n"
+        "    }\n"
+        "    if(window.__loadFires){ window.__loadFires(done); } else { done(true, FIRES.length); }\n"
+        "  });\n"
         "  loadLog();\n"
         "})();\n"
         "</script>\n"
@@ -501,6 +522,14 @@ def apply_page(template, cfg):
         "background:#312e81;color:#fff;font-size:15px}"
         "#lp-close{cursor:pointer;font-size:18px;padding:2px 8px}"
         ".lp-body{overflow-y:auto;padding:12px 14px 20px}"
+        ".lp-refresh{display:block;width:100%;margin-bottom:8px;padding:10px 12px;"
+        "background:linear-gradient(90deg,#0891b2,#0e7490);color:#fff;border:none;"
+        "border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;"
+        "transition:filter .15s,opacity .15s}"
+        ".lp-refresh:hover:not(:disabled){filter:brightness(1.15)}"
+        ".lp-refresh:disabled{opacity:.6;cursor:default}"
+        ".lp-hint{font-size:11.5px;color:#4ade80;margin-bottom:8px;min-height:0;line-height:1.6}"
+        ".lp-hint.err{color:#f87171}"
         ".lp-sum{font-size:12px;color:#cbd5e1;background:rgba(30,41,59,.6);"
         "border:1px solid rgba(148,163,184,.2);border-radius:10px;padding:10px 12px;"
         "margin-bottom:12px;line-height:1.8}"
@@ -662,10 +691,13 @@ def apply_page(template, cfg):
         '<div id="log-panel">\n'
         '  <div class="lp-head"><b>📜 数据获取日志</b><span id="lp-close">✕</span></div>\n'
         '  <div class="lp-body">\n'
+        '    <button id="lp-refresh" class="lp-refresh">🔄 获取当前数据</button>\n'
+        '    <div class="lp-hint" id="lp-refresh-msg"></div>\n'
         '    <div class="lp-sum" id="lp-sum">加载中…</div>\n'
         '    <div id="lp-list"></div>\n'
         '    <div class="lp-note">每次抓取都记一条：<b>几点抓的 + 结果是什么</b>。<br>'
-        '失败也会记，并写明原因。<br>云端每 6 小时自动抓取（UTC 00/06/12/18 的 :17）· 数据源 NASA FIRMS VIIRS 375m 近实时</div>\n'
+        '失败也会记，并写明原因。<br>云端每 6 小时自动抓取（UTC 00/06/12/18 的 :17）· 数据源 NASA FIRMS VIIRS 375m 近实时<br>'
+        '「获取当前数据」= 立刻从服务器拉取已发布的最新一版（绕过缓存），不会触发新的卫星抓取</div>\n'
         '  </div>\n'
         '</div>\n'
     )
