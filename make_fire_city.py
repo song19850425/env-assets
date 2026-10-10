@@ -156,6 +156,51 @@ def build_inject(name, boundary_expr, fire_mode):
         "  setInterval(loadFires, 10*60*1000);\n"
         "})();\n"
         "</script>\n"
+        "\n<!-- 数据获取日志：CI 每次抓取都写 data/fetch-log.json，页面读它显示「几点抓的 / 结果」 -->\n"
+        "<script>\n"
+        "(function(){\n"
+        "  var panel = document.getElementById('log-panel'), btn = document.getElementById('logBtn');\n"
+        "  if(!panel || !btn) return;\n"
+        "  function esc(s){ return String(s==null?'':s).replace(/[&<>\"]/g, function(c){\n"
+        "    return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]; }); }\n"
+        "  var TRIG = {schedule:'定时', workflow_dispatch:'手动', push:'推送触发'};\n"
+        "  function loadLog(){\n"
+        "    fetch('data/fetch-log.json', {cache:'no-store'})\n"
+        "      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })\n"
+        "      .then(function(log){\n"
+        "        if(!Array.isArray(log) || !log.length){\n"
+        "          document.getElementById('lp-sum').textContent = '暂无抓取记录。';\n"
+        "          document.getElementById('lp-list').innerHTML = ''; return; }\n"
+        "        var last = log[log.length-1], lastOk = null, okN = 0;\n"
+        "        for(var i=0;i<log.length;i++){ if(log[i].ok){ okN++; lastOk = log[i]; } }\n"
+        "        var s = '<b>共 ' + log.length + ' 次抓取</b>（成功 ' + okN + ' · 失败 ' + (log.length-okN) + '）<br>';\n"
+        "        s += '最近一次：<b style=\"color:' + (last.ok?'#4ade80':'#f87171') + '\">' + esc(last.bj||last.t) + ' · ' + (last.ok?'成功':'失败') + '</b>';\n"
+        "        if(last.ok) s += '（快照 ' + (last.count||0) + ' 条）';\n"
+        "        else s += '<br><span style=\"color:#f87171\">原因：' + esc(last.error||last.stage||'未知') + '</span>';\n"
+        "        if(lastOk) s += '<br>最近一次成功：' + esc(lastOk.bj||lastOk.t) + '（快照 ' + (lastOk.count||0) + ' 条 · 点位档案 ' + (lastOk.cells||0) + ' 个）';\n"
+        "        document.getElementById('lp-sum').innerHTML = s;\n"
+        "        document.getElementById('lp-list').innerHTML = log.slice(-30).reverse().map(function(e){\n"
+        "          var txt;\n"
+        "          if(e.ok){\n"
+        "            var nc = e.cities ? Object.keys(e.cities).length : 0;\n"
+        "            txt = '成功 · 快照 <b>' + (e.count||0) + '</b> 条 · 覆盖 ' + nc + ' 市 · 原始 ' + (e.raw||0) + ' 条 · 点位档案 ' + (e.cells||0) + ' 个'\n"
+        "                + (e.sec ? ' · ' + e.sec + 's' : '');\n"
+        "          } else {\n"
+        "            txt = '失败 · ' + esc(e.error || e.stage || '未知原因');\n"
+        "          }\n"
+        "          var tag = TRIG[e.trigger] || (e.trigger ? esc(e.trigger) : '');\n"
+        "          return '<div class=\"lp-row\"><span class=\"lp-t\">' + esc(e.bj||e.t||'') + '</span>'\n"
+        "               + '<span class=\"' + (e.ok?'lp-ok':'lp-bad') + '\">' + txt\n"
+        "               + (tag ? ' <span class=\"lp-tag\">[' + tag + ']</span>' : '') + '</span></div>';\n"
+        "        }).join('');\n"
+        "      })\n"
+        "      .catch(function(e){ document.getElementById('lp-sum').textContent = '获取日志加载失败：' + e.message; });\n"
+        "  }\n"
+        "  btn.addEventListener('click', function(){ panel.classList.add('show'); loadLog(); });\n"
+        "  document.getElementById('lp-close').addEventListener('click', function(){ panel.classList.remove('show'); });\n"
+        "  loadLog();\n"
+        "})();\n"
+        "</script>\n"
         "\n<!-- 访问计数器（不蒜子，纯前端统计；4 秒内未加载则隐藏，不留占位） -->\n"
         "<script async src=\"//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js\"></script>\n"
         "<script>setTimeout(function(){var e=document.getElementById('busuanzi_value_page_pv');"
@@ -229,6 +274,26 @@ def apply_page(template, cfg):
         "@media(max-width:820px){.toolbar{margin-top:96px!important}"
         "#map{height:calc(100vh - 232px)!important}"
         ".legend-item{font-size:13px!important;padding:6px 10px!important}}"
+        # 数据获取日志面板
+        "#log-panel{position:fixed;top:0;right:0;bottom:0;width:min(430px,94vw);background:#0b1120;"
+        "color:#e2e8f0;z-index:2100;box-shadow:-4px 0 18px rgba(0,0,0,.5);"
+        "transform:translateX(105%);transition:transform .28s ease;display:flex;flex-direction:column}"
+        "#log-panel.show{transform:none}"
+        ".lp-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;"
+        "background:#312e81;color:#fff;font-size:15px}"
+        "#lp-close{cursor:pointer;font-size:18px;padding:2px 8px}"
+        ".lp-body{overflow-y:auto;padding:12px 14px 20px}"
+        ".lp-sum{font-size:12px;color:#cbd5e1;background:rgba(30,41,59,.6);"
+        "border:1px solid rgba(148,163,184,.2);border-radius:10px;padding:10px 12px;"
+        "margin-bottom:12px;line-height:1.8}"
+        ".lp-row{display:flex;gap:8px;font-size:11.5px;padding:6px 2px;"
+        "border-bottom:1px dashed rgba(148,163,184,.15);line-height:1.6}"
+        ".lp-t{font-family:ui-monospace,monospace;color:#94a3b8;white-space:nowrap;flex:none}"
+        ".lp-ok{color:#4ade80}.lp-bad{color:#f87171}.lp-tag{color:#64748b;font-size:10px}"
+        ".lp-note{font-size:11px;color:#475569;line-height:1.8;text-align:center;padding:10px 0}"
+        "@media(min-width:900px){#log-panel{top:120px;bottom:24px;right:16px;border-radius:14px;"
+        "transform:translateX(calc(100% + 24px));border:1px solid rgba(148,163,184,.2)}"
+        "#log-panel.show{transform:none}.lp-head{border-radius:14px 14px 0 0}}"
         "</style>\n</head>"
     )
     html = html.replace("</head>", dark_css, 1)
@@ -332,6 +397,27 @@ def apply_page(template, cfg):
     html = html.replace("邻县乡镇(9)<span style=\"font-size:10px;color:#999;\">示意</span>",
                          "邻县乡镇(0)<span style=\"font-size:10px;color:#999;\">示意</span>")
     html = html.replace("共 <b id=\"total\">42</b> 站", f"共 <b id=\"total\">{n_all}</b> 站")
+
+    # 14. 数据获取日志：工具栏按钮 + 侧栏面板（渲染逻辑在 build_inject 里注入）
+    html = html.replace(
+        '<div class="legend-item" id="fpBtn"',
+        '<div class="legend-item" id="logBtn" style="background:#eef2ff;color:#3730a3;font-weight:700;">'
+        '📜 获取日志</div>\n  <div class="legend-item" id="fpBtn"', 1)
+    log_panel = (
+        '<div id="log-panel">\n'
+        '  <div class="lp-head"><b>📜 数据获取日志</b><span id="lp-close">✕</span></div>\n'
+        '  <div class="lp-body">\n'
+        '    <div class="lp-sum" id="lp-sum">加载中…</div>\n'
+        '    <div id="lp-list"></div>\n'
+        '    <div class="lp-note">每次抓取都记一条：<b>几点抓的 + 结果是什么</b>。<br>'
+        '失败也会记，并写明原因。<br>云端每小时 :17 自动抓取 · 数据源 NASA FIRMS VIIRS 375m 近实时</div>\n'
+        '  </div>\n'
+        '</div>\n'
+    )
+    html = html.replace('<div id="data-panel">', log_panel + '<div id="data-panel">', 1)
+
+    # 14b. 日报脚注：更新频率 + 指向获取日志
+    html = html.replace("每日自动更新", "每小时自动更新 · 明细见「📜 获取日志」")
 
     # 15. 邮箱混淆
     html = html.replace(

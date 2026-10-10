@@ -71,7 +71,9 @@ jobs:
           git add "EnvData/火点监测/data"
           if git diff --cached --quiet; then
             echo "无变更，跳过提交"
-          else
-            git commit -m "data(fire): FIRMS 火点更新 $(date -u +%FT%TZ)"
-            git push
+            exit 0
           fi
+          # 把最近一次抓取的结果写进提交信息，便于在 git 历史里直接看出成败
+          STATUS=$(python -c "import json;h=json.load(open('EnvData/火点监测/data/fetch-log.json',encoding='utf-8'));e=h[-1];print(('成功 快照%s条'%e.get('count',0)) if e.get('ok') else ('失败 '+str(e.get('error',''))[:60]))" 2>/dev/null || echo "状态未知")
+          git commit -m "data(fire): FIRMS 抓取 $STATUS $(date -u +%FT%TZ)"
+          git push

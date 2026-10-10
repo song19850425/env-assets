@@ -27,6 +27,7 @@ import io
 import json
 import os
 import sys
+import time
 import urllib.request
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
@@ -36,6 +37,8 @@ import cause  # 同目录：火点成因推测
 
 HERE = Path(__file__).resolve().parent
 OUT_JSON = HERE.parent / "data" / "fires-henan.json"
+LOG_JSON = HERE.parent / "data" / "fetch-log.json"   # 数据获取日志（每次抓取记一条）
+LOG_MAX = 200                                        # 日志滚动保留条数
 
 BBOX = (110.0, 31.0, 117.0, 36.6)   # west,south,east,north
 SOURCES = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT"]
@@ -169,11 +172,36 @@ def cell_key(f):
     return "%.2f,%.2f" % (f["lat"], f["lng"])
 
 
-def main():
+class FetchError(RuntimeError):
+    """可预期的抓取失败（缺 key、数据源异常等）——会被记入获取日志。"""
+
+
+def append_log(entry):
+    """把一次抓取的执行记录追加进 data/fetch-log.json（滚动保留最近 LOG_MAX 条）。
+
+    日志是「什么时候抓的、结果是什么」的凭据，页面直接读它展示；
+    失败也记（含原因），所以页面永远能显示最近一次抓取的真实结果。
+    """
+    hist = []
+    if LOG_JSON.exists():
+        try:
+            hist = json.loads(LOG_JSON.read_text(encoding="utf-8"))
+            if not isinstance(hist, list):
+                hist = []
+        except Exception:
+            hist = []
+    hist.append(entry)
+    hist = hist[-LOG_MAX:]
+    LOG_JSON.parent.mkdir(parents=True, exist_ok=True)
+    LOG_JSON.write_text(json.dumps(hist, ensure_ascii=False), encoding="utf-8")
+    return hist
+
+
+def run():
+    """执行一次抓取并写出数据；返回结果摘要（供获取日志记录）。"""
     key = os.environ.get("FIRMS_MAP_KEY", "").strip()
     if not key:
-        print("[firms] 缺少环境变量 FIRMS_MAP_KEY", file=sys.stderr)
-        sys.exit(2)
+        raise FetchError("缺少环境变量 FIRMS_MAP_KEY（需在仓库 Settings → Secrets and variables → Actions 里配置）")
 
     fires = []
     for src in SOURCES:
@@ -185,6 +213,10 @@ def main():
             print("[firms] %s 失败：%s" % (src, e), file=sys.stderr)
     fires = dedupe(fires)
     print("[firms] 去重后 %d 条（窗口 %d 天）" % (len(fires), DAYS))
+    if not fires:
+        # 河南 bbox 两天窗口从未出现过 0 条；0 条几乎一定是抓取失败，
+        # 此时绝不能把已有的好数据覆盖成空快照。
+        raise FetchError("两个数据源都没有返回火点（可能网络不通 / MAP_KEY 失效 / 额度用尽），已保留上一版数据")
 
     city_geoms = load_city_geoms()
     prov_geoms = load_province_geoms()
@@ -297,6 +329,50 @@ def main():
     print("[firms] 成因推测分布（省内）：")
     for k, v in cc.most_common():
         print("    %-24s %d" % (k, v))
+
+    return {
+        "raw": len(fires),
+        "count": payload["count"],
+        "cells": len(cells),
+        "daily_days": len(by_day),
+        "cities": payload["counts"],
+        "causes": dict(cc),
+    }
+
+
+def main():
+    t0 = time.time()
+    trigger = (os.environ.get("GITHUB_EVENT_NAME")
+               or os.environ.get("FIRMS_TRIGGER")
+               or "本地/手动").strip()
+    base = {
+        "t": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "bj": bj_now().strftime("%Y-%m-%d %H:%M"),
+        "trigger": trigger,
+        "days": DAYS,
+        "snapshot_days": SNAPSHOT_DAYS,
+        "history_days": HISTORY_DAYS,
+    }
+    try:
+        info = run()
+    except FetchError as e:
+        append_log(dict(base, ok=False, stage="配置/数据源", error=str(e),
+                        sec=round(time.time() - t0, 1)))
+        print("[firms] 抓取失败：%s" % e, file=sys.stderr)
+        print("[firms] 失败已记入 %s" % LOG_JSON, file=sys.stderr)
+        sys.exit(2)
+    except Exception as e:  # noqa
+        append_log(dict(base, ok=False, stage="运行异常",
+                        error="%s: %s" % (type(e).__name__, e),
+                        sec=round(time.time() - t0, 1)))
+        print("[firms] 抓取异常：%s" % e, file=sys.stderr)
+        raise
+
+    hist = append_log(dict(base, ok=True, sec=round(time.time() - t0, 1), **info))
+    print("[firms] 获取日志已更新（共 %d 条）%s" % (len(hist), LOG_JSON))
+    print("[firms] 本次结果：%s 成功 · 原始 %d 条 → 快照 %d 条 · 点位档案 %d 个 · 每日归档 %d 天 · 耗时 %.1fs"
+          % (base["bj"], info["raw"], info["count"], info["cells"], info["daily_days"],
+             round(time.time() - t0, 1)))
 
 
 if __name__ == "__main__":
