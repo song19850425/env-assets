@@ -541,9 +541,26 @@ def apply_page(template, cfg):
         "@media(min-width:900px){#log-panel{top:120px;bottom:24px;right:16px;border-radius:14px;"
         "transform:translateX(calc(100% + 24px));border:1px solid rgba(148,163,184,.2)}"
         "#log-panel.show{transform:none}.lp-head{border-radius:14px 14px 0 0}}"
+        # 返回导航（固定在左上角，不随地图移动）
+        "#nav-back{position:fixed;top:14px;left:14px;z-index:1500;display:flex;gap:8px}"
+        "#nav-back a{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;"
+        "border-radius:10px;background:rgba(15,23,42,.9);border:1px solid #1e293b;"
+        "color:#cbd5e1;font-size:13px;text-decoration:none;white-space:nowrap;"
+        "-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);"
+        "transition:border-color .15s,color .15s}"
+        "#nav-back a:hover{border-color:#38bdf8;color:#7dd3fc}"
+        "@media(max-width:900px){#nav-back{top:54px;left:10px}#nav-back a{padding:6px 10px;font-size:12px}}"
         "</style>\n</head>"
     )
     html = html.replace("</head>", dark_css, 1)
+
+    # 4b. 返回导航按钮（市页额外给「全省总览」；解决页面孤立、回不去的问题）
+    nav = ['<div id="nav-back">',
+           '<a href="../../index.html">← 返回首页</a>']
+    if cfg["fire_mode"] != "province":
+        nav.append('<a href="河南省火点监测-暗色版.html">全省总览</a>')
+    nav.append('</div>\n')
+    html = html.replace("<body>", "<body>\n" + "".join(nav), 1)
 
     # 5a. HUD 文案精简（卡片更矮，不遮挡）
     html = html.replace("SATELLITE FEED · VIIRS SNPP 375m", "SATELLITE FEED · VIIRS 375m")

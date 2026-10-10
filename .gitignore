@@ -14,3 +14,6 @@ EnvData/火点监测/data/weekly/
 
 # 火点晨检卡为本地/定时生成物，不入库（19 张/天约 13MB）
 EnvData/火点监测/cards/
+
+# 历史回补的「窗口级缓存」——可随时重建，不入库（约 150 个小文件）
+EnvData/火点监测/data/history/_win/
