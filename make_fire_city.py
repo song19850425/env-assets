@@ -153,7 +153,7 @@ def build_inject(name, boundary_expr, fire_mode):
         "    .catch(function(e){ console.warn('FIRMS 火点加载失败：', e); });\n"
         "  }\n"
         "  loadFires();\n"
-        "  setInterval(loadFires, 10*60*1000);\n"
+        "  setInterval(loadFires, 30*60*1000);\n"
         "})();\n"
         "</script>\n"
         "\n<!-- 数据获取日志：CI 每次抓取都写 data/fetch-log.json，页面读它显示「几点抓的 / 结果」 -->\n"
@@ -366,7 +366,7 @@ def apply_page(template, cfg):
         "行政边界依据公开 GeoJSON 绘制（示意，不可用于边界认定）。<br>"
         "运维单位、设备信息为示例，具体以主管部门公布为准。<br>"
         "<b>数据口径：</b>站点 AQI 为<b>模拟演示数据</b>（手动录入后即为真实值）；"
-        "🔥火点为 <b>NASA FIRMS 近实时卫星火点</b>（VIIRS 375m，页面联网读取 data/fires-henan.json，每小时更新；"
+        "🔥火点为 <b>NASA FIRMS 近实时卫星火点</b>（VIIRS 375m，页面联网读取 data/fires-henan.json，每 6 小时更新；"
         "WGS-84 已转 GCJ-02 与高德对齐）；成因列为<b>基于历史复现与遥感特征的推测</b>，非确证；"
         "🌬气象为 Open-Meteo 实时数据。\n"
         "</div>"
@@ -379,7 +379,7 @@ def apply_page(template, cfg):
         "title=\"站点AQI为模拟演示数据（手动录入后为真实值）；火点为NASA FIRMS近实时数据；气象为Open-Meteo实时数据\"")
 
     # 12. HUD 同步文字
-    html = html.replace("每日08:15自动更新", "每小时更新")
+    html = html.replace("每日08:15自动更新", "每 6 小时更新")
 
     # 12b. HUD 统计 IIFE → 可重入函数
     html = re.sub(
@@ -410,14 +410,15 @@ def apply_page(template, cfg):
         '    <div class="lp-sum" id="lp-sum">加载中…</div>\n'
         '    <div id="lp-list"></div>\n'
         '    <div class="lp-note">每次抓取都记一条：<b>几点抓的 + 结果是什么</b>。<br>'
-        '失败也会记，并写明原因。<br>云端每小时 :17 自动抓取 · 数据源 NASA FIRMS VIIRS 375m 近实时</div>\n'
+        '失败也会记，并写明原因。<br>云端每 6 小时自动抓取（UTC 00/06/12/18 的 :17）· 数据源 NASA FIRMS VIIRS 375m 近实时</div>\n'
         '  </div>\n'
         '</div>\n'
     )
     html = html.replace('<div id="data-panel">', log_panel + '<div id="data-panel">', 1)
 
     # 14b. 日报脚注：更新频率 + 指向获取日志
-    html = html.replace("每日自动更新", "每小时自动更新 · 明细见「📜 获取日志」")
+    html = html.replace("每日自动更新", "每 6 小时自动更新 · 明细见「📜 获取日志」")
+    html = html.replace("历史收集中，每日更新后累积", "历史收集中，每次更新后累积")
 
     # 15. 邮箱混淆
     html = html.replace(
