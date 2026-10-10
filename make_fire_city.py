@@ -88,8 +88,10 @@ def grid_js(bbox):
 # ---------------- 页面注入脚本 ----------------
 def build_inject(name, boundary_expr, fire_mode):
     if fire_mode == "province":
+        # 合并各市火点时顺带打上「所属市」标记，供详情弹窗做各市分布
         list_expr = ("(function(){ var a=[]; if(d.cities){ for(var k in d.cities){ "
-                     "if(k!=='省外' && d.cities[k]) a=a.concat(d.cities[k]); } } return a; })()")
+                     "if(k!=='省外' && d.cities[k]){ d.cities[k].forEach(function(f){ f.city=k; }); "
+                     "a=a.concat(d.cities[k]); } } } return a; })()")
         history_js = (
             "      if(d.history){\n"
             "        var byDate={}; for(var k in d.history){ if(k==='省外') continue;"
@@ -105,6 +107,163 @@ def build_inject(name, boundary_expr, fire_mode):
             "        d.history[CITY].forEach(function(e){ FIRE_HISTORY.push({date:e.date, count:e.count, hi:0, day:0, night:0, types:{}, fires:[]}); });\n"
             "      }\n")
 
+    modal_js = """
+<!-- 两张卡片：点击弹出详情大窗口（统计详情 / 图例与读图说明） -->
+<script>
+(function(){
+  // 缩放控件默认在左上，会和左侧卡片重叠 → 移到右上（并已在 CSS 里暗色化）
+  try{
+    if(typeof map !== 'undefined' && map.zoomControl){
+      map.removeControl(map.zoomControl);
+      L.control.zoom({ position:'topright' }).addTo(map);
+    }
+  }catch(e){}
+
+  var modal = document.getElementById('card-modal');
+  if(!modal) return;
+  var box = document.getElementById('cm-body');
+  var ttl = document.getElementById('cm-title');
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function num(v,d){ v = Number(v)||0; return v.toFixed(d==null?0:d); }
+  function kv(k,v){ return '<div class="cm-kv"><span>'+esc(k)+'</span><b>'+esc(v)+'</b></div>'; }
+  function sec(t,inner){ return '<div class="cm-sec"><h4>'+esc(t)+'</h4>'+inner+'</div>'; }
+  function bar(name,n,max,color){
+    var w = max>0 ? Math.max(3, Math.round(n/max*100)) : 0;
+    return '<div class="cm-bar"><span class="cm-bar-name">'+esc(name)+'</span>'
+      + '<span class="cm-bar-track"><span class="cm-bar-fill" style="width:'+w+'%'
+      + (color ? ';background:'+color : '') + '"></span></span>'
+      + '<span class="cm-bar-num">'+n+'</span></div>';
+  }
+  function dist(key){
+    var m = {}, order = [];
+    FIRES.forEach(function(f){
+      var k = key(f) || '未标注';
+      if(m[k]===undefined){ m[k]=0; order.push(k); }
+      m[k]++;
+    });
+    return order.map(function(k){ return [k, m[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+  }
+  function maxOf(pairs){ return pairs.reduce(function(a,e){ return Math.max(a, e[1]); }, 0); }
+
+  function statsHtml(){
+    var n = FIRES.length, frp = 0, mx = 0, byDate = {};
+    FIRES.forEach(function(f){
+      var v = Number(f.frp)||0;
+      frp += v; if(v > mx) mx = v;
+      if(f.date){ byDate[f.date] = (byDate[f.date]||0) + 1; }
+    });
+    var avg = n ? frp/n : 0;
+    var dates = Object.keys(byDate).sort();
+    var causes = dist(function(f){ return f.cause; });
+    var confs = dist(function(f){
+      return f.conf === 'h' ? '高置信 (h)' : (f.conf === 'l' ? '低置信 (l)' : '中置信 (n)');
+    });
+    var s = '';
+    s += sec('数据来源与时效',
+      kv('数据源','NASA FIRMS · VIIRS 375m')
+      + kv('卫星','Suomi-NPP + NOAA-20')
+      + kv('快照时间', FIRES_UPDATED || '–')
+      + kv('抓取频率','每 6 小时（云端自动）')
+      + '<div class="cm-note">FIRMS 是卫星过境后的近实时(NRT)产品，延迟约 3~4 小时，一天刷新多次，做不到分钟级。'
+      + '本页展示的是打开页面时联网读取的最近一版快照。</div>');
+
+    s += sec('火点统计（近 2 天）',
+      kv('火点总数', n + ' 个')
+      + kv('辐射功率合计 FRP', num(frp,0) + ' MW')
+      + kv('最大单点 FRP', num(mx,2) + ' MW')
+      + kv('平均单点 FRP', num(avg,2) + ' MW'));
+
+    if(dates.length){
+      s += sec('按日期分布', dates.slice(-12).map(function(d){
+        return bar(d, byDate[d], maxOf(dates.map(function(x){ return [x, byDate[x]]; })));
+      }).join(''));
+    }
+    var cities = dist(function(f){ return f.city; });
+    if(cities.length > 1){
+      s += sec('各市分布', cities.map(function(e){ return bar(e[0], e[1], maxOf(cities)); }).join('')
+        + '<div class="cm-note">按火点落入的市界归属统计（射线法点落多边形），省外火点不计入。</div>');
+    }
+    if(causes.length){
+      s += sec('成因推测分布',
+        causes.map(function(e){ return bar(e[0], e[1], maxOf(causes)); }).join('')
+        + '<div class="cm-note">成因是基于「该点位历史复现 + 遥感特征」的推测，卫星遥感无法确证成因。'
+        + '点开地图上的火点可以看到该点的具体依据与历史出现日期。</div>');
+    }
+    if(confs.length){
+      s += sec('置信度分布',
+        confs.map(function(e){ return bar(e[0], e[1], maxOf(confs)); }).join('')
+        + '<div class="cm-note">置信度来自 FIRMS 原始字段：h=高、n=中、l=低。低置信火点可能是热源误判，建议结合现场核实。</div>');
+    }
+    if(!n){
+      s += '<div class="cm-note">当前窗口内没有火点（属正常，火点本身稀疏）。</div>';
+    }
+    return s;
+  }
+
+  function legendHtml(){
+    var frps = FIRES.map(function(f){ return Number(f.frp)||0; }).sort(function(a,b){ return a-b; });
+    var mn = frps.length ? frps[0] : 0, mx = frps.length ? frps[frps.length-1] : 0;
+    var s = '';
+    s += sec('火点标记怎么读',
+      '<div class="hc-row" style="margin:6px 0"><span class="lg-dot" style="background:#ef4444"></span>'
+      + '高置信火点（confidence = h）</div>'
+      + '<div class="hc-row" style="margin:6px 0"><span class="lg-dot" style="background:#fb923c"></span>'
+      + '中 / 低置信火点（n / l）</div>'
+      + '<div class="cm-note">圆点越大、越亮，表示该火点的辐射功率（FRP）越强。</div>');
+
+    s += sec('FRP 火辐射功率量程',
+      '<div class="frp-bar"></div><div class="frp-labels"><span>LOW</span><span>HIGH</span></div>'
+      + kv('当前视野最小 FRP', num(mn,2) + ' MW')
+      + kv('当前视野最大 FRP', num(mx,2) + ' MW')
+      + '<div class="cm-note">FRP 越高通常意味着燃烧越剧烈或过火面积越大；低值小火点也可能是农田 / 秸秆焚烧。</div>');
+
+    s += sec('站点标记',
+      '<div class="hc-row" style="margin:6px 0"><span class="lg-dot" style="background:#27ae60"></span>'
+      + '空气站点（圆内数字为 AQI）</div>'
+      + '<div class="cm-note">站点 AQI 目前为模拟演示数据，手动录入后即为真实值。</div>');
+
+    s += sec('图层与交互',
+      '<div class="cm-note">'
+      + '· 工具栏可开关图层：国控 / 县控 / 乡镇站 / 周边站 / 邻县站 / 火点 / 卫星图 / 气象图层<br>'
+      + '· 点击火点：查看成因推测、判定依据、该点位近 60 天历史出现日期<br>'
+      + '· 点击站点：查看六参数浓度<br>'
+      + '· 拖拽平移、滚轮缩放、双击放大；左下角显示鼠标经纬度<br>'
+      + '· 「火点日报」看每日趋势与历史明细；「获取日志」看每次抓取的时间与结果'
+      + '</div>');
+
+    s += sec('数据来源与免责',
+      '<div class="cm-note">火点：NASA FIRMS VIIRS 375m 近实时卫星火点（原始 WGS-84，已转 GCJ-02 与高德底图对齐）。<br>'
+      + '底图：高德地图。气象：Open-Meteo。<br>'
+      + '成因列为推测、非确证；本页不构成法定检测报告。</div>');
+    return s;
+  }
+
+  function open(kind){
+    ttl.textContent = (kind === 'legend') ? '图例与读图说明' : '火点统计详情';
+    box.innerHTML = (kind === 'legend') ? legendHtml() : statsHtml();
+    modal.classList.add('show');
+    box.scrollTop = 0;
+  }
+  function close(){ modal.classList.remove('show'); }
+
+  ['hud-stats','hud-legend'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    if(window.L && L.DomEvent){
+      L.DomEvent.disableClickPropagation(el);
+      L.DomEvent.disableScrollPropagation(el);
+    }
+    el.addEventListener('click', function(){ open(el.getAttribute('data-modal')); });
+  });
+  var cl = document.getElementById('cm-close');
+  if(cl) cl.addEventListener('click', close);
+  modal.addEventListener('click', function(e){ if(e.target === modal) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+})();
+</script>
+"""
     return (
         "\n<!-- 行政边界：运行时从 geo/ 拉取（公开 GeoJSON，WGS-84 → GCJ-02） -->\n"
         "<script>\n"
@@ -140,7 +299,7 @@ def build_inject(name, boundary_expr, fire_mode):
         "        var conv = list.map(function(f){\n"
         "          var g = wgs2gcj(f.lng, f.lat);\n"
         "          return {lat:+g[1].toFixed(5), lng:+g[0].toFixed(5), frp:f.frp, conf:f.conf, sat:f.sat,\n"
-        "                  date:f.date, time:f.time, dn:f.dn,\n"
+        "                  date:f.date, time:f.time, dn:f.dn, city:f.city,\n"
         "                  cause:f.cause, cause_conf:f.cause_conf, reasons:f.reasons, hist:f.hist};\n"
         "        });\n"
         "        FIRES.length = 0; conv.forEach(function(f){ FIRES.push(f); });\n"
@@ -156,6 +315,7 @@ def build_inject(name, boundary_expr, fire_mode):
         "  setInterval(loadFires, 30*60*1000);\n"
         "})();\n"
         "</script>\n"
+        + modal_js +
         "\n<!-- 数据获取日志：CI 每次抓取都写 data/fetch-log.json，页面读它显示「几点抓的 / 结果」 -->\n"
         "<script>\n"
         "(function(){\n"
@@ -262,18 +422,76 @@ def apply_page(template, cfg):
         ".hud-label{font-size:9px;margin:2px 0 4px}"
         ".hud-status{margin-top:8px;padding-top:8px;font-size:10px}"
         ".hud-sync{font-size:9px;margin-top:4px;line-height:1.5}"
-        # 工具栏：下移到卡片之下（不遮挡），并放大选项卡，更好点按
-        ".toolbar{margin-top:200px!important;padding:10px 14px!important;gap:8px!important;"
+        # 工具栏：下移到标题之下（两张卡片已移入地图，不再占头部高度）
+        ".toolbar{margin-top:90px!important;padding:10px 14px!important;gap:8px!important;"
         "flex-wrap:wrap!important;align-items:center!important}"
         ".legend-item{font-size:14px!important;padding:7px 14px!important;border-radius:10px!important;"
         "display:inline-flex!important;align-items:center!important;gap:6px!important}"
         ".legend-dot{width:12px!important;height:12px!important}"
         ".stats{font-size:13px!important}"
-        # 头部变高，地图相应缩短，避免整页纵向滚动
-        "#map{height:calc(100vh - 336px)!important;min-height:360px}"
-        "@media(max-width:820px){.toolbar{margin-top:96px!important}"
-        "#map{height:calc(100vh - 232px)!important}"
+        # 头部变矮，地图相应变高，避免整页纵向滚动
+        "#map{height:calc(100vh - 226px)!important;min-height:360px}"
+        "@media(max-width:820px){.toolbar{margin-top:72px!important}"
+        "#map{height:calc(100vh - 200px)!important}"
         ".legend-item{font-size:13px!important;padding:6px 10px!important}}"
+        # 两张卡片：移到地图左侧、形状大小一致、可点击
+        "#hud-stats,#hud-legend{position:absolute!important;left:14px!important;right:auto!important;"
+        "width:238px!important;height:150px!important;box-sizing:border-box;"
+        "border-radius:14px!important;padding:12px 14px!important;z-index:1100!important;"
+        "cursor:pointer;overflow:hidden;display:flex;flex-direction:column;"
+        "transition:border-color .15s,box-shadow .15s,transform .15s}"
+        # 缩放控件：暗色化（Leaflet 默认是白底，在暗色页里突兀）
+        ".leaflet-control-zoom{border:1px solid rgba(34,211,238,.28)!important;"
+        "border-radius:10px!important;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.5)!important}"
+        ".leaflet-control-zoom a{background:rgba(10,15,25,.9)!important;color:#7dd3fc!important;"
+        "border-bottom:1px solid rgba(148,163,184,.18)!important;"
+        "width:30px!important;height:30px!important;line-height:30px!important}"
+        ".leaflet-control-zoom a:hover{background:rgba(34,211,238,.2)!important;color:#e0f2fe!important}"
+        ".leaflet-control-zoom a.leaflet-disabled{background:rgba(10,15,25,.55)!important;color:#334155!important}"
+        "#hud-stats{top:14px!important}"
+        "#hud-legend{top:176px!important}"
+        "#hud-stats:hover,#hud-legend:hover{border-color:rgba(34,211,238,.55)!important;"
+        "box-shadow:0 8px 26px rgba(0,0,0,.55);transform:translateY(-1px)}"
+        ".hc-main{display:flex;align-items:baseline;gap:6px}"
+        ".hc-unit{font-size:11px;color:#64748b}"
+        ".hc-row{display:flex;align-items:center;gap:8px;color:#cbd5e1;font-size:12px}"
+        ".hc-more{margin-top:auto;font-size:11px;color:#22d3ee;letter-spacing:.5px;padding-top:6px}"
+        "#hud-stats .hud-kicker,#hud-legend .hud-kicker{margin-bottom:6px}"
+        "#hud-stats .hud-num{font-size:30px}"
+        "#hud-stats .hud-label{margin:2px 0 0}"
+        "#hud-stats .hud-status{margin-top:7px;padding-top:7px;font-size:10px;"
+        "white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+        "#hud-legend .frp-bar{margin-top:8px}"
+        # 卡片详情大窗口
+        "#card-modal{position:fixed;inset:0;z-index:3000;background:rgba(2,6,23,.78);"
+        "backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px}"
+        "#card-modal.show{display:flex}"
+        ".cm-box{background:#0b1120;border:1px solid rgba(34,211,238,.25);border-radius:16px;"
+        "width:min(820px,94vw);max-height:86vh;display:flex;flex-direction:column;"
+        "box-shadow:0 24px 60px rgba(0,0,0,.6)}"
+        ".cm-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;"
+        "background:linear-gradient(90deg,#0e7490,#155e75);color:#fff;font-size:15px;"
+        "border-radius:16px 16px 0 0}"
+        "#cm-close{cursor:pointer;font-size:18px;padding:2px 8px;opacity:.85}"
+        "#cm-close:hover{opacity:1}"
+        ".cm-body{overflow-y:auto;padding:16px 20px 22px;color:#cbd5e1;font-size:13px;line-height:1.75}"
+        ".cm-sec{margin-bottom:18px}"
+        ".cm-sec h4{font-size:12px;letter-spacing:1.5px;color:#22d3ee;margin-bottom:8px;"
+        "border-left:3px solid #0891b2;padding-left:8px;font-weight:700}"
+        ".cm-kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;"
+        "border-bottom:1px dashed rgba(148,163,184,.15)}"
+        ".cm-kv b{color:#e2e8f0;font-family:ui-monospace,monospace}"
+        ".cm-bar{display:flex;align-items:center;gap:10px;margin:6px 0}"
+        ".cm-bar-name{width:150px;flex:none;font-size:12px;color:#94a3b8;"
+        "overflow:hidden;text-overflow:ellipsis;white-space:nowrap}"
+        ".cm-bar-track{flex:1;height:16px;background:rgba(148,163,184,.12);border-radius:5px;overflow:hidden}"
+        ".cm-bar-fill{display:block;height:100%;border-radius:5px;"
+        "background:linear-gradient(90deg,#0891b2,#22d3ee)}"
+        ".cm-bar-num{width:52px;flex:none;text-align:right;font-family:ui-monospace,monospace;"
+        "font-size:12px;color:#e2e8f0}"
+        ".cm-note{font-size:11.5px;color:#64748b;line-height:1.85;margin-top:6px}"
+        "@media(max-width:760px){#hud-stats,#hud-legend{display:none!important}"
+        "#card-modal{padding:12px}.cm-box{max-height:90vh}}"
         # 数据获取日志面板
         "#log-panel{position:fixed;top:0;right:0;bottom:0;width:min(430px,94vw);background:#0b1120;"
         "color:#e2e8f0;z-index:2100;box-shadow:-4px 0 18px rgba(0,0,0,.5);"
@@ -313,6 +531,43 @@ def apply_page(template, cfg):
         'id="hud-clock">--:--:--</div>',
         'id="hud-clock">--:--:--</div>\n'
         '  <div class="hud-visits" id="visit-badge" title="页面访问量（不蒜子统计）">👁 <span id="busuanzi_value_page_pv">–</span></div>')
+
+    # 5c. 两张卡片：从头部移入地图左侧，统一形状大小，点击弹出详情大窗口
+    i0 = html.index('<div id="hud-stats">')
+    i1 = html.index('<div id="hud-coords">')
+    html = html[:i0] + html[i1:]          # 先把两张旧卡片从头部摘掉
+    cards = (
+        '<div class="hud-card" id="hud-stats" data-modal="stats" title="点击查看详细统计">\n'
+        '    <div class="hud-kicker">SATELLITE FEED · VIIRS 375m</div>\n'
+        '    <div class="hc-main"><span class="hud-num" id="hud-count">–</span>'
+        '<span class="hc-unit">个火点</span></div>\n'
+        '    <div class="hud-label">近2天 · 辐射功率 <span id="hud-frp">–</span> MW</div>\n'
+        '    <div class="hud-status"><span class="dot-online"></span>SYSTEM ONLINE · 更新 '
+        '<span id="hud-updated">–</span></div>\n'
+        '    <div class="hc-more">查看详细统计 ›</div>\n'
+        '  </div>\n'
+        '  <div class="hud-card" id="hud-legend" data-modal="legend" title="点击查看图例与读图说明">\n'
+        '    <div class="hud-kicker">LEGEND · 图例</div>\n'
+        '    <div class="hc-row"><span class="lg-dot" style="background:#ef4444"></span>高置信火点'
+        '<span class="lg-dot" style="background:#fb923c;margin-left:12px"></span>中/低置信</div>\n'
+        '    <div class="frp-bar"></div>\n'
+        '    <div class="frp-labels"><span>LOW</span><span>HIGH</span></div>\n'
+        '    <div class="hc-row" style="margin-top:6px">'
+        '<span class="lg-dot" style="background:#27ae60"></span>站点 AQI（数字为 AQI 值）</div>\n'
+        '    <div class="hc-more">查看图例与读图说明 ›</div>\n'
+        '  </div>\n'
+    )
+    html = html.replace('<div id="map"></div>', '<div id="map">\n  ' + cards + '</div>', 1)
+
+    modal_html = (
+        '<div id="card-modal">\n'
+        '  <div class="cm-box">\n'
+        '    <div class="cm-head"><b id="cm-title">详情</b><span id="cm-close">✕</span></div>\n'
+        '    <div class="cm-body" id="cm-body"></div>\n'
+        '  </div>\n'
+        '</div>\n'
+    )
+    html = html.replace('<div class="toolbar">', modal_html + '<div class="toolbar">', 1)
 
     # 6. 站点数组
     stations_js = "const stations = " + json.dumps(stations, ensure_ascii=False) + ";"
