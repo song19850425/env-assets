@@ -21,3 +21,6 @@ EnvData/火点监测/_win/
 
 # 六省火点明细 49.6MB，可由 fetch_firms_north.py 重建，不入库
 EnvData/火点监测/data/north6/fires-north6.json
+
+# 环境目录，不入库
+.workbuddy-ai/

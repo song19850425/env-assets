@@ -1,0 +1,29 @@
+{
+ "n_fires": 45540,
+ "n_hot": 203,
+ "n_top19": 19,
+ "gap_hours": 11.4,
+ "n_pairs": 567,
+ "pair_frp_day": 3.39,
+ "pair_frp_night": 1.92,
+ "detect_floor_day": 1.88,
+ "detect_floor_night": 0.56,
+ "day_all": {
+  "n": 17354,
+  "med": 3.91,
+  "p10": 1.88,
+  "p90": 10.55,
+  "lt3": 33.7
+ },
+ "night_all": {
+  "n": 28186,
+  "med": 1.12,
+  "p10": 0.56,
+  "p90": 2.36,
+  "lt3": 95.4
+ },
+ "day_rate": 16.4,
+ "night_rate": 84.9,
+ "hot_frp_med": 1.08,
+ "top19_frp_med": 1.51
+}
