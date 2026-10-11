@@ -19,6 +19,7 @@ import os
 import sys
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 import h5py
@@ -84,11 +85,21 @@ def main():
         raise SystemExit(__doc__)
     coll = sys.argv[1]
     os.makedirs(OUT, exist_ok=True)
+
+    items = {}
     for ym in sys.argv[2:]:
         iid, url, size = find_item(coll, ym)
+        items[ym] = (iid, url, size)
         print("%s %s -> %s (%.0f MB)" % (coll, ym, iid, size / 1e6))
+
+    # 下载并行（单文件约 1.1 GB，串行太慢）；切图串行，省内存
+    with ThreadPoolExecutor(4) as ex:
+        list(ex.map(lambda kv: download(kv[1][1], os.path.join(WIN, "%s-%s.nc" % (coll, kv[0])),
+                                        kv[1][2]), items.items()))
+
+    for ym in sys.argv[2:]:
+        iid, _url, _size = items[ym]
         nc = os.path.join(WIN, "%s-%s.nc" % (coll, ym))
-        download(url, nc, size)
         rec = extract(nc, VAR[coll])
         rec.update(coll=coll, ym=ym, item=iid)
         p = os.path.join(OUT, "%s-%s.json" % (coll, ym))
@@ -96,6 +107,9 @@ def main():
             json.dump(rec, f, ensure_ascii=False, separators=(",", ":"))
         print("  切出 %dx%d -> %s (%.0f KB)" % (rec["ny"], rec["nx"], os.path.basename(p),
                                                 os.path.getsize(p) / 1024))
+        # 全球 nc 有 1.1 GB，切片入库后即可删（重下只要 ~50s）
+        if os.environ.get("KEEP_NC") != "1":
+            os.remove(nc)
 
 
 if __name__ == "__main__":
