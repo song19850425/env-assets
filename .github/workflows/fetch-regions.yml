@@ -1,0 +1,68 @@
+# 火点 · 多省/全国 历史抓取（手动 / 脚本变更触发，非定时）
+#
+# 为什么单独一个工作流：
+#   fire-hourly.yml 只抓河南（bbox 固定、每 6 小时、近实时）；
+#   本工作流抓全国两年历史（31 个省级行政区），用于「多省 + 全国」连续火点地图。
+#   全国两年 ≈ 292 次请求，属重活，故不做定时、只按需触发。
+#
+# 密钥：复用同一个 Secret FIRMS_MAP_KEY（不新增、不落盘）。
+# 产物：EnvData/火点监测/data/regions/china-continuous.json（持续点位，小文件，入库）
+#       EnvData/火点监测/data/regions/summary.json
+#   中间数据不落盘（脚本内聚合，只输出 ≥10 天的持续点位）。
+#
+# 触发方式：Actions 页面点「Run workflow」，或改动下面 paths 里的文件后 push。
+
+name: 火点 · 多省/全国 历史抓取
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'EnvData/火点监测/scripts/fetch_firms_regions.py'
+      - 'EnvData/火点监测/geo/regions/**'
+      - '.github/workflows/fetch-regions.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-regions
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    # 机器人自己的提交用 data(regions): 前缀，不重复触发
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'data(regions)')
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: pip install requests
+
+      - name: 抓取全国 FIRMS 火点（2024–2025，按省市归属）
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: python "EnvData/火点监测/scripts/fetch_firms_regions.py"
+
+      - name: 提交并推送
+        if: always()
+        run: |
+          git config user.name  "fire-bot"
+          git config user.email "fire-bot@users.noreply.github.com"
+          git add "EnvData/火点监测/data/regions" 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "无变更，跳过提交"
+            exit 0
+          fi
+          N=$(python -c "import json;print(json.load(open('EnvData/火点监测/data/regions/summary.json',encoding='utf-8'))['total'])" 2>/dev/null || echo "?")
+          git commit -m "data(regions): 全国持续火点 $N 个 $(date -u +%FT%TZ)"
+          git push
