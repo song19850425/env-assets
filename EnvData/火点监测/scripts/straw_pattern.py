@@ -265,6 +265,9 @@ def main():
              '两市的准确度都会提升。这个改动会影响已有的跨年验证结果，'
              '所以暂未实施。</div></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer><b>数据与方法</b><br>'
              '· 数据源：NASA FIRMS VIIRS 375m（Suomi-NPP + NOAA-20，SP 标准处理）；'
              '点位为 0.01° 网格（约 1.1km）。<br>'

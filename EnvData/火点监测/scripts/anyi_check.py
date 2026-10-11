@@ -515,6 +515,9 @@ def main():
              '</table></div>'
              % (len(months), "、".join(m[5:] + "月" for m in months)))
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据：Sentinel-5P TROPOMI L3 月产品（S5P-PAL，免 key）· NASA FIRMS VIIRS 375m<br>'
              '方法：0.01° 点位聚合 → 两年复现天数/夜间占比/FRP 判定 → 县区射线法归属 → '

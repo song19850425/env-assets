@@ -409,6 +409,9 @@ def main():
              '数据在手里，点位跑不掉。</div></div>'
              % (tiers[0][1], len(ay_ind), len(pd_ind)))
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据来源：NASA FIRMS VIIRS 375m（SP 源，2024/2025 历史回补）· '
              'Sentinel-5P TROPOMI L3（S5P-PAL）· 中国环境监测总站实时发布平台 · '

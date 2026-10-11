@@ -434,6 +434,9 @@ def main():
              '不能区分「这家厂」与「这个园区」</td></tr>'
              '</table></div>' % (CITY, len(months)))
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据：NASA FIRMS VIIRS 375m · Sentinel-5P TROPOMI L3（S5P-PAL）· '
              '中国环境监测总站实时发布平台<br>'

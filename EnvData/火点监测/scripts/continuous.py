@@ -263,6 +263,9 @@ def main():
              % ("".join("<th class=\"num\">%s月</th>" % m for m in sorted(mon)),
                 "".join("<td class=\"num\">%d</td>" % mon[m] for m in sorted(mon))))
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据：NASA FIRMS VIIRS 375m（2024/2025 SP 源历史回补），全省 45,540 条火点<br>'
              '方法：0.01° 点位聚合 → 按日期排序 → 相邻间隔 ≤2 天归为同一连续段 → '

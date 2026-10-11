@@ -280,6 +280,9 @@ def main():
              '单省减排会被传输抵消。</div></div>'
              % (r_fire, tot_hot))
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据来源：NASA FIRMS VIIRS 375m（VIIRS_SNPP_SP + VIIRS_NOAA20_SP，'
              '2024–2025）· 中国环境监测总站国控点（经 quotsoft.net 逐小时归档）· '

@@ -313,6 +313,9 @@ def main():
              '前者适合考核，后者适合找源 —— '
              '而火点清单只覆盖后者中的"有热异常"那一部分。</div></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据来源：中国环境监测总站国控点（经 quotsoft.net 逐小时归档，免 key）· '
              'Sentinel-5P TROPOMI L3（S5P-PAL）· open-elevation（SRTM 90m）<br>'

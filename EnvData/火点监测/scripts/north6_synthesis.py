@@ -280,6 +280,9 @@ def main():
              '而分类台账这件事，现在还没有人做。</div></div>'
              % tot_ind_pts)
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据来源：NASA FIRMS VIIRS 375m（VIIRS_SNPP_SP + VIIRS_NOAA20_SP，2024–2025）· '
              '中国环境监测总站国控点（经 quotsoft.net 逐小时归档）· '

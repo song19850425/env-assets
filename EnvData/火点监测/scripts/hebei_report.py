@@ -282,6 +282,9 @@ def main():
                 hd_cnt.get("武安市", 0), ts_cnt.get("丰南区", 0), ts_cnt.get("迁安市", 0),
                 len(hot), len(hot) / 203))
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据：NASA FIRMS VIIRS 375m（VIIRS_SNPP_SP + VIIRS_NOAA20_SP，2024–2025）· '
              'DataV.GeoAtlas 行政区划<br>'

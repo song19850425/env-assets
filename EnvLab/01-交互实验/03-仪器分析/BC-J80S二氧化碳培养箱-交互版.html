@@ -160,6 +160,35 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
   <div class="sd" style="margin-top:18px">把这台仪器的"操作规程 + 功能核查"做成可交互培训，新人上手前先在屏幕上把顺序和红线走熟——<b>这正好是 环境实验"育人"阶段能直接交付的产品</b>。这类受控操作规程合集里有大量仪器，都是同样的可转化素材。</div>
 </section>
 
+<style>
+.qr-foot{display:flex;align-items:center;gap:20px;margin:30px 0 0;padding:18px 20px;
+  border:1px solid rgba(127,127,127,.25);border-radius:13px;
+  background:rgba(127,127,127,.07);flex-wrap:wrap}
+.qr-foot-img{width:132px;height:132px;display:block;border-radius:10px;background:#fff;flex:0 0 auto}
+.qr-foot-ph{display:none;width:132px;height:132px;border:1px dashed rgba(127,127,127,.3);
+  border-radius:10px;align-items:center;justify-content:center;text-align:center;
+  font-size:12px;opacity:.5;flex:0 0 auto}
+.qr-foot-txt{min-width:220px;flex:1 1 300px}
+.qr-foot-t{font-size:15px;font-weight:700;opacity:.95;margin-bottom:5px}
+.qr-foot-d{font-size:12.5px;opacity:.7;line-height:1.7;max-width:560px}
+.qr-foot-n{font-size:11.5px;opacity:.5;margin-top:6px}
+.qr-foot-n a.elmail{color:inherit;text-decoration:underline}
+@media(max-width:640px){
+  .qr-foot{gap:14px;padding:15px 16px}
+  .qr-foot-img,.qr-foot-ph{width:112px;height:112px}
+}
+</style>
+  <section class="qr-foot" aria-label="关注公众号">
+    <img class="qr-foot-img" src="../../../assets/公众号二维码.jpg" alt="公众号二维码"
+         width="132" height="132" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="qr-foot-ph">二维码<br>待放置</div>
+    <div class="qr-foot-txt">
+      <div class="qr-foot-t">环境检测 · 数字资产库</div>
+      <div class="qr-foot-d">长按识别二维码关注公众号，获取标准速查表、交互实验与工具更新。</div>
+      <div class="qr-foot-n">交流 / 定制课程 / 工具合作，可在公众号留言，或邮件 <a class="elmail" href="#" data-u="jinghao.song" data-d="gmail.com">载入中…</a><noscript><span>jinghao.song [at] gmail.com</span></noscript>。</div>
+    </div>
+  </section>
 <footer class="ft">和小宋一起玩科学 · 环境实验 仪器操作培训 · 依据受控操作规程构建</footer>
 
 <script>

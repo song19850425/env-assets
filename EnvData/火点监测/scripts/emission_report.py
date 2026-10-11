@@ -488,6 +488,7 @@ def main():
     h.append('<div class="sub" style="margin-top:26px;text-align:center">'
              '河南火点监测 · 排放量估算 ｜ 数据源：NASA FIRMS (VIIRS SNPP/NOAA-20)、'
              'ESA S5P-PAL (TROPOMI) ｜ 生成于 %s</div>' % now)
+    h.append(AR.qr_foot("../../../assets"))
     h.append('</div></body></html>')
 
     p = os.path.join(OUT, "持续火点排放量估算.html")

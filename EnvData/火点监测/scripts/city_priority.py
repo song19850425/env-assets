@@ -195,6 +195,9 @@ def main():
                         r["ind_pct"], format(r["str_fire"], ",")))
         h.append('</table></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据：NASA FIRMS VIIRS 375m（2024/2025 SP 源历史回补），归属各市的全部火点<br>'
              '方法：0.01° 点位聚合 → 两年复现天数/夜间占比/FRP/季节 判定类型 → '

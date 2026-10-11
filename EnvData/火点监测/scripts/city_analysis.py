@@ -375,6 +375,8 @@ def main():
         h.append('</div>')
 
     # 页脚
+    h.append(AR.qr_foot("../../../assets"))
+
     h.append('<footer><b>数据与方法</b><br>'
              '· 数据源：NASA FIRMS VIIRS 375m（Suomi-NPP + NOAA-20，SP 标准处理），河南省域内归属到本市的火点。<br>'
              '· 点位：0.01° 网格（约 1.1km）；类型判定基于<b>点位复现特征</b>'

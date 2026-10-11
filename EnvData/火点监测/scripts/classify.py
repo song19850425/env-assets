@@ -421,6 +421,9 @@ def render_html(data, cross=None, halves=None):
         h.append('<div class="note">跨年仍稳定，才说明这个判据抓的是<b>真实存在的物理对象</b>'
                  '（工厂的窑炉不会因为换了年份就消失），而不是随机噪声。</div></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer><b>方法与边界</b><br>'
              '· 判据全部基于卫星可观测特征（复现天数、昼夜、FRP、季节），规则透明、可复核，'
              '<b>不调用任何模型</b>，同一份输入永远得到同一个结论。<br>'

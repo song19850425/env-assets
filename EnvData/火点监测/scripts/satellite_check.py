@@ -411,6 +411,9 @@ def main():
              '月产品的最新月份滞后约 1–2 个月。</td></tr>'
              '</table></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer>'
              '数据来源：Sentinel-5P TROPOMI L3 月产品（S5P-PAL）· NASA FIRMS VIIRS 375m（历史回补）<br>'
              '方法：0.022° 公共网格对齐 → 按格点火点数分组 → Spearman 秩相关 → 点位对 20 km 背景比值<br>'

@@ -322,6 +322,7 @@ def main():
     h.append('<div class="sub" style="margin-top:26px;text-align:center">'
              '河南火点监测 · 数据可信度边界 ｜ 数据源：NASA FIRMS（VIIRS SNPP/NOAA-20、MODIS）'
              ' ｜ 生成于 %s</div>' % now)
+    h.append(AR.qr_foot("../../../assets"))
     h.append('</div></body></html>')
 
     p = os.path.join(OUT, "火点数据可信度边界.html")

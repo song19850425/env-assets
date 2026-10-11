@@ -312,6 +312,7 @@ def main():
              '数据由 GitHub Actions 每 6 小时自动抓取更新；'
              '页面内「📜 获取日志」可看每次抓取的时间与结果。</div></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
     h.append('<footer><b>使用说明</b><br>'
              '· 本页与全部分析报告均为<b>单文件 HTML</b>，可直接双击打开、离线查看、'
              '也可直接转发（不含任何外部依赖）。<br>'

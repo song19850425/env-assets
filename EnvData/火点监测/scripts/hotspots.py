@@ -203,6 +203,9 @@ def main():
              '<b>坐标是 WGS-84</b>，可直接用于地图定位；'
              '用于执法核查前建议先做实地确认。</div></div>')
 
+    h.append(AR.qr_foot("../../../assets"))
+
+
     h.append('<footer><b>方法与边界</b><br>'
              '· 数据源：NASA FIRMS VIIRS 375m 活跃火产品（Suomi-NPP + NOAA-20，SP 标准处理），'
              '2024–2025 年河南省域，共 %s 条。<br>'

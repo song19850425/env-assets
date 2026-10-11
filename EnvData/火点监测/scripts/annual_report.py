@@ -398,6 +398,54 @@ def nav_back_html(href="index.html", label="← 报告中心"):
     return '<div id="nav-back"><a href="%s">%s</a></div>\n' % (href, label)
 
 
+# ---- 公众号二维码 + 邮箱区块（自含内联样式，适配深/浅主题）----
+_QR_STYLE = """<style>
+.qr-foot{display:flex;align-items:center;gap:20px;margin:30px 0 0;padding:18px 20px;
+  border:1px solid rgba(127,127,127,.25);border-radius:13px;
+  background:rgba(127,127,127,.07);flex-wrap:wrap}
+.qr-foot-img{width:132px;height:132px;display:block;border-radius:10px;background:#fff;flex:0 0 auto}
+.qr-foot-ph{display:none;width:132px;height:132px;border:1px dashed rgba(127,127,127,.3);
+  border-radius:10px;align-items:center;justify-content:center;text-align:center;
+  font-size:12px;opacity:.5;flex:0 0 auto}
+.qr-foot-txt{min-width:220px;flex:1 1 300px}
+.qr-foot-t{font-size:15px;font-weight:700;opacity:.95;margin-bottom:5px}
+.qr-foot-d{font-size:12.5px;opacity:.7;line-height:1.7;max-width:560px}
+.qr-foot-n{font-size:11.5px;opacity:.5;margin-top:6px}
+.qr-foot-n a.elmail{color:inherit;text-decoration:underline}
+@media(max-width:640px){
+  .qr-foot{gap:14px;padding:15px 16px}
+  .qr-foot-img,.qr-foot-ph{width:112px;height:112px}
+}
+</style>"""
+
+_EMAIL_SCRIPT = (
+    '<script>(function(){var a=document.querySelectorAll("a.elmail");'
+    'for(var i=0;i<a.length;i++){var u=a[i].getAttribute("data-u"),d=a[i].getAttribute("data-d");'
+    'if(!u||!d)continue;var e=u+"@"+d;a[i].href="mailto:"+e;a[i].textContent=e;}})();</script>'
+)
+
+def qr_foot(rel_to_assets="../../../assets"):
+    """公众号二维码 + 邮箱区块。rel_to_assets = 从报告页到 env-assets/assets 的相对路径。"""
+    qr_src = rel_to_assets.rstrip("/") + "/公众号二维码.jpg"
+    return (
+        f'{_QR_STYLE}\n'
+        f'  <section class="qr-foot" aria-label="关注公众号">\n'
+        f'    <img class="qr-foot-img" src="{qr_src}" alt="公众号二维码"\n'
+        f'         width="132" height="132" loading="lazy"\n'
+        f'         onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">\n'
+        f'    <div class="qr-foot-ph">二维码<br>待放置</div>\n'
+        f'    <div class="qr-foot-txt">\n'
+        f'      <div class="qr-foot-t">环境检测 · 数字资产库</div>\n'
+        f'      <div class="qr-foot-d">长按识别二维码关注公众号，获取标准速查表、交互实验与工具更新。</div>\n'
+        f'      <div class="qr-foot-n">交流 / 定制课程 / 工具合作，可在公众号留言，或邮件 '
+        f'<a class="elmail" href="#" data-u="jinghao.song" data-d="gmail.com">载入中…</a>'
+        f'<noscript><span>jinghao.song [at] gmail.com</span></noscript>。</div>\n'
+        f'    </div>\n'
+        f'  </section>\n'
+        f'{_EMAIL_SCRIPT}\n'
+    )
+
+
 def render(reports):
     """reports = [summary, ...]（按年份升序）。"""
     latest = reports[-1]
@@ -659,6 +707,7 @@ def render(reports):
         h.append('</table></div>')
 
     # ---- 页脚
+    h.append(qr_foot("../../../assets"))
     h.append('<footer>')
     h.append('<b>数据与方法</b><br>')
     h.append('· 数据源：NASA FIRMS，VIIRS 375m 活跃火产品（Suomi-NPP + NOAA-20，SP 标准处理），'
