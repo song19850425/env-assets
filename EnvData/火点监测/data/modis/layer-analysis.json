@@ -1,0 +1,52 @@
+{
+ "n_modis": 4812,
+ "frp_med": 10.2,
+ "frp_p10": 5.6,
+ "groups": {
+  "工业/固定源": {
+   "pts": 203,
+   "days": 15011,
+   "hits": 71,
+   "rate": 0.473,
+   "pts_with_hit": 30,
+   "pts_rate": 14.8,
+   "frp_med": 1.08
+  },
+  "偏固定源": {
+   "pts": 77,
+   "days": 411,
+   "hits": 0,
+   "rate": 0.0,
+   "pts_with_hit": 0,
+   "pts_rate": 0.0,
+   "frp_med": 0.92
+  },
+  "待核实": {
+   "pts": 567,
+   "days": 2038,
+   "hits": 44,
+   "rate": 2.159,
+   "pts_with_hit": 40,
+   "pts_rate": 7.1,
+   "frp_med": 3.05
+  },
+  "其他偶发": {
+   "pts": 1179,
+   "days": 2358,
+   "hits": 87,
+   "rate": 3.69,
+   "pts_with_hit": 83,
+   "pts_rate": 7.0,
+   "frp_med": 3.05
+  },
+  "秸秆焚烧疑似": {
+   "pts": 584,
+   "days": 1168,
+   "hits": 29,
+   "rate": 2.483,
+   "pts_with_hit": 29,
+   "pts_rate": 5.0,
+   "frp_med": 2.39
+  }
+ }
+}

@@ -24,3 +24,6 @@ EnvData/火点监测/data/north6/fires-north6.json
 
 # 环境目录，不入库
 .workbuddy-ai/
+
+# MODIS 火点明细（可重建，1.4MB）
+EnvData/火点监测/data/modis/henan-*.json
