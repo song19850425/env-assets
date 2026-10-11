@@ -142,7 +142,7 @@ def mean_grid(recs):
 
 # ---------------------------------------------------------------- 地图
 def svg_map(mg, lat, lon, counties, hot, bbox, W=880, H=800, pad=12,
-            label=True, cells=False):
+            label=True, cells=False, stations=None):
     lat0, lat1, lon0, lon1 = bbox
     i0, i1 = np.searchsorted(lat, [lat0, lat1])
     j0, j1 = np.searchsorted(lon, [lon0, lon1])
@@ -218,6 +218,23 @@ def svg_map(mg, lat, lon, counties, hot, bbox, W=880, H=800, pad=12,
                  'style="paint-order:stroke;stroke:#020617;stroke-width:3px">%s</text>'
                  % (x, y, AR._esc(nm)))
 
+    # 环境空气监测站：国控=紫三角，市控=绿圆点（画在火点点位之下，避免遮挡编号）
+    if stations:
+        for st in stations:
+            x, y = xy(st["lat"], st["lon"])
+            if not (pad <= x <= W - pad and pad <= y <= H - pad):
+                continue
+            if st["kind"] == "国控":
+                p.append('<path d="M%.1f %.1f L%.1f %.1f L%.1f %.1f Z" fill="#a78bfa" '
+                         'stroke="#fff" stroke-width="1.2" opacity="0.95">'
+                         '<title>国控 · %s</title></path>'
+                         % (x, y - 7.5, x + 7, y + 5, x - 7, y + 5, AR._esc(st["name"])))
+            else:
+                extra = "（近似位置）" if st.get("approx") else ""
+                p.append('<circle cx="%.1f" cy="%.1f" r="4.8" fill="#34d399" stroke="#fff" '
+                         'stroke-width="1.2" opacity="0.95"><title>市控 · %s%s</title></circle>'
+                         % (x, y, AR._esc(st["name"]), extra))
+
     # 点位：半径按天数分档
     for k, it in enumerate(hot, 1):
         la, ln = [float(v) for v in it["key"].split(",")]
@@ -243,6 +260,12 @@ def main():
         fires += [f for f in d["fires"] if f.get("city") == CITY]
     prof = CL.build_profiles(fires)
     counties = load_counties()
+    mon = json.load(open(os.path.join(MOD, "data", "stations", "anyi-monitors.json"),
+                         encoding="utf-8"))
+    stations = mon["stations"]
+    for st in stations:
+        if "county" not in st:
+            st["county"] = county_of(st["lat"], st["lon"], counties)
     for p in prof.values():
         la, ln = [float(x) for x in p["key"].split(",")]
         p["county"] = county_of(la, ln, counties)
@@ -282,14 +305,31 @@ def main():
         p["nb"] = float(np.nanmedian(nb))
         p["ratio"] = p["no2"] / p["nb"] if p["nb"] else float("nan")
 
-    mp, (lo, hi), npx = svg_map(mg, lat, lon, counties, hot, bbox, label=False)
+    # 监测站：取该点 NO2，并统计 3 km 内的持续排放点位（看监测网络覆盖不覆盖）
+    covered = set()
+    cov_guo, cov_shi = set(), set()
+    for st in stations:
+        i = int(np.searchsorted(lat, st["lat"]) - 1)
+        j = int(np.searchsorted(lon, st["lon"]) - 1)
+        st["no2"] = float(mg[i, j])
+        st["n3"] = 0
+        for k, p in enumerate(hot):
+            dla = float(p["key"].split(",")[0]) - st["lat"]
+            dln = (float(p["key"].split(",")[1]) - st["lon"]) * 0.809
+            if (dla ** 2 + dln ** 2) ** 0.5 * 111 <= 3:
+                st["n3"] += 1
+                covered.add(k)
+                (cov_guo if st["kind"] == "国控" else cov_shi).add(k)
+
+    mp, (lo, hi), npx = svg_map(mg, lat, lon, counties, hot, bbox, label=False,
+                                stations=stations)
     # 核心区放大：34 个点位里有 30 个挤在安阳县—殷都区，全市图上分不开
     hla = [float(p["key"].split(",")[0]) for p in hot]
     hln = [float(p["key"].split(",")[1]) for p in hot]
     core = (min(hla) - 0.10, max(hla) + 0.10, min(hln) - 0.10, max(hln) + 0.10)
     core_h = int(880 * ((core[1] - core[0]) / ((core[3] - core[2]) * 0.83)))
     mp2, (lo2, hi2), _ = svg_map(mg, lat, lon, counties, hot, core,
-                                 W=880, H=core_h, pad=12, cells=True)
+                                 W=880, H=core_h, pad=12, cells=True, stations=stations)
 
     # 县区汇总
     ct = {}
@@ -347,7 +387,9 @@ def main():
              '%s'
              '<div class="legend">'
              '<span><i style="background:#38bdf8"></i>NO₂ 低 → 高（%.0f → %.0f μmol/m²）</span>'
-             '<span><i style="background:#ef4444"></i>持续排放点位（编号同下表，圆越大天数越多）</span>'
+             '<span><i style="background:#ef4444"></i>持续排放点位（编号同下表）</span>'
+             '<span><i style="background:#a78bfa"></i>国控空气站</span>'
+             '<span><i style="background:#34d399"></i>市控空气站</span>'
              '</div>'
              '<div class="note">底图为 %d 个月平均（%s），已按安阳市域裁剪，市外淡化。'
              'NO₂ 高值带沿安阳县—殷都区一线展开，与火点点位密集区重合；'
@@ -360,12 +402,49 @@ def main():
              '<div class="legend">'
              '<span><i style="background:#38bdf8"></i>NO₂（%.0f → %.0f μmol/m²）</span>'
              '<span><i style="background:#ef4444"></i>持续排放点位（编号同下表）</span>'
+             '<span><i style="background:#a78bfa"></i>国控空气站</span>'
+             '<span><i style="background:#34d399"></i>市控空气站</span>'
              '</div>'
              '<div class="note">34 个点位里 30 个挤在安阳县—殷都区，全市图上分不开，'
              '这里单独放大。<b>底图按原始 0.022° 网格逐格绘制、不做插值</b> —— '
              '看到的就是 TROPOMI 的真实空间分辨率（每格约 2.4 km）。'
              '圆越大代表两年出现天数越多（≥100 天 / 30–99 天 / 10–29 天三档）。</div></div>'
              % (mp2, lo2, hi2))
+
+    n_guo = sum(1 for s in stations if s["kind"] == "国控")
+    n_shi = sum(1 for s in stations if s["kind"] == "市控")
+
+    def _n3(nm):
+        return next((s["n3"] for s in stations if s["name"] == nm), 0)
+
+    h.append('<div class="card"><h2>环境空气监测站分布（国控 %d + 市控 %d）</h2>'
+             '<div class="big">把 %d 个持续排放点位按「距离最近监测站 3 km 以内」算，'
+             '只有 <span class="hl">%d / %d</span> 个落在现有监测站的有效覆盖圈内 —— '
+             '而且全部靠市控乡镇站（铜冶镇 %d 个、水冶镇 %d 个、许家沟镇 %d 个…）；'
+             '<b>%d 个国控点 3 km 内合计只有 %d 个</b>。'
+             '</div>'
+             '<div class="note">这不是国控点「失灵」—— 国控点的设计目标是反映城市建成区的'
+             '区域空气质量、服务公众健康提示，本来就布在人口密集区，不是用来抓工业点源。'
+             '但这恰好说明：<b>只看国控数据，发现不了这些持续燃烧排放源</b>；'
+             '安阳县—殷都区的工业带正好落在国控网络的盲区里。'
+             '要把它们纳入监管，要么靠乡镇站（市控），要么靠火点遥感这类独立手段。</div>'
+             '<div class="note">国控点位来自中国环境监测总站实时发布平台（坐标为平台发布值，可直接使用）；'
+             '市控名单来自《安阳市生态环境局安阳市市控环境质量自动监测站点运维服务项目招标文件》'
+             '（安财招标采购-2026-19，包 1 共 17 个，含 1 辆移动监测车不绘图）。'
+             '<b>⚠ 市控坐标为所在乡镇/单位位置的近似值（OpenStreetMap），不是站点实测坐标</b>，'
+             '其中「武装部」未能定位到具体单位、用北关区中心近似，误差可能较大；'
+             '对外使用前请以业主站点台账为准。</div>'
+             '<table><tr><th>类型</th><th>站名</th><th>县区</th><th>纬度</th><th>经度</th>'
+             '<th class="num">NO₂ 月均</th><th class="num">3 km 内持续点位</th></tr>'
+             % (n_guo, n_shi, len(hot), len(covered), len(hot),
+                _n3("铜冶镇"), _n3("水冶镇"), _n3("许家沟镇"),
+                n_guo, len(cov_guo)))
+    for st in sorted(stations, key=lambda s: (s["kind"] != "国控", s["name"])):
+        h.append('<tr><td>%s</td><td>%s</td><td>%s</td><td>%.4f</td><td>%.4f</td>'
+                 '<td class="num">%.1f</td><td class="num">%d</td></tr>'
+                 % (AR._esc(st["kind"]), AR._esc(st["name"]) + ("（近似）" if st.get("approx") else ""),
+                    AR._esc(st.get("county", "—")), st["lat"], st["lon"], st["no2"], st["n3"]))
+    h.append('</table></div>')
 
     h.append('<div class="card"><h2>按县区看</h2>'
              '<table><tr><th>县区</th><th class="num">火点（条）</th><th class="num">点位</th>'
