@@ -1,0 +1,110 @@
+{
+ "河北": {
+  "fire": 119188,
+  "pts": 15112,
+  "ind_pts": 521,
+  "ind_fire": 93321,
+  "straw_pts": 3742,
+  "straw_fire": 5857,
+  "other_fire": 20010,
+  "straw_months": {
+   "05": 693,
+   "06": 3265,
+   "09": 308,
+   "10": 1591
+  },
+  "hot_night": 97.2,
+  "hot_frp": 1.13,
+  "hi": 522
+ },
+ "山西": {
+  "fire": 94546,
+  "pts": 13471,
+  "ind_pts": 416,
+  "ind_fire": 64848,
+  "straw_pts": 2008,
+  "straw_fire": 4420,
+  "other_fire": 25278,
+  "straw_months": {
+   "05": 765,
+   "06": 2134,
+   "09": 281,
+   "10": 1240
+  },
+  "hot_night": 96.8,
+  "hot_frp": 1.15,
+  "hi": 472
+ },
+ "山东": {
+  "fire": 68007,
+  "pts": 16099,
+  "ind_pts": 296,
+  "ind_fire": 40354,
+  "straw_pts": 3435,
+  "straw_fire": 4717,
+  "other_fire": 22936,
+  "straw_months": {
+   "05": 607,
+   "06": 2526,
+   "09": 603,
+   "10": 981
+  },
+  "hot_night": 97.4,
+  "hot_frp": 1.14,
+  "hi": 508
+ },
+ "河南": {
+  "fire": 45597,
+  "pts": 13753,
+  "ind_pts": 203,
+  "ind_fire": 22587,
+  "straw_pts": 5503,
+  "straw_fire": 8651,
+  "other_fire": 14359,
+  "straw_months": {
+   "05": 2565,
+   "06": 3772,
+   "09": 965,
+   "10": 1349
+  },
+  "hot_night": 98.3,
+  "hot_frp": 1.08,
+  "hi": 446
+ },
+ "天津": {
+  "fire": 10800,
+  "pts": 3689,
+  "ind_pts": 35,
+  "ind_fire": 3270,
+  "straw_pts": 949,
+  "straw_fire": 1662,
+  "other_fire": 5868,
+  "straw_months": {
+   "05": 71,
+   "06": 1254,
+   "09": 52,
+   "10": 285
+  },
+  "hot_night": 98.3,
+  "hot_frp": 1.02,
+  "hi": 300
+ },
+ "北京": {
+  "fire": 826,
+  "pts": 395,
+  "ind_pts": 4,
+  "ind_fire": 196,
+  "straw_pts": 108,
+  "straw_fire": 128,
+  "other_fire": 502,
+  "straw_months": {
+   "05": 43,
+   "06": 25,
+   "09": 45,
+   "10": 15
+  },
+  "hot_night": 100.0,
+  "hot_frp": 0.68,
+  "hi": 69
+ }
+}
