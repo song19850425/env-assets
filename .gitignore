@@ -17,3 +17,4 @@ EnvData/火点监测/cards/
 
 # 历史回补的「窗口级缓存」——可随时重建，不入库（约 150 个小文件）
 EnvData/火点监测/data/history/_win/
+EnvData/火点监测/_win/
