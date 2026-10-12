@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>郑州市路网级机动车排放清单 · 数据需求清单</title>
+<style>
+:root{--bg:#0f141b;--card:#171e28;--line:#26303e;--txt:#e8edf3;--dim:#9aa7b8;--acc:#ffd34d;--grn:#4ade80;--blu:#60a5fa;--red:#f87171}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75;font-size:15px}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:22px;margin:6px 0 2px}h2{font-size:18px;margin:30px 0 10px;padding-left:10px;border-left:4px solid var(--acc)}
+.sub{color:var(--dim);font-size:13px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#1d2531;color:var(--acc)}
+.tag{display:inline-block;font-size:12px;padding:2px 10px;border-radius:20px;margin:2px 4px 2px 0}
+.t-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid var(--red)}
+.t-grn{background:rgba(74,222,128,.12);color:var(--grn);border:1px solid var(--grn)}
+.t-blu{background:rgba(96,165,250,.12);color:var(--blu);border:1px solid var(--blu)}
+.t-ylw{background:rgba(255,211,77,.12);color:var(--acc);border:1px solid var(--acc)}
+.warn{background:rgba(255,211,77,.08);border:1px solid var(--acc);border-radius:10px;padding:10px 14px;font-size:13.5px;margin:12px 0}
+ol,ul{padding-left:22px}li{margin:6px 0}
+code{background:#0b0f14;padding:1px 6px;border-radius:6px;font-size:13px}
+.foot{color:var(--dim);font-size:12px;margin-top:34px;border-top:1px solid var(--line);padding-top:12px}
+.pri{font-size:13px;font-weight:700}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>郑州市路网级机动车排放清单 · 数据需求清单</h1>
+<div class="sub">2026-10-11 · 依据 HJ 180—2026 附录A（9张调查表）编制 · 原型已跑通，同目录 <code>郑州路网级机动车排放清单-原型.html</code></div>
+
+<div class="card">
+<b>这份清单是干什么的：</b>原型用的是"退化版"数据（OSM路网＋按等级类推流量＋假设EF），只能算演示。要升级成<b>能盖章、能报价</b>的正式清单，缺的就是下面这些真实数据——全部来自新国标附录A的现成调查表，<b>不是我们拍脑袋要的，是国标要求填的</b>。拿着这份清单去找对应部门，每一项都有标准条款背书。
+<div class="warn">💡 谈判要点：先展示原型热点图（京港澳／连霍高速、陇海快速路、中州大道NOx热点，重型货车占NOx 50.2%），再说"把这三张表的数据补上，就是全省第一张市级路网排放清单"。数据涉密可签保密协议，号牌可哈希脱敏——只留车型／燃料／排放阶段三个字段就够。</div>
+</div>
+
+<h2><span class="tag t-red">P0</span> 没有就做不了正式版（先谈这三项）</h2>
+
+<div class="card">
+<span class="pri">1. 分车型×燃料×排放阶段保有量</span> <span class="tag t-red">找交警（车管所）</span><br>
+<table>
+<tr><th>标准依据</th><td>HJ 180—2026 §7.5静态保有量法、附录A <b>表A.9</b>、表2（排放阶段判定）</td></tr>
+<tr><th>要什么字段</th><td>车辆类型（8类＋出租／公交单列）× 燃料种类（汽油／柴油／燃气／混动／纯电动）× 注册登记年份（→判定国一前～国六）× 数量（辆）</td></tr>
+<tr><th>干什么用</th><td>车辆构成 j 的基准；排放阶段是EF取值的前提，错一档EF差几倍</td></tr>
+<tr><th>拿不到时退化</th><td>用公开586万辆总数＋全国构成比例假设（＝原型现状，误差最大的一项）</td></tr>
+</table>
+</div>
+
+<div class="card">
+<span class="pri">2. 交通卡口分车型流量</span> <span class="tag t-red">找交警（科信／指挥中心）</span><br>
+<table>
+<tr><th>标准依据</th><td>HJ 180—2026 §6.3典型断面法、附录A <b>表A.2</b>、表A.5（车辆类型对应）</td></tr>
+<tr><th>要什么字段</th><td>卡口编号／名称／经纬度 × 24小时分车型流量（辆/h）× 统计周期（至少连续7天×24h）</td></tr>
+<tr><th>干什么用</th><td>交通量 q 的实测值，替代"按道路等级类推"；卡口多在主干道／快速路，正好覆盖原型热点路段</td></tr>
+<tr><th>拿不到时退化</th><td>类推法（原型现状）</td></tr>
+</table>
+</div>
+
+<div class="card">
+<span class="pri">3. 收费站分车型流量</span> <span class="tag t-red">找交通运输部门／高速运营方</span><br>
+<table>
+<tr><th>标准依据</th><td>HJ 180—2026 §6.3.5、附录A <b>表A.4</b></td></tr>
+<tr><th>要什么字段</th><td>收费站编号／名称 × 24小时分车型流量（客车1～4型、货车2轴～6轴及以上）</td></tr>
+<tr><th>干什么用</th><td>高速／快速路货车流量——原型显示重型货车占NOx 50.2%、快速路占64.6%，这部分是最该先做实的</td></tr>
+<tr><th>拿不到时退化</th><td>类推法（原型现状）</td></tr>
+</table>
+</div>
+
+<h2><span class="tag t-ylw">P1</span> 有了就准一个量级</h2>
+
+<div class="card">
+<span class="pri">4. 北斗车载终端轨迹数据</span> <span class="tag t-blu">找交通委（运管）</span><br>
+<table>
+<tr><th>标准依据</th><td>HJ 180—2026 §6.2／§7.2 <b>典型车型法</b>（第一优先级）、附录B.1</td></tr>
+<tr><th>要什么字段</th><td>公路客运／旅游客运／危化品／重型货车：脱敏ID × 时间 × 位置（→算路段流量＋车型）</td></tr>
+<tr><th>干什么用</th><td>标准里排第一的交通量获取法；货车GPS直接给出路段级货车流量，是校准"重型货车占NOx一半"这个结论的金标准</td></tr>
+</table>
+</div>
+
+<div class="card">
+<span class="pri">5. 卡口号牌关联车辆信息</span> <span class="tag t-blu">找交警＋生态环境局</span><br>
+<table>
+<tr><th>标准依据</th><td>HJ 180—2026 §7.3典型断面法：号牌关联注册登记／排放检验／环保信息公开数据库</td></tr>
+<tr><th>要什么字段</th><td>号牌哈希 × 车辆类型 × 燃料种类 × 排放阶段（不要原始号牌）</td></tr>
+<tr><th>干什么用</th><td>真实车辆构成 j（哪条路上跑的到底是国五柴油还是国六汽油），替代静态保有量假设</td></tr>
+</table>
+</div>
+
+<div class="card">
+<span class="pri">6. 断面自动监测／交通调查站数据</span> <span class="tag t-blu">找生态环境局／交通运输部门</span><br>
+<table>
+<tr><th>标准依据</th><td>HJ 180—2026 §6.3、附录A <b>表A.1／表A.3</b></td></tr>
+<tr><th>要什么字段</th><td>监测断面位置 × 24小时分车型流量 × 小时／日／月变化曲线</td></tr>
+<tr><th>干什么用</th><td>小时分布曲线（早晚高峰系数），把"日排放"拆成"小时排放"——做重污染天气应急管控场景必须有</td></tr>
+</table>
+</div>
+
+<h2><span class="tag t-grn">P2</span> EF本地化（把排放因子从"文献值"变成"郑州值"）</h2>
+
+<div class="card">
+<table>
+<tr><th>要什么</th><th>找谁</th><th>标准依据</th><th>影响</th></tr>
+<tr><td>温度／湿度逐时数据</td><td>气象局</td><td>§8.7、附录C.5（ACF空调／KCF湿度／TCF冷起动修正）</td><td>夏季空调修正可让轻型车EF上浮10～30%</td></tr>
+<tr><td>路段实际平均车速</td><td>浮动车GPS／高德API</td><td>附录C.5（SCF速度修正）</td><td>拥堵 vs 畅通，EF差2～5倍，是最大的单项不确定性</td></tr>
+<tr><td>冷起动占比ε／平均行程长度X</td><td>问卷／抽样调查</td><td>公式(2)冷起动项</td><td>短途出行多的城区，冷起动贡献不可忽略</td></tr>
+<tr><td>车用燃油抽样</td><td>市场监管／抽样</td><td>附录C.5（FCF燃料修正）</td><td>油品硫含量影响PM／SO₂</td></tr>
+<tr><td>海拔</td><td>测绘部门／公开DEM</td><td>§8.7（HCF海拔修正）</td><td>郑州平原，海拔修正≈1，优先级最低</td></tr>
+</table>
+</div>
+
+<h2>义诊话术（一页，见面用）</h2>
+<div class="card">
+<b>开场（30秒）：</b>"X局，我们按今年9月1日实施的HJ 180—2026新国标，给郑州先做了一张路网机动车排放底图（演示版），热点都落在京港澳、连霍、陇海快速路这几条上，重型货车一家的NOx就占一半。今天带图来，就是想跟您对一下——"<br><br>
+<b>转折：</b>"演示版用的是公开路网＋类推流量，要变成正式清单、国标口径，需要贵单位的三张表：<b>保有量分车型（表A.9）、卡口流量（表A.2）、收费站流量（表A.4）</b>。都是国标附录里的现成表格，填数就行。"<br><br>
+<b>承诺：</b>"数据到位后X周内交付：①正式路网排放清单（路段级、小时级）②交互式排放大屏（热点路段＋分车型贡献＋站点联动）③网格化文件（可直接喂CMAQ做来源解析）。涉密数据可签保密协议，号牌只收哈希。"<br><br>
+<b>钩子：</b>"地级市移动源清单很多还是二污普的老底子，HJ 180—2026刚实施，谁先按新国标做出第一张路网清单，谁就是全省样板。"
+</div>
+
+<div class="foot">
+编制依据：HJ 180—2026《汽车大气污染物和温室气体排放测算方法（交通量法）》全文（生态环境部官网原文已核验：§4核心公式、§5道路参数、§6交通量四法、§7车辆构成四法、§8排放因子VSP法、附录A调查表A.1～A.9、附录B/C）。<br>
+配套：同目录 <code>郑州路网级机动车排放清单-原型.html</code>（演示版报告）、<code>calc_emission.py</code>（计算脚本）、<code>zz_grid.csv</code>（954网格）、<code>zz_validation.csv</code>（9站验证）。
+</div>
+
+</div></body></html>
