@@ -65,4 +65,10 @@ jobs:
           fi
           N=$(python -c "import json;print(json.load(open('EnvData/火点监测/data/regions/summary.json',encoding='utf-8'))['total'])" 2>/dev/null || echo "?")
           git commit -m "data(regions): 全国持续火点 $N 个 $(date -u +%FT%TZ)"
-          git push
+          # 别的 workflow（fire-hourly）可能同时提交 → rebase 后重试，避免抢推送失败
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main >/dev/null 2>&1 || true
+            if git push; then echo "推送成功（第 $i 次）"; exit 0; fi
+            echo "推送被拒，重试 $i/5"; sleep 5
+          done
+          echo "推送 5 次均失败"; exit 1
