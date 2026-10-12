@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>排放清单 · 系列总览</title>
+<style>
+:root{--ink:#2f2f45;--muted:#8a8aa3;--accent:#5b5bd6;--border:#e8e9f3;--bg:#f4f5fa;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.7;}
+.wrap{max-width:960px;margin:0 auto;padding:14px 12px 48px;}
+header{background:#fff;border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(47,47,69,.06);margin-bottom:12px;}
+header h1{margin:0 0 8px;font-size:19px;}
+header .sub{color:var(--muted);font-size:12.5px;margin:4px 0;}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 2px 12px rgba(47,47,69,.06);margin-bottom:12px;overflow:hidden;}
+.card h2{margin:0;padding:13px 16px;font-size:15px;border-bottom:1px solid var(--border);}
+.card h2::before{content:'';display:inline-block;width:4px;height:15px;border-radius:2px;background:var(--accent);margin-right:8px;vertical-align:-2px;}
+.card .body{padding:14px 16px;}
+.proj{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;transition:box-shadow .15s;}
+.proj:hover{box-shadow:0 4px 16px rgba(91,91,214,.12);}
+.proj b{font-size:15px;}
+.proj .d{color:var(--muted);font-size:12.5px;margin-top:4px;}
+.proj .tag{display:inline-block;background:#f0f1fe;color:var(--accent);border-radius:6px;padding:1px 8px;font-size:12px;margin-right:6px;}
+ol.tight li{margin-bottom:8px;}
+.note{font-size:12.5px;color:var(--muted);}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>排放清单 · 系列总览</h1>
+<p class="sub">定位：大气污染源排放清单的方法资产、城市原型与 B 端交付物。区别于"空气质量数据"（浓度），这里做的是"排放"（源强）。</p>
+<p class="sub">方法锚点：HJ 180—2026《汽车大气污染物和温室气体排放测算方法（交通量法）》（2026-09-01 实施）</p>
+</header>
+
+<div class="card"><h2>项目</h2><div class="body">
+<a class="proj" href="zhengzhou-vehicle/郑州路网级机动车排放清单-原型.html">
+<b>郑州路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 50444 段 → 10975 个 200m 网格；NOx 42.8吨/日，重型货车占50.2%；热点：京港澳/连霍高速、陇海快速路、中州大道。高德底图三图层可切换。</span>
+</a>
+<a class="proj" href="zhengzhou-vehicle/郑州市机动车排放清单-数据需求清单.html">
+<b>郑州市机动车排放清单 · 数据需求清单</b> <span class="tag">B端弹药</span><br>
+<span class="d">按 HJ180 列出 P0/P1/P2 三级数据需求：找谁要、要什么字段、拿不到时怎么退化。附一页义诊话术，见面直接用。</span>
+</a>
+<a class="proj" href="交互式排放大屏.html">
+<b>交互式排放大屏</b> <span class="tag">B端演示</span><br>
+<span class="d">暗色大屏：郑州路网热力（4污染物切换）× 24小时滑块 × 分车型贡献 × 国控站联动；伊川县域视图。区别于传统Excel报告的交付形态。</span>
+</a>
+<a class="proj" href="yichuan-vehicle/伊川县机动车排放清单.html">
+<b>伊川县机动车排放清单 · 县域直出</b> <span class="tag">县域模板</span><br>
+<span class="d">保有量法直出：NOx 9062吨/年（重型货车59%）、PM2.5 502吨/年（重卡+农用车70%）、CO 13954吨/年（摩托车27%）。附县域vs市区结构对比。</span>
+</a>
+</div></div>
+
+<div class="card"><h2>方法资产</h2><div class="body">
+<ul class="tight">
+<li><b>HJ 180—2026</b> 原文 PDF（zhengzhou-vehicle/mee2026_mobile.pdf）——交通量法新国标，公式 E=q×l×EF×10⁻⁶，四级源分类，附录A调查表/附录C排放因子实测方法</li>
+<li><b>核算脚本</b> calc_emission.py（路网→交通量→构成→排放→网格）/ gen_report.py（报告生成），换城市换参数即复用</li>
+<li><b>郑州路网</b> zz_roads.json / zz_segments.csv（OSM 实采，主城区 4511km）</li>
+</ul>
+</div></div>
+
+<div class="card"><h2>路线图</h2><div class="body">
+<ol class="tight">
+<li><b>24小时动态清单</b>：早晚高峰小时系数，把日排放拆成小时排放（重污染天气应急场景刚需）</li>
+<li><b>县域清单模板</b>：伊川这类县城的简化版方法包（保有量法为主），配交互式排放大屏</li>
+<li><b>生物质燃烧排放</b>：火点三源融合的延伸——FIRMS火点 → 燃烧面积 → 排放（GFED/FINN 方法）</li>
+<li><b>交付形态</b>：交互式路网排放大屏（路段热力 + 分车型/分时段贡献 + 站点联动）——区别于传统 Excel 报告的卖点</li>
+</ol>
+<p class="note">数据策略：GitHub 无可用排放清单库；MEIC 官网申请拿分行业数据；交通量靠交警卡口/交通委浮动车/高德API谈。</p>
+</div></div>
+
+<footer>排放清单系列 · 2026-10-11 起</footer>
+</div>
+</body>
+</html>
