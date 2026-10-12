@@ -3,7 +3,10 @@
 
 为什么单独一个脚本：
   fetch_firms_north.py 的 bbox 只覆盖山河四省+京津（6 省）。
-  本脚本用全国 bbox，覆盖全部 31 个省级行政区，供「多省 + 全国」连续火点地图使用。
+  本脚本把全国拆成 15 块（5 经 × 3 纬）分别抓，覆盖全部 31 个省级行政区，
+  供「多省 + 全国」连续火点地图使用。
+  ⚠ 不要图省事用整块全国 bbox：响应大、慢，约 6% 的请求会超时返回空，
+  结果就是「持续点位」少算 5~10%（已用河北实测：全国口径 493 是 north6 口径 521 的子集）。
 
 输出（都很小，可直接入库）：
   data/regions/china-continuous.json   全国持续点位（两年累计出现 ≥10 天）
@@ -30,7 +33,14 @@ MOD = os.path.dirname(HERE)
 GEO = os.path.join(MOD, "geo", "regions")
 OUT = os.path.join(MOD, "data", "regions")
 
-BBOX = "73.0,17.0,135.5,54.0"          # 全国（含少量邻国，后面按省界过滤）
+BBOX = "73.0,17.0,135.5,54.0"          # 全国（仅作参考；实际按 TILES 分块抓）
+# ⚠ 教训：整块全国 bbox 抓会丢约 6% 数据 —— 响应大、慢，部分请求超时后 fetch_one 返回空。
+#   已用河北验证：national 的 493 个点位里 492 个是 north6 口径 521 的子集 → 纯丢数据。
+#   故拆成 5×3=15 块，每块 ≈12.5°×12.3°（与已验证可靠的 north6 bbox 同量级）。
+_LON = [73.0, 85.5, 98.0, 110.5, 123.0, 135.5]
+_LAT = [17.0, 29.3, 41.6, 54.0]
+TILES = [(_LON[i], _LAT[j], _LON[i + 1], _LAT[j + 1])
+         for i in range(len(_LON) - 1) for j in range(len(_LAT) - 1)]
 SOURCES = ["VIIRS_SNPP_SP", "VIIRS_NOAA20_SP"]
 WIN = 5                                 # FIRMS 单次窗口上限 5 天
 MIN_DAYS = 10                           # 持续排放点位判据：两年累计出现 ≥10 天
@@ -115,20 +125,23 @@ def locate(lat, lon, cells, units):
 
 
 # ---------------- 抓取 ----------------
-def fetch_one(key, src, d0):
-    u = API % (key, src, BBOX, WIN, d0.strftime("%Y-%m-%d"))
-    for attempt in range(3):
+def fetch_one(key, src, d0, bbox):
+    """返回 (rows, status)：status ∈ ok / empty / fail。fail = 重试后仍未拿到（数据缺口）。"""
+    u = API % (key, src, bbox, WIN, d0.strftime("%Y-%m-%d"))
+    for attempt in range(4):
         try:
-            r = requests.get(u, timeout=180,
+            r = requests.get(u, timeout=240,
                              headers={"User-Agent": "Mozilla/5.0 (firms-regions)"})
             if r.status_code == 200 and r.text.startswith("latitude"):
-                return list(csv.DictReader(io.StringIO(r.text)))
-            if r.status_code in (400, 404):
-                return []
+                return list(csv.DictReader(io.StringIO(r.text))), "ok"
+            if r.status_code == 400 and "no data" in r.text.lower():
+                return [], "empty"
+            if r.status_code == 404:
+                return [], "empty"
         except Exception:
             pass
-        time.sleep(2 + attempt * 3)
-    return []
+        time.sleep(3 + attempt * 4)
+    return [], "fail"
 
 
 def segs(dates, gap=GAP):
@@ -160,20 +173,27 @@ def main():
     while d <= end:
         windows.append(d)
         d += dt.timedelta(days=WIN)
-    print(f"[firms] 窗口 {len(windows)} × 源 {len(SOURCES)} = "
-          f"{len(windows) * len(SOURCES)} 次请求（{start} ~ {end}）", flush=True)
+    tasks = [(ti, "%.1f,%.1f,%.1f,%.1f" % tile, src, w)
+             for ti, tile in enumerate(TILES) for src in SOURCES for w in windows]
+    print(f"[firms] 分块 {len(TILES)} × 源 {len(SOURCES)} × 窗口 {len(windows)} "
+          f"= {len(tasks)} 次请求（{start} ~ {end}）", flush=True)
 
     cells, units = load_index()
 
     # acc[key] = [mask, night, n, frps, seen, last]
     acc = {}
     got_total = 0
-    for src in SOURCES:
-        got = 0
-        with ThreadPoolExecutor(4) as ex:
-            for i, rows in enumerate(ex.map(lambda w: fetch_one(key, src, w), windows)):
-                got += len(rows)
-                for r in rows:
+    fails = collections.Counter()
+    done = 0
+    with ThreadPoolExecutor(4) as ex:
+        for ti, tstr, src, (rows, st) in ex.map(
+                lambda t: (t[0], t[1], t[2], fetch_one(key, t[2], t[3], t[1])), tasks):
+            done += 1
+            if st == "fail":
+                fails[tstr] += 1
+                continue
+            got_total += len(rows)
+            for r in rows:
                     try:
                         lat = float(r["latitude"]); lon = float(r["longitude"])
                     except Exception:
@@ -210,13 +230,12 @@ def main():
                             (r.get("confidence") or "").lower()[:1],
                             ("N" if "NPP" in (r.get("satellite") or "") else "N20"),
                             (r.get("daynight") or "D"), prov, city)
-                if (i + 1) % 20 == 0:
-                    print(f"  {src} {i + 1}/{len(windows)} 窗口，本省归属累计 "
-                          f"{len(acc)} 个格点", flush=True)
-        got_total += got
-        print(f"  {src} 完成：{got} 条", flush=True)
+            if done % 40 == 0:
+                print(f"  进度 {done}/{len(tasks)}，累计 {len(acc)} 个格点，"
+                      f"失败 {sum(fails.values())}", flush=True)
 
-    print(f"[firms] 原始 {got_total} 条；中国境内格点 {len(acc)} 个", flush=True)
+    print(f"[firms] 原始 {got_total} 条；中国境内格点 {len(acc)} 个；"
+          f"失败请求 {sum(fails.values())} 次", flush=True)
 
     # ---- 聚合出「持续排放点位」 ----
     pts = []
@@ -259,6 +278,8 @@ def main():
     byc = collections.Counter((x["province"], x["city"]) for x in pts)
     summ = {"total": len(pts), "by_province": dict(byp),
             "by_city": {f"{a}|{b}": v for (a, b), v in byc.items()},
+            "raw_rows": got_total, "failed_requests": sum(fails.values()),
+            "fail_by_tile": dict(fails),
             "generated": dt.datetime.now().isoformat(timespec="seconds")}
     json.dump(summ, open(os.path.join(OUT, "summary.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)
