@@ -56,7 +56,13 @@ def stations_from(geo):
     return st
 
 
-def make_page(name, geo_path, pts, out_name, template, ascii_name, zoom=None):
+def make_page(name, geo_path, pts, out_name, template, ascii_name, zoom=None,
+              view_bounds=None):
+    """view_bounds=(w,s,e,n)：限定 fitBounds 的范围。
+
+    全国图的边界含「南海诸岛」要素（南到 3.4°N），直接用 b.getBounds() 会把视野
+    撑到 z=4（整个亚洲）。这里保留该要素照常绘制，只把视野框限定到大陆范围。
+    """
     geo = json.loads(pathlib.Path(geo_path).read_text(encoding="utf-8"))
     xs, ys = [], []
     for f in geo["features"]:
@@ -79,6 +85,16 @@ def make_page(name, geo_path, pts, out_name, template, ascii_name, zoom=None):
         "fire_mode": "province",
     }
     html = MFC.apply_page(template, cfg)
+
+    if view_bounds:
+        w, s, e, n = view_bounds
+        # 中国南北跨度大，整数 zoomSnap 下 fitBounds 只能落到 z=4（视野过宽）→ 放开小数缩放
+        html = html.replace("L.map('map', { zoomControl:true })",
+                            "L.map('map', { zoomControl:true, zoomSnap:0.25 })")
+        html = html.replace(
+            "map.fitBounds(b.getBounds(), {padding:[24,24]});",
+            "map.fitBounds(L.latLngBounds([[%s,%s],[%s,%s]]), {padding:[24,24]});"
+            % (s, w, n, e))
 
     payload = json.dumps(pts, ensure_ascii=False, separators=(",", ":"))
     n = 0
@@ -127,7 +143,8 @@ def main():
             geo_path = GEOPROV
             pts = build_points(allpts)
             outs.append(make_page("全国", geo_path, pts,
-                                  "连续火点地图-全国.html", template, asc, zoom=4))
+                                  "连续火点地图-全国.html", template, asc, zoom=5,
+                                  view_bounds=(73.5, 18.0, 135.1, 53.6)))
         else:
             geo_path = GEOREG / ("%s.json" % name)
             if not geo_path.exists():
