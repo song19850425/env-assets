@@ -20,6 +20,11 @@ header .sub{color:var(--muted);font-size:12.5px;margin:4px 0;}
 .proj:hover{box-shadow:0 4px 16px rgba(91,91,214,.12);}
 .proj b{font-size:15px;}
 .proj .d{color:var(--muted);font-size:12.5px;margin-top:4px;}
+.cmp{border-collapse:collapse;width:100%;font-size:12px;min-width:640px;}
+.cmp th,.cmp td{border:1px solid var(--border);padding:5px 7px;text-align:center;white-space:nowrap;}
+.cmp th{background:#f0f1fe;color:var(--accent);}
+.cmp td:first-child,.cmp th:first-child{text-align:left;}
+.cmp a{color:var(--accent);}
 .proj .tag{display:inline-block;background:#f0f1fe;color:var(--accent);border-radius:6px;padding:1px 8px;font-size:12px;margin-right:6px;}
 ol.tight li{margin-bottom:8px;}
 .note{font-size:12.5px;color:var(--muted);}
@@ -35,10 +40,108 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:18px;}
 <p class="sub">方法锚点：HJ 180—2026《汽车大气污染物和温室气体排放测算方法（交通量法）》（2026-09-01 实施）</p>
 </header>
 
+<div class="card"><h2>河南省 18 市全覆盖 <span class="tag">2026-10-13</span></h2><div class="body">
+<a class="proj" href="河南省机动车NOx排放全省网格图-原型.html">
+<b>河南省机动车 NOx 排放全省网格图 · 原型</b> <span class="tag">全省一张图</span><br>
+<span class="d">18 市 71,661 个 200m 网格同色标渲染，一眼看全省排放格局：郑州一极独大，京港澳/连霍沿线城市带状分布。</span>
+</a>
+<p class="sub" style="margin-top:0">同一套 HJ180 交通量法管线，OSM 路网实采 → 200m 网格，全省 NOx <b>152.1 吨/日</b>（年约 55,513 吨）。郑州一城占 28%。结构性结论：<b>重型货车以约 5~8% 的保有量贡献 47~56% 的 NOx</b>，18 城全部成立；快速路以 17~30% 的里程贡献 53~83% 的 NOx。站点校验 18 城无一能通过浓度反推排放（r 在 -0.73~1.00 间剧烈摆动，均为小样本或单点驱动）。</p>
+<div style="overflow-x:auto"><table class="cmp">
+<tr><th>城市</th><th>NOx吨/日</th><th>NOx吨/年</th><th>重卡占比</th><th>快速路占比</th><th>首要热点</th><th>校验</th></tr>
+<tr><td><a href="zhengzhou-vehicle/郑州路网级机动车排放清单-原型.html">郑州</a></td><td>42.8</td><td>15622</td><td>50.2%</td><td>64.6%</td><td>京港澳高速</td><td>9站/-0.41</td></tr>
+<tr><td><a href="nanyang-vehicle/南阳主城区路网级机动车排放清单-原型.html">南阳</a></td><td>11.86</td><td>4328</td><td>52.1%</td><td>68.6%</td><td>沪陕高速</td><td>5站/0.11</td></tr>
+<tr><td><a href="zhoukou-vehicle/周口主城区路网级机动车排放清单-原型.html">周口</a></td><td>11.56</td><td>4221</td><td>55.2%</td><td>79.7%</td><td>大广高速</td><td>4站/1.0</td></tr>
+<tr><td><a href="shangqiu-vehicle/商丘主城区路网级机动车排放清单-原型.html">商丘</a></td><td>10.4</td><td>3796</td><td>54.1%</td><td>74.7%</td><td>连霍高速</td><td>5站/0.06</td></tr>
+<tr><td><a href="luoyang-vehicle/洛阳主城区路网级机动车排放清单-原型.html">洛阳</a></td><td>9.02</td><td>3291</td><td>50.3%</td><td>63.0%</td><td>二广高速</td><td>9站/0.06</td></tr>
+<tr><td><a href="zhumadian-vehicle/驻马店主城区路网级机动车排放清单-原型.html">驻马店</a></td><td>8.24</td><td>3007</td><td>51.2%</td><td>66.0%</td><td>京港澳高速</td><td>4站/-0.28</td></tr>
+<tr><td><a href="anyang-vehicle/安阳主城区路网级机动车排放清单-原型.html">安阳</a></td><td>7.38</td><td>2696</td><td>53.3%</td><td>74.0%</td><td>京港澳高速</td><td>5站/-0.06</td></tr>
+<tr><td><a href="xinyang-vehicle/信阳主城区路网级机动车排放清单-原型.html">信阳</a></td><td>7.34</td><td>2680</td><td>51.1%</td><td>64.9%</td><td>沪陕高速</td><td>4站/0.1</td></tr>
+<tr><td><a href="xinxiang-vehicle/新乡主城区路网级机动车排放清单-原型.html">新乡</a></td><td>7.29</td><td>2662</td><td>49.6%</td><td>59.5%</td><td>京港澳高速</td><td>7站/0.48</td></tr>
+<tr><td><a href="pingdingshan-vehicle/平顶山主城区路网级机动车排放清单-原型.html">平顶山</a></td><td>6.07</td><td>2215</td><td>50.2%</td><td>61.1%</td><td>宁洛高速</td><td>3站/0.99</td></tr>
+<tr><td><a href="xuchang-vehicle/许昌主城区路网级机动车排放清单-原型.html">许昌</a></td><td>6.04</td><td>2205</td><td>54.0%</td><td>75.5%</td><td>京港澳高速</td><td>6站/-0.03</td></tr>
+<tr><td><a href="kaifeng-vehicle/开封主城区路网级机动车排放清单-原型.html">开封</a></td><td>5.13</td><td>1872</td><td>47.0%</td><td>52.5%</td><td>连霍高速</td><td>5站/-0.48</td></tr>
+<tr><td><a href="jiaozuo-vehicle/焦作主城区路网级机动车排放清单-原型.html">焦作</a></td><td>4.78</td><td>1746</td><td>53.6%</td><td>74.5%</td><td>晋新高速</td><td>6站/-0.55</td></tr>
+<tr><td><a href="puyang-vehicle/濮阳主城区路网级机动车排放清单-原型.html">濮阳</a></td><td>4.41</td><td>1608</td><td>49.7%</td><td>61.7%</td><td>台辉高速</td><td>4站/0.87</td></tr>
+<tr><td><a href="sanmenxia-vehicle/三门峡主城区路网级机动车排放清单-原型.html">三门峡</a></td><td>3.02</td><td>1101</td><td>55.7%</td><td>81.6%</td><td>连霍高速</td><td>4站/0.25</td></tr>
+<tr><td><a href="luohe-vehicle/漯河主城区路网级机动车排放清单-原型.html">漯河</a></td><td>2.95</td><td>1077</td><td>52.1%</td><td>71.6%</td><td>京港澳高速</td><td>0站/—</td></tr>
+<tr><td><a href="hebi-vehicle/鹤壁主城区路网级机动车排放清单-原型.html">鹤壁</a></td><td>2.41</td><td>880</td><td>55.4%</td><td>82.9%</td><td>京港澳高速</td><td>3站/-0.73</td></tr>
+<tr><td><a href="jiyuan-vehicle/济源主城区路网级机动车排放清单-原型.html">济源</a></td><td>1.39</td><td>506</td><td>52.7%</td><td>70.1%</td><td>连固线</td><td>2站/1.0</td></tr>
+</table></div>
+<p class="sub">注：保有量均为人口推导值（200辆/千人），报告内已标注；正式项目须用车管所实数替换。漯河在 CNEMC 2026-10-08/09 批次中无站点，未做浓度校验。</p>
+</div></div>
+
 <div class="card"><h2>项目</h2><div class="body">
 <a class="proj" href="zhengzhou-vehicle/郑州路网级机动车排放清单-原型.html">
 <b>郑州路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
 <span class="d">OSM 路网 50444 段 → 10975 个 200m 网格；NOx 42.8吨/日，重型货车占50.2%；热点：京港澳/连霍高速、陇海快速路、中州大道。高德底图三图层可切换。</span>
+</a>
+<a class="proj" href="luoyang-vehicle/洛阳主城区路网级机动车排放清单-原型.html">
+<b>洛阳路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 22306 段 → 5748 个 200m 网格；NOx 9.02吨/日，重型货车占50.3%；热点：二广/连霍高速、王城大道、定鼎大道。与郑州原型结构互相印证。</span>
+</a>
+<a class="proj" href="xinxiang-vehicle/新乡主城区路网级机动车排放清单-原型.html">
+<b>新乡路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 9679 段 → 3542 个 200m 网格；NOx 7.29吨/日，重型货车占49.6%（与郑州/洛阳结构最接近）；热点：京港澳/菏宝高速、北环/东环路；7站校验 r≈0.48（弱正相关，样本仍不足）。</span>
+</a>
+<a class="proj" href="anyang-vehicle/安阳主城区路网级机动车排放清单-原型.html">
+<b>安阳路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 10159 段 → 3576 个 200m 网格；NOx 7.38吨/日，重型货车占53.3%（钢铁城市特征）；热点：京港澳/南林高速、中华路、邺城大道；5站校验 r≈-0.06 无显著相关。</span>
+</a>
+<a class="proj" href="zhoukou-vehicle/周口主城区路网级机动车排放清单-原型.html">
+<b>周口路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 6788 段 → 3921 个 200m 网格；NOx 11.56吨/日，重型货车占55.2%（三城最高）；过境高速主导型：大广/商南/宁洛高速，快速路以30%里程贡献80%NOx。</span>
+</a>
+<a class="proj" href="kaifeng-vehicle/开封主城区路网级机动车排放清单-原型.html">
+<b>开封路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 11792 段 → 网格化；NOx 5.13吨/日，重型货车占47.0%；热点：连霍高速、郑民高速、通武线；5站 r≈-0.48（无显著相关）。</span>
+</a>
+<a class="proj" href="pingdingshan-vehicle/平顶山主城区路网级机动车排放清单-原型.html">
+<b>平顶山路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 9204 段 → 网格化；NOx 6.07吨/日，重型货车占50.2%；热点：宁洛高速、舟鲁线、郑栾高速；3站 r≈0.99（样本不足）。</span>
+</a>
+<a class="proj" href="jiaozuo-vehicle/焦作主城区路网级机动车排放清单-原型.html">
+<b>焦作路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 9290 段 → 网格化；NOx 4.78吨/日，重型货车占53.6%；热点：晋新高速、菏宝高速、乌海线；6站 r≈-0.55（弱相关，样本仍少）。</span>
+</a>
+<a class="proj" href="xuchang-vehicle/许昌主城区路网级机动车排放清单-原型.html">
+<b>许昌路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 8690 段 → 网格化；NOx 6.04吨/日，重型货车占54.0%；热点：京港澳高速、盐洛高速、文峰北路；6站 r≈-0.03（无显著相关）。</span>
+</a>
+<a class="proj" href="luohe-vehicle/漯河主城区路网级机动车排放清单-原型.html">
+<b>漯河路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 12973 段 → 网格化；NOx 2.95吨/日，重型货车占52.1%；热点：京港澳高速、宁洛高速、龙江东路；无站点数据。</span>
+</a>
+<a class="proj" href="sanmenxia-vehicle/三门峡主城区路网级机动车排放清单-原型.html">
+<b>三门峡路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 8719 段 → 网格化；NOx 3.02吨/日，重型货车占55.7%；热点：连霍高速、垣潼线、连共线；4站 r≈0.25（样本不足）。</span>
+</a>
+<a class="proj" href="nanyang-vehicle/南阳主城区路网级机动车排放清单-原型.html">
+<b>南阳路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 7831 段 → 网格化；NOx 11.86吨/日，重型货车占52.1%；热点：沪陕高速、商南高速、平宜高速；5站 r≈0.11（无显著相关）。</span>
+</a>
+<a class="proj" href="shangqiu-vehicle/商丘主城区路网级机动车排放清单-原型.html">
+<b>商丘路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 8597 段 → 网格化；NOx 10.4吨/日，重型货车占54.1%；热点：连霍高速、济广高速、平原路；5站 r≈0.06（无显著相关）。</span>
+</a>
+<a class="proj" href="xinyang-vehicle/信阳主城区路网级机动车排放清单-原型.html">
+<b>信阳路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 7313 段 → 网格化；NOx 7.34吨/日，重型货车占51.1%；热点：沪陕高速、京港澳高速、北环路；4站 r≈0.1（样本不足）。</span>
+</a>
+<a class="proj" href="zhumadian-vehicle/驻马店主城区路网级机动车排放清单-原型.html">
+<b>驻马店路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 5784 段 → 网格化；NOx 8.24吨/日，重型货车占51.2%；热点：京港澳高速、驿城大道、新阳高速；4站 r≈-0.28（样本不足）。</span>
+</a>
+<a class="proj" href="puyang-vehicle/濮阳主城区路网级机动车排放清单-原型.html">
+<b>濮阳路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 12404 段 → 网格化；NOx 4.41吨/日，重型货车占49.7%；热点：台辉高速、濮瑞路、大广高速；4站 r≈0.87（样本不足）。</span>
+</a>
+<a class="proj" href="hebi-vehicle/鹤壁主城区路网级机动车排放清单-原型.html">
+<b>鹤壁路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 9817 段 → 网格化；NOx 2.41吨/日，重型货车占55.4%；热点：京港澳高速、日凤线、107国道；3站 r≈-0.73（样本不足）。</span>
+</a>
+<a class="proj" href="jiyuan-vehicle/济源主城区路网级机动车排放清单-原型.html">
+<b>济源路网级机动车排放清单 · 原型</b> <span class="tag">原型已跑通</span><br>
+<span class="d">OSM 路网 4988 段 → 网格化；NOx 1.39吨/日，重型货车占52.7%；热点：连固线、二广高速、二淅线；2站 r≈1.0（样本不足）。</span>
 </a>
 <a class="proj" href="zhengzhou-vehicle/郑州市机动车排放清单-数据需求清单.html">
 <b>郑州市机动车排放清单 · 数据需求清单</b> <span class="tag">B端弹药</span><br>
