@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>踩断它需要多大力？· 刹车踏板强度交互实验</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0b0e14;--card:#141a26;--line:#232c40;--txt:#e8edf5;--dim:#8a94a8;--red:#ff4d4d;--amber:#ffb020;--green:#35d07f;--blue:#38bdf8}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;font-size:16px}
+.wrap{max-width:680px;margin:0 auto;padding:0 18px 80px}
+.hero{padding:56px 0 30px;text-align:center}
+.kicker{display:inline-block;font-size:13px;color:var(--amber);border:1px solid var(--amber);border-radius:20px;padding:4px 16px;margin-bottom:18px;letter-spacing:2px}
+h1{font-size:30px;line-height:1.4;margin-bottom:12px}
+h1 .r{color:var(--red)}
+.sub{color:var(--dim);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin:22px 0}
+.card h2{font-size:19px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h2 .n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#04121f;font-size:14px;font-weight:800;align-items:center;justify-content:center;flex:none}
+.tl{position:relative;padding-left:22px}
+.tl:before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.tl .ev{position:relative;padding:10px 0}
+.tl .ev:before{content:"";position:absolute;left:-20px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--blue)}
+.tl .ev.hot:before{background:var(--red);box-shadow:0 0 10px var(--red)}
+.tl .d{font-size:13px;color:var(--dim)}
+.tl .t{font-size:15px}
+.tl .t b{color:var(--amber)}
+/* 踏板实验区 */
+.stage{background:#0a0d13;border-radius:12px;padding:18px 12px;text-align:center;position:relative;overflow:hidden}
+svg#pedal{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.readout{display:flex;justify-content:center;gap:26px;margin:14px 0 6px}
+.readout .v{text-align:center}
+.readout .v .num{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.readout .v .lab{font-size:12px;color:var(--dim)}
+#forceNum{color:var(--blue)}
+#forceNum.danger{color:var(--red)}
+input[type=range]{width:100%;margin:16px 0 6px;appearance:none;-webkit-appearance:none;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--amber) 55%,var(--red));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:3px solid var(--blue);box-shadow:0 2px 10px rgba(0,0,0,.5);cursor:pointer}
+.marks{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:8px}
+.btns{display:flex;gap:10px;margin-top:12px}
+button{flex:1;border:none;border-radius:10px;padding:13px 0;font-size:15px;font-weight:700;cursor:pointer}
+.btn-go{background:var(--red);color:#fff}
+.btn-go:active{transform:scale(.97)}
+.btn-reset{background:#232c40;color:var(--txt)}
+.btn-fatigue{background:#3a2c10;color:var(--amber);border:1px solid var(--amber)}
+#result{min-height:76px;margin-top:14px;font-size:15px;text-align:left}
+#result .ok{color:var(--green)} #result .bad{color:var(--red);font-weight:700} #result .warn{color:var(--amber)}
+.stdline{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:14px}
+.stdline .bar{flex:1;height:10px;border-radius:5px;background:#1c2333;position:relative;overflow:hidden}
+.stdline .fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.stdline .val{width:92px;text-align:right;font-variant-numeric:tabular-nums;flex:none}
+.stdline .tag{font-size:11px;color:var(--dim);display:block}
+.legend{font-size:12px;color:var(--dim);margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--dim);font-weight:600;font-size:13px}
+td.hl{color:var(--amber);font-weight:700}
+.note{font-size:12px;color:var(--dim);margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.src{font-size:12px;color:#5a6579;margin-top:20px}
+.src a{color:#5a7fa8}
+footer{text-align:center;color:#4a5468;font-size:12px;margin-top:40px}
+.crack{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<div class="kicker">交互实验 · 汽车安全</div>
+<h1>一脚刹车 <span class="r">1612N</span><br>百万豪车的踏板断了</h1>
+<div class="sub">某某V80000 刹车踏板支架断裂事件 · 数据来自公开报道<br>拖动滑杆，亲手试试"踩断它需要多大力"</div>
+</div>
+
+<div class="card">
+<h2><span class="n">1</span>事件还原：72 小时发生了什么</h2>
+<div class="tl">
+<div class="ev"><div class="d">2026-08-05</div><div class="t">某某V80000 上市，售价 <b>76.6–101.6 万元</b>，定位超豪华 MPV</div></div>
+<div class="ev"><div class="d">2026-08-31</div><div class="t">正式开启交付</div></div>
+<div class="ev hot"><div class="d">2026-10-08</div><div class="t">某媒体发布测试视频：3 台全新 V800 做 <b>100km/h→0 紧急制动</b>，分别在第 <b>2、3、4 脚</b>重刹时，刹车踏板支架<b>全部断裂</b>。断裂后踏板脱落，脚刹完全失效，制动距离从 <b>38 米暴增至 140 米</b></div></div>
+<div class="ev"><div class="d">2026-10-08</div><div class="t">某某回应：称为"非标准的极端测试工况"，承诺优化设计、免费升级；江淮汽车<b>跌停</b></div></div>
+<div class="ev"><div class="d">2026-10-09</div><div class="t">江淮再跌 7.97%，两天市值蒸发 <b>117.67 亿元</b></div></div>
+<div class="ev"><div class="d">2026-10-10</div><div class="t">工信部等四部门发布汽车创新设计管理通知（征求意见稿），被解读为对"速成车"说不</div></div>
+<div class="ev"><div class="d">2026-10-11</div><div class="t">某某称升级方案 10 月底确认、11 月升级；人民日报发声：刹车踏板<b>绝不应在驾驶中断裂</b></div></div>
+</div>
+</div>
+
+<div class="card">
+<h2><span class="n">2</span>亲手试：踩断它需要多大力？</h2>
+<div class="stage">
+<svg id="pedal" viewBox="0 0 420 300">
+<!-- 支架底座 -->
+<rect x="60" y="40" width="26" height="180" rx="6" id="bracketBase" style="fill:#46536b"/>
+<!-- 支架主体（会断裂的部分） -->
+<g id="bracket">
+<rect x="60" y="90" width="26" height="90" rx="4" id="bracketMid" style="fill:#5b6b87"/>
+<rect x="52" y="170" width="42" height="14" rx="4" id="bracketJoint" style="fill:#5b6b87"/>
+</g>
+<!-- 踏板臂 -->
+<g id="arm">
+<rect x="86" y="168" width="150" height="18" rx="6" id="armBar" style="fill:#7c8ba3"/>
+<rect x="216" y="150" width="70" height="54" rx="10" id="pedalPad" style="fill:#9aa8c0"/>
+<line x1="228" y1="160" x2="274" y2="160" stroke="#5b6b87" stroke-width="4"/>
+<line x1="228" y1="176" x2="274" y2="176" stroke="#5b6b87" stroke-width="4"/>
+<line x1="228" y1="192" x2="274" y2="192" stroke="#5b6b87" stroke-width="4"/>
+</g>
+<!-- 断裂碎片（隐藏） -->
+<g id="debris" style="display:none">
+<rect x="200" y="230" width="40" height="16" rx="5" fill="#ff4d4d" transform="rotate(24 220 238)"/>
+<rect x="250" y="244" width="30" height="12" rx="4" fill="#ff4d4d" transform="rotate(-18 265 250)"/>
+</g>
+<!-- 力的箭头 -->
+<g id="forceArrow" style="display:none">
+<line x1="251" y1="60" x2="251" y2="140" stroke="#ff4d4d" stroke-width="8" marker-end="url(#ah)"/>
+<defs><marker id="ah" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#ff4d4d"/></marker></defs>
+<text x="268" y="105" fill="#ff4d4d" font-size="20" font-weight="bold" id="arrowLabel">F</text>
+</g>
+<text x="30" y="280" fill="#8a94a8" font-size="13">踏板支架（PP+GF40）</text>
+<text x="250" y="280" fill="#8a94a8" font-size="13" id="statusText">待测试</text>
+</svg>
+<div class="readout">
+<div class="v"><div class="num" id="forceNum">0</div><div class="lab">踩踏力 (N)</div></div>
+<div class="v"><div class="num" id="pctNum" style="color:var(--dim)">0%</div><div class="lab">相当于国标上限</div></div>
+</div>
+<input type="range" id="force" min="0" max="5000" value="0" step="10">
+<div class="marks"><span>0</span><span>500 国标</span><span>1500 行标</span><span>2700 豪华车</span><span>5000</span></div>
+<div class="btns">
+<button class="btn-go" id="slamBtn">模拟一脚重刹</button>
+<button class="btn-fatigue" id="fatigueBtn">连踩4脚（某媒体测试）</button>
+<button class="btn-reset" id="resetBtn">复位</button>
+</div>
+<div id="result"><span style="color:var(--dim)">拖动滑杆或点击按钮，看看踏板在多大力下断裂。注意观察 1612N 这条线。</span></div>
+</div>
+<div class="legend">说明：本实验为示意模型。1612N 为某媒体实测第 3 台车断裂瞬间读数；500N / 1500N / 2700N 为标准与行业参考值（见下）。</div>
+</div>
+
+
+<div class="card">
+<h2><span class="n">✎</span>测试记录</h2>
+<div style="display:flex;align-items:center;gap:18px;margin-bottom:12px;font-size:14px;flex-wrap:wrap">
+<div>测试 <b id="logCount" style="color:var(--blue);font-size:18px">0</b> 次</div>
+<div>峰值 <b id="logMax" style="color:var(--amber);font-size:18px">0</b> N</div>
+<div>断裂 <b id="logBreak" style="color:var(--red);font-size:18px">0</b> 次</div>
+<button id="clearLog" style="flex:none;margin-left:auto;background:#232c40;color:var(--dim);border:1px solid var(--line);border-radius:8px;padding:8px 18px;font-size:13px;cursor:pointer">清空记录</button>
+</div>
+<div style="max-height:280px;overflow-y:auto">
+<table id="logTable" style="margin-top:0">
+<tr><th>#</th><th>峰值力 (N)</th><th>结果</th><th>时间</th></tr>
+<tbody id="logBody"><tr><td colspan="4" style="text-align:center;color:var(--dim)">暂无记录 — 拖动滑杆或点击按钮开始测试</td></tr></tbody>
+</table>
+</div>
+<div class="legend">每次松开滑杆、单脚重刹或连踩测试完成时，自动记录峰值力。</div>
+</div>
+
+<div class="card">
+<h2><span class="n">3</span>四条线：标准 vs 现实</h2>
+<div class="stdline"><div class="val">500N<span class="tag">GB 21670-2025 认证上限</span></div><div class="bar"><div class="fill" style="width:10%;background:var(--green)"></div></div></div>
+<div class="stdline"><div class="val">1500N<span class="tag">QC/T 788-2018 行标要求</span></div><div class="bar"><div class="fill" style="width:30%;background:var(--blue)"></div></div></div>
+<div class="stdline"><div class="val" style="color:var(--red)">1612N<span class="tag">实测断裂（第3台）</span></div><div class="bar"><div class="fill" style="width:32%;background:var(--red)"></div></div></div>
+<div class="stdline"><div class="val">2700N+<span class="tag">豪华车一般设计值</span></div><div class="bar"><div class="fill" style="width:54%;background:var(--amber)"></div></div></div>
+<div class="stdline"><div class="val">3000N<span class="tag">大型MPV建议值</span></div><div class="bar"><div class="fill" style="width:60%;background:var(--amber)"></div></div></div>
+<div class="stdline"><div class="val">4589N<span class="tag">测试中记录的最高踩踏力</span></div><div class="bar"><div class="fill" style="width:92%;background:#7a5cff"></div></div></div>
+<table>
+<tr><th>标准</th><th>要求</th><th>性质</th></tr>
+<tr><td>GB 21670-2025</td><td>行车制动试验踏板力 65N～500N</td><td class="hl">强制国标（认证用）</td></tr>
+<tr><td>QC/T 788-2018</td><td>1500N 纵向载荷保载 5 秒×5 次，无裂纹</td><td>推荐性行标（非强制）</td></tr>
+<tr><td>GMW15396（通用企标）</td><td>踏板需承受持续大载荷，正常工况不断裂</td><td>企业标准</td></tr>
+</table>
+<div class="note">关键澄清：500N 是<b>认证试验</b>的踩踏力上限，不是踏板的断裂极限。拿"国标只要求 500N"来论证"1612N 断裂合理"，混淆了两个概念——认证力和破坏载荷之间，应该有数倍的安全冗余。</div>
+</div>
+
+<div class="card">
+<h2><span class="n">5</span>材质之争：塑料 vs 金属</h2>
+<table>
+<tr><th></th><th>PP+GF40（V800支架）</th><th>钢材 / 铝合金</th></tr>
+<tr><td>本质</td><td>聚丙烯+40%玻璃纤维改性塑料</td><td>冲压钢 / 压铸铝合金</td></tr>
+<tr><td>优点</td><td>注塑成型快、成本低、可塑性强</td><td>强度高、耐疲劳、温度稳定性好</td></tr>
+<tr><td>短板</td><td class="hl">同体积下强度低于金属；要达同等强度需加大壁厚体积</td><td>成本高、重（钢）、工艺复杂</td></tr>
+<tr><td>行业现状</td><td>宝马、大众、丰田、本田部分车型也在用塑料支架</td><td>多用于高端车型；连杆多为金属</td></tr>
+</table>
+<div class="note">工程师共识：<b>材料不是原罪，安全冗余才是关键</b>。塑料本身可以用，但设计时必须留足余量——百万级豪车卖的是"安全感"，把冗余压得太薄，断的就是品牌信任。另注意：有些车企宣称"踏板是钢的"，指的往往是<b>连杆</b>，支架同样可能是塑料——看参数时要分清部位。</div>
+</div>
+
+<div class="card">
+<h2><span class="n">6</span>三个追问</h2>
+<div style="font-size:15px">
+<p style="margin-bottom:12px"><b style="color:var(--amber)">① 测试算不算"暴力"？</b><br><span style="color:var(--dim)">某媒体：百公里刹车是最基本的实测科目，高速场景人人都会遇到。伯特利董事长：试车员侧向用力、把踏板"别"断，属滥用工况。整车副总工程师：没有什么可指责的，零部件本就该承受极端情况。</span></p>
+<p style="margin-bottom:12px"><b style="color:var(--amber)">② 断裂是偶发还是设计缺陷？</b><br><span style="color:var(--dim)">3 台新车（其中 1 台里程 &lt;3km）全部断裂，且都发生在第 2–4 脚——指向系统性问题而非个案。中汽中心已向车企发放制动踏板材质调研问卷。</span></p>
+<p><b style="color:var(--amber)">③ 消费者该信什么？</b><br><span style="color:var(--dim)">人民日报定调：刹车踏板绝不应在驾驶中断裂。某某承诺 11 月免费升级。已有多位准车主表示"定金不退也不提车"——高端车的质量预期，远超国标下限。</span></p>
+</div>
+<div class="src">数据来源：中华网（新浪财经 2026-10-08）、新浪财经·贝壳财经 2026-10-11 / 10-12、人民日报客户端。标准编号：GB 21670-2025、QC/T 788-2018、GMW15396。页面数据为公开报道整理，实验动画为示意模型。</div>
+</div>
+
+<footer style="text-align:center;padding:36px 20px 44px;line-height:1.8">
+<div style="font-size:17px;font-weight:700;color:#fff;margin-bottom:6px">小宋的环保笔记</div>
+<div style="color:var(--dim);font-size:13px;margin-bottom:14px">扫码关注公众号 · 换个姿势看环保</div>
+<img src="qrcode_gzh.png" alt="公众号二维码" style="width:168px;height:168px;border-radius:12px;background:#fff;padding:8px">
+<div style="margin-top:14px;color:var(--dim);font-size:13px">商务合作：<a href="mailto:jinghao.song@gmail.com" style="color:var(--blue)">jinghao.song@gmail.com</a></div>
+<div style="margin-top:10px;color:#3a4358;font-size:12px">宋工的交互实验 · 数据来自公开报道 · 仅供科普讨论</div>
+</footer>
+</div>
+
+<script>
+(function(){
+var force=document.getElementById('force'),forceNum=document.getElementById('forceNum'),
+pctNum=document.getElementById('pctNum'),result=document.getElementById('result'),
+arm=document.getElementById('arm'),bracketMid=document.getElementById('bracketMid'),
+bracketJoint=document.getElementById('bracketJoint'),debris=document.getElementById('debris'),
+forceArrow=document.getElementById('forceArrow'),arrowLabel=document.getElementById('arrowLabel'),
+statusText=document.getElementById('statusText'),stage=document.querySelector('.stage'),
+broken=false,fatigueHits=0,fatigueTimer=null;
+/* ===== 测试记录 ===== */
+var testLog=[];
+function logTest(peak,broke){
+  if(peak<50)return;
+  testLog.push({n:testLog.length+1,peak:Math.round(peak),broke:!!broke,
+    time:new Date().toLocaleTimeString('zh-CN',{hour12:false})});
+  renderLog();
+}
+function renderLog(){
+  var body=document.getElementById('logBody');
+  var html='';
+  for(var i=testLog.length-1;i>=0;i--){
+    var t=testLog[i];
+    html+='<tr><td>'+t.n+'</td><td class="hl">'+t.peak+'</td><td>'+
+      (t.broke?'<span style="color:var(--red);font-weight:700">断裂</span>':'<span style="color:var(--green)">完好</span>')+
+      '</td><td style="color:var(--dim)">'+t.time+'</td></tr>';
+  }
+  body.innerHTML=html;
+  document.getElementById('logCount').textContent=testLog.length;
+  var mx=0,br=0;
+  testLog.forEach(function(t){ if(t.peak>mx)mx=t.peak; if(t.broke)br++; });
+  document.getElementById('logMax').textContent=mx;
+  document.getElementById('logBreak').textContent=br;
+}
+document.getElementById('clearLog').addEventListener('click',function(){
+  testLog=[];renderLog();
+  document.getElementById('logBody').innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--dim)">暂无记录 — 拖动滑杆或点击按钮开始测试</td></tr>';
+});
+var dragPeak=0,dragging=false;
+force.addEventListener('input',function(){ dragging=true; var f=+force.value; if(f>dragPeak)dragPeak=f; });
+force.addEventListener('change',function(){
+  if(dragging&&dragPeak>=50){ logTest(dragPeak,broken); }
+  dragPeak=0;dragging=false;
+});
+
+var BREAK=1612;
+function render(){
+var f=+force.value;
+forceNum.textContent=f;
+pctNum.textContent=Math.round(f/500*100)+'%';
+forceNum.classList.toggle('danger',f>=BREAK&&!broken||broken);
+arrowLabel.textContent=f+'N';
+if(f>50){forceArrow.style.display='block';}else{forceArrow.style.display='none';}
+if(!broken){
+var bend=Math.min(f/5000,1)*14;
+arm.setAttribute('transform','rotate('+bend+' 86 177)');
+var strain=Math.min(f/BREAK,1);
+var c='rgb('+Math.round(91+strain*164)+','+Math.round(107-stain(strain))+','+Math.round(135-stain(strain)*80)+')';
+bracketMid.style.fill='rgb('+Math.round(91+strain*150)+','+Math.round(107-strain*60)+','+Math.round(135-strain*70)+')';
+bracketJoint.style.fill=bracketMid.style.fill;
+if(f>0&&f<500){statusText.textContent='国标认证范围内';statusText.setAttribute('fill','#35d07f');}
+else if(f>=500&&f<1500){statusText.textContent='超过认证上限，未达行标';statusText.setAttribute('fill','#ffb020');}
+else if(f>=1500&&f<BREAK){statusText.textContent='达到行标要求，接近断裂点';statusText.setAttribute('fill','#ffb020');}
+else if(f>=BREAK){doBreak();}
+}else{
+statusText.textContent='已断裂';statusText.setAttribute('fill','#ff4d4d');
+}
+}
+function stain(s){return s;}
+function doBreak(){
+if(broken)return;broken=true;
+arm.setAttribute('transform','rotate(38 86 177) translate(0 40)');
+bracketJoint.style.fill='#ff4d4d';
+debris.style.display='block';
+stage.classList.remove('crack');void stage.offsetWidth;stage.classList.add('crack');
+result.innerHTML='<span class="bad">咔嚓——支架在 '+force.value+'N 断裂！</span><br>实测中第 3 台车在 <b>1612N</b> 断裂，仅比行标 1500N 高出 7.5%。豪华车支架一般按 2700N+ 设计，这里几乎没有安全冗余。<br><span class="warn">断裂后果：踏板脱落 → 脚刹完全失效 → 制动距离 38 米 → 140 米。</span>';
+}
+function reset(){
+broken=false;fatigueHits=0;force.value=0;
+arm.setAttribute('transform','');bracketMid.style.fill='#5b6b87';bracketJoint.style.fill='#5b6b87';
+debris.style.display='none';forceArrow.style.display='none';
+statusText.textContent='待测试';statusText.setAttribute('fill','#8a94a8');
+result.innerHTML='<span style="color:var(--dim)">已复位。再试一次。</span>';
+if(fatigueTimer){clearInterval(fatigueTimer);fatigueTimer=null;}
+render();
+}
+force.addEventListener('input',render);
+document.getElementById('resetBtn').addEventListener('click',reset);
+document.getElementById('slamBtn').addEventListener('click',function(){
+reset();
+var target=1600+Math.floor(Math.random()*400);
+var cur=0;
+var t=setInterval(function(){
+cur+=120;
+if(cur>=target){cur=target;clearInterval(t);logTest(cur,broken);}
+force.value=cur;render();
+if(broken){clearInterval(t);logTest(cur,true);}
+},40);
+result.innerHTML='<span class="warn">一脚重刹踩下…</span>';
+});
+document.getElementById('fatigueBtn').addEventListener('click',function(){
+reset();
+var hits=[1450,1580,1612,0];var i=0;
+result.innerHTML='<span class="warn">模拟某媒体测试：连续重刹…</span>';
+fatigueTimer=setInterval(function(){
+if(i>=3||broken){clearInterval(fatigueTimer);fatigueTimer=null;
+if(!broken)result.innerHTML='<span class="ok">4 脚踩完，踏板幸存——但这只是运气。实测中 3 台车全部在第 2–4 脚断裂。</span>';
+return;}
+i++;
+var target=hits[i-1],cur=0;
+forceArrow.style.display='block';
+var t2=setInterval(function(){
+cur+=150;
+if(cur>=target){cur=target;clearInterval(t2);logTest(cur,broken);
+setTimeout(function(){force.value=0;render();},350);}
+force.value=cur;render();
+},40);
+result.innerHTML='<span class="warn">第 '+i+' 脚：'+target+'N…</span>'+(broken?'<br><span class="bad">第 '+i+' 脚断裂！与实测一致（第 2–4 脚）。</span>':'');
+},1400);
+});
+render();
+})();
+</script>
+</body>
+</html>
