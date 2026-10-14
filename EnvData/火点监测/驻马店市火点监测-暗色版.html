@@ -93,6 +93,7 @@
   .fp-chips { display:flex; flex-wrap:wrap; gap:6px; }
   .fp-chip { font-size:11px; background:#fff7ed; border:1px solid #fed7aa;
     color:#9a3412; border-radius:20px; padding:3px 10px; }
+.fp-chip{cursor:pointer;} .fp-chip.on{background:#c2410c !important;color:#fff !important;border-color:#fb923c !important;}
   .fp-type { display:flex; justify-content:space-between; font-size:12px;
     padding:6px 2px; border-bottom:1px dashed #f0e0d0; }
   .fp-type b { color:#c2410c; }
@@ -707,10 +708,28 @@ FIRES.forEach(f=>{ const g=wgs2gcj(f.lng,f.lat); f.lng=+g[0].toFixed(5); f.lat=+
 FIRE_HISTORY.forEach(d=>{(d.fires||[]).forEach(f=>{ const g=wgs2gcj(f.lng,f.lat); f.lng=+g[0].toFixed(5); f.lat=+g[1].toFixed(5); }); });
 const fireLayer = L.layerGroup().addTo(map);
 let fireOn = true;
+/* 火点类型筛选（2026-10-14）：默认不含工业热源，面板里可切换 */
+let fireFilter = 'noind';
+function fireInd(f){ return !!(f.cause && f.cause.indexOf('工业/固定源') >= 0); }
+function firePassV(f, v){
+  const ind = fireInd(f);
+  if (v === 'all') return true;
+  if (v === 'noind') return !ind;
+  if (v === 'ind') return ind;
+  if (ind) return false;
+  if (v === 'straw') return f.cause === '秸秆焚烧疑似' || (!f.cause && f.dn !== 'N' && f.frp < 3);
+  if (v === 'night') return f.dn === 'N';
+  if (v === 'pending') return (f.cause && (f.cause.indexOf('待核实') >= 0 || f.cause.indexOf('低置信') >= 0)) || (!f.cause && f.dn !== 'N' && f.frp >= 3 && f.frp < 30);
+  if (v === 'big') return f.cause === '较大火情疑似' || f.frp >= 30;
+  return true;
+}
+function firePass(f){ return firePassV(f, fireFilter); }
+function visibleFires(){ return FIRES.filter(firePass); }
+function setFireFilter(v){ fireFilter = v; renderFires(); renderFirePanel(); }
 function renderFires(){
   fireLayer.clearLayers();
   const confCn = {h:'高', n:'中', l:'低'};
-  FIRES.forEach(f=>{
+  visibleFires().forEach(f=>{
     const sz = Math.round(8 + Math.min(f.frp, 40) * 0.45);
     const fc = f.frp >= 15 ? '#ef4444' : f.frp >= 3 ? '#fb923c' : '#fbbf24';
     const m = L.marker([f.lat, f.lng], {
@@ -726,7 +745,7 @@ function renderFires(){
       `<div style="margin-top:4px;padding-top:4px;border-top:1px dashed #eee;">火情推测：<b style="color:#c2410c;">${guessFire(f)}</b><br><span style="color:#999;font-size:11px;">（卫星遥感推测，仅供参考，以现场核实为准）</span></div></div>`);
     fireLayer.addLayer(m);
   });
-  document.getElementById('fire-count').textContent = FIRES.length;
+  document.getElementById('fire-count').textContent = visibleFires().length;
   const btn = document.getElementById('fireBtn');
   btn.title = FIRES_UPDATED ? `火点数据更新于 ${FIRES_UPDATED}` : '暂无火点数据';
 }
@@ -767,15 +786,21 @@ function fireType(f){
   return '待核实';
 }
 function renderFirePanel(){
-  document.getElementById('fp-count').textContent = FIRES.length;
+  document.getElementById('fp-count').textContent = visibleFires().length;
   document.getElementById('fp-updated').textContent = FIRES_UPDATED ? '更新 ' + FIRES_UPDATED : '';
   const hi = FIRES.filter(f=>f.conf==='h'||f.conf==='n').length;
   const day = FIRES.filter(f=>f.dn==='D').length;
   const night = FIRES.filter(f=>f.dn==='N').length;
+  const FCH = (v,label)=>`<span class="fp-chip${fireFilter===v?' on':''}" onclick="setFireFilter('${v}')">${label} ${FIRES.filter(f=>firePassV(f,v)).length}</span>`;
   document.getElementById('fp-chips').innerHTML =
-    `<span class="fp-chip">中高置信 ${hi}</span>` +
-    `<span class="fp-chip">☀️ 白天 ${day}</span>` +
-    `<span class="fp-chip">🌙 夜间 ${night}</span>`;
+    FCH('noind','全部（不含工业）') +
+    FCH('straw','秸秆焚烧疑似') +
+    FCH('night','夜间火点') +
+    FCH('pending','待核实') +
+    FCH('big','较大火情/山火') +
+    FCH('ind','工业热源') +
+    FCH('all','全部（含工业）') +
+    `<div style="width:100%;font-size:11px;color:#94a3b8;margin-top:2px;">中高置信 ${hi} · 白天 ${day} · 夜间 ${night}（点标签筛选地图火点）</div>`;
   const types = {};
   FIRES.forEach(f=>{ const t=fireType(f); types[t]=(types[t]||0)+1; });
   document.getElementById('fp-types').innerHTML = Object.keys(types).sort((a,b)=>types[b]-types[a])
@@ -1002,7 +1027,7 @@ applyData(simLines().join('\n'), '模拟数据');
     var s = '';
     s += sec('数据来源与时效',
       kv('数据源','NASA FIRMS · VIIRS 375m')
-      + kv('卫星','Suomi-NPP + NOAA-20')
+      + kv('卫星','Suomi-NPP + NOAA-20 + NOAA-21')
       + kv('快照时间', FIRES_UPDATED || '–')
       + kv('抓取频率','每 6 小时（云端自动）')
       + '<div class="cm-note">FIRMS 是卫星过境后的近实时(NRT)产品，延迟约 3~4 小时，一天刷新多次，做不到分钟级。'
