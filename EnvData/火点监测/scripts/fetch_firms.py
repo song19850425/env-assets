@@ -16,16 +16,18 @@
     每个火点带 cause / cause_conf / reasons（成因推测 + 依据）/ hist（该点位历史摘要）
 
 要点：
-- 数据源：VIIRS 375m 近实时（Suomi-NPP + NOAA-20），坐标 WGS-84。
+- 数据源：VIIRS 375m 近实时（Suomi-NPP + NOAA-20 + NOAA-21），坐标 WGS-84。
+  （2026-10-14 由两星扩为三颗 VIIRS：实测同一 24h 窗口单星只覆盖三颗并集约 1/3 位置，
+  短命火点谁过境谁看见；NOAA-21 在三颗中单星检出最多。）
 - 页面显示时再 WGS-84 → GCJ-02（页面已有 wgs2gcj），与高德底图对齐。
 - 「自主学习」= 用点位历史复现统计（出现天数/夜间天数/最大FRP）驱动成因判定，
   随历史累积自动改进；不调模型、规则透明可复核。
 - 密钥只从环境变量 FIRMS_MAP_KEY 读，绝不写进代码/仓库。
 - ⚠ FIRMS_DAYS 不要设为 1。实测河南 bbox：近 1 天返回 0 条、近 2 天 347(SNPP)+286(NOAA20)、
   近 3 天 647、近 5 天 1360。该接口的「1 天」窗口只覆盖当天且尚未过境的时段，
-  所以 1 天几乎必然是空 → 会命中下面的「两源都 0 条判失败」保护，表现为永远失败。
+  所以 1 天几乎必然是空 → 会命中下面的「三源都 0 条判失败」保护，表现为永远失败。
   云端定时任务固定用 2 天（略有余量，避免刚过境时抓空）。
-- ⚠ 两源都返回 0 条时按失败处理并保留上一版数据：河南 2 天窗口常年有数百条，
+- ⚠ 三源都返回 0 条时按失败处理并保留上一版数据：河南 2 天窗口常年有数百条，
   0 条几乎必然是抓取故障，绝不能用空快照覆盖已有数据。
 """
 import csv
@@ -47,7 +49,7 @@ LOG_JSON = HERE.parent / "data" / "fetch-log.json"   # 数据获取日志（每�
 LOG_MAX = 200                                        # 日志滚动保留条数
 
 BBOX = (110.0, 31.0, 117.0, 36.6)   # west,south,east,north
-SOURCES = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT"]
+SOURCES = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT"]
 DAYS = int(os.environ.get("FIRMS_DAYS", "2"))
 SNAPSHOT_DAYS = int(os.environ.get("FIRMS_SNAPSHOT_DAYS", "2"))
 HISTORY_DAYS = int(os.environ.get("FIRMS_HISTORY_DAYS", "60"))
@@ -222,7 +224,7 @@ def run():
     if not fires:
         # 河南 bbox 两天窗口从未出现过 0 条；0 条几乎一定是抓取失败，
         # 此时绝不能把已有的好数据覆盖成空快照。
-        raise FetchError("两个数据源都没有返回火点（可能网络不通 / MAP_KEY 失效 / 额度用尽），已保留上一版数据")
+        raise FetchError("三个数据源都没有返回火点（可能网络不通 / MAP_KEY 失效 / 额度用尽），已保留上一版数据")
 
     city_geoms = load_city_geoms()
     prov_geoms = load_province_geoms()
@@ -313,7 +315,7 @@ def run():
             history[c] = sorted(h, key=lambda e: e["date"])[-90:]
 
     payload = {
-        "source": "NASA FIRMS VIIRS 375m 近实时 (Suomi-NPP + NOAA-20)",
+        "source": "NASA FIRMS VIIRS 375m 近实时 (Suomi-NPP + NOAA-20 + NOAA-21)",
         "bbox": list(BBOX),
         "days": SNAPSHOT_DAYS,
         "history_days": HISTORY_DAYS,
