@@ -1,55 +1,65 @@
 {
- "last_run": "2026-10-09 07:55:51+0800",
- "last_run_utc": "2026-10-08T23:56:10Z",
- "records_fetched": 270,
- "records_new": 54,
- "stations_ok": 9,
+ "last_run": "2026-10-15 13:50:32+0800",
+ "last_run_utc": "2026-10-15T05:52:23Z",
+ "records_fetched": 216,
+ "records_new": 216,
+ "stations_ok": 0,
  "cities": 9,
- "errors": [],
+ "errors": [
+  "安阳市: <urlopen error [Errno 111] Connection refused>",
+  "濮阳市: <urlopen error [Errno 111] Connection refused>",
+  "鹤壁市: <urlopen error [Errno 111] Connection refused>",
+  "新乡市: <urlopen error [Errno 111] Connection refused>",
+  "郑州市: <urlopen error [Errno 111] Connection refused>",
+  "洛阳市: <urlopen error [Errno 111] Connection refused>",
+  "焦作市: <urlopen error [Errno 111] Connection refused>",
+  "济源市: <urlopen error [Errno 111] Connection refused>",
+  "三门峡市: <urlopen error [Errno 111] Connection refused>"
+ ],
  "detail": {
   "安阳市": {
-   "ok": true,
-   "n": 5,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "濮阳市": {
-   "ok": true,
-   "n": 4,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "鹤壁市": {
-   "ok": true,
-   "n": 5,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "新乡市": {
-   "ok": true,
-   "n": 7,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "郑州市": {
-   "ok": true,
-   "n": 11,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "洛阳市": {
-   "ok": true,
-   "n": 10,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "焦作市": {
-   "ok": true,
-   "n": 6,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "济源市": {
-   "ok": true,
-   "n": 2,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   },
   "三门峡市": {
-   "ok": true,
-   "n": 4,
+   "ok": false,
+   "err": "<urlopen error [Errno 111] Connection refused>",
    "weather": 24
   }
  },
