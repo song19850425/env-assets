@@ -1,0 +1,103 @@
+# 火点晨检卡 · 每日自动生成（CI）
+#
+# 为什么单独一个 workflow：
+#   morning_card.py 不在 CI 里跑过。它读 CI 已归档的 FIRMS 数据（data/fires-henan.json，
+#   由 fire-hourly.yml 每 6 小时更新），只联网取 Open-Meteo 实时气象 + 高德瓦片，
+#   不抓 FIRMS、不用 FIRMS_MAP_KEY。
+#
+# 为什么存到 cards-archive 分支而不进主分支：
+#   cards/ 被 .gitignore 排除（每天 19 张约 4 MB，进主分支一年就 1.5 GB）。
+#   用 git add -f 强制加入，推到独立分支存档；主仓库代码不受影响。
+#   取用：git clone -b cards-archive <repo>  或  git checkout cards-archive
+#
+# 为什么 cron 定在 UTC 18:50（北京 02:50）：
+#   fire-hourly.yml 在北京时间 02:17 拉一次 FIRMS。等它提交完再出卡，卡片才是当天最新数据。
+#   （cron 为尽力而为，高峰延迟 5–30 分钟正常，无 SLA；仅默认分支生效。）
+#
+# 为什么用 --no-png：
+#   CI 的 ubuntu-latest 无 Chrome，截图步骤会失败。HTML 是最终交付物（零依赖单文件），
+#   需要 PNG 时本地跑一次 morning_card.py 即可。
+#
+# 已知限制：
+#   - 推送钉钉/邮件不在此 workflow 内 —— push_card_dingtalk.py 依赖本机 dws 登录态，CI 跑不了。
+#     要全自动推送，改用 push_card.py + 自定义群机器人 Webhook（需自建机器人拿 URL）。
+#   - 公开仓库 60 天无活动会自动停用计划任务；本 workflow 每次有卡就提交，天然保持活跃。
+
+name: 火点晨检卡 · 每日生成
+
+on:
+  schedule:
+    - cron: '50 18 * * *'    # 北京 02:50（FIRMS 02:17 更新后约半小时）
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '卡片日期（留空=今天，格式 YYYY-MM-DD）'
+        required: false
+        default: ''
+
+  # 脚本或本工作流有改动时跑一次 = 自动冒烟测试。
+  # 原因（同 air-hourly.yml 的实测教训）：新建 workflow 的 cron 不一定立刻生效，
+  # 没有这条 push 触发就只能干等。
+  # 不会自激：本 workflow 的提交都推到 cards-archive 分支，不在 main 的 paths 守卫内。
+  push:
+    branches: [main]
+    paths:
+      - 'EnvData/火点监测/scripts/morning_card.py'
+      - '.github/workflows/morning-card.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: morning-card
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # 全量历史，便于切到存档分支
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 生成晨检卡（只出 HTML）
+        env:
+          CARD_DATE: ${{ github.event.inputs.date }}
+        run: python "EnvData/火点监测/scripts/morning_card.py" --no-png
+
+      - name: 提交到 cards-archive 分支
+        run: |
+          set -e
+          git config user.name  "card-bot"
+          git config user.email "card-bot@users.noreply.github.com"
+
+          # 切到存档分支：远端已有则基于它续写，否则建孤儿分支
+          if git ls-remote --exit-code --heads origin cards-archive >/dev/null 2>&1; then
+            git fetch origin cards-archive
+            git checkout -B cards-archive origin/cards-archive
+          else
+            git checkout --orphan cards-archive
+            # 孤儿分支默认带着主分支的索引，清掉，只留卡片
+            git rm -rf --cached . >/dev/null 2>&1 || true
+          fi
+
+          # -f 强制加入（cards/ 在 .gitignore 里）
+          git add -f "EnvData/火点监测/cards"
+
+          if git diff --cached --quiet; then
+            echo "无变更，跳过提交"
+            exit 0
+          fi
+
+          # 统计写进提交信息，便于在历史里直接看出当天产出了几张卡
+          N=$(git diff --cached --name-only | grep -c '\.html$' || true)
+          git commit -m "card: 火点晨检卡 $(TZ=Asia/Shanghai date +%F)（${N} 张）"
+          git push -f origin cards-archive
+          echo "已推送 cards-archive：${N} 张"
