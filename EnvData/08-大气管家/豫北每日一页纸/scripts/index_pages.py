@@ -206,6 +206,9 @@ def module_home(module_dir, sections=SECTIONS):
     for sub, label, note in HOURLY_BOARDS:
         if os.path.exists(os.path.join(module_dir, sub, "index.html")):
             secs += "<li><a href='%s/index.html'>%s</a>（%s）</li>" % (sub, label, note)
+    if os.path.exists(os.path.join(module_dir, "cities", "index.html")):
+        secs += ("<li><a href='cities/index.html'>各城市大气一页纸（每城市单独一页，"
+                 "每日 08:00 / 20:00 更新）</a> ｜ <a href='about.html'>做法与口径说明</a></li>")
     html = """<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
 <title>大气管家 · 豫北每日一页纸</title><style>%s</style></head><body><div class="page">
 <h1>大气管家 · 空气质量报告<br>豫北四市（安阳 · 濮阳 · 鹤壁 · 新乡）＋ 豫西六市（郑州 · 新乡 · 洛阳 · 焦作 · 济源 · 三门峡）</h1>

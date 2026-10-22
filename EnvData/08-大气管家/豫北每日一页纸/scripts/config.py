@@ -88,6 +88,30 @@ PROFILES = {
         "source": "https://air.cnemc.cn:18007  中国环境监测总站·全国城市空气质量实时发布平台",
         "weather_source": "https://api.open-meteo.com   Open-Meteo（免密钥，ECMWF/ICON 模式，小时级）",
     },
+    # 2026-10-22 用户要求加采商丘（豫东）。独立成档，不并入豫北四市交付语义。
+    # 日历史接口城市代码 411400；实时接口城市名「商丘市」。坐标取城区中心近似。
+    "shangqiu": {
+        "cities": ["商丘市"],
+        "coords": {"商丘市": (34.4139, 115.6523)},
+        "region_name": "商丘",
+        "section": "shangqiu",
+        # 邻近城市仅用于传输研判取数（不参与采集）：西菏泽、西北开封、南周口、东南亳州(皖)
+        "neighbors": ["菏泽市", "开封市", "周口市", "亳州市"],
+        "neighbor_coords": {
+            "菏泽市": (35.2333, 115.4697),
+            "开封市": (34.7972, 114.3074),
+            "周口市": (33.6202, 114.6644),
+            "亳州市": (33.8697, 115.7789),
+        },
+        "sample": True,
+        "client_name": "商丘市",
+        "db_path": "data/air.db",
+        "out_dir": "out/shangqiu",
+        "out_prefix": "大气管家商丘日报",
+        "hourly_dir": "hourly-shangqiu",
+        "source": "https://air.cnemc.cn:18007  中国环境监测总站·全国城市空气质量实时发布平台",
+        "weather_source": "https://api.open-meteo.com   Open-Meteo（免密钥，ECMWF/ICON 模式，小时级）",
+    },
 }
 
 # 兼容旧调用：不带 --profile 的历史自动化跑的就是「默认档案」= 现在的豫西档案。

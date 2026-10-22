@@ -1,0 +1,64 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>做法与口径说明 · 大气管家</title>
+<style>body{font-family:'Microsoft YaHei',sans-serif;background:#F5F4F0;color:#2B2B28;max-width:840px;margin:0 auto;padding:30px;line-height:1.8}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin-top:26px;color:#1a3a5a}
+.code{background:#ece9e2;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:13px}
+.note{background:#fff7e6;border-left:4px solid #f0a020;padding:10px 14px;margin:12px 0;border-radius:6px;font-size:14px}
+ul{margin:6px 0 6px 20px}li{margin:4px 0}
+table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #ccc;padding:7px 9px;text-align:left;font-size:13px}
+th{background:#ece9e2}a{color:#1a5a8a}
+</style></head>
+<body>
+<h1>各城市大气一页纸 · 做法与口径说明</h1>
+<p>本页说明「每个城市单独一页纸」这套产物的<strong>内容、数据来源、口径红线与生成流水线</strong>。
+所有页面由自动化生成，<strong>AI 草稿未经审定</strong>，仅供技术交流参考，不作行政或处罚依据。</p>
+
+<h2>一、覆盖城市与更新频率</h2>
+<ul>
+<li><strong>覆盖</strong>：豫西六市（郑州·新乡·洛阳·焦作·济源·三门峡）、豫北四市（安阳·濮阳·鹤壁·新乡）、商丘，
+共 10 市（新乡在两档案中均有，按城市去重只出一页）。</li>
+<li><strong>频率</strong>：每日 <strong>08:00</strong> 与 <strong>20:00</strong>（北京时）各出报一次，写入
+<span class="code">out/cities/&lt;城市&gt;/</span> 下当日页 + latest.html。</li>
+<li><strong>入口</strong>：模块首页「各城市大气一页纸」→ <span class="code">cities/index.html</span>（各城市最新页）。</li>
+</ul>
+
+<h2>二、每城市页包含什么</h2>
+<table>
+<tr><th>板块</th><th>内容</th><th>口径</th></tr>
+<tr><td>核心指标卡片</td><td>实时城市 AQI（点位平均）、首要污染物、点位均值/最差、点位数/特征</td><td>实时小时值</td></tr>
+<tr><td>核心污染物</td><td>PM2.5 / PM10 / O₃-8h / NO₂ / SO₂ / CO 的实时值与 24h 滑动均值</td><td>点位平均（HJ 663-2013）</td></tr>
+<tr><td>点位清单</td><td>该城市全部国控点位 AQI 降序</td><td>单点位实测</td></tr>
+<tr><td>近 24h 趋势</td><td>全市点位平均 AQI 逐小时柱状</td><td>最近 24 小时窗口</td></tr>
+<tr><td>日评价回顾</td><td>近 14 天平台日评价（AQI / 首要 / PM2.5 / PM10 / O₃-8h）</td><td>平台日评价口径</td></tr>
+<tr><td>未来模式趋势</td><td>CAMS 模式未来 24h 相对高值时段（PM2.5 / O₃）</td><td>模式产品，未订正</td></tr>
+</table>
+
+<h2>三、数据来源</h2>
+<ul>
+<li><strong>实时小时值</strong>：中国环境监测总站·全国城市空气质量实时发布平台（air.cnemc.cn:18007），逐点位 AQI 与六项污染物。</li>
+<li><strong>日评价</strong>：省级/总站审核后的日评价接口（14 天滚动窗口）。</li>
+<li><strong>模式预报</strong>：Open-Meteo / CAMS 大气成分预报（ECMWF 哥白尼服务，≈40km 网格、城市尺度）。</li>
+</ul>
+
+<h2>四、口径红线（务必看清）</h2>
+<div class="note"><strong>① 实时 ≠ 日均</strong>：平台 AQI 是<strong>当前小时浓度</strong>算出的实时 AQI，未审核；
+正式结论以总站/省级审核数据为准。<br>
+<strong>② 城市值取点位平均</strong>：按 HJ 663-2013，先平均浓度、再算 IAQI、取最大，不用最差点位冒充城市 AQI。<br>
+<strong>③ 超标按 GB 3095-2012</strong>：PM2.5 75 / PM10 150 / O₃-8h 160 / NO₂ 80 / SO₂ 150 / CO 4 mg/m³。
+O₃-8h 用<strong>当前 8 小时值</strong>比 160 仅作<strong>筛查信号</strong>，GB 评价对象是<strong>日最大 8 小时滑动平均</strong>，
+不可混用；不得据此宣称"当日已超标"。<br>
+<strong>④ 模式只给相对高低</strong>：CAMS 对本市 PM2.5 偏高、臭氧明显低估，故未来趋势<strong>只给相对高值时段</strong>，
+<strong>不报绝对 AQI</strong>，更不得用"模式未超 160"推断"不会臭氧超标"。</div>
+
+<h2>五、生成流水线（做法）</h2>
+<ol>
+<li><strong>采集</strong>：每小时从实时平台取点位值入库（station_hourly），并补日评价（city_daily）与气象。</li>
+<li><strong>研判</strong>：calc/brief.city_brief 按双口径算城市 AQI、点位平均、超标判定、局地/区域特征。</li>
+<li><strong>渲染</strong>：report/city_page.py 渲染单城市"一页纸"（复用 page_v2 的展示工具）。</li>
+<li><strong>出报</strong>：run_city_daily.py 遍历所有在采城市去重，生成 cities/ 下各页 + 总索引。</li>
+<li><strong>推送</strong>：deploy_github.py 对齐远端仓库、镜像脚本、复制产物、提交并推送 GitHub Pages。</li>
+</ol>
+
+<p style="margin-top:20px;color:#888">本页与城市页同为 AI 草稿，未经审定；生成时间随出报滚动。</p>
+</body></html>
