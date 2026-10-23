@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>县区稳定度预报与管控建议 · 豫北示例（新乡市）</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#F4F1E8;color:#22312B;}
+  header{background:#123F31;color:#fff;padding:18px 20px 14px;}
+  header .kicker{font-size:11px;letter-spacing:2px;opacity:.75;}
+  header h1{font-size:21px;margin:5px 0 6px;}
+  header p{font-size:12.5px;opacity:.85;line-height:1.65;max-width:900px;}
+  #stickybar{position:sticky;top:0;z-index:50;background:#0C2C21;color:#fff;padding:9px 14px;font-size:13.5px;box-shadow:0 2px 8px rgba(0,0,0,.3);line-height:1.5;}
+  .wrap{max-width:960px;margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:12px;}
+  .card{background:#fff;border:1px solid #DDD5C0;border-radius:10px;padding:14px 16px;}
+  .card h3{font-size:13px;color:#123F31;border-bottom:2px solid #123F31;padding-bottom:6px;margin-bottom:10px;letter-spacing:1px;}
+  .row{margin:9px 0;}
+  .row label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;}
+  .row label b{color:#B3541E;font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%;accent-color:#1F6E50;height:30px;}
+  .btnrow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;}
+  button{border:1px solid #1F6E50;background:#fff;color:#1F6E50;border-radius:6px;padding:9px 13px;font-size:13px;cursor:pointer;}
+  button.on,button:hover{background:#1F6E50;color:#fff;}
+  button.warn{border-color:#B3541E;color:#B3541E;}
+  button.warn.on,button.warn:hover{background:#B3541E;color:#fff;}
+  #apinote{font-size:12px;color:#6B7263;line-height:1.6;}
+  table.mini{width:100%;border-collapse:collapse;font-size:12px;}
+  table.mini td,table.mini th{padding:4px 3px;border-bottom:1px solid #EFEAD9;text-align:center;}
+  table.mini td:first-child,table.mini th:first-child{text-align:left;}
+  table.mini input{width:52px;padding:3px;border:1px solid #C9C2AC;border-radius:4px;font-size:12px;text-align:center;}
+  #citysum{font-size:13.5px;line-height:1.85;background:#FBF6E9;border-left:4px solid #B3541E;padding:10px 13px;border-radius:0 6px 6px 0;}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr;}}
+  .county{border:1px solid #DDD5C0;border-radius:10px;padding:12px 14px;background:#fff;cursor:pointer;}
+  .county .nm{font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;}
+  .chip{display:inline-block;padding:1.5px 9px;border-radius:9px;color:#fff;font-size:11.5px;font-weight:400;}
+  .county .nums{font-size:12.5px;color:#44514A;margin-top:7px;line-height:1.75;font-variant-numeric:tabular-nums;}
+  .county .one{font-size:12.5px;margin-top:6px;line-height:1.7;color:#7A4A16;}
+  .detail{display:none;margin-top:10px;border-top:1px dashed #DDD5C0;padding-top:9px;}
+  .county.open .detail{display:block;}
+  .chips{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0;}
+  .hchip{width:26px;height:26px;border-radius:5px;color:#fff;font-size:10.5px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;}
+  .detail ul{margin:4px 0 2px 16px;font-size:12.5px;line-height:1.8;color:#33413A;}
+  .hlabel{font-size:11px;color:#6B7263;}
+  footer{padding:2px 20px 22px;font-size:12px;color:#6B7263;line-height:1.8;max-width:960px;margin:0 auto;}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">看天管控 · 工具一：稳定度预报</div>
+  <h1>各县区稳定度预报与管控建议（豫北示例 · 新乡市）</h1>
+  <p>稳定度（Pasquill A–F 类）由太阳高度角、云量、10 米风速按 Turner 分级表逐时计算：白天看日照强弱，夜间看云量。逐县汇总出白天/夜间稳定度与夜间静稳积累时长，再按《看天管控》气象三级规则生成管控档位与动作。数据源两档：内置情景（可逐县微调风速/云量）与 Open-Meteo 实时预报（联网时一键拉取）。</p>
+</header>
+<div id="stickybar"><span id="sb-text">正在计算…</span></div>
+
+<div class="wrap">
+  <div class="card">
+    <h3>预报设置</h3>
+    <div class="btnrow" id="datebtns">
+      <button data-doff="0" class="on">今天</button>
+      <button data-doff="1">明天</button>
+      <button data-doff="2">后天</button>
+      <span id="datelabel" style="font-size:12.5px;color:#6B7263;align-self:center;"></span>
+    </div>
+    <div class="row"><label>情景风速基准 · 日间均值 (m/s)<b id="v-wind"></b></label>
+      <input type="range" id="basewind" min="0.8" max="8" step="0.1" value="3.4"></div>
+    <div class="row"><label>情景云量 (%)<b id="v-cloud"></b></label>
+      <input type="range" id="cloud" min="0" max="100" step="1" value="55"></div>
+    <div class="btnrow">
+      <button id="fetchbtn" class="warn">拉取 Open-Meteo 实时预报</button>
+      <button id="scenbtn">回到情景模式</button>
+      <button id="tweakbtn">逐县微调（风速/云量）</button>
+    </div>
+    <div id="apinote">当前为情景模式：风速 = 基准 × 逐时形状 × 县系数，云量全市统一（可在微调里逐县改）。情景模式与日期联动太阳高度角，可离线用。</div>
+    <div id="tweaks" style="display:none;overflow-x:auto;">
+      <table class="mini"><thead><tr><th>县区</th><th>风速系数</th><th>云量修正(%)</th><th>备注</th></tr></thead><tbody id="twbody"></tbody></table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>全市研判</h3>
+    <div id="citysum">—</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer>
+  口径说明：分级用 Pasquill–Turner 表——白天按太阳高度角定日照等级（&gt;60° 强、35–60° 中、15–35° 弱，云量 &gt;50% 降一级、&gt;87% 降两级，晨昏高度角 ≤15° 按过渡处理），夜间按云量 50% 分界；风速分档 &lt;2 / 2–3 / 3–5 / 5–6 / ≥6 m/s。太阳高度角按 NOAA 近似算法逐县经纬度计算（含经度与时差修正）。静稳时长 = 夜间窗口（20 时–次日 6 时）内稳定度达 E/F 的小时数；分档主指标是其中的「低风静稳时长」（E/F 且风速 &lt;2.5 m/s——稳定且吹不散，才真正攒得住）：≥5h 满档、2–4h 升档、&lt;2h 轻管，规则源自《看天管控》气象三级；白天大风（≥6 m/s 且 C/D 类）另触发扬尘专项；5–9 月晴朗强对流日加臭氧提示。情景数据为构造值；API 模式为 Open-Meteo 逐时预报（县政府驻地坐标）。本页为演示与方法验证工具，非官方预报，档位建议供研判参考、升档拍板在人。
+</footer>
+
+<script id="core">
+"use strict";
+/* ===== 纯函数核心：太阳位置 + Pasquill 分级 + 逐县汇总 ===== */
+var COUNTIES=[
+  {n:"辉县市",lat:35.46,lon:113.80,wf:0.80,note:"太行山前，静风多"},
+  {n:"卫辉市",lat:35.40,lon:114.06,wf:0.90,note:"山前平原过渡"},
+  {n:"凤泉区",lat:35.38,lon:113.90,wf:0.88,note:"市区北，近山"},
+  {n:"牧野区",lat:35.32,lon:113.90,wf:0.85,note:"市区，建筑摩擦"},
+  {n:"红旗区",lat:35.30,lon:113.87,wf:0.85,note:"市区，建筑摩擦"},
+  {n:"卫滨区",lat:35.28,lon:113.85,wf:0.85,note:"市区，建筑摩擦"},
+  {n:"新乡县",lat:35.19,lon:113.80,wf:0.95,note:"城郊平原"},
+  {n:"获嘉县",lat:35.26,lon:113.66,wf:1.00,note:"西部平原"},
+  {n:"延津县",lat:35.15,lon:114.20,wf:1.10,note:"东部平原，开阔"},
+  {n:"封丘县",lat:35.04,lon:114.42,wf:1.05,note:"黄河滩区北岸平原"},
+  {n:"长垣市",lat:35.20,lon:114.65,wf:1.15,note:"东部平原，最开阔"},
+  {n:"原阳县",lat:34.90,lon:113.97,wf:1.10,note:"黄河南岸平原"}
+];
+function solarElev(lat,lon,date,hour){
+  /* NOAA 近似：返回太阳高度角（度），hour 为北京时间（含小数） */
+  var start=Date.UTC(date.getFullYear(),0,0);
+  var doy=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-start)/86400000);
+  var g=2*Math.PI/365*(doy-1+(hour-12)/24);
+  var eqtime=229.18*(0.000075+0.001868*Math.cos(g)-0.032077*Math.sin(g)-0.014615*Math.cos(2*g)-0.040849*Math.sin(2*g));
+  var decl=0.006918-0.399912*Math.cos(g)+0.070257*Math.sin(g)-0.006758*Math.cos(2*g)+0.000907*Math.sin(2*g)-0.002697*Math.cos(3*g)+0.00148*Math.sin(3*g);
+  var tst=hour*60+eqtime+4*lon-480; /* 分钟；北京时间 UTC+8 → 时区经度 120 */
+  tst=((tst%1440)+1440)%1440;
+  var ha=tst/4-180; /* 时角：太阳正午为 0，上午负、下午正 */
+  var phi=lat*Math.PI/180, har=ha*Math.PI/180;
+  var cosz=Math.sin(phi)*Math.sin(decl)+Math.cos(phi)*Math.cos(decl)*Math.cos(har);
+  cosz=Math.min(1,Math.max(-1,cosz));
+  return 90-Math.acos(cosz)*180/Math.PI;
+}
+var SCORE={"A":1,"A-B":1.5,"B":2,"B-C":2.5,"C":3,"C-D":3.5,"D":4,"E":5,"F":6};
+var LETTERS=[[1,"A"],[1.5,"A-B"],[2,"B"],[2.5,"B-C"],[3,"C"],[3.5,"C-D"],[4,"D"],[5,"E"],[6,"F"]];
+function scoreLetter(s){
+  var best="D",bd=1e9;
+  for(var i=0;i<LETTERS.length;i++){ var d=Math.abs(LETTERS[i][0]-s); if(d<bd){bd=d;best=LETTERS[i][1];} }
+  return best;
+}
+function stabClass(u,elev,cloud){
+  var bin = u<2?0 : u<3?1 : u<5?2 : u<6?3 : 4;
+  var DAY=[ /* 强 / 中 / 弱 */
+    ["A","A-B","B"], ["A-B","B","B-C"], ["B","B-C","C"], ["C","C-D","D"], ["C","D","D"]];
+  var NIGHT_HI=["F","E","D","D","D"];   /* 云量 ≥50% */
+  var NIGHT_LO=["F","F","E","D","D"];   /* 云量 <50% */
+  if(elev<=0) return cloud>=50? NIGHT_HI[bin] : NIGHT_LO[bin];
+  var L = elev>60?3 : elev>35?2 : elev>15?1 : 0;
+  if(cloud>87) L-=2; else if(cloud>50) L-=1;
+  if(L<=0) return elev>15? "D" : (u<3? "E" : "D");  /* 阴天无有效日照按中性 D；晨昏过渡偏稳定 */
+  return DAY[bin][3-L];
+}
+var WSHAPE=[0.55,0.52,0.50,0.50,0.52,0.58,0.70,0.85,1.00,1.10,1.18,1.22,1.25,1.25,1.22,1.18,1.10,1.00,0.88,0.78,0.70,0.64,0.60,0.57];
+/* hours: [{u, cc}] 24 条（0-23 时，取整点后一小时代表值用 h+0.5 计算太阳位置） */
+function summarize(c, hours, date){
+  var cls=[], h, s;
+  for(h=0;h<24;h++){
+    var el=solarElev(c.lat,c.lon,date,h+0.5);
+    cls.push({h:h, u:hours[h].u, cc:hours[h].cc, elev:el, k:stabClass(hours[h].u, el, hours[h].cc)});
+  }
+  var day=[], night=[], i;
+  for(i=0;i<cls.length;i++){ (cls[i].elev>0? day: night).push(cls[i]); }
+  function meanScore(a){ if(!a.length) return 4; var t=0; for(var j=0;j<a.length;j++) t+=SCORE[a[j].k]; return t/a.length; }
+  /* 夜间窗口 20:00–次日 06:00（当日 20–23 + 0–5） */
+  var win=cls.filter(function(x){ return x.h>=20||x.h<=5; });
+  var stableHrs=win.filter(function(x){ return SCORE[x.k]>=5; }).length;
+  var lowWindStable=win.filter(function(x){ return SCORE[x.k]>=5 && x.u<2.5; }).length;
+  var maxConsec=0, run=0;
+  var order=[20,21,22,23,0,1,2,3,4,5];
+  for(i=0;i<order.length;i++){ var cc2=cls[order[i]]; if(SCORE[cc2.k]>=5){ run++; if(run>maxConsec) maxConsec=run; } else run=0; }
+  var dayMeanU=0; for(i=0;i<day.length;i++) dayMeanU+=day[i].u; dayMeanU= day.length? dayMeanU/day.length : 0;
+  var windyDay = day.some(function(x){ return x.u>=6 && (x.k==="C"||x.k==="D"||x.k==="C-D"); });
+  var ozoneRisk = (date.getMonth()>=4 && date.getMonth()<=8) && day.some(function(x){ return (x.k==="A"||x.k==="A-B"||x.k==="B") && x.cc<40; });
+  return { cls:cls, dayLetter:scoreLetter(meanScore(day)), nightLetter:scoreLetter(meanScore(night)),
+    stableHrs:stableHrs, lowWindStable:lowWindStable, maxConsec:maxConsec, dayMeanU:dayMeanU, windyDay:windyDay, ozoneRisk:ozoneRisk,
+    nightMeanU:(function(){ var t=0; for(var j=0;j<win.length;j++) t+=win[j].u; return t/win.length; })() };
+}
+function advice(sum){
+  var tier, acts=[];
+  if(sum.lowWindStable>=5){ tier="满档";
+    acts.push("傍晚即升档：重点企业今夜错峰生产、降低负荷，别等超标再动");
+    acts.push("夜间散烧、露天焚烧巡查加密，盯 20 时与次晨 7 时两个生活源峰");
+    acts.push("工地夜间停止土方与渣土运输；裸土覆盖傍晚前复查一遍");
+    acts.push("明晨 6–10 时残留层混合易出尖峰：洒水抑尘待命，盯乡镇站小时值突跳");
+  } else if(sum.lowWindStable>=2){ tier="升档";
+    acts.push("常规加强：工地覆盖与道路保洁各加密一遍，重点源在线数据专人盯守");
+    acts.push("入夜后若风速继续走低（<1.5 m/s），随时按满档补动作，不等晨会");
+  } else { tier="轻管";
+    acts.push("扩散条件好：保持常规巡查即可，不必加码限产");
+    acts.push("把企业检修、工地抢工等高排放工序排到这个窗口——好天是用来腾挪的");
+  }
+  if(sum.windyDay) acts.push("白天大风扬尘专项：裸地/料场覆盖、渣土车限行、道路机扫+洒水；扩散好，限产边际收益低，别一刀切");
+  if(sum.ozoneRisk) acts.push("午后臭氧提示：晴热强对流，VOCs 源（喷涂、加油、溶剂使用）避开 11–17 时作业");
+  return {tier:tier, acts:acts};
+}
+</script>
+<script>
+"use strict";
+var $=function(id){ return document.getElementById(id); };
+var MODE="scenario", DOFF=0, API=null; /* API: 每县 72 小时 [{u,cc}] 按日期时间索引 */
+COUNTIES.forEach(function(c){ c.coff=0; });
+var CLSCOLOR={"A":"#43AA8B","A-B":"#7FB069","B":"#A7C957","B-C":"#E9C46A","C":"#F4A261","C-D":"#EE8959","D":"#8D99AE","E":"#E76F51","F":"#9D0208"};
+var TIERCOLOR={"满档":"#C93A2E","升档":"#E07B2A","轻管":"#3DA35D"};
+
+function targetDate(){
+  var d=new Date(); d.setHours(12,0,0,0);
+  d.setDate(d.getDate()+DOFF);
+  return d;
+}
+function fmtDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function scenarioHours(c){
+  var base=+$("basewind").value, cloud=+$("cloud").value, out=[];
+  for(var h=0;h<24;h++) out.push({ u:Math.max(0.2, base*WSHAPE[h]*c.wf), cc:Math.min(100,Math.max(0, cloud + (c.coff||0))) });
+  return out;
+}
+function apiHours(ci, date){
+  if(!API||!API[ci]) return null;
+  var key=fmtDate(date), out=[];
+  for(var h=0;h<24;h++){
+    var rec=API[ci][key+"T"+String(h).padStart(2,"0")+":00"];
+    if(!rec) return null;
+    out.push(rec);
+  }
+  return out;
+}
+function render(){
+  var date=targetDate();
+  $("datelabel").textContent=fmtDate(date)+"（"+["周日","周一","周二","周三","周四","周五","周六"][date.getDay()]+"）";
+  $("v-wind").textContent=(+$("basewind").value).toFixed(1);
+  $("v-cloud").textContent=$("cloud").value;
+  var grid=$("grid"); grid.innerHTML="";
+  var results=[];
+  COUNTIES.forEach(function(c,ci){
+    var hours = (MODE==="api") ? (apiHours(ci,date)||scenarioHours(c)) : scenarioHours(c);
+    var sum=summarize(c,hours,date);
+    var adv=advice(sum);
+    results.push({c:c,sum:sum,adv:adv});
+    var risk = sum.lowWindStable>=5? ["积累风险高","#C93A2E"] : sum.lowWindStable>=2? ["积累风险中","#E07B2A"] : ["积累风险低","#3DA35D"];
+    var div=document.createElement("div"); div.className="county";
+    var chips=sum.cls.map(function(x){
+      return "<div class='hchip' style='background:"+CLSCOLOR[x.k]+"' title='"+x.h+"时 · "+x.k+"类 · 风"+x.u.toFixed(1)+"m/s · 云"+Math.round(x.cc)+"%'>"+x.k+"</div>";
+    }).join("");
+    div.innerHTML=
+      "<div class='nm'><span>"+c.n+"</span><span>"+"<span class='chip' style='background:"+risk[1]+"'>"+risk[0]+"</span> "+
+      "<span class='chip' style='background:"+TIERCOLOR[adv.tier]+"'>"+adv.tier+"</span></span></div>"+
+      "<div class='nums'>白天稳定度 <b>"+sum.dayLetter+"</b> 类 · 夜间 <b>"+sum.nightLetter+"</b> 类<br>"+
+      "夜间静稳（E/F）<b>"+sum.stableHrs+"</b> 小时 · 其中低风静稳（&lt;2.5 m/s）<b>"+sum.lowWindStable+"</b> 小时（分档主指标）· 夜间均风 "+sum.nightMeanU.toFixed(1)+" m/s"+
+      (sum.windyDay? "<br>白天有大风时段 → 扬尘专项":"")+(sum.ozoneRisk? "<br>白天强对流晴热 → 臭氧提示":"")+"</div>"+
+      "<div class='one'>▸ "+adv.acts[0]+"</div>"+
+      "<div class='detail'><div class='hlabel'>逐时稳定度（0–23 时，点开收起）</div><div class='chips'>"+chips+"</div>"+
+      "<div class='hlabel'>管控建议（"+adv.tier+"）</div><ul>"+adv.acts.map(function(a){ return "<li>"+a+"</li>"; }).join("")+"</ul>"+
+      "<div class='hlabel'>"+c.note+" · 代表点 "+c.lat.toFixed(2)+"°N, "+c.lon.toFixed(2)+"°E</div></div>";
+    div.addEventListener("click", function(){ div.classList.toggle("open"); });
+    grid.appendChild(div);
+  });
+  /* 全市研判 */
+  var sorted=results.slice().sort(function(a,b){ return b.sum.lowWindStable-a.sum.lowWindStable; });
+  var worst=sorted[0], best=sorted[sorted.length-1];
+  var fullN=results.filter(function(r){ return r.adv.tier==="满档"; }).length;
+  var dustN=results.filter(function(r){ return r.sum.windyDay; }).length;
+  var txt="今夜积累风险最重：<b>"+worst.c.n+"</b>（低风静稳 "+worst.sum.lowWindStable+" 小时、夜间 "+worst.sum.nightLetter+" 类）；最轻：<b>"+best.c.n+"</b>（"+best.sum.lowWindStable+" 小时）。";
+  txt+= fullN? "全市 "+fullN+" 个县区达满档——建议市级统一升档、县际动作对齐，避免污染在县界来回算账；其余县区按各自档位执行。"
+             : "无县区达满档，按县分档执行即可，不必全市一刀切升档。";
+  if(dustN) txt+=" 白天 "+dustN+" 个县区有大风时段，扬尘专项与夜间静稳管控分开部署：白天查裸地道路，入夜查焚烧与错峰。";
+  txt+=" 数据模式："+(MODE==="api"? "Open-Meteo 实时预报" : "情景构造（风速基准 "+(+$("basewind").value).toFixed(1)+" m/s、云量 "+$("cloud").value+"%）")+"，目标日 "+fmtDate(date)+"。";
+  $("citysum").innerHTML=txt;
+  $("sb-text").textContent="今夜最不利 "+worst.c.n+" · 低风静稳 "+worst.sum.lowWindStable+"h · "+worst.adv.tier+(fullN? "（全市 "+fullN+" 县满档）":"");
+}
+function buildTweaks(){
+  var tb=$("twbody"); tb.innerHTML="";
+  COUNTIES.forEach(function(c,ci){
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+c.n+"</td>"+
+      "<td><input type='number' step='0.05' min='0.4' max='1.6' value='"+c.wf+"' data-ci='"+ci+"' data-f='wf'></td>"+
+      "<td><input type='number' step='5' min='-60' max='60' value='"+(c.coff||0)+"' data-ci='"+ci+"' data-f='coff'></td>"+
+      "<td style='text-align:left;color:#6B7263;'>"+c.note+"</td>";
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll("input").forEach(function(inp){
+    inp.addEventListener("input", function(){
+      var c=COUNTIES[+inp.getAttribute("data-ci")];
+      if(inp.getAttribute("data-f")==="wf") c.wf=+inp.value||c.wf; else c.coff=+inp.value||0;
+      render();
+    });
+    inp.addEventListener("click", function(e){ e.stopPropagation(); });
+  });
+}
+$("basewind").addEventListener("input", function(){ if(MODE!=="scenario"){ MODE="scenario"; noteMode(); } render(); });
+$("cloud").addEventListener("input", function(){ if(MODE!=="scenario"){ MODE="scenario"; noteMode(); } render(); });
+document.querySelectorAll("#datebtns button").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll("#datebtns button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on"); DOFF=+b.getAttribute("data-doff"); render();
+  });
+});
+$("tweakbtn").addEventListener("click", function(){
+  var t=$("tweaks"); t.style.display = t.style.display==="none"? "block":"none";
+});
+function noteMode(msg){
+  $("apinote").textContent = msg || (MODE==="api"
+    ? "当前为 Open-Meteo 实时预报模式（逐县逐时风速/云量）。改动情景滑杆将切回情景模式。"
+    : "当前为情景模式：风速 = 基准 × 逐时形状 × 县系数，云量全市统一（可在微调里逐县改）。情景模式与日期联动太阳高度角，可离线用。");
+}
+$("scenbtn").addEventListener("click", function(){ MODE="scenario"; noteMode(); render(); });
+$("fetchbtn").addEventListener("click", function(){
+  $("apinote").textContent="正在拉取 12 个县区的逐时预报…";
+  var lats=COUNTIES.map(function(c){ return c.lat; }).join(",");
+  var lons=COUNTIES.map(function(c){ return c.lon; }).join(",");
+  var url="https://api.open-meteo.com/v1/forecast?latitude="+lats+"&longitude="+lons+
+    "&hourly=wind_speed_10m,cloud_cover&timezone=Asia%2FShanghai&forecast_days=3&wind_speed_unit=ms";
+  fetch(url).then(function(r){ return r.json(); }).then(function(j){
+    var arr=Array.isArray(j)? j : [j];
+    API=arr.map(function(loc){
+      var m={}, times=loc.hourly.time, ws=loc.hourly.wind_speed_10m, cc=loc.hourly.cloud_cover;
+      for(var i=0;i<times.length;i++) m[times[i]]={u:ws[i], cc:cc[i]};
+      return m;
+    });
+    MODE="api"; noteMode("已切换为 Open-Meteo 实时预报（"+new Date().toLocaleString("zh-CN")+" 拉取，逐县 72 小时）。改动情景滑杆将切回情景模式。");
+    render();
+  }).catch(function(){
+    noteMode("拉取失败（无网络或接口不可达），仍为情景模式。检查网络后可重试。");
+  });
+});
+buildTweaks();
+render();
+</script>
+</body>
+</html>
