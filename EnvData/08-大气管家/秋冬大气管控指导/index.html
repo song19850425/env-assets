@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>乡镇秋冬大气管控工作指导工具 · 演示版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f2f4f7;color:#222;max-width:720px;margin:0 auto;padding-bottom:60px}
+header{background:linear-gradient(135deg,#123a6d,#1d5aa0);color:#fff;padding:28px 20px 22px}
+header h1{font-size:22px;line-height:1.4}
+header p{font-size:13px;opacity:.85;margin-top:8px;line-height:1.6}
+.badge{display:inline-block;background:#ffd166;color:#123a6d;font-size:12px;font-weight:700;border-radius:12px;padding:3px 12px;margin-bottom:10px}
+.disclaimer{background:#fff8e1;border:1px solid #f0d060;color:#7a5c00;font-size:12px;line-height:1.7;border-radius:10px;margin:14px;padding:12px 14px}
+nav{display:flex;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #e2e6ec}
+nav button{flex:1;border:none;background:none;padding:14px 4px;font-size:14px;font-weight:700;color:#666;cursor:pointer;border-bottom:3px solid transparent}
+nav button.on{color:#1d5aa0;border-bottom-color:#1d5aa0}
+section{display:none;padding:16px 14px}
+section.on{display:block}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card h3{font-size:16px;color:#123a6d;margin-bottom:10px}
+.card h4{font-size:14px;margin:12px 0 6px;color:#333}
+.card p,.card li{font-size:14px;line-height:1.8;color:#444}
+.card ul{padding-left:20px}
+.tl{position:relative;padding-left:22px}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:#c9d8ec}
+.tl .m{position:relative;margin-bottom:16px}
+.tl .m::before{content:"";position:absolute;left:-19px;top:6px;width:10px;height:10px;border-radius:50%;background:#1d5aa0}
+.tl .m b{font-size:15px;color:#123a6d}
+.tl .m span{display:inline-block;background:#e8f0fb;color:#1d5aa0;font-size:12px;border-radius:8px;padding:2px 10px;margin:4px 6px 4px 0}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:12px 4px;border-bottom:1px solid #eef1f5;cursor:pointer}
+.chk:last-child{border:none}
+.chk input{width:22px;height:22px;margin-top:2px;accent-color:#1d5aa0;flex-shrink:0}
+.chk .t{font-size:14px;line-height:1.6}
+.chk .t small{display:block;color:#888;font-size:12px;margin-top:2px}
+.score{position:sticky;bottom:0;background:#123a6d;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.score b{font-size:26px;color:#ffd166}
+.btn{display:block;width:100%;border:none;background:#1d5aa0;color:#fff;font-size:16px;font-weight:700;border-radius:12px;padding:14px;margin-top:12px;cursor:pointer}
+.btn.ghost{background:#fff;color:#1d5aa0;border:2px solid #1d5aa0}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{border:1px solid #dfe5ee;padding:8px 6px;text-align:left;line-height:1.6}
+th{background:#e8f0fb;color:#123a6d}
+.warn{background:#fef3f2;border-left:4px solid #e0533d;padding:10px 12px;font-size:13px;line-height:1.7;border-radius:0 8px 8px 0;margin:10px 0}
+.ok{background:#f0faf3;border-left:4px solid #2e9e5b;padding:10px 12px;font-size:13px;line-height:1.7;border-radius:0 8px 8px 0;margin:10px 0}
+footer{font-size:12px;color:#999;text-align:center;padding:20px;line-height:1.8}
+@media print{nav,.score,.btn{display:none}body{max-width:100%}section{display:block}}
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+<header>
+<div class="badge">演示版 · 已脱敏</div>
+<h1>乡镇秋冬大气管控<br>工作指导工具</h1>
+<p>适用：各乡镇（街道）<br>周期：当年10月 — 次年3月（秋冬攻坚季）</p>
+</header>
+<div class="disclaimer">⚠️ 本工具为<strong>演示版</strong>：所有数据、案例、乡镇名称均为示例虚构，不含任何真实监测站点数据，不涉及真实单位与人员信息，仅用于工作方法演示。</div>
+<nav>
+<button class="on" onclick="tab(0)">形势日历</button>
+<button onclick="tab(1)">工作清单</button>
+<button onclick="tab(2)">自查打分</button>
+<button onclick="tab(3)">应急响应</button>
+</nav>
+
+<!-- 1 形势日历 -->
+<section class="on" id="s0">
+<div class="card"><h3>📅 秋冬管控时间轴（10月→次年3月）</h3>
+<div class="tl">
+<div class="m"><b>10月 · 秸秆禁烧攻坚</b><br><span>秋收秸秆</span><span>蓝天卫士值守</span><p style="font-size:13px;color:#666;margin-top:4px">秋收全面展开，秸秆离田、禁烧巡查进入最高频期。网格员包地块，火点"冒烟就查"。</p></div>
+<div class="m"><b>11月 · 供暖季开启</b><br><span>11月15日供暖</span><span>散煤排查</span><p style="font-size:13px;color:#666;margin-top:4px">集中供暖启动前，完成散煤台账"回头看"，防止散煤复燃。企业采暖季错峰生产方案落地。</p></div>
+<div class="m"><b>12月—1月 · 重污染高发</b><br><span>静稳逆温</span><span>联防联控</span><p style="font-size:13px;color:#666;margin-top:4px">全年最难的两个月。静稳、逆温多发，PM2.5易累积。预警响应速度决定排名。</p></div>
+<div class="m"><b>2月 · 春节禁燃禁放</b><br><span>烟花爆竹</span><span>值守巡查</span><p style="font-size:13px;color:#666;margin-top:4px">除夕、初一、十五三个节点，全域禁燃禁放巡查不断档。</p></div>
+<div class="m"><b>3月 · 收官总结</b><br><span>供暖结束</span><span>复盘归档</span><p style="font-size:13px;color:#666;margin-top:4px">3月15日供暖季结束。汇总台账、复盘短板，为春季管控交棒。</p></div>
+</div></div>
+<div class="card"><h3>🎯 乡镇干部记住三句话</h3>
+<div class="ok"><b>10月看住火</b>——秸秆一烧，全月白干，一个火点可能让乡镇排名掉十几位。</div>
+<div class="ok"><b>11月看住煤</b>——散煤复燃是供暖季PM2.5的最大变量，台账必须动态更新。</div>
+<div class="warn"><b>12—1月看住天</b>——预警来了2小时内必须响应，响应速度本身就是考核项。</div>
+</div>
+</section>
+
+<!-- 2 工作清单 -->
+<section id="s1">
+<div class="card"><h3>🔥 一、秸秆禁烧（10—11月重中之重）</h3><ul>
+<li>网格员包地块到户，禁烧承诺书签订率100%</li>
+<li>蓝天卫士/视频监控值班表排到人，火点10分钟内现场核查</li>
+<li>秸秆离田清运台账：已离田/未离田地块分别建档</li>
+<li>处罚案例公示：本乡1起典型案例通报，起到震慑作用</li>
+</ul><h4>时间节点</h4><p>10月1日前值班表到位；秋收期间每日巡查2次以上。</p></div>
+<div class="card"><h3>🏠 二、散煤治理（11月—次年3月）</h3><ul>
+<li>散煤用户台账动态更新，清洁取暖改造户"回头看"</li>
+<li>散煤销售点排查：取缔无证售煤网点，抽检煤质</li>
+<li>供暖季每周巡查1次，重点查"改而不用、用而复燃"</li>
+</ul></div>
+<div class="card"><h3>🚧 三、扬尘管控（全年，秋冬加严）</h3><ul>
+<li>辖区工地清单：逐一核查"六个百分之百"落实</li>
+<li>渣土车密闭运输抽查，抛洒滴漏发现一起查处一起</li>
+<li>主干道机扫+洒水频次，秋冬重污染期间加密</li>
+</ul></div>
+<div class="card"><h3>🏭 四、工业源（错峰+应急减排）</h3><ul>
+<li>涉气企业清单（示例：耐火材料、建材、铸造等）一企一档</li>
+<li>采暖季错峰生产/重污染应急减排清单，企业签字确认</li>
+<li>预警发布后2小时内通知到位，企业落实情况现场核查</li>
+</ul></div>
+<div class="card"><h3>🍜 五、生活源</h3><ul>
+<li>餐饮油烟净化设施安装率抽查，露天烧烤取缔</li>
+<li>垃圾露天焚烧巡查（易与秸秆火点混淆，单独建档）</li>
+<li>烟花爆竹禁燃禁放：春节三个节点专项值守</li>
+</ul></div>
+<div class="card"><h3>📣 六、应急响应</h3><ul>
+<li>预警接收人AB角，确保24小时不断线</li>
+<li>分级响应措施清单到企业、到工地，提前演练1次</li>
+<li>响应期间每日上报落实情况，留痕备查</li>
+</ul></div>
+</section>
+
+<!-- 3 自查打分 -->
+<section id="s2">
+<div class="card"><h3>✅ 秋冬管控自查评分（共20项，每项5分）</h3>
+<p style="font-size:13px;color:#888;margin-bottom:8px">逐项打勾，系统自动计分并指出短板。可打印留存。</p>
+<div id="qlist"></div>
+<button class="btn" onclick="window.print()">🖨️ 打印自查结果</button>
+<button class="btn ghost" onclick="resetQ()">重新自查</button>
+</div>
+<div class="card" id="weak" style="display:none"><h3>⚠️ 你的短板（未得分项）</h3><ul id="weaklist"></ul></div>
+</section>
+
+<!-- 4 应急响应 -->
+<section id="s3">
+<div class="card"><h3>🚨 重污染天气分级响应</h3>
+<table>
+<tr><th>预警等级</th><th>乡镇做什么</th><th>时限</th></tr>
+<tr><td><b style="color:#d99a00">黄色预警</b></td><td>通知减排清单企业启动Ⅲ级响应；工地土石方作业停工；加密道路保洁</td><td>发布后4小时</td></tr>
+<tr><td><b style="color:#e0533d">橙色预警</b></td><td>启动Ⅱ级响应；涉气企业限产20%以上；渣土车禁行；每日上报</td><td>发布后2小时</td></tr>
+<tr><td><b style="color:#a00">红色预警</b></td><td>启动Ⅰ级响应；重点企业停产；中小学弹性停课建议；主要领导带班</td><td>立即</td></tr>
+</table>
+<div class="warn"><b>留痕要求</b>：每次预警的通知记录、现场核查照片、落实情况日报，全部归档——这是考核"响应速度"项的依据，也是免责的证据。</div>
+</div>
+<div class="card"><h3>📋 应急值班表（示例模板）</h3>
+<table>
+<tr><th>班次</th><th>时间</th><th>值班人</th><th>职责</th></tr>
+<tr><td>白班</td><td>8:00—20:00</td><td>示例：值班员A</td><td>预警接收、企业通知</td></tr>
+<tr><td>夜班</td><td>20:00—次日8:00</td><td>示例：值班员B</td><td>禁烧夜查、火点处置</td></tr>
+</table>
+<p style="font-size:12px;color:#999;margin-top:6px">注：人名均为示例，实际使用时替换为本单位人员。</p>
+</div>
+</section>
+
+<div class="score" id="scorebar" style="display:none">自查得分 <b id="score">0</b> / 100 <span id="grade" style="font-size:13px"></span></div>
+<footer>演示版 · 数据均为示例虚构<br>方法口径仅供工作参考，不替代正式文件要求</footer>
+<script>
+function tab(i){document.querySelectorAll("nav button").forEach((b,j)=>b.classList.toggle("on",j===i));document.querySelectorAll("section").forEach((s,j)=>s.classList.toggle("on",j===i));window.scrollTo(0,0)}
+const Q=[
+["禁烧网格包保到户，承诺书签订率100%","10—11月"],
+["火点10分钟内核查机制，有值班表可查","10—11月"],
+["秸秆离田台账完整（已离田/未离田分别建档）","10—11月"],
+["本年度有1起以上禁烧处罚公示案例","10—11月"],
+["散煤用户台账动态更新","11月—3月"],
+["清洁取暖'回头看'完成，复燃户数为零","11月—3月"],
+["无证售煤网点取缔完毕","11月"],
+["工地'六个百分之百'逐一核查有记录","全年"],
+["渣土车密闭运输抽查有台账","全年"],
+["涉气企业一企一档清单完整","全年"],
+["错峰生产/应急减排清单企业签字确认","11月前"],
+["预警2小时内通知到企业有记录","应急"],
+["预警接收AB角，24小时不断线","应急"],
+["分级响应措施清单到企业到工地","应急"],
+["响应期间每日上报落实情况","应急"],
+["餐饮油烟净化设施抽查覆盖率达标","全年"],
+["露天烧烤/垃圾焚烧取缔有记录","全年"],
+["春节禁燃禁放三个节点值守到位","2月"],
+["每次预警留痕归档（通知+照片+日报）","应急"],
+["秋冬攻坚总结复盘按时上报","3月"]];
+const ql=document.getElementById("qlist");
+Q.forEach((q,i)=>{const d=document.createElement("label");d.className="chk";d.innerHTML=`<input type="checkbox" onchange="calc()"><span class="t">${q[0]}<small>所属阶段：${q[1]}</small></span>`;ql.appendChild(d)});
+function calc(){const c=[...ql.querySelectorAll("input")];const n=c.filter(x=>x.checked).length;const s=n*5;
+document.getElementById("scorebar").style.display="flex";document.getElementById("score").textContent=s;
+const g=document.getElementById("grade");g.textContent=s>=90?"优秀":s>=75?"良好":s>=60?"一般":"需重点加强";g.style.color=s>=75?"#7ee2a8":"#ffd166";
+const w=document.getElementById("weak");const wl=document.getElementById("weaklist");wl.innerHTML="";
+c.forEach((x,i)=>{if(!x.checked){const li=document.createElement("li");li.textContent=Q[i][0];wl.appendChild(li)}});
+w.style.display=c.some(x=>!x.checked)?"block":"none"}
+function resetQ(){ql.querySelectorAll("input").forEach(x=>x.checked=false);calc()}
+</script>
+</body>
+</html>
