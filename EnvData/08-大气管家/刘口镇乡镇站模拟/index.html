@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刘口镇乡镇站 · 污染来源模拟（近源 × 风向 × 外源 × 交通）</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#F4F1E8;color:#22312B;}
+  header{background:#123F31;color:#fff;padding:20px 26px 16px;}
+  header .kicker{font-size:11px;letter-spacing:2px;opacity:.75;}
+  header h1{font-size:23px;margin:5px 0 6px;}
+  header p{font-size:13px;opacity:.85;line-height:1.65;max-width:980px;}
+  .wrap{display:grid;grid-template-columns:300px 1fr 330px;gap:14px;padding:14px;align-items:start;}
+  @media(max-width:1180px){.wrap{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid #DDD5C0;border-radius:10px;padding:14px 16px;}
+  .card h3{font-size:13px;color:#123F31;border-bottom:2px solid #123F31;padding-bottom:6px;margin-bottom:10px;letter-spacing:1px;}
+  .row{margin:9px 0;}
+  .row label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;}
+  .row label b{color:#B3541E;font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%;accent-color:#1F6E50;}
+  select{width:100%;padding:5px;border:1px solid #C9C2AC;border-radius:6px;font-size:13px;background:#FBFAF5;}
+  .btnrow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;}
+  button{border:1px solid #1F6E50;background:#fff;color:#1F6E50;border-radius:6px;padding:5px 10px;font-size:12.5px;cursor:pointer;}
+  button.on,button:hover{background:#1F6E50;color:#fff;}
+  button.preset{border-color:#B3541E;color:#B3541E;}
+  button.preset.on,button.preset:hover{background:#B3541E;color:#fff;}
+  #map{width:100%;height:auto;display:block;background:#E9E4D2;border-radius:6px;}
+  .big{font-size:40px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;}
+  .lvl{display:inline-block;padding:2px 10px;border-radius:10px;color:#fff;font-size:12.5px;margin-left:8px;vertical-align:6px;}
+  .bar{display:flex;height:20px;border-radius:5px;overflow:hidden;margin:10px 0 4px;border:1px solid #DDD5C0;}
+  .bar div{height:100%;transition:width .25s;}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table td,table th{padding:4.5px 4px;border-bottom:1px solid #EFEAD9;text-align:right;font-variant-numeric:tabular-nums;}
+  table td:first-child,table th:first-child{text-align:left;}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;}
+  #verdict{font-size:13.5px;line-height:1.75;background:#FBF6E9;border-left:4px solid #B3541E;padding:9px 12px;border-radius:0 6px 6px 0;margin-top:10px;}
+  #chart{width:100%;height:auto;display:block;}
+  footer{padding:4px 26px 22px;font-size:12px;color:#6B7263;line-height:1.8;max-width:1100px;}
+  .chk{font-size:12.5px;display:flex;gap:6px;align-items:center;margin-top:4px;}
+  #stickybar{display:none;}
+  @media(max-width:1180px){
+    .wrap{display:flex;flex-direction:column;padding:8px;gap:10px;}
+    #col-results{display:contents;}
+    .card-result{order:1;} #col-map{order:2;} .card-chart{order:3;} #col-controls{order:4;}
+    #stickybar{display:block;position:sticky;top:0;z-index:50;background:#123F31;color:#fff;
+      padding:9px 14px;font-size:14.5px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+    button{padding:10px 14px;font-size:13.5px;}
+    input[type=range]{height:32px;}
+    select{padding:9px;font-size:14px;}
+    header{padding:14px 16px 10px;} header h1{font-size:19px;} header p{font-size:12px;}
+    .big{font-size:34px;}
+    footer{padding:4px 14px 18px;}
+  }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+<header>
+  <div class="kicker">乡镇站归因模拟 · 商丘市梁园区刘口镇 · 按卫星图实景摆位 · 演示口径</div>
+  <h1>刘口镇乡镇站 · 污染来源模拟</h1>
+  <p>布局按卫星影像：镇政府（站点）在集镇东侧；一条南北主路从政府西侧约 200 米处贯穿全镇，是过境车流走廊；镇区民房环绕站点，西、南最密；东北方向有蓝色厂房群和一条干沟裸地带；东、东南、南为农田，镇内散布坑塘。本地源逐个用高斯烟羽公式算到站浓度，再叠加区域背景与方向性外源（商丘市区在南偏西约 16 km）——拖动风向和时刻，看这个站的读数到底是谁说了算。</p>
+</header>
+<div id="stickybar"><span id="sb-text">站点 PM2.5 –</span></div>
+
+<div class="wrap">
+  <div class="card" id="col-controls">
+    <h3>场景预设</h3>
+    <div class="btnrow">
+      <button class="preset" data-preset="burn">冬夜散烧（静稳）</button>
+      <button class="preset" data-preset="trans">南风传输（市区外源）</button>
+      <button class="preset" data-preset="road">主路晨峰（西风）</button>
+      <button class="preset" data-preset="dust">大风扬尘</button>
+      <button class="preset" data-preset="clean">东北风（开阔来向）</button>
+    </div>
+    <h3 style="margin-top:14px;">气象</h3>
+    <div class="row"><label>风向（风从哪吹来）<b id="v-wind"></b></label>
+      <input type="range" id="wind" min="0" max="359" step="1" value="190">
+      <div class="btnrow" id="windbtns"></div></div>
+    <div class="row"><label>风速 u (m/s)<b id="v-u"></b></label>
+      <input type="range" id="u" min="0.5" max="10" step="0.1" value="3"></div>
+    <div class="row"><label>稳定度（Briggs 乡村）</label>
+      <select id="cls">
+        <option value="A">A · 极不稳定</option><option value="B">B · 不稳定</option>
+        <option value="C">C · 弱不稳定</option><option value="D" selected>D · 中性</option>
+        <option value="E">E · 稳定</option><option value="F">F · 强稳定</option>
+      </select></div>
+    <div class="row"><label>时刻<b id="v-hour"></b></label>
+      <input type="range" id="hour" min="0" max="23" step="1" value="15">
+      <div class="btnrow"><button id="play">▶ 播放 24 小时</button></div></div>
+    <h3 style="margin-top:14px;">外源输入</h3>
+    <div class="row"><label>传输通道（外源来的方向）</label>
+      <select id="channel">
+        <option value="200" selected>南偏西 · 商丘市区方向</option>
+        <option value="180">正南 · 梁园南部方向</option>
+        <option value="45">东北 · 山东菏泽方向</option>
+        <option value="0">正北 · 故道以北（民权方向）</option>
+      </select></div>
+    <div class="row"><label>外源强度（对准时 µg/m³）<b id="v-trans"></b></label>
+      <input type="range" id="trans" min="0" max="100" step="1" value="85"></div>
+    <div class="row"><label>区域背景 (µg/m³)<b id="v-bg"></b></label>
+      <input type="range" id="bg" min="0" max="60" step="1" value="30"></div>
+    <h3 style="margin-top:14px;">本地源</h3>
+    <div class="row"><label>生活源 · 散烧+小锅炉 (%)<b id="v-life"></b></label>
+      <input type="range" id="life" min="0" max="100" step="1" value="45"></div>
+    <div class="row"><label>东北厂房群负荷 (%)<b id="v-ind"></b></label>
+      <input type="range" id="ind" min="0" max="100" step="1" value="60"></div>
+    <div class="row"><label>主路交通流量 (辆/小时)<b id="v-flow"></b></label>
+      <input type="range" id="flow" min="200" max="3000" step="50" value="1300"></div>
+    <div class="row"><label>重型车占比 (%)<b id="v-hv"></b></label>
+      <input type="range" id="hv" min="0" max="50" step="1" value="15"></div>
+    <div class="row"><label>扬尘强度 (%)<b id="v-dust"></b></label>
+      <input type="range" id="dust" min="0" max="100" step="1" value="10"></div>
+    <label class="chk"><input type="checkbox" id="showplume" checked> 显示各源烟羽落区</label>
+  </div>
+
+  <div class="card" id="col-map">
+    <h3>俯视示意 · 站点为原点（北 ↑）· 按卫星图摆位</h3>
+    <canvas id="map" width="760" height="760"></canvas>
+    <div style="font-size:12px;color:#6B7263;margin-top:6px;line-height:1.7;">
+      地理骨架按卫星影像复刻：主路在政府西约 200 米南北贯穿（略向西倾斜）、东西街在政府南侧约 70 米、东北蓝色厂房群约 900 米、东南白色大院约 550 米、干沟裸地带自西北向东南斜穿东北角。烟羽落区按当前风向/稳定度逐源现算，颜色与右侧构成图例一致；外源以画面边缘的紫色渐变示意来向。
+    </div>
+  </div>
+
+  <div id="col-results">
+    <div class="card card-result">
+      <h3>站点 PM2.5（模拟）</h3>
+      <div><span class="big" id="total">–</span><span style="font-size:13px;color:#6B7263;"> µg/m³</span><span class="lvl" id="lvl">–</span></div>
+      <div class="bar" id="bar"></div>
+      <table id="comp"><thead><tr><th>来源</th><th>µg/m³</th><th>占比</th></tr></thead><tbody></tbody></table>
+      <div id="verdict"></div>
+    </div>
+    <div class="card card-chart" style="margin-top:14px;">
+      <h3>24 小时来源构成（气象与开关不变，只变源的日变化）</h3>
+      <canvas id="chart" width="640" height="300"></canvas>
+      <div style="font-size:12px;color:#6B7263;line-height:1.7;">交通双峰（8 时 / 18 时）、散烧双峰（7 时 / 20 时）由曲线函数生成；黑线为总量，竖线为当前时刻。</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  模型口径：点源用含地面反射的高斯烟羽公式、受体高度 3 m（站房楼顶量级）、扩散参数取 Briggs 乡村公式 A–F 类；线源/面源等效为带初始扩散 σ<sub>0</sub> 的分段点源（主路按 100 m 分段，排放因子轻型车 0.12、重型车 1.2 g/(辆·km)，含大风再悬浮修正）；扬尘 = 西侧农田裸地与东北干沟裸地带的面源网格 + 区域风蚀项；外源 = 强度 ×（0.3 + 0.7 × 与通道夹角的 cos²），静稳（u&lt;1.5 m/s）时 ×1.15。等级色带借用 PM2.5 24 小时标准分级（35/75/115/150），此处只作读数标尺。全部数值为教学演示口径，非实测、非预报；源强为示意、位置按卫星图估读（约 ±50 m），接入真实站点数据与踏勘清单后可逐项标定。黄河现行河道在该镇以北数十公里处，镇北为黄河故道水系（干沟/湿地），本页已按卫星图修正。
+</footer>
+
+<script id="core">
+"use strict";
+/* ===== 核心计算：纯函数，无 DOM 依赖 ===== */
+function sigRural(cls,x){
+  var ay={A:0.22,B:0.16,C:0.11,D:0.08,E:0.06,F:0.04}[cls];
+  var sy=ay*x*Math.pow(1+0.0001*x,-0.5), sz;
+  if(cls==="A") sz=0.20*x;
+  else if(cls==="B") sz=0.12*x;
+  else if(cls==="C") sz=0.08*x*Math.pow(1+0.0002*x,-0.5);
+  else if(cls==="D") sz=0.06*x*Math.pow(0.0015*x+1,-0.5);
+  else if(cls==="E") sz=0.03*x/(1+0.0003*x);
+  else sz=0.016*x/(1+0.0003*x);
+  return [sy,sz];
+}
+/* 点源 (sx,sy) 高 H、源强 Q(mg/s) 对原点受体 (z=3m) 的贡献，µg/m³；sy0/sz0 为面源/线源等效初始扩散 */
+function plume(Q,u,cls,sx,sy,H,windDeg,sy0,sz0){
+  if(Q<=0) return 0;
+  sy0=sy0||0; sz0=sz0||0;
+  var th=windDeg*Math.PI/180, vx=-Math.sin(th), vy=-Math.cos(th);
+  var dx=-sx, dy=-sy;
+  var xw=dx*vx+dy*vy; if(xw<=1) return 0;
+  var yw=dx*vy-dy*vx;
+  var s=sigRural(cls,xw);
+  var ey=Math.sqrt(s[0]*s[0]+sy0*sy0), ez=Math.sqrt(s[1]*s[1]+sz0*sz0);
+  if(ey<=0||ez<=0) return 0;
+  var vert=Math.exp(-(3-H)*(3-H)/(2*ez*ez))+Math.exp(-(3+H)*(3+H)/(2*ez*ez));
+  return Q/(2*Math.PI*u*ey*ez)*Math.exp(-yw*yw/(2*ey*ey))*vert*1000;
+}
+function gauss(h,mu,sig){ var d=(h-mu)/sig; return Math.exp(-d*d/2); }
+function trafficF(h){ return 0.18+0.80*gauss(h,8,1.8)+0.62*gauss(h,18,2.0)+0.22*gauss(h,13,3.0); }
+function burnF(h){ return 0.22+0.72*gauss(h,7,1.2)+0.85*gauss(h,20,1.5); }
+function heatF(h){ return Math.min(1,0.30+0.70*burnF(h)/1.07); }
+function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
+function roadX(y){ return -217+0.085*y; }  /* 主路中心线：政府西约 200m、南北向略西倾 */
+
+var SRC={
+  industry:{x:250,y:850,H:12,Q0:900},        /* 东北蓝色厂房群（加工/仓储） */
+  boiler:{x:-380,y:300,H:15,Q0:320},          /* 镇区西北小锅炉（示意） */
+  scatter:[{x:150,y:120},{x:-160,y:180},{x:240,y:-140},{x:-260,y:-190},
+           {x:60,y:300},{x:-90,y:-320},{x:330,y:60},{x:-380,y:-60}],
+  scatterH:6, scatterQ0:120,
+  dustPts:(function(){ var a=[],gx,gy;
+    for(gx=-1000;gx<=-460;gx+=180) for(gy=-150;gy<=490;gy+=160) a.push({x:gx,y:gy});
+    a.push({x:700,y:1250}); a.push({x:950,y:1000}); a.push({x:1200,y:750});  /* 东北干沟裸地带 */
+    return a; })(),
+  dustQ0:420, dustH:2
+};
+var ROADS=(function(){
+  var seg=[],i;
+  for(i=-1700;i<1700;i+=100) seg.push({x:roadX(i+50),y:i+50,ff:1.0});       /* 南北主路 */
+  for(i=-1650;i<1650;i+=100) seg.push({x:i+50,y:-70,ff:0.55});              /* 政府南东西街 */
+  for(i=-1250;i<450;i+=100)  seg.push({x:i+50,y:330,ff:0.30});              /* 镇北东西街 */
+  for(i=-1650;i<300;i+=100)  seg.push({x:420,y:i+50,ff:0.30});              /* 东侧纵路 */
+  return seg;
+})();
+
+function computeState(p){
+  var u=Math.max(0.3,p.u), cls=p.cls, wd=p.windDeg, h=p.hour;
+  var ind=plume(SRC.industry.Q0*p.ind/100,u,cls,SRC.industry.x,SRC.industry.y,SRC.industry.H,wd,0,0);
+  var life=plume(SRC.boiler.Q0*p.life/100*heatF(h),u,cls,SRC.boiler.x,SRC.boiler.y,SRC.boiler.H,wd,0,0);
+  for(var i=0;i<SRC.scatter.length;i++){
+    var sc=SRC.scatter[i];
+    life+=plume(SRC.scatterQ0*p.life/100*burnF(h),u,cls,sc.x,sc.y,SRC.scatterH,wd,45,6);
+  }
+  var EF=(1-p.hv/100)*0.12+(p.hv/100)*1.2;
+  var wf=clamp((u-3)/4,0,1.2);
+  var resusp=1+(p.dust/100)*wf*0.9;
+  var Qbase=p.flow*trafficF(h)*EF*resusp/36;
+  var traf=0;
+  for(var j=0;j<ROADS.length;j++) traf+=plume(Qbase*ROADS[j].ff,u,cls,ROADS[j].x,ROADS[j].y,1,wd,29,2);
+  var dust=0, Qd=SRC.dustQ0*(p.dust/100)*wf;
+  for(var k=0;k<SRC.dustPts.length;k++) dust+=plume(Qd,u,cls,SRC.dustPts[k].x,SRC.dustPts[k].y,SRC.dustH,wd,60,4);
+  var dAng=(wd-300)*Math.PI/180, dAlign=Math.cos(dAng)*Math.cos(dAng);
+  dust+= (p.dust*0.35)*wf*(0.3+0.7*dAlign);
+  var aAng=(wd-p.channel)*Math.PI/180, align=Math.cos(aAng)*Math.cos(aAng);
+  var ext=p.trans*(0.3+0.7*align); if(u<1.5) ext*=1.15;
+  var bg=p.bg;
+  return {bg:bg,ext:ext,ind:ind,life:life,traf:traf,dust:dust,total:bg+ext+ind+life+traf+dust};
+}
+</script>
+<script>
+"use strict";
+var CATS=[
+  {k:"ext", name:"外源传输", c:"#7C6BD9"},
+  {k:"life",name:"生活源（散烧/锅炉）", c:"#D9A404"},
+  {k:"traf",name:"交通（主路为主）", c:"#2E86AB"},
+  {k:"ind", name:"东北厂房群", c:"#E4572E"},
+  {k:"dust",name:"扬尘", c:"#A67C52"},
+  {k:"bg",  name:"区域背景", c:"#9AA5A0"}
+];
+var COMPASS=["北","东北","东","东南","南","西南","西","西北"];
+function compass(deg){ return COMPASS[Math.round(deg/45)%8]; }
+var $=function(id){ return document.getElementById(id); };
+var playing=false, timer=null;
+
+var PRESETS={
+  burn:{wind:315,u:1.0,cls:"E",hour:20,channel:200,trans:20,bg:25,life:95,ind:40,flow:900,hv:15,dust:5},
+  trans:{wind:190,u:3.0,cls:"D",hour:15,channel:200,trans:85,bg:30,life:45,ind:60,flow:1300,hv:15,dust:10},
+  road:{wind:270,u:1.8,cls:"D",hour:8,channel:200,trans:30,bg:16,life:35,ind:30,flow:3000,hv:40,dust:10},
+  dust:{wind:315,u:7.5,cls:"C",hour:13,channel:200,trans:15,bg:18,life:20,ind:50,flow:1400,hv:30,dust:100},
+  clean:{wind:45,u:5.0,cls:"B",hour:11,channel:200,trans:10,bg:14,life:30,ind:40,flow:1000,hv:10,dust:0}
+};
+function readParams(){
+  return { windDeg:+$("wind").value, u:+$("u").value, cls:$("cls").value, hour:+$("hour").value,
+    channel:+$("channel").value, trans:+$("trans").value, bg:+$("bg").value,
+    life:+$("life").value, ind:+$("ind").value, flow:+$("flow").value, hv:+$("hv").value, dust:+$("dust").value };
+}
+function setParams(p){
+  $("wind").value=p.wind; $("u").value=p.u; $("cls").value=p.cls; $("hour").value=p.hour;
+  $("channel").value=String(p.channel); $("trans").value=p.trans; $("bg").value=p.bg;
+  $("life").value=p.life; $("ind").value=p.ind; $("flow").value=p.flow; $("hv").value=p.hv; $("dust").value=p.dust;
+}
+function lvlOf(t){
+  if(t<=35) return ["优","#3DA35D"]; if(t<=75) return ["良","#C9A227"];
+  if(t<=115) return ["轻度污染","#E07B2A"]; if(t<=150) return ["中度污染","#C93A2E"];
+  return ["重度污染","#7A1F3D"];
+}
+
+/* ---- 地图：按卫星图摆位 ---- */
+var map=$("map"), mx=map.getContext("2d");
+var FS=1;
+function F(px,b){ return (b?"bold ":"")+(px*FS).toFixed(1)+"px sans-serif"; }
+var SC=760/3400, CX=380, CY=380;
+function W2S(x,y){ return [CX+x*SC, CY-y*SC]; }
+function seedRand(s){ return function(){ s=(s*9301+49297)%233280; return s/233280; }; }
+function drawGeo(){
+  mx.fillStyle="#E9E4D2"; mx.fillRect(0,0,760,760);
+  /* 东 / 东南 / 南 农田 */
+  mx.fillStyle="#C4D8A8";
+  var f1=W2S(560,760), f2=W2S(1700,-1700); mx.fillRect(f1[0],f1[1],f2[0]-f1[0],f2[1]-f1[1]);
+  var f3=W2S(-1700,-1700), f4=W2S(560,-820); mx.fillRect(f3[0],f3[1],f4[0]-f3[0],f4[1]-f3[1]);
+  mx.strokeStyle="rgba(90,110,60,.35)"; mx.lineWidth=1;
+  for(var gx=700;gx<1700;gx+=250){ var a=W2S(gx,760),b=W2S(gx,-1700); mx.beginPath();mx.moveTo(a[0],a[1]);mx.lineTo(b[0],b[1]);mx.stroke(); }
+  for(var gy=-950;gy>-1700;gy-=250){ var c=W2S(560,gy),d=W2S(1700,gy); mx.beginPath();mx.moveTo(c[0],c[1]);mx.lineTo(d[0],d[1]);mx.stroke(); }
+  mx.fillStyle="#5C7247"; mx.font=F(12); mx.fillText("农 田", W2S(1250,-1150)[0], W2S(1250,-1150)[1]);
+  /* 东北大棚 */
+  mx.fillStyle="#DDE3DA";
+  for(var r=0;r<3;r++) for(var c2=0;c2<4;c2++){ var s0=W2S(1150+c2*95,1010-r*55); mx.fillRect(s0[0],s0[1],74,34); }
+  mx.fillStyle="#5C7247"; mx.fillText("设施大棚", W2S(1130,1080)[0], W2S(1130,1080)[1]);
+  /* 东北干沟裸地带（西北→东南斜穿） */
+  mx.strokeStyle="#D8CBA8"; mx.lineWidth=46*SC*4.35; mx.lineCap="round";
+  var g1=W2S(430,1560), g2=W2S(1420,560);
+  mx.beginPath(); mx.moveTo(g1[0],g1[1]); mx.lineTo(g2[0],g2[1]); mx.stroke();
+  mx.strokeStyle="#B7A678"; mx.lineWidth=2;
+  mx.beginPath(); mx.moveTo(g1[0],g1[1]); mx.lineTo(g2[0],g2[1]); mx.stroke();
+  mx.fillStyle="#7A6234"; mx.font=F(12); mx.fillText("干沟 / 裸地带", W2S(980,1240)[0], W2S(980,1240)[1]);
+  /* 西侧扬尘面 */
+  var d1=W2S(-1090,580), d2=W2S(-370,-240);
+  mx.fillStyle="rgba(166,124,82,.16)"; mx.fillRect(d1[0],d1[1],d2[0]-d1[0],d2[1]-d1[1]);
+  mx.strokeStyle="rgba(166,124,82,.5)"; mx.lineWidth=1; mx.strokeRect(d1[0],d1[1],d2[0]-d1[0],d2[1]-d1[1]);
+  mx.fillStyle="#7A5A38"; mx.fillText("农田 / 裸地（扬尘面）", d1[0]+8, d1[1]+18);
+  /* 坑塘 */
+  mx.fillStyle="#5E7263";
+  [[-760,520],[-1080,180],[-520,780]].forEach(function(pt){ var s=W2S(pt[0],pt[1]);
+    mx.beginPath(); mx.ellipse(s[0],s[1],16,10,0.4,0,7); mx.fill(); });
+  mx.fillStyle="#4E6055"; mx.font=F(11); mx.fillText("坑塘", W2S(-830,470)[0], W2S(-830,470)[1]);
+  /* 镇区楼块（西、南密，东、北疏；避开道路与干沟） */
+  var rnd=seedRand(7);
+  mx.fillStyle="#CFC9B8";
+  for(var i=0;i<240;i++){
+    var bx=-1300+rnd()*1850, by=-860+rnd()*1450;
+    if(Math.abs(bx-roadX(by))<30) continue;
+    if(Math.abs(by+70)<22||Math.abs(by-330)<18) continue;
+    if(bx>420&&by>560) continue;
+    var s=W2S(bx,by), w=9+rnd()*15, hh=7+rnd()*11;
+    mx.fillRect(s[0]-w/2,s[1]-hh/2,w,hh);
+  }
+  mx.fillStyle="#5A5A4E"; mx.font=F(12); mx.fillText("刘口集（镇区）", W2S(-1150,640)[0], W2S(-1150,640)[1]);
+  /* 东南白色大院 */
+  var w1=W2S(265,-375), w2=W2S(395,-485);
+  mx.fillStyle="#EDEBE2"; mx.fillRect(w1[0],w1[1],w2[0]-w1[0],w2[1]-w1[1]);
+  mx.strokeStyle="#B9B2A0"; mx.strokeRect(w1[0],w1[1],w2[0]-w1[0],w2[1]-w1[1]);
+  mx.fillStyle="#5A5A4E"; mx.fillText("白色大院（学校/单位）", W2S(430,-430)[0], W2S(430,-430)[1]);
+  /* 道路 */
+  mx.strokeStyle="#6E6A5E"; mx.lineCap="butt";
+  var m1=W2S(roadX(1700),1700), m2=W2S(roadX(0),0), m3=W2S(roadX(-1700),-1700);
+  mx.lineWidth=10; mx.beginPath(); mx.moveTo(m1[0],m1[1]); mx.lineTo(m2[0],m2[1]); mx.lineTo(m3[0],m3[1]); mx.stroke();
+  var e1=W2S(-1700,-70), e2=W2S(1700,-70);
+  mx.lineWidth=8; mx.beginPath(); mx.moveTo(e1[0],e1[1]); mx.lineTo(e2[0],e2[1]); mx.stroke();
+  var n1=W2S(-1300,330), n2=W2S(500,330);
+  mx.lineWidth=6; mx.beginPath(); mx.moveTo(n1[0],n1[1]); mx.lineTo(n2[0],n2[1]); mx.stroke();
+  var v1=W2S(420,-1700), v2=W2S(420,330);
+  mx.lineWidth=5; mx.beginPath(); mx.moveTo(v1[0],v1[1]); mx.lineTo(v2[0],v2[1]); mx.stroke();
+  mx.fillStyle="#4E4A40"; mx.font=F(12);
+  mx.save(); var lp=W2S(roadX(900),900); mx.translate(lp[0]-14,lp[1]+60); mx.rotate(-Math.PI/2+0.085); mx.fillText("南北主路（过境走廊）", 0, 0); mx.restore();
+  mx.fillText("东西街（政府南约 70 m）", W2S(700,-70)[0], W2S(700,-70)[1]-9);
+  /* 源标记 */
+  function mark(x,y,txt,col){ var s=W2S(x,y); mx.fillStyle=col; mx.beginPath(); mx.arc(s[0],s[1],5,0,7); mx.fill();
+    mx.fillStyle="#3A3A30"; mx.font=F(12); mx.fillText(txt, s[0]+9, s[1]+4); }
+  mark(SRC.industry.x,SRC.industry.y,"蓝色厂房群（加工/仓储）","#E4572E");
+  mark(SRC.boiler.x,SRC.boiler.y,"小锅炉（示意）","#D9A404");
+  mx.fillStyle="#8A6D00"; mx.font=F(12); mx.fillText("民房散烧（环绕镇区）", W2S(430,430)[0], W2S(430,430)[1]);
+  /* 站点 */
+  var st=W2S(0,0);
+  mx.strokeStyle="#123F31"; mx.lineWidth=2; mx.beginPath(); mx.arc(st[0],st[1],13,0,7); mx.stroke();
+  mx.fillStyle="#123F31"; mx.beginPath(); mx.arc(st[0],st[1],4.5,0,7); mx.fill();
+  mx.font=F(13,1); mx.fillText("刘口镇政府 · 乡镇站", st[0]+18, st[1]+4);
+  mx.fillStyle="#123F31"; mx.font=F(14,1); mx.fillText("N ↑", 716, 30);
+  mx.font=F(11); mx.fillStyle="#6B7263"; mx.fillText("示意范围 ±1.7 km · 位置按卫星图估读", 12, 748);
+}
+function drawPlumes(p){
+  var th=p.windDeg*Math.PI/180, vx=-Math.sin(th), vy=-Math.cos(th);
+  function plumeDraw(sx,sy,H,Q,col,sy0,sz0){
+    if(Q<=0) return;
+    for(var xw=70;xw<=1050;xw+=65){
+      var cxp=sx+vx*xw, cyp=sy+vy*xw;
+      var s=sigRural(p.cls,xw);
+      var ey=Math.sqrt(s[0]*s[0]+(sy0||0)*(sy0||0)), ez=Math.sqrt(s[1]*s[1]+(sz0||0)*(sz0||0));
+      var ctr=Q/(2*Math.PI*p.u*ey*ez)*1000*(Math.exp(-(3-H)*(3-H)/(2*ez*ez))+Math.exp(-(3+H)*(3+H)/(2*ez*ez)));
+      var al=Math.min(0.26,Math.max(0.03,ctr/160));
+      var ctrS=W2S(cxp,cyp);
+      mx.save(); mx.translate(ctrS[0],ctrS[1]); mx.rotate(Math.atan2(vy,vx));
+      mx.fillStyle=col; mx.globalAlpha=al;
+      mx.beginPath(); mx.ellipse(0,0,Math.max(4,xw*0.16*SC),Math.max(3,1.9*ey*SC),0,0,7); mx.fill();
+      mx.restore(); mx.globalAlpha=1;
+    }
+  }
+  plumeDraw(SRC.industry.x,SRC.industry.y,SRC.industry.H,SRC.industry.Q0*p.ind/100,"#E4572E",0,0);
+  plumeDraw(SRC.boiler.x,SRC.boiler.y,SRC.boiler.H,SRC.boiler.Q0*p.life/100*heatF(p.hour),"#D9A404",0,0);
+  for(var i=0;i<SRC.scatter.length;i++){ var sc=SRC.scatter[i];
+    plumeDraw(sc.x,sc.y,SRC.scatterH,SRC.scatterQ0*p.life/100*burnF(p.hour),"#D9A404",45,6); }
+  var EF=(1-p.hv/100)*0.12+(p.hv/100)*1.2;
+  var Qbase=p.flow*trafficF(p.hour)*EF/36;
+  for(var j=0;j<ROADS.length;j+=3) plumeDraw(ROADS[j].x,ROADS[j].y,1,Qbase*ROADS[j].ff*3,"#2E86AB",29,2);
+  var wf=clamp((p.u-3)/4,0,1.2), Qd=SRC.dustQ0*(p.dust/100)*wf;
+  for(var k=0;k<SRC.dustPts.length;k+=2) plumeDraw(SRC.dustPts[k].x,SRC.dustPts[k].y,SRC.dustH,Qd,"#A67C52",60,4);
+  /* 外源来向渐变 */
+  var aAng=(p.windDeg-p.channel)*Math.PI/180, align=Math.cos(aAng)*Math.cos(aAng);
+  var strength=p.trans*(0.3+0.7*align)/100;
+  if(strength>0.03){
+    var fx=Math.sin(p.channel*Math.PI/180), fy=Math.cos(p.channel*Math.PI/180);
+    var ex=CX+fx*380, ey2=CY+fy*380;
+    var gr=mx.createRadialGradient(ex,ey2,60,ex,ey2,560);
+    gr.addColorStop(0,"rgba(124,107,217,"+(0.34*strength).toFixed(3)+")");
+    gr.addColorStop(1,"rgba(124,107,217,0)");
+    mx.fillStyle=gr; mx.fillRect(0,0,760,760);
+  }
+  /* 风向箭头 */
+  mx.save(); mx.translate(52,52); mx.rotate((p.windDeg+180)*Math.PI/180);
+  mx.fillStyle="#123F31"; mx.beginPath(); mx.moveTo(0,-20); mx.lineTo(7,8); mx.lineTo(0,3); mx.lineTo(-7,8); mx.closePath(); mx.fill(); mx.restore();
+  mx.fillStyle="#123F31"; mx.font=F(12);
+  mx.fillText("风从"+compass(p.windDeg)+"边来", 22, 92);
+}
+
+/* ---- 图表 ---- */
+var ch=$("chart"), cx2=ch.getContext("2d");
+function drawChart(p, cur){
+  var W=640,H=300,padL=34,padB=20,padT=8, iw=W-padL-6, ih=H-padB-padT;
+  var days=[],max=1,h,k;
+  for(h=0;h<24;h++){ var q=Object.assign({},p,{hour:h}); var st=computeState(q); days.push(st); if(st.total>max) max=st.total; }
+  cx2.clearRect(0,0,W,H);
+  var cf=(ch.clientWidth||640)>=600 ? 1 : Math.min(1.8, 600/(ch.clientWidth||640));
+  cx2.strokeStyle="#D8D2BE"; cx2.fillStyle="#6B7263"; cx2.font=(10*cf).toFixed(1)+"px sans-serif";
+  for(var g=0;g<=4;g++){ var yv=padT+ih-ih*g/4; cx2.beginPath(); cx2.moveTo(padL,yv); cx2.lineTo(W-6,yv); cx2.stroke();
+    cx2.fillText(Math.round(max*g/4), 6, yv+3); }
+  var order=["bg","ext","dust","ind","traf","life"];
+  var colMap={}; CATS.forEach(function(c){ colMap[c.k]=c.c; });
+  for(var oi=0;oi<order.length;oi++){
+    cx2.fillStyle=colMap[order[oi]]; cx2.globalAlpha=0.75; cx2.beginPath();
+    for(h=0;h<24;h++){ var base=0; for(k=0;k<oi;k++) base+=days[h][order[k]];
+      var x=padL+iw*h/23, y=padT+ih-ih*(base+days[h][order[oi]])/max; if(h===0) cx2.moveTo(x,y); else cx2.lineTo(x,y); }
+    for(h=23;h>=0;h--){ var b2=0; for(k=0;k<oi;k++) b2+=days[h][order[k]];
+      cx2.lineTo(padL+iw*h/23, padT+ih-ih*b2/max); }
+    cx2.closePath(); cx2.fill();
+  }
+  cx2.globalAlpha=1; cx2.strokeStyle="#22312B"; cx2.lineWidth=1.6; cx2.beginPath();
+  for(h=0;h<24;h++){ var x2=padL+iw*h/23, y2=padT+ih-ih*days[h].total/max; if(h===0) cx2.moveTo(x2,y2); else cx2.lineTo(x2,y2); }
+  cx2.stroke(); cx2.lineWidth=1;
+  var cxp=padL+iw*cur/23; cx2.strokeStyle="#B3541E"; cx2.setLineDash([4,3]);
+  cx2.beginPath(); cx2.moveTo(cxp,padT); cx2.lineTo(cxp,padT+ih); cx2.stroke(); cx2.setLineDash([]);
+  cx2.fillStyle="#6B7263"; for(h=0;h<24;h+=3) cx2.fillText(h+"时", padL+iw*h/23-6, H-6);
+}
+
+/* ---- 判定句 ---- */
+function verdict(p, st){
+  var top="bg", tv=-1; CATS.forEach(function(c){ if(st[c.k]>tv){ tv=st[c.k]; top=c.k; } });
+  var share=Math.round(tv/st.total*100);
+  if(st.total<=35) return "好天：总量只有 "+st.total.toFixed(0)+" µg/m³。来向开阔、扩散条件好，各类源都没攒住——这个站的底色就是这样，别拿好天论功。";
+  if(top==="ext") return "外源主导（占 "+share+"%）：风正对着传输通道往镇里灌，本地再怎么压也压不过天。这类天要在考核里留证据——风向记录 + 周边站同步上涨，就是传输校正的依据。";
+  if(top==="life") return "生活源主导（占 "+share+"%）：散烧和小锅炉就在站点周边一两百米、高度比楼还低，静稳时全糊在镇上空。这是少数镇里自己说了算的污染，盯晚间 20 时和清晨 7 时两个峰。";
+  if(top==="traf") return "交通主导（占 "+share+"%）：南北主路就在站点西侧约 200 米，是过境走廊——西风一吹，整条路的烟羽正压站点。读数高峰和车流双峰对得上，重型车占比是关键旋钮。";
+  if(top==="dust") return "扬尘主导（占 "+share+"%）：大风把西边裸地、东北干沟带和路面尘卷起来，风越大读数越高，跟静稳天正好反过来。管法也反过来——查裸地覆盖和道路积尘，别查烟囱。";
+  if(top==="ind") return "东北厂房群主导（占 "+share+"%）：源在站点东北约 900 米，东北风时烟羽直落镇区。判定它不用猜，把站点数据按风向分组统计就现形。";
+  return "区域背景主导（占 "+share+"%）：周边普遍高、不是刘口一个镇的事，本地动作只能削边际，别把区域账算在镇头上。";
+}
+
+/* ---- 主渲染 ---- */
+function render(){
+  var p=readParams();
+  $("v-wind").textContent=compass(p.windDeg)+"风 "+p.windDeg+"°";
+  $("v-u").textContent=p.u.toFixed(1); $("v-hour").textContent=p.hour+" 时";
+  $("v-trans").textContent=p.trans; $("v-bg").textContent=p.bg;
+  $("v-life").textContent=p.life; $("v-ind").textContent=p.ind;
+  $("v-flow").textContent=p.flow; $("v-hv").textContent=p.hv; $("v-dust").textContent=p.dust;
+  var st=computeState(p);
+  $("total").textContent=st.total.toFixed(0);
+  var lv=lvlOf(st.total); var el=$("lvl"); el.textContent=lv[0]; el.style.background=lv[1];
+  var bar=$("bar"); bar.innerHTML="";
+  CATS.forEach(function(c){ var d=document.createElement("div");
+    d.style.width=(st[c.k]/st.total*100)+"%"; d.style.background=c.c; d.title=c.name; bar.appendChild(d); });
+  var tb=$("comp").querySelector("tbody"); tb.innerHTML="";
+  CATS.slice().sort(function(a,b){ return st[b.k]-st[a.k]; }).forEach(function(c){
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td><span class='dot' style='background:"+c.c+"'></span>"+c.name+"</td><td>"+st[c.k].toFixed(1)+"</td><td>"+(st[c.k]/st.total*100).toFixed(0)+"%</td>";
+    tb.appendChild(tr); });
+  $("verdict").textContent=verdict(p,st);
+  var topC=CATS[0], topV=-1;
+  CATS.forEach(function(c){ if(st[c.k]>topV){ topV=st[c.k]; topC=c; } });
+  $("sb-text").textContent="站点 PM2.5 "+st.total.toFixed(0)+" µg/m³ · "+lv[0]+" · 主导："+topC.name+" "+Math.round(topV/st.total*100)+"%";
+  var cw=map.clientWidth||760; FS = cw>=700 ? 1 : Math.min(2.2, 700/cw);
+  drawGeo(); if($("showplume").checked) drawPlumes(p);
+  drawChart(p, p.hour);
+}
+["wind","u","cls","hour","channel","trans","bg","life","ind","flow","hv","dust","showplume"].forEach(function(id){
+  $(id).addEventListener("input", render); $(id).addEventListener("change", render);
+});
+var wb=$("windbtns");
+["北0","东北45","东90","东南135","南180","西南225","西270","西北315"].forEach(function(s){
+  var nm=s.replace(/[0-9]/g,""), dg=+s.replace(/[^0-9]/g,"");
+  var b=document.createElement("button"); b.textContent=nm; b.type="button";
+  b.addEventListener("click", function(){ $("wind").value=dg; render(); });
+  wb.appendChild(b);
+});
+document.querySelectorAll("[data-preset]").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll("[data-preset]").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on"); setParams(PRESETS[b.getAttribute("data-preset")]); render();
+  });
+});
+$("play").addEventListener("click", function(){
+  if(playing){ playing=false; clearInterval(timer); $("play").textContent="▶ 播放 24 小时"; return; }
+  playing=true; $("play").textContent="⏸ 暂停";
+  timer=setInterval(function(){ var h=(+$("hour").value+1)%24; $("hour").value=h; render(); }, 650);
+});
+render();
+</script>
+</body>
+</html>
