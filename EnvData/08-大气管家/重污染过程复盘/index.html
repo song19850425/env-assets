@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>重污染过程复盘 · 洛阳 10月6日—10月9日</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f19;color:#e2e8f0;font-family:"PingFang SC","Microsoft YaHei",sans-serif;max-width:900px;margin:0 auto;padding:24px 20px 60px}
+.demo-badge{display:inline-block;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.4);border-radius:8px;padding:4px 14px;font-size:14px;margin-bottom:12px}
+h1{font-size:30px;letter-spacing:2px;margin-bottom:6px}
+.sub{color:#94a3b8;font-size:15px;margin-bottom:24px}
+.conclusion{background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(34,211,238,.03));border:1px solid rgba(34,211,238,.3);border-radius:14px;padding:20px 22px;margin-bottom:24px}
+.conclusion .k{font-size:14px;color:#22d3ee;letter-spacing:2px;margin-bottom:8px}
+.conclusion p{font-size:17px;line-height:1.9}
+.conclusion b{color:#fbbf24}
+.sec{background:rgba(30,41,59,.5);border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:20px 22px;margin-bottom:20px}
+.sec-title{font-size:19px;font-weight:700;margin-bottom:14px;letter-spacing:1px}
+.sec-title .tag{font-size:12px;color:#94a3b8;font-weight:400;margin-left:10px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:4px}
+.card{background:rgba(2,6,23,.6);border-radius:10px;padding:14px 8px;text-align:center}
+.card .v{font-size:30px;font-weight:800;font-family:ui-monospace,monospace}
+.card .l{font-size:13px;color:#94a3b8;margin-top:6px}
+.c-red{color:#ef4444}.c-orange{color:#fb923c}.c-yellow{color:#fbbf24}.c-cyan{color:#22d3ee}.c-green{color:#4ade80}
+p.body{font-size:15px;line-height:1.9;color:#cbd5e1;margin-bottom:10px}
+p.body b{color:#fff}
+ul.insight{list-style:none;font-size:15px;line-height:2;color:#cbd5e1}
+ul.insight li::before{content:"▸ ";color:#22d3ee}
+.timeline{position:relative;padding-left:26px;margin-top:6px}
+.timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:rgba(148,163,184,.25)}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-item::before{content:"";position:absolute;left:-24px;top:6px;width:12px;height:12px;border-radius:50%;background:#0a0f19;border:3px solid #22d3ee}
+.tl-item.warn::before{border-color:#ef4444}
+.tl-item .t{font-size:14px;color:#22d3ee;margin-bottom:4px}
+.tl-item.warn .t{color:#ef4444}
+.tl-item .d{font-size:15px;line-height:1.7;color:#cbd5e1}
+.footer{font-size:13px;color:#64748b;line-height:1.9;border-top:1px solid rgba(148,163,184,.15);padding-top:14px;margin-top:8px}
+.wind{display:flex;align-items:center;gap:14px;background:rgba(2,6,23,.6);border-radius:10px;padding:14px 18px;margin:10px 0;font-size:15px}
+.wind .arrow{font-size:34px;color:#fb923c}
+@media(max-width:600px){.cards{grid-template-columns:repeat(2,1fr)}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+
+<div class="demo-badge">⚠ 演示数据 · 版式确认后接入真实数据</div>
+<h1>🌫 重污染过程复盘</h1>
+<div class="sub">洛阳市 · 2026年10月6日 — 10月9日 · PM2.5 污染过程</div>
+
+<div class="conclusion">
+<div class="k">一句话结论（给领导看的）</div>
+<p>10月6—9日洛阳出现一次<b>中度污染过程</b>，峰值AQI <b>213</b>（8日14时），持续 <b>51 小时</b>。主因是<b>静稳气象 + 秸秆焚烧叠加</b>：7日夜间上风向（新乡、焦作方向）火点密集，在东南风作用下向洛阳传输；9日夜间冷空气过境，过程结束。建议：秋冬季建立<b>火点—风向联动预警</b>，上风向火点密集时提前12小时发布管控提醒。</p>
+</div>
+
+<div class="sec">
+<div class="sec-title">📊 过程总览 <span class="tag">AQI 小时变化 · 演示数据</span></div>
+<svg viewBox="0 0 800 300" style="width:100%;height:auto;background:rgba(2,6,23,.6);border-radius:10px">
+<!-- 网格 -->
+<line x1="60" y1="40" x2="780" y2="40" stroke="#1e293b"/>
+<line x1="60" y1="100" x2="780" y2="100" stroke="#1e293b"/>
+<line x1="60" y1="160" x2="780" y2="160" stroke="#1e293b"/>
+<line x1="60" y1="220" x2="780" y2="220" stroke="#1e293b"/>
+<line x1="60" y1="260" x2="780" y2="260" stroke="#334155"/>
+<!-- 污染等级带 -->
+<rect x="60" y="40" width="720" height="60" fill="rgba(239,68,68,.07)"/>
+<rect x="60" y="100" width="720" height="60" fill="rgba(251,146,60,.07)"/>
+<text x="770" y="70" fill="#ef4444" font-size="13" text-anchor="end">中度+</text>
+<text x="770" y="130" fill="#fb923c" font-size="13" text-anchor="end">轻度</text>
+<text x="770" y="200" fill="#4ade80" font-size="13" text-anchor="end">良</text>
+<!-- Y轴 -->
+<text x="50" y="45" fill="#64748b" font-size="12" text-anchor="end">200</text>
+<text x="50" y="105" fill="#64748b" font-size="12" text-anchor="end">150</text>
+<text x="50" y="165" fill="#64748b" font-size="12" text-anchor="end">100</text>
+<text x="50" y="225" fill="#64748b" font-size="12" text-anchor="end">50</text>
+<!-- AQI曲线 (演示) -->
+<polyline points="60,200 100,195 140,185 180,170 220,150 260,120 300,95 340,75 380,60 420,55 460,62 500,80 540,110 580,145 620,175 660,205 700,230 740,245 780,250"
+ fill="none" stroke="#fb923c" stroke-width="3"/>
+<circle cx="420" cy="55" r="6" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+<text x="420" y="35" fill="#ef4444" font-size="14" text-anchor="middle" font-weight="bold">峰值213 · 8日14时</text>
+<!-- X轴 -->
+<text x="60" y="285" fill="#64748b" font-size="12">10-06</text>
+<text x="240" y="285" fill="#64748b" font-size="12">10-07</text>
+<text x="420" y="285" fill="#64748b" font-size="12">10-08</text>
+<text x="600" y="285" fill="#64748b" font-size="12">10-09</text>
+<!-- 污染时段标注 -->
+<rect x="260" y="262" width="280" height="18" fill="rgba(239,68,68,.25)" rx="4"/>
+<text x="400" y="276" fill="#fca5a5" font-size="12" text-anchor="middle">污染时段 7日19时 — 9日22时（51小时）</text>
+</svg>
+<div class="cards" style="margin-top:14px">
+<div class="card"><div class="v c-red">213</div><div class="l">峰值AQI（中度污染）</div></div>
+<div class="card"><div class="v c-orange">51h</div><div class="l">污染持续时间</div></div>
+<div class="card"><div class="v c-yellow">160</div><div class="l">PM2.5峰值 μg/m³</div></div>
+<div class="card"><div class="v c-cyan">8/10</div><div class="l">超标站点（国控）</div></div>
+</div>
+</div>
+
+<div class="sec">
+<div class="sec-title">🔍 污染特征</div>
+<ul class="insight">
+<li><b>夜间加重、白天缓解</b>：7日、8日连续两晚AQI冲高，白天回落20—30，是典型的静稳+逆温夜间累积特征</li>
+<li><b>PM2.5 绝对主导</b>：PM2.5/PM10 比值 0.72，首要污染物连续51小时为PM2.5， 燃烧源特征明显</li>
+<li><b>湿度同步走高</b>：污染时段相对湿度 75%—88%，有利于二次颗粒物生成</li>
+</ul>
+</div>
+
+<div class="sec">
+<div class="sec-title">💨 成因初判 <span class="tag">气象 + 火点联动</span></div>
+<p class="body"><b>气象条件（不利扩散）</b>：7—8日洛阳地面风速 &lt;2m/s，夜间逆温，边界层高度不足500米，污染物垂直扩散受阻。</p>
+<div class="wind"><span class="arrow">↘</span><span>7日20时 — 8日16时：<b>东南风 2—3级</b>，上风向为<b>新乡、焦作</b>方向</span></div>
+<p class="body"><b>火点传输（演示数据）</b>：7日夜间卫星在新乡、焦作境内抓到 <b>11 个秸秆焚烧疑似火点</b>，位置正好在洛阳上风向。风向+火点+PM2.5同步走高三者吻合，判定为<b>区域传输叠加本地累积</b>。</p>
+<p class="body"><b>本地贡献</b>：同期洛阳市内也有 8 个秸秆焚烧疑似火点，本地焚烧对夜间峰值有直接贡献。</p>
+</div>
+
+<div class="sec">
+<div class="sec-title">⏱ 过程时间线</div>
+<div class="timeline">
+<div class="tl-item"><div class="t">10月6日 白天</div><div class="d">AQI 80—100，良。风速3m/s，扩散条件一般。</div></div>
+<div class="tl-item warn"><div class="t">10月7日 19时</div><div class="d">AQI 突破150，进入轻度污染。风速降至1.5m/s，逆温建立；上风向火点开始密集。</div></div>
+<div class="tl-item warn"><div class="t">10月8日 14时</div><div class="d"><b>峰值213，中度污染</b>。PM2.5达160μg/m³，东南风持续输送。</div></div>
+<div class="tl-item"><div class="t">10月9日 02时</div><div class="d">冷空气前锋到达，转西北风4级，AQI开始快速下降。</div></div>
+<div class="tl-item"><div class="t">10月9日 22时</div><div class="d">AQI回落至58，过程结束，累计51小时。</div></div>
+</div>
+</div>
+
+<div class="sec">
+<div class="sec-title">💡 管控建议</div>
+<ul class="insight">
+<li>建立<b>火点—风向联动预警</b>：上风向50km内秸秆焚烧疑似火点 &gt;5个且未来12小时风向指向本市时，自动推送预警</li>
+<li>污染过程前24小时是管控窗口期：本次7日白天AQI已抬头，若提前限烧，峰值可削减</li>
+<li>夜间巡查重点时段：19时 — 次日06时，本次污染增量 70% 发生在夜间</li>
+</ul>
+</div>
+
+<div class="footer">
+数据口径：本页为<b>版式演示</b>，曲线与数字为示意数据。正式版将接入：国控站AQI小时序列（聚合数据接口）、NASA FIRMS火点、Open-Meteo气象（风向/风速/边界层高度）。<br>
+小宋的环保笔记 · 环保数字化专家 ｜ 商务合作：jinghao.song@gmail.com
+</div>
+
+</body>
+</html>
