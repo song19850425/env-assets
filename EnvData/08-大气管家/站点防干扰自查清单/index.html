@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>空气站点·合规防干扰自查清单（大白话版）</title>
+<style>
+  @page { size: A4; margin: 0; }
+  *{ margin:0; padding:0; box-sizing:border-box;
+     -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  :root{
+    --ink:#16211c; --ink2:#4a5a52; --ink3:#7c8b83;
+    --green:#1a5c3a; --green2:#2f8a5e; --greenbg:#eef6f1;
+    --red:#b8342a; --redbg:#fdf0ee;
+    --amber:#9a6a12; --amberbg:#fdf6e8;
+    --blue:#1f5f8b; --bluebg:#eef4f9;
+    --line:#d5ded8; --line2:#e8eeea;
+  }
+  body{ font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;
+        color:var(--ink); background:#fff; font-size:10.2pt; line-height:1.62; }
+
+  .page{ width:210mm; min-height:297mm; padding:15mm 15mm 13mm; position:relative;
+         overflow:visible; page-break-after:always; background:#fff; }
+  .page:last-child{ page-break-after:auto; }
+  .pfoot{ position:absolute; left:15mm; right:15mm; bottom:6.5mm;
+          border-top:.5pt solid var(--line); padding-top:2mm;
+          display:flex; justify-content:space-between;
+          font-size:7.6pt; color:var(--ink3); }
+  .phead{ position:absolute; top:6.5mm; left:15mm; right:15mm;
+          display:flex; justify-content:space-between;
+          font-size:7.6pt; color:var(--ink3); letter-spacing:.06em; }
+
+  /* ===== 封面 ===== */
+  .cover{ display:flex; flex-direction:column; height:100%; padding-top:28mm; }
+  .cv-kicker{ display:inline-block; font-size:8.6pt; font-weight:700; letter-spacing:.2em;
+              color:var(--green); border:.8pt solid var(--green); border-radius:999px;
+              padding:2mm 5mm; width:fit-content; }
+  .cover h1{ font-size:31pt; font-weight:800; line-height:1.22; letter-spacing:-.5pt;
+             margin-top:8mm; color:var(--ink); }
+  .cover h1 em{ font-style:normal; display:block; font-size:15pt; font-weight:600;
+                color:var(--green); margin-top:4mm; letter-spacing:0; }
+  .cv-sub{ font-size:11.4pt; color:var(--ink2); margin-top:7mm; line-height:1.8; }
+  .cv-line{ height:1.6mm; width:34mm; background:var(--green); margin:6mm 0; }
+  .cv-note{ background:var(--greenbg); border-left:1.2mm solid var(--green);
+            border-radius:0 2mm 2mm 0; padding:4.5mm 6mm; font-size:9.6pt;
+            color:var(--ink2); line-height:1.75; }
+  .cv-note b{ color:var(--ink); }
+  .toc{ margin-top:8mm; }
+  .toc h2{ font-size:10pt; font-weight:700; color:var(--ink3); letter-spacing:.14em;
+           margin-bottom:3.5mm; }
+  .toc ol{ list-style:none; }
+  .toc li{ display:flex; align-items:baseline; gap:3mm; font-size:10.3pt;
+           padding:1.8mm 0; border-bottom:.5pt dotted var(--line); }
+  .toc li .n{ flex:0 0 7mm; font-weight:700; color:var(--green); font-size:9.4pt; }
+  .toc li .t{ flex:1; color:var(--ink); }
+  .toc li .p{ color:var(--ink3); font-size:9pt; }
+
+  /* ===== 通用块 ===== */
+  .sec-h{ display:flex; align-items:baseline; gap:3mm; margin:0 0 3.5mm; }
+  .sec-h .bar{ width:1.4mm; height:6.4mm; background:var(--green); border-radius:1mm; }
+  .sec-h h2{ font-size:15pt; font-weight:800; letter-spacing:-.2pt; }
+  .sec-h .cnt{ font-size:8.4pt; color:var(--ink3); border:.5pt solid var(--line);
+               border-radius:999px; padding:.8mm 2.6mm; }
+  .sec-d{ font-size:9.4pt; color:var(--ink2); margin:0 0 4mm 4.4mm; line-height:1.7; }
+  .sec-d b{ color:var(--ink); }
+
+  .step{ border:.6pt solid var(--line); border-radius:2.5mm; padding:3.2mm 4.4mm;
+         margin-bottom:2.8mm; display:flex; gap:3.6mm; background:#fff; }
+  .step .no{ flex:0 0 8mm; height:8mm; border-radius:2.2mm; background:var(--bluebg);
+             color:var(--blue); font-weight:800; font-size:11pt;
+             display:flex; align-items:center; justify-content:center; }
+  .step .bd{ flex:1; }
+  .step h3{ font-size:11pt; font-weight:700; margin-bottom:2.2mm; }
+  .step p{ font-size:9.6pt; color:var(--ink2); line-height:1.72; }
+  .step p + p{ margin-top:1.6mm; }
+  .step b{ color:var(--ink); }
+  .term{ color:var(--blue); font-weight:700; border-bottom:.5pt dashed var(--blue); }
+  .an{ background:var(--amberbg); border-left:1mm solid #d9a63c; border-radius:0 2mm 2mm 0;
+       padding:2mm 3.4mm; margin-top:1.8mm; font-size:9.2pt; color:#6b4a0d; line-height:1.66; }
+  .an b{ color:#8a5f0a; }
+
+  /* 红线 */
+  .rl-wrap{ background:var(--redbg); border:.9pt solid #e2a79f; border-radius:2.5mm;
+            padding:5mm 6mm; }
+  .rl-grid{ display:grid; grid-template-columns:1fr 1fr; gap:2.6mm; margin-top:3mm; }
+  .rl-it{ background:#fff; border:.5pt solid #e6b8b2; border-radius:2mm; padding:2.6mm 3.4mm; }
+  .rl-it b{ display:block; font-size:10pt; color:#8f2a21; margin-bottom:1.2mm; }
+  .rl-it span{ font-size:8.8pt; color:var(--ink2); line-height:1.6; }
+  .rl-why{ margin-top:4mm; padding-top:3mm; border-top:.5pt dashed #dda79f;
+           font-size:9.2pt; color:#7a3d36; line-height:1.72; }
+  .rl-why b{ color:#8f2a21; }
+
+  /* 条目 */
+  .it{ display:flex; gap:3mm; padding:2.1mm 0; border-bottom:.5pt solid var(--line2); }
+  .it:last-child{ border-bottom:none; }
+  .it .cb{ flex:0 0 4.6mm; height:4.6mm; border:.9pt solid #9aa9a1; border-radius:1mm;
+           margin-top:.6mm; background:#fff; }
+  .it .bd{ flex:1; }
+  .it h4{ font-size:10.5pt; font-weight:700; margin-bottom:1.1mm; }
+  .it p{ font-size:9.4pt; color:var(--ink2); line-height:1.64; margin-bottom:.8mm; }
+  .it p:last-child{ margin-bottom:0; }
+  .it b{ color:var(--ink); }
+  .lb{ color:var(--green); font-weight:700; }
+  .lb2{ color:var(--blue); font-weight:700; }
+  .k{ color:var(--red); font-weight:600; }
+  .mini{ background:var(--greenbg); border-left:1mm solid var(--green2);
+         border-radius:0 1.8mm 1.8mm 0; padding:1.5mm 3.2mm; margin-top:1.2mm;
+         font-size:9pt; color:#25543c; line-height:1.58; }
+  .mini b{ color:#17452f; }
+  .law{ display:inline-block; margin-top:2mm; font-size:8.2pt; color:var(--ink3);
+        border:.5pt solid var(--line); border-radius:1.4mm; padding:.6mm 2.2mm; }
+
+  /* 明路 box */
+  .box{ border:.6pt solid var(--line); border-left:1.4mm solid var(--blue);
+        border-radius:0 2.5mm 2.5mm 0; padding:4.4mm 5.4mm; margin-bottom:3.6mm;
+        background:#fcfdfe; }
+  .box h4{ font-size:11.4pt; font-weight:700; margin-bottom:2.6mm; color:var(--blue); }
+  .box p{ font-size:9.6pt; color:var(--ink2); line-height:1.72; margin-bottom:1.8mm; }
+  .box p:last-child{ margin-bottom:0; }
+  .box b{ color:var(--ink); }
+  .box .g{ color:var(--green); font-weight:700; }
+
+  /* 图 */
+  .fig{ border:.6pt solid var(--line); border-radius:2.5mm; padding:3mm; background:#fbfdfc; }
+  .fig svg{ display:block; width:100%; height:auto; }
+  .fig .cap{ font-size:8.4pt; color:var(--ink3); text-align:center;
+             padding:2mm 3mm 1mm; line-height:1.6; }
+
+  .final{ background:var(--green); color:#fff; border-radius:2.5mm;
+          padding:5.4mm 6.4mm; margin-top:4mm; }
+  .final h3{ font-size:11.4pt; font-weight:800; margin-bottom:2.6mm; }
+  .final p{ font-size:9.8pt; line-height:1.75; color:#dff0e7; }
+  .final b{ color:#fff; }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+
+<!-- ================= 1 封面 ================= -->
+<div class="page">
+  <div class="cover">
+    <span class="cv-kicker">大白话版 · 不需要环保背景</span>
+    <h1>空气站点<br>合规防干扰自查清单
+      <em>给乡镇 / 街道大气管控人员的实操手册</em>
+    </h1>
+    <div class="cv-sub">
+      先花 3 分钟搞懂它是怎么回事，再看要做什么。<br>
+      前半是「不踩坑」，后半是「走明路」。
+    </div>
+    <div class="cv-line"></div>
+    <div style="display:inline-block;font-size:8pt;font-weight:700;color:#9a6a12;background:#fdf6e8;border:1pt solid #d9a63c;border-radius:999px;padding:1.5mm 4mm;margin-bottom:4mm;letter-spacing:.1em;">演示版 · 已脱敏 · 数据均为示例</div>
+    <div class="cv-note">
+      <b>这份清单解决两个问题：</b>① 怎么不被「非故意干扰」误伤 —— 调研里被罚的案例一大半不是故意造假；
+      ② 怎么合法地把数据做上去。<br><br>
+      它<b>不解决</b>「怎么做了不被抓」—— 那条路在技术上已经死了：改数被查会触发<b>惩罚性数据替代</b>（按规则作废并追溯替代，具体口径以官方文件为准），<b>比不改更差</b>。
+    </div>
+
+    <div class="toc">
+      <h2>目 录</h2>
+      <ol>
+        <li><span class="n">开篇</span><span class="t">先花 3 分钟：这到底是个什么东西</span><span class="p">P2–P3</span></li>
+        <li><span class="n">红线</span><span class="t">这十件事，一件都不能碰</span><span class="p">P4</span></li>
+        <li><span class="n">一</span><span class="t">站点周边 20 米，日常怎么管</span><span class="p">P5</span></li>
+        <li><span class="n">二</span><span class="t">人、钥匙和设备变更</span><span class="p">P6</span></li>
+        <li><span class="n">三</span><span class="t">留痕与自证 —— 花钱最少，作用最大</span><span class="p">P7</span></li>
+        <li><span class="n">四</span><span class="t">把责任写进合同，别只靠口头</span><span class="p">P8</span></li>
+        <li><span class="n">五</span><span class="t">合法改变数据的「明路」</span><span class="p">P9</span></li>
+        <li><span class="n">六</span><span class="t">真降数 —— 唯一能「让数据变好」的正经办法</span><span class="p">P10</span></li>
+        <li><span class="n">附</span><span class="t">依据来源与使用说明</span><span class="p">P11</span></li>
+      </ol>
+    </div>
+  </div>
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 1 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 2 开篇 1-3 ================= -->
+<div class="page">
+  <div class="phead"><span>开篇 · 先花 3 分钟</span><span>第 2 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar"></span><h2>这到底是个什么东西</h2></div>
+  <p class="sec-d">如果你完全没接触过环保，看这五步就够了。<b>后面的清单都建立在这五步上。</b></p>
+
+  <div class="step">
+    <div class="no">1</div>
+    <div class="bd">
+      <h3>空气站，就是一台每天定时给上级发报告的「体温计」</h3>
+      <p>它是一个建在<b>楼顶或院子里的小房子</b>，通常只有两三平方米。房顶竖着一根杆子，杆子顶上有个进气口 —— 这个口子叫<span class="term">采样口</span>。</p>
+      <p>空气从采样口进去，房子里的仪器测出 <b>PM2.5、PM10、二氧化硫</b>这些指标有多浓，然后<b>每小时自动往上发一次</b>，人不用管。</p>
+      <div class="an">💡 <b>打个比方</b>：它就像一台体温计，每小时自动给上级发一次体温。采样口就是它的<b>鼻子</b>。</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="no">2</div>
+    <div class="bd">
+      <h3>数据发上去之后，会变成一张排名表</h3>
+      <p>数据从站点 → 省里和国家的平台 → 汇总成<b>城市、县、乡镇的空气质量排名</b>。</p>
+      <p>排名靠后的会被<b>公开约谈</b> —— 有的地方是按周排名、按月排名，直接通报到乡镇。所以<b>压力最终压到最末端：乡镇和街道</b>。</p>
+      <div class="an">💡 <b>打个比方</b>：就像全班考试成绩排大榜，贴在公告栏上，倒数几名还要被叫去办公室。</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="no">3</div>
+    <div class="bd">
+      <h3>为什么「动一下」就能让数据变好看</h3>
+      <p>因为采样口就是个进气口。<b>把它堵住，进去的空气就少了，测出来的浓度自然就低</b> —— 数据看起来就「变好了」。</p>
+      <p>这就是为什么业内把堵塞采样口叫做<b>「给空气采样器戴口罩」</b>。堵的东西五花八门：棉纱、纱布、医用棉、胶布、塑料袋。</p>
+      <div class="an">💡 <b>打个比方</b>：给体温计裹上毛巾，测出来的体温当然正常。<b>但人的病一点没好。</b></div>
+    </div>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 2 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 3 开篇 4-5 + 图 ================= -->
+<div class="page">
+  <div class="phead"><span>开篇 · 先花 3 分钟</span><span>第 3 页 / 共 11 页</span></div>
+
+  <div class="step">
+    <div class="no">4</div>
+    <div class="bd">
+      <h3>为什么现在动手，几乎必然被抓</h3>
+      <p>不是「可能被抓」，是有<b>五道关卡同时在盯着</b>：</p>
+      <p>① <b>和旁边的站比</b> —— 你那个站的数据明显比周边低，就露了　② <b>站房有摄像头</b> —— 谁进去过、动了什么，都有记录　③ <b>设备上有封条</b> —— 就像电表上的铅封，动过一眼就看出来</p>
+      <p>④ <b>平台的算法会自动报警</b> —— 数据不符合正常规律就触发　⑤ <b>无人机巡查</b> —— 周边多出什么、少了什么，天上看得见</p>
+      <p>真实的案子就是这么暴露的：<b>数据比周边低 + 摄像头看到采样头位置变了 + 封条被人动过</b>。</p>
+      <div class="an">💡 <b>打个比方</b>：现在的监测站不是一台孤零零的体温计，而是<b>联网的体温计</b> —— 你的数据会和其他人的数据互相对照，对不上就报警。</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="no">5</div>
+    <div class="bd">
+      <h3>被抓到会怎样</h3>
+      <p>处理结果分两层，<b>分界线很清楚</b>：</p>
+      <p>· <b>乡镇 / 街道这一层</b> → 党纪政务处分（党内警告、严重警告、诫勉谈话），还要被通报<br>
+         · <b>县里分局领导这一层</b> → <b>判刑</b>（罪名是破坏计算机信息系统罪，处五年以下有期徒刑或者拘役）<br>
+         · 判了刑，公职<b>直接开除</b>　· 连带：<b>整个城市的考核可能被一票否决</b></p>
+      <div class="an">💡 <b>改数被查，上级会按「最大值」替代</b> —— 也就是说，你改了，上级直接把当月最大的那个数按在你头上。<b>比不改还差。</b></div>
+    </div>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 680 430" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="340" cy="222" r="128" fill="#eef6f1" stroke="#2f8a5e" stroke-width="2" stroke-dasharray="7 5"/>
+      <text x="340" y="112" text-anchor="middle" fill="#2f8a5e" font-size="13" font-weight="700">20 米管控圈</text>
+
+      <rect x="312" y="242" width="56" height="40" rx="3" fill="#fff" stroke="#1f5f8b" stroke-width="2"/>
+      <polygon points="306,242 374,242 340,224" fill="#dbe8f2" stroke="#1f5f8b" stroke-width="2"/>
+      <line x1="340" y1="224" x2="340" y2="176" stroke="#1f5f8b" stroke-width="3"/>
+      <circle cx="340" cy="172" r="6" fill="#d9a63c" stroke="#fff" stroke-width="1.6"/>
+      <text x="360" y="170" fill="#9a6a12" font-size="12" font-weight="700">采样口（鼻子）</text>
+      <text x="360" y="185" fill="#7c8b83" font-size="10">空气从这里进去</text>
+      <text x="340" y="300" text-anchor="middle" fill="#1f5f8b" font-size="11" font-weight="600">站房</text>
+
+      <text x="262" y="216" text-anchor="middle" fill="#1a5c3a" font-size="11" font-weight="700">✓ 只有持证</text>
+      <text x="262" y="231" text-anchor="middle" fill="#1a5c3a" font-size="11" font-weight="700">运维人员</text>
+      <text x="262" y="246" text-anchor="middle" fill="#1a5c3a" font-size="11" font-weight="700">可以进入</text>
+
+      <rect x="286" y="18" width="112" height="52" rx="8" fill="#fff" stroke="#b8342a" stroke-width="1.5"/>
+      <text x="342" y="40" text-anchor="middle" fill="#8f2a21" font-size="12" font-weight="700">楼顶绿化浇灌</text>
+      <text x="342" y="57" text-anchor="middle" fill="#7c8b83" font-size="10">喷淋浇花，喷到采样口</text>
+      <line x1="342" y1="70" x2="342" y2="88" stroke="#b8342a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="410" y="40" fill="#b8342a" font-size="16" font-weight="800">✕</text>
+
+      <rect x="60" y="176" width="112" height="52" rx="8" fill="#fff" stroke="#b8342a" stroke-width="1.5"/>
+      <text x="116" y="198" text-anchor="middle" fill="#8f2a21" font-size="12" font-weight="700">雾炮车 / 洒水车</text>
+      <text x="116" y="215" text-anchor="middle" fill="#7c8b83" font-size="10">降尘作业，水雾飘过来</text>
+      <line x1="172" y1="202" x2="198" y2="210" stroke="#b8342a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="176" y="192" fill="#b8342a" font-size="16" font-weight="800">✕</text>
+
+      <rect x="508" y="176" width="112" height="52" rx="8" fill="#fff" stroke="#b8342a" stroke-width="1.5"/>
+      <text x="564" y="198" text-anchor="middle" fill="#8f2a21" font-size="12" font-weight="700">周边施工</text>
+      <text x="564" y="215" text-anchor="middle" fill="#7c8b83" font-size="10">碰到采样管、扬起尘土</text>
+      <line x1="508" y1="202" x2="482" y2="210" stroke="#b8342a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="492" y="192" fill="#b8342a" font-size="16" font-weight="800">✕</text>
+
+      <rect x="286" y="374" width="112" height="52" rx="8" fill="#fff" stroke="#b8342a" stroke-width="1.5"/>
+      <text x="342" y="396" text-anchor="middle" fill="#8f2a21" font-size="12" font-weight="700">大扫除 / 堆料</text>
+      <text x="342" y="413" text-anchor="middle" fill="#7c8b83" font-size="10">冲洗、堆土、车辆怠速</text>
+      <line x1="342" y1="374" x2="342" y2="356" stroke="#b8342a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="410" y="396" fill="#b8342a" font-size="16" font-weight="800">✕</text>
+    </svg>
+    <div class="cap">圈内 = 只有持证运维人员能进；圈外的这些日常作业，都不能让水雾、扬尘、施工影响到采样口</div>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 3 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 4 红线 ================= -->
+<div class="page">
+  <div class="phead"><span>红线</span><span>第 4 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:var(--red)"></span><h2>⛔ 这十件事，一件都不能碰</h2><span class="cnt">10 条</span></div>
+  <p class="sec-d">不是「容易被抓」，是<b>几乎必然被抓</b>，而且性质是刑事。这些是案子里真实出现过的手法。</p>
+
+  <div class="rl-wrap">
+    <div class="rl-grid">
+      <div class="rl-it"><b>堵住采样口</b><span>棉纱、纱布、医用棉、胶布、塑料袋 —— 真实案子里的手法</span></div>
+      <div class="rl-it"><b>向采样口喷水</b><span>雾炮车、洒水车、固定喷淋、楼顶绿化喷淋，都算</span></div>
+      <div class="rl-it"><b>用化学东西中和</b><span>喷水、氢氧化钠溶液</span></div>
+      <div class="rl-it"><b>拉闸断电</b><span>直接断电，或者制造「莫名其妙停电」</span></div>
+      <div class="rl-it"><b>遮摄像头 / 删录像</b><span>挡镜头、进站房删记录、远程屏蔽</span></div>
+      <div class="rl-it"><b>擅自挪动采样头</b><span>调整采样口、采样管的位置</span></div>
+      <div class="rl-it"><b>改设备里的参数</b><span>改公式、改量程、改校正系数</span></div>
+      <div class="rl-it"><b>让不该进的人进站房</b><span>没证的人不能进站房、房顶、采样平台</span></div>
+      <div class="rl-it"><b>自己换设备</b><span>或者安排不懂的人去操作</span></div>
+      <div class="rl-it"><b>报复说实话的人</b><span>对认真履职、不肯配合的人打击报复</span></div>
+    </div>
+    <div class="rl-why">
+      <b>为什么「必然被抓」</b>：数据会<b>和周边站点互相比对</b>（明显偏低就露了）· 站房有<b>视频监控</b> ·
+      设备上有<b>封条</b>（像电表铅封，动过就看得出）· 平台的<b>算法模型自动报警</b> · <b>无人机巡查</b>。<br>
+      人为干扰最典型的问题就是「<b>降得太多、降得太齐、不符合正常规律</b>」—— 这本身就是信号。
+    </div>
+  </div>
+
+  <div class="final" style="background:#8f2a21">
+    <h3>一句话记住</h3>
+    <p>改数被查，上级会按<b>当月最大值</b>替代 —— <b>改，比不改还差。</b>收益是「排名好看一点」，成本是「丢工作 + 坐牢 + 全市背锅」。</p>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 4 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 5 一 ================= -->
+<div class="page">
+  <div class="phead"><span>一 · 站点周边 20 米</span><span>第 5 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:#d9a63c"></span><h2>站点周边 20 米，日常怎么管</h2><span class="cnt">6 项</span></div>
+  <p class="sec-d">这一组对应<b>最高频的一类案件</b>：雾炮车、洒水车、施工、绿化浇灌。<b>基本都不是故意造假</b>，但一样追责到人。</p>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>做一张「站点周边 20 米管控图」</h4>
+    <p><span class="lb">为什么</span>：<b>20 米是上级明确要求的范围</b>。没有这张图，城管、环卫、施工队根本不知道哪里不能作业 —— 出了事谁都说不清。</p>
+    <p><span class="lb2">怎么做</span>：把站点坐标画到地图上，以它为中心画一个 20 米半径的圈，圈里禁止：喷淋、洒水、施工、浇灌、堆料、车辆怠速。打印出来发给相关单位。</p>
+    <div class="mini">💡 <b>打个比方</b>：就像在学校门口画一条「禁止停车」的黄线 —— <b>线画出来，才有依据说别人违规；不画，就只能事后扯皮。</b></div>
+    <span class="law">依据：生态环境部两次全国通报都明确 20 米红线</span>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>把站点位置告诉城管、环卫、市政</h4>
+    <p><span class="lb">为什么</span>：<b>雾炮车司机根本不知道旁边有监测站</b> —— 这是雾炮车类案件最主要的原因。他不认识站，只管按路线喷雾。</p>
+    <p><span class="lb2">怎么做</span>：更实在的办法是给雾炮车、洒水车的作业系统加<b>电子围栏</b> —— 车一进 20 米圈，系统自动提醒或自动停止喷雾。</p>
+    <div class="mini">💡 <b>打个比方</b>：不能指望每个司机都记住哪条路有学校，所以装了<b>区间测速和限速提示</b>。<b>靠系统比靠人可靠。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>圈里要施工，提前报备</h4>
+    <p><span class="lb">为什么</span>：施工会扬尘、会碰到采样管、会挡住进气口。<b>真实案例</b>：有个国控站，施工人员进采样平台作业，<b>只是碰到了采样总管约 30 秒</b>，就被追责了。</p>
+    <p><span class="lb2">怎么做</span>：属地有施工计划提前报备，环保部门到场看着做。浙江的做法叫「工程报备—协同巡查—考核挂钩」。</p>
+    <div class="mini">💡 <b>打个比方</b>：就像在燃气管道旁边施工要报备、要有人盯着 —— <b>不是不让你干，是别干出事。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>牌子、围栏、摄像头、封条，一样都不能少</h4>
+    <p><span class="lb">为什么</span>：这些是<b>物理防线</b>。真实案例证明它们有用 —— 有个案子，7 个人闯进采样平台，其中 2 人<b>隔着栅栏用水瓢往采样口洒水</b>。<b>栅栏拦住了大部分人，只是没拦全。</b></p>
+    <div class="mini">💡 <b>打个比方</b>：<b>封条就像电表上的铅封</b> —— 谁动过一眼就看出来。它不只是防人，更是<b>事后能证明「我没动过」</b>。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>站点周边要种树、绿化、修路，先评估影响</h4>
+    <p><span class="lb">为什么</span>：<b>真实案例很典型</b>：一个市的环保局自己在办公楼顶装了自动喷淋系统浇绿植（因为「创建园林城市」要求楼顶绿化），<b>水雾直接喷到了采样口</b> —— 作案的不是别人，是环保部门自己。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>两个环保目标打架了</b> ——「楼顶要绿化」和「采样口不能被喷」，谁都没错，但凑一起就出事。<b>新增任何东西前都要先问一句：会不会影响采样？</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>大扫除、大型活动前，把站点圈进「禁作业区」</h4>
+    <p><span class="lb">为什么</span>：<b>真实案例</b>：某社区搞大扫除，雾炮车连着好几天停在国控站楼下。社区觉得是好事，结果被通报。</p>
+    <div class="mini">💡 <b>打个比方</b>：就像消防演练前要先确认哪条通道不能堵 —— <b>干好事也要看地方。</b></div>
+  </div></div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 5 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 6 二 ================= -->
+<div class="page">
+  <div class="phead"><span>二 · 人、钥匙与设备变更</span><span>第 6 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:#1f5f8b"></span><h2>人、钥匙和设备变更</h2><span class="cnt">4 项</span></div>
+  <p class="sec-d">这一组是<b>追责到人</b>的地方。调研里被处分的基本都是环保所负责人、分管副主任这一层。</p>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>站房钥匙和电脑密码，专人管、领用登记</h4>
+    <p><span class="lb">为什么</span>：<b>真实案例</b>：某环保分局的监测站站长，趁着协助国控站搬迁的机会，<b>私自把站房钥匙留下、还偷偷记下了电脑密码</b>。之后他多次溜进站房，用棉纱堵住采样器。<b>最后 7 个人一起被判刑，1 年 3 个月到 1 年 10 个月。</b></p>
+    <p><span class="lb2">怎么做</span>：只有持证运维人员能进站房、房顶、采样平台；钥匙和密码专人保管，谁拿、什么时候拿、干什么，都登记。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>钥匙管理不是小事</b> —— 就像财务室的钥匙不能谁都能配一把。出事之后，<b>领用登记就是查清责任的第一份证据。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>设备要修要换，走流程，别让外行上手</h4>
+    <p><span class="lb">为什么</span>：<b>真实案例</b>：某街道办事处环保所所长，没按上级要求，<b>擅自安排非专业人员去更换空气站的监测杆</b>。安装的人操作不当，导致办事处<b>连续两天的监测数据全部作废</b>。结果：所长党内警告、主任被约谈、副主任被诫勉谈话。</p>
+    <p><span class="lb2">怎么做</span>：设备变更、维修、更换，一律走流程 —— 有资质的人做、有人监督、有人验收。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>这起案子最值得记的是「不是故意造假，一样追责」。</b>就像找人帮忙接电线，接坏了照样是你的责任 —— <b>这个领域不看动机，只看结果。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>把「谁负责」写清楚，别含糊</h4>
+    <p><span class="lb">为什么</span>：调研里所有乡镇、街道的案子，<b>处分都同时打到三层人</b>：具体经办人、分管领导、主要负责人。<b>责任不清 = 出了事人人有份。</b></p>
+    <p><span class="lb2">怎么做</span>：明确每个站点的日常管理责任人、分管领导，写成文件、签字确认。</p>
+    <div class="mini">💡 <b>打个比方</b>：就像值班表 —— <b>没排班，等于每天都有人值班，也等于每天都没人值班。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>让每个干活的人都知道红线在哪</h4>
+    <p><span class="lb">为什么</span>：基层最容易出问题的就是「临时工不懂」—— 他觉得是在帮忙，其实是在犯罪。</p>
+    <p><span class="lb2">怎么做</span>：把第 4 页那份红线清单打印上墙，组织学习、签到留痕。<b>「不知道这算违规」不是免责理由。</b></p>
+    <div class="mini">💡 <b>打个比方</b>：就像工地上的安全交底 —— <b>不是走形式，是为了出事时能说清楚「我们教过了」。</b></div>
+  </div></div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 6 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 7 三 ================= -->
+<div class="page">
+  <div class="phead"><span>三 · 留痕与自证</span><span>第 7 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:#2f8a5e"></span><h2>留痕与自证 —— 花钱最少，作用最大</h2><span class="cnt">5 项</span></div>
+  <p class="sec-d"><b>基层最吃亏的不是「被查」，是「说不清」。</b>这套台账做起来不贵，但一旦被质疑，性质完全不同。</p>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>每天巡视，记一笔、拍张照</h4>
+    <p><span class="lb2">怎么做</span>：记时间、人员、天气、站点周边情况、有没有异常；照片<b>带时间水印</b>。</p>
+    <div class="mini">💡 <b>打个比方</b>：就像小区保安的巡逻打卡 —— <b>平时看着没用，出事时它就是「我在现场、我按规矩做了」的证明。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>封条编号，一个个登记</h4>
+    <p><span class="lb">为什么</span>：真实的邢台案，就是靠<b>采样器封条被人为损坏</b>暴露的。反过来想 —— <b>封条台账能帮你自证</b>：什么时候贴的、编号多少、有没有被动过，一查就知道。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>这就是电表铅封的逻辑</b> —— 铅封没断，就证明没人偷电；铅封登记清楚，就证明没人动过设备。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>设备修过、换过、校准过，都留记录</h4>
+    <p><span class="lb2">怎么做</span>：谁做的、什么时候、做了什么、谁验收的，写清楚。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>这是数据出现异常时，唯一能自证的材料。</b>就像医院的病历 —— 没有病历，出了问题说不清是病情还是用药。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>摄像头录像，留够时间</h4>
+    <p><span class="lb2">怎么做</span>：至少覆盖一个完整的数据审核周期（一般一个月以上）。</p>
+    <p><span class="k">特别注意</span>：<b>删录像本身就是独立的违法情节</b> —— 真实案子里，就有人专门指使别人进站房删监控视频。</p>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>和运维公司的沟通，全部留档</h4>
+    <p><span class="lb2">怎么做</span>：报修、反馈、通报异常 —— 全部留书面或聊天记录。</p>
+    <div class="mini">💡 <b>为什么</b>：临汾案里，<b>运维人员的通话记录成了关键证据</b>。记录不只保护别人，也保护你。</div>
+  </div></div>
+
+  <div class="final" style="margin-top:5mm">
+    <h3>这一节的价值</h3>
+    <p>第 9 页讲的「申诉」，前提就是这里的台账。<b>没有台账的申诉，基本等于空口辩解。</b></p>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 7 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 8 四 ================= -->
+<div class="page">
+  <div class="phead"><span>四 · 把责任写进合同</span><span>第 8 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:#2f8a5e"></span><h2>把责任写进合同，别只靠口头</h2><span class="cnt">3 项</span></div>
+  <p class="sec-d">站点一般是第三方公司在运维。<b>合同怎么写，直接决定出了事谁担责。</b></p>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>写明：发现有人干扰，必须限时上报</h4>
+    <p><span class="lb">为什么</span>：<b>真实案例</b>：临汾案里，运维公司<b>发现了国控站被干扰，却没有及时上报</b>。后果是：总站公开约谈运维公司负责人、撤销 2 个人的考核合格证、<b>终止该公司在全省 25 个国控站点的运维服务，而且不退履约保证金</b>。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>发现小偷不报警，比小偷更麻烦</b> —— 因为你本来是有能力阻止的那个人。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>写明：运维人员不得收好处、不得放水</h4>
+    <p><span class="lb">为什么</span>：<b>真实案例</b>：临汾案里，两名运维人员分别收了 <b>1000 元和 2000 元</b>好处费，给作案的人通风报信，最后分别被判 <b>8 个月和 6 个月</b>。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>一千块钱换八个月，这笔账谁算谁亏。</b>所以要在合同里先写死，让人不敢伸手。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>把数据质量和「付款、续约」挂钩</h4>
+    <p><span class="lb2">怎么做</span>：让运维公司有动力主动发现问题，而不是「多一事不如少一事」。</p>
+    <div class="mini">💡 <b>打个比方</b>：就像装修的尾款 —— <b>留一笔钱验收后再付，质量自然就上去了。</b></div>
+  </div></div>
+
+  <div class="final" style="margin-top:5mm">
+    <h3>为什么这一节能省大事</h3>
+    <p>站点不是你的，运维也不是你的人。<b>你能控制的只有合同。</b>把上面三条写进去，等于把责任提前分清楚 —— 出事时不用扯皮，也不会「人在家中坐，锅从天上来」。</p>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 8 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 9 五 ================= -->
+<div class="page">
+  <div class="phead"><span>五 · 合法改变数据的「明路」</span><span>第 9 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:#1f5f8b"></span><h2>合法改变数据的「明路」</h2><span class="cnt">3 条通道</span></div>
+  <p class="sec-d">这一节是整份清单<b>最该被看见</b>的地方：<b>确实有正规通道，只是很多人不知道，所以走了歪路。</b></p>
+
+  <div class="box">
+    <h4>通道 1：如果站点本身位置就不合理，可以申请调整</h4>
+    <p><b>什么时候用</b>：站点紧贴马路、被高楼挡住、周边环境已经大变 —— 也就是这个站<b>测出来的数本来就不能代表这片区域</b>。</p>
+    <p><b>怎么走</b>：《生态环境监测条例》第 12 条规定，地方监测站点的设置、调整、撤销，<b>报上级主管部门备案</b>。</p>
+    <p><span class="k">但前提必须说清楚</span>：<b>走程序 ≠ 随便调。</b>调整要有<b>技术论证</b>（代表性评估、布点方案）。<b>不能因为「排名难看」就去调站 —— 那就是「合法外衣下的造假」，一样会被认定。</b></p>
+    <div class="mini">💡 <b>打个比方</b>：<b>体温计坏了可以换一支，但不能因为量出来发烧就把体温计换掉。</b>前者是修设备，后者是骗自己。</div>
+  </div>
+
+  <div class="box">
+    <h4>通道 2：确实异常的数据，走正规程序标记</h4>
+    <p><b>什么时候用</b>：沙尘天气、外地污染物吹过来、设备故障 —— 这些确实会让数据异常，而且<b>不是本地造成的</b>。</p>
+    <p><b>怎么走</b>：监测技术规范里有<b>数据有效性判定和标记</b>的规定，走正规审核程序申请标记，而不是自己动手改。</p>
+    <p><b>区别在哪（这句最重要）</b>：<span class="g">一个是「如实说明为什么这个数不能用」，一个是「把能用的数改成想看的数」。</span>前者是程序，后者是犯罪。</p>
+    <div class="mini">💡 <b>打个比方</b>：考试时发现题目印错了，可以举手请老师换题 —— <b>这叫程序。自己把答案改了 —— 那叫作弊。</b>两件事看起来都「改变了结果」，性质完全不同。</div>
+  </div>
+
+  <div class="box">
+    <h4>通道 3：被冤枉了，可以申诉</h4>
+    <p><b>怎么走</b>：有申诉和救济渠道。邢台那位走过申诉（虽然被驳回了），说明<b>通道是存在的</b>。</p>
+    <p><b>但关键在这</b>：<b>申诉要拿得出证据。</b>而证据就是第 7 页那套台账 —— <b>没有台账的申诉，基本等于空口辩解。</b></p>
+    <div class="mini">💡 <b>打个比方</b>：<b>第 7 页的台账，就是你的「行车记录仪」</b> —— 平时感觉不到它的存在，被碰瓷的时候，它就是全部。</div>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 9 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 10 六 ================= -->
+<div class="page">
+  <div class="phead"><span>六 · 真降数</span><span>第 10 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar" style="background:#d9a63c"></span><h2>真降数 —— 唯一能「让数据变好」的正经办法</h2><span class="cnt">6 步</span></div>
+  <p class="sec-d"><b>先判断方向，再动手。方向错了，使劲也没用。</b>下面六步按顺序做。</p>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>第一步：先搞清楚是「自己这儿的问题」还是「外面吹过来的」</h4>
+    <p><span class="lb2">怎么看</span>：把周边几个城市的数据放在一起比。· <b>大家的数据一起涨一起跌</b> → 是<b>区域性问题</b>，多半是天气和传输造成的，自己使劲没用，得跟周边联合减排　· <b>只有你这里高，别人都正常</b> → 是<b>本地源</b>，精准打击有效</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>全楼都停水，你修自己家的水管没用；只有你家没水，那才该修自己家的。</b></div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>第二步：看「首要污染物」是什么，对症下药</h4>
+    <p>· <b>PM10 为主 → 扬尘</b>：工地、道路、堆场、裸土。<b>这是最容易管、见效最快的。</b>　· <b>PM2.5 为主 → 燃烧 + 二次生成 + 传输</b>：锅炉、散煤、机动车、工业　· <b>臭氧（O₃）为主 → 要同时控 NOx 和 VOCs</b>，而且主要集中在<b>午后</b></p>
+    <div class="mini">💡 <b>打个比方</b>：<b>先看化验单是哪项指标高，再决定吃什么药。</b>不看指标就乱开药，钱花了病没好。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>第三步：看时段，别全天平均使劲</h4>
+    <p><span class="lb2">怎么看</span>：把一天 24 小时的数据摊开看形态。· <b>夜间颗粒物明显高</b> → 查夜间施工、大货车、偷排　· <b>午后臭氧高</b> → 查 VOCs 排放</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>不是全天巡逻，而是在案发时间段蹲点。</b>人力有限的时候，这就决定了你抓不抓得到。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>第四步：看风向，直接去上风向查</h4>
+    <p><span class="lb2">怎么做</span>：出问题的时候，先看当时风从哪个方向吹来，<b>直接去上风向排查</b>。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>闻到烟味先看烟从哪儿飘来，而不是满屋子翻。</b>这一步能省一半力气。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>第五步：重污染天气，按应急清单停产限产</h4>
+    <p><span class="lb">为什么</span>：<b>这是法定的，也是最有效的。</b>预警期间按政府公布的应急减排清单执行，完全合规。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>这是「正规军」的办法</b> —— 不用偷偷摸摸，效果还比偷偷摸摸好得多。</div>
+  </div></div>
+
+  <div class="it"><span class="cb"></span><div class="bd">
+    <h4>第六步：把站点周边收拾干净 + 盯住重点企业</h4>
+    <p><span class="lb2">微环境整治</span>：裸土覆盖、道路硬化、绿化改造。<b>PM10 为主的时候，这一项效果比想象中大。</b></p>
+    <p><span class="lb2">重点源监控</span>：用电监控、工况监控、门禁 —— <b>用数据盯住重点企业</b>，谁在生产、谁在偷排，一看便知。</p>
+    <div class="mini">💡 <b>打个比方</b>：<b>前者是把自家门口扫干净，后者是给重点户装上电表。</b>一个管面子，一个管里子。</div>
+  </div></div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 10 页 / 共 11 页</span></div>
+</div>
+
+<!-- ================= 11 附 ================= -->
+<div class="page">
+  <div class="phead"><span>附 · 依据来源与使用说明</span><span>第 11 页 / 共 11 页</span></div>
+  <div class="sec-h"><span class="bar"></span><h2>依据来源与使用说明</h2></div>
+
+  <div class="box" style="border-left-color:var(--green)">
+    <h4>怎么用这份清单</h4>
+    <p>· <b>红线（P4）</b>建议打印上墙，组织学习并签到留痕。<br>
+       · <b>一、二、三（P5–P7）</b>是日常动作，建议做成月度自查表，每月过一次。<br>
+       · <b>四（P8）</b>在签订或续签运维合同时对照检查。<br>
+       · <b>五（P9）</b>在遇到「数据不好看、有人提议动手」的时候，先翻到这一页。<br>
+       · <b>六（P10）</b>是每天判断方向用的，可配合日常巡查台账使用。</p>
+  </div>
+
+  <div class="box" style="border-left-color:var(--green)">
+    <h4>主要依据</h4>
+    <p>· <b>《生态环境监测条例》</b>（国务院令第 820 号，2025 年 10 月 31 日公布，<b>2026 年 1 月 1 日起施行</b>）第 12、13、19、40、41 条<br>
+       · 《中华人民共和国刑法》第 286 条（破坏计算机信息系统罪）<br>
+       · 《公职人员政务处分法》第 14 条<br>
+       · 生态环境部《关于近期部分城市环境空气质量自动监测站点受到喷淋干扰有关情况的通报》（2017-12-29）<br>
+       · 生态环境部《关于部分城市环境空气质量自动监测站点受到人为干扰有关情况的通报》（2018-03-28）<br>
+       · 江苏省生态环境厅通报（2021 年上半年）<br>
+       · 平顶山市纪委监委通报 · 财新网报道（2021-08-13）</p>
+  </div>
+
+  <div class="box" style="border-left-color:var(--green)">
+    <h4>关于文中案例</h4>
+    <p>正文提到的案例均来自上述公开通报或媒体报道。<b>为避免指向具体个人，部分案例只写了情节、未写全名。</b><br>本清单为<b>演示版，已脱敏</b>：人名、地名、数据均为示例虚构，仅供学习交流，不作为执法依据。</p>
+  </div>
+
+  <div class="rl-wrap" style="border-color:#e2a79f">
+    <p style="font-size:9.6pt;color:#7a3d36;line-height:1.75">
+      <b>提醒</b>：这份清单是<b>合规管理参考，不构成法律意见</b>。具体事项请以主管部门现行规定为准。
+      数据口径以本地生态环境部门发布的实时数据为准。
+    </p>
+  </div>
+
+  <div class="final" style="margin-top:6mm">
+    <h3>最后一句</h3>
+    <p>上面这些路，共同点是<b>都要走程序、留证据、花时间</b>。歪路的吸引力就在于「快」——<br>
+       但歪路的价格是：<b>判刑 + 开除公职 + 城市考核一票否决 + 全市背锅。</b></p>
+  </div>
+
+  <div class="pfoot"><span>空气站点 · 合规防干扰自查清单</span><span>第 11 页 / 共 11 页</span></div>
+</div>
+
+</body>
+</html>
