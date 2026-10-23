@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>乡镇大气工作助手</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127793;</text></svg>">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background:#f2f4f7; color:#2a2a2a; line-height:1.6;
+    padding-bottom:80px;
+  }
+  /* 顶部 */
+  .header {
+    background:#1d5aa0; color:#fff; padding:20px 16px 16px;
+  }
+  .header h1 { font-size:19px; font-weight:700; letter-spacing:.5px; }
+  .header .sub { font-size:12px; opacity:.8; margin-top:4px; }
+  .header .date { font-size:12px; opacity:.7; margin-top:8px; }
+
+  /* Tab 导航 */
+  .tabs {
+    position:fixed; bottom:0; left:0; right:0; z-index:100;
+    background:#fff; border-top:1px solid #e2e6ec;
+    display:flex; padding:6px 0 calc(6px + env(safe-area-inset-bottom));
+  }
+  .tab {
+    flex:1; text-align:center; padding:6px 0; cursor:pointer;
+    color:#888; font-size:11px;
+  }
+  .tab svg { width:22px; height:22px; margin:0 auto 2px; display:block; stroke:#888; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .tab.active { color:#1d5aa0; }
+  .tab.active svg { stroke:#1d5aa0; }
+
+  /* 视图 */
+  .view { display:none; padding:16px; }
+  .view.active { display:block; }
+
+  .card {
+    background:#fff; border-radius:12px; padding:16px; margin-bottom:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+  }
+  .card h2 {
+    font-size:15px; color:#1d5aa0; margin-bottom:12px;
+    padding-left:10px; border-left:3px solid #1d5aa0;
+  }
+  .field { margin-bottom:12px; }
+  .field label { display:block; font-size:13px; color:#555; margin-bottom:4px; }
+  .field input, .field select, .field textarea {
+    width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;
+    font-size:15px; background:#f6f9fd; font-family:inherit;
+  }
+  .field textarea { resize:vertical; min-height:60px; }
+  .row { display:flex; gap:10px; }
+  .row .field { flex:1; }
+
+  .btn {
+    display:block; width:100%; padding:13px; border:none; border-radius:10px;
+    font-size:15px; font-weight:600; cursor:pointer; text-align:center;
+  }
+  .btn-primary { background:#1d5aa0; color:#fff; }
+  .btn-primary:active { background:#123a6d; }
+  .btn-copy { background:#dfe9f7; color:#1d5aa0; margin-top:8px; }
+
+  .output {
+    background:#f4f8fd; border:1px dashed #c3d4ea; border-radius:8px;
+    padding:12px; margin-top:12px; font-size:14px; line-height:1.7;
+    white-space:pre-wrap; display:none;
+  }
+  .output.show { display:block; }
+
+  /* Checklist */
+  .check-item {
+    display:flex; align-items:flex-start; padding:12px;
+    border-bottom:1px solid #eef1f5; cursor:pointer;
+  }
+  .check-item:last-child { border-bottom:none; }
+  .check-box {
+    width:22px; height:22px; border:2px solid #bbb; border-radius:6px;
+    margin-right:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    transition:all .15s; margin-top:1px;
+  }
+  .check-item.done .check-box { background:#1d5aa0; border-color:#1d5aa0; }
+  .check-item.done .check-box::after {
+    content:""; width:6px; height:11px; border:solid #fff; border-width:0 2px 2px 0;
+    transform:rotate(45deg); margin-top:-2px;
+  }
+  .check-text { flex:1; font-size:14px; }
+  .check-item.done .check-text { color:#999; text-decoration:line-through; }
+  .check-hint { font-size:12px; color:#888; margin-top:2px; }
+
+  /* 高值应急步骤 */
+  .step {
+    display:flex; margin-bottom:14px;
+  }
+  .step-num {
+    width:28px; height:28px; border-radius:50%; background:#d97706; color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:14px;
+    font-weight:700; flex-shrink:0; margin-right:12px;
+  }
+  .step-body { flex:1; }
+  .step-body h3 { font-size:14px; margin-bottom:4px; }
+  .step-body p { font-size:13px; color:#666; }
+
+  /* 上风向罗盘 */
+  .compass-wrap { text-align:center; padding:10px 0; }
+  .compass {
+    width:180px; height:180px; border-radius:50%; margin:0 auto;
+    border:2px solid #ddd; position:relative; background:#f6f9fd;
+  }
+  .compass .dir {
+    position:absolute; font-size:11px; color:#888; font-weight:600;
+  }
+  .compass .arrow {
+    position:absolute; top:50%; left:50%; width:2px; height:70px;
+    background:#d97706; transform-origin:bottom center;
+    transform:translate(-50%,-100deg); transition:transform .3s;
+  }
+  .compass .arrow::after {
+    content:""; position:absolute; top:-6px; left:-5px;
+    border-left:6px solid transparent; border-right:6px solid transparent;
+    border-bottom:10px solid #d97706;
+  }
+  .wind-result {
+    margin-top:12px; padding:10px; background:#e8f0fb; border-radius:8px;
+    font-size:13px; color:#123a6d; display:none;
+  }
+  .wind-result.show { display:block; }
+
+  .tag {
+    display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px;
+    margin-right:4px; margin-bottom:4px;
+  }
+  .tag-green { background:#e8f0fb; color:#1d5aa0; }
+  .tag-orange { background:#fce8d5; color:#b45309; }
+
+  .empty-tip { text-align:center; color:#aaa; font-size:12px; padding:20px; }
+
+  /* 打印 */
+  @media print {
+    .tabs, .btn, .disclaimer { display:none; }
+    body { padding-bottom:0; background:#fff; }
+    .view { display:none !important; padding:0; }
+    body.print-log #view-log { display:block !important; }
+    body.print-gj #view-gj { display:block !important; }
+    .card { box-shadow:none; border:1px solid #ddd; }
+  }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+
+<div class="header">
+  <h1>乡镇大气工作助手 <span style="font-size:11px;background:#ffd166;color:#1d5aa0;border-radius:10px;padding:2px 8px;vertical-align:middle;">演示版·已脱敏</span></h1>
+  <div class="sub">每日早报 · 高值应急 · 履职台账 · 秋冬攻坚</div>
+  <div class="date" id="todayStr"></div>
+</div>
+<div style="background:#fff8e1;border-bottom:1px solid #f0d060;color:#7a5c00;font-size:12px;line-height:1.7;padding:10px 16px;">⚠️ 本工具为<strong>演示版</strong>：所有数据、案例均为示例虚构，不含任何真实监测站点数据，不涉及真实单位与人员信息。</div>
+
+<!-- ============ 视图：早报生成 ============ -->
+<div class="view active" id="view-brief">
+  <div class="card">
+    <h2>今日早报生成</h2>
+    <div class="field">
+      <label>本乡镇站 AQI</label>
+      <input type="number" id="b-aqi" placeholder="如 82">
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>首要污染物</label>
+        <select id="b-pri">
+          <option value="PM10">PM10（颗粒物）</option>
+          <option value="PM2.5">PM2.5（细颗粒物）</option>
+          <option value="O3">臭氧 O₃</option>
+          <option value="—">无（优）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>当天风向</label>
+        <select id="b-wind">
+          <option value="北风">北风</option>
+          <option value="东北风">东北风</option>
+          <option value="东风">东风</option>
+          <option value="东南风">东南风</option>
+          <option value="南风">南风</option>
+          <option value="西南风">西南风</option>
+          <option value="西风">西风</option>
+          <option value="西北风">西北风</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>上风向邻县/邻市（手动填写）</label>
+      <input type="text" id="b-upwind" placeholder="如：西北方向某县">
+    </div>
+    <div class="field">
+      <label>周边有无火点 / 异常</label>
+      <select id="b-fire">
+        <option value="无">未发现火点</option>
+        <option value="有">上风向邻县见火点</option>
+        <option value="辖区内">辖区内发现火点，已处置</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="genBrief()">生成早报</button>
+    <div class="output" id="b-output"></div>
+    <button class="btn btn-copy" onclick="copyText('b-output')">复制早报文字</button>
+  </div>
+
+  <div class="card">
+    <h2>每日必看四件事</h2>
+    <div style="font-size:14px; line-height:2;">
+      <span class="tag tag-green">本乡 AQI</span>
+      <span class="tag tag-green">上风向邻县</span>
+      <span class="tag tag-orange">卫星火点</span>
+      <span class="tag tag-orange">当日风向风速</span>
+    </div>
+    <p style="font-size:13px;color:#666;margin-top:10px;">
+      每天 7:30 前花五分钟核对以上四项，当天要不要重点盯工地、安排洒水、提前巡查，心里就有数了。
+    </p>
+  </div>
+</div>
+
+<!-- ============ 视图：高值应急 ============ -->
+<div class="view" id="view-emerg">
+  <div class="card">
+    <h2>高值应急六步</h2>
+    <p style="font-size:13px;color:#888;margin-bottom:14px;">
+      接到县分局电话或发现本站 AQI 异常升高时，按以下步骤对照执行。
+    </p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>先看风向，判断本地还是外来</h3>
+        <p>查当天风向风速。若上风向邻县/邻市 AQI 更高或有火点，高值大概率是输送输入，记录清楚方向。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>5 分钟内圈辖区内重点源</h3>
+        <p>本站 5 公里内：在建工地是否停工苫盖、主干道有无扬尘、裸地堆场是否覆盖、有无露天焚烧痕迹。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>立即安排洒水和临时管控</h3>
+        <p>重点路段加密洒水频次，责令工地暂停土石方作业，通知巡查队上路。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>现场拍照留痕</h3>
+        <p>对工地、道路、焚烧点现场拍照，记录时间地点处置情况——这就是后续约谈时的履职证据。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>向县分局回复情况</h3>
+        <p>按"上风向背景值 + 本地已采取措施 + 现场照片"三段式回复，不要只说"我们正在查"。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>当晚补记履职台账</h3>
+        <p>把当天处置过程、洒水次数、巡查路线、发现问题全部记入台账，归档备查。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>上风向速查</h2>
+    <div class="field">
+      <label>今天什么风？</label>
+      <select id="w-dir" onchange="showWind()">
+        <option value="0">北风（北面上风向）</option>
+        <option value="45">东北风（东北面上风向）</option>
+        <option value="90">东风（东面上风向）</option>
+        <option value="135">东南风（东南面上风向）</option>
+        <option value="180">南风（南面上风向）</option>
+        <option value="225">西南风（西南面上风向）</option>
+        <option value="270">西风（西面上风向）</option>
+        <option value="315">西北风（西北面上风向）</option>
+      </select>
+    </div>
+    <div class="compass-wrap">
+      <div class="compass">
+        <div class="dir" style="top:6px;left:50%;transform:translateX(-50%);">北</div>
+        <div class="dir" style="bottom:6px;left:50%;transform:translateX(-50%);">南</div>
+        <div class="dir" style="left:6px;top:50%;transform:translateY(-50%);">西</div>
+        <div class="dir" style="right:6px;top:50%;transform:translateY(-50%);">东</div>
+        <div class="arrow" id="wind-arrow" style="transform:translate(-50%,-100%) rotate(0deg);"></div>
+      </div>
+    </div>
+    <div class="wind-result" id="wind-result"></div>
+  </div>
+
+  <div class="card">
+    <h2>重污染天气分级响应</h2>
+    <div style="font-size:13px;line-height:1.9;">
+      <p><span class="tag tag-orange">黄色预警</span>发布后 <b>4 小时</b>内：通知减排清单企业启动Ⅲ级响应；工地土石方停工；加密道路保洁。</p>
+      <p><span class="tag tag-orange">橙色预警</span>发布后 <b>2 小时</b>内：启动Ⅱ级响应；涉气企业限产20%以上；渣土车禁行；每日上报落实情况。</p>
+      <p><span class="tag tag-green">红色预警</span><b>立即</b>：启动Ⅰ级响应；重点企业停产；主要领导带班值守。</p>
+    </div>
+    <p style="font-size:12px;color:#888;margin-top:10px;">留痕要求：通知记录、现场核查照片、落实情况日报全部归档——这是考核"响应速度"的依据，也是免责证据。</p>
+  </div>
+</div>
+
+<!-- ============ 视图：履职台账 ============ -->
+<div class="view" id="view-log">
+  <div class="card">
+    <h2>今日履职记录</h2>
+    <div class="check-item" data-key="gongdi">
+      <div class="check-box"></div>
+      <div class="check-text">辖区在建工地全部停工苫盖
+        <div class="check-hint">如有未停工的，下方备注</div>
+      </div>
+    </div>
+    <div class="check-item" data-key="sashui">
+      <div class="check-box"></div>
+      <div class="check-text">主干道洒水保洁已完成
+        <div class="check-hint">记录洒水次数</div>
+      </div>
+    </div>
+    <div class="check-item" data-key="xuncha">
+      <div class="check-box"></div>
+      <div class="check-text">今日巡查已完成</div>
+    </div>
+    <div class="check-item" data-key="shaolu">
+      <div class="check-box"></div>
+      <div class="check-text">发现露天焚烧/扬尘点，已处置</div>
+    </div>
+    <div class="field">
+      <label>今日风向风速</label>
+      <input type="text" id="l-wind" placeholder="如：西南风 2 级">
+    </div>
+    <div class="field">
+      <label>备注（处置情况、特殊事件）</label>
+      <textarea id="l-note" placeholder="如：XX村东南角发现焚烧杂草一处，已扑灭；XX路洒水3次"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="genLog()">生成今日台账文字</button>
+    <div class="output" id="l-output"></div>
+    <button class="btn btn-copy" onclick="copyText('l-output')">复制台账记录</button>
+    <button class="btn btn-copy" onclick="printView('log')">🖨️ 打印台账</button>
+  </div>
+
+  <div class="card">
+    <h2>为什么要记这本账</h2>
+    <p style="font-size:13px;color:#555;">
+      被约谈时，最有力的辩护不是"不是我们排的"，而是"我们今天做了什么"。
+      这本台账就是依法履职的书面证据，每天三分钟，关键时刻能顶上大用。
+    </p>
+  </div>
+</div>
+
+<!-- ============ 视图：秋冬攻坚 ============ -->
+<div class="view" id="view-gj">
+  <div class="card">
+    <h2>秋冬管控时间轴（10月→次年3月）</h2>
+    <div style="font-size:14px;line-height:2;">
+      <p><b>10月 · 秸秆禁烧攻坚</b><br><span class="tag tag-orange">秋收秸秆</span><span class="tag tag-orange">蓝天卫士值守</span><br><span style="font-size:13px;color:#666;">网格员包地块，火点"冒烟就查"，10分钟内现场核查。</span></p>
+      <p><b>11月 · 供暖季开启</b><br><span class="tag tag-green">11月15日供暖</span><span class="tag tag-green">散煤排查</span><br><span style="font-size:13px;color:#666;">散煤台账"回头看"，防"改而不用、用而复燃"。</span></p>
+      <p><b>12月—1月 · 重污染高发</b><br><span class="tag tag-orange">静稳逆温</span><span class="tag tag-orange">联防联控</span><br><span style="font-size:13px;color:#666;">全年最难的两个月，预警响应速度决定排名。</span></p>
+      <p><b>2月 · 春节禁燃禁放</b><br><span class="tag tag-green">烟花爆竹</span><br><span style="font-size:13px;color:#666;">除夕、初一、十五三个节点不断档。</span></p>
+      <p><b>3月 · 收官总结</b><br><span style="font-size:13px;color:#666;">供暖季结束，汇总台账、复盘短板。</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>三句话记住重点</h2>
+    <p style="font-size:14px;line-height:2;">
+      <b>10月看住火</b>——秸秆一烧，全月白干。<br>
+      <b>11月看住煤</b>——散煤复燃是供暖季最大变量。<br>
+      <b>12—1月看住天</b>——预警2小时内必须响应。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>工作清单（六大领域）</h2>
+    <div style="font-size:13px;line-height:1.9;color:#444;">
+      <p><b>🔥 秸秆禁烧：</b>网格包保到户、承诺书100%、火点10分钟核查、离田台账、处罚公示1起。</p>
+      <p><b>🏠 散煤治理：</b>用户台账动态更新、清洁取暖"回头看"、取缔无证售煤点、每周巡查。</p>
+      <p><b>🚧 扬尘管控：</b>工地"六个百分之百"核查、渣土车密闭抽查、主干道机扫洒水加密。</p>
+      <p><b>🏭 工业源：</b>涉气企业一企一档、错峰/减排清单签字确认、预警2小时通知到位。</p>
+      <p><b>🍜 生活源：</b>餐饮油烟抽查、露天烧烤取缔、垃圾焚烧巡查、春节禁燃禁放值守。</p>
+      <p><b>📣 应急响应：</b>预警接收AB角、措施清单到企业到工地、每日上报、留痕归档。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>自查打分（20项 × 5分）</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:8px;">逐项打勾，自动计分并指出短板。</p>
+    <div id="gj-qlist"></div>
+    <div class="output" id="gj-output"></div>
+    <button class="btn btn-primary" onclick="gjCalc(true)">查看得分与短板</button>
+    <button class="btn btn-copy" onclick="printView('gj')">🖨️ 打印自查结果</button>
+    <button class="btn btn-copy" onclick="gjReset()">重新自查</button>
+  </div>
+</div>
+
+<!-- ============ 底部 Tab ============ -->
+<div class="tabs">
+  <div class="tab active" data-view="brief" onclick="switchView('brief')">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+    早报
+  </div>
+  <div class="tab" data-view="emerg" onclick="switchView('emerg')">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 20h20L12 2zM12 9v5M12 17h.01"/></svg>
+    应急
+  </div>
+  <div class="tab" data-view="log" onclick="switchView('log')">
+    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    台账
+  </div>
+  <div class="tab" data-view="gj" onclick="switchView('gj')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    攻坚
+  </div>
+</div>
+
+<script>
+// 日期
+const now = new Date();
+const week = ['日','一','二','三','四','五','六'][now.getDay()];
+document.getElementById('todayStr').textContent =
+  `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${week}`;
+
+// Tab 切换
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// 早报生成
+function genBrief() {
+  const aqiRaw = document.getElementById('b-aqi').value.trim();
+  if (aqiRaw === '' || isNaN(Number(aqiRaw))) {
+    alert('请先填写本乡镇站 AQI');
+    document.getElementById('b-aqi').focus();
+    return;
+  }
+  const aqi = aqiRaw;
+  const pri = document.getElementById('b-pri').value;
+  const wind = document.getElementById('b-wind').value;
+  const upwind = document.getElementById('b-upwind').value || '（待核）';
+  const fire = document.getElementById('b-fire').value;
+
+  let level = '优';
+  const aqiNum = parseInt(aqi);
+  if (aqiNum > 100) level = '轻度污染';
+  else if (aqiNum > 50) level = '良';
+
+  let fireTxt = '周边卫星火点：暂未发现';
+  if (fire === '有') fireTxt = '周边卫星火点：上风向邻县见火点，需重点关注输送影响';
+  if (fire === '辖区内') fireTxt = '周边卫星火点：辖区内发现火点，已现场处置';
+
+  const txt = `【${now.getMonth()+1}月${now.getDate()}日 大气早报】
+
+本站 AQI：${aqi}（${level}），首要污染物：${pri}。
+当日风向：${wind}，上风向方向为：${upwind}。
+${fireTxt}。
+
+今日关注重点：
+1. 紧盯上风向邻县传输影响；
+2. 辖区工地停工苫盖、道路洒水保洁已按要求落实；
+3. 巡查队按重点时段上路，发现焚烧扬尘即时处置。
+
+（数据来源：国控/省控实时值，未经审核，正式数据以生态环境部门发布为准。）`;
+
+  const out = document.getElementById('b-output');
+  out.textContent = txt;
+  out.classList.add('show');
+}
+
+// 上风向罗盘
+function showWind() {
+  const deg = document.getElementById('w-dir').value;
+  document.getElementById('wind-arrow').style.transform =
+    `translate(-50%,-100%) rotate(${deg}deg)`;
+  const dirMap = {
+    '0':'正北方向', '45':'东北方向', '90':'正东方向', '135':'东南方向',
+    '180':'正南方向', '225':'西南方向', '270':'正西方向', '315':'西北方向'
+  };
+  const r = document.getElementById('wind-result');
+  r.innerHTML = `上风向在本站<strong>${dirMap[deg]}</strong>，重点盯这个方向的邻县/邻市站点数据和火点。`;
+  r.classList.add('show');
+}
+showWind();
+
+// Checklist（记忆勾选状态，按日期隔离）
+const dayKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+document.querySelectorAll('.check-item').forEach(item => {
+  const key = 'check_' + dayKey + '_' + item.dataset.key;
+  if (localStorage.getItem(key) === '1') item.classList.add('done');
+  item.addEventListener('click', () => {
+    item.classList.toggle('done');
+    localStorage.setItem(key, item.classList.contains('done') ? '1' : '0');
+  });
+});
+
+// 台账生成
+function genLog() {
+  const checked = k => document.querySelector(`.check-item[data-key="${k}"]`).classList.contains('done');
+  const wind = document.getElementById('l-wind').value || '（待填）';
+  const note = document.getElementById('l-note').value || '无';
+
+  const items = [];
+  if (checked('gongdi')) items.push('辖区在建工地均已按要求停工苫盖');
+  else items.push('【注意】工地停工苫盖情况未确认，请现场核实');
+  if (checked('sashui')) items.push('主干道洒水保洁已完成');
+  if (checked('xuncha')) items.push('今日辖区巡查已按路线完成');
+  if (checked('shaolu')) items.push('今日发现露天焚烧/扬尘点一处，已现场处置');
+  else items.push('今日巡查未发现新增露天焚烧点');
+
+  const txt = `${now.getMonth()+1}月${now.getDate()}日 履职记录
+
+天气与扩散条件：${wind}。
+本日工作情况：
+${items.map((t,i)=>`${i+1}. ${t}；`).join('\n')}
+其他事项：${note}。
+
+记录人：________  审核人：________`;
+
+  const out = document.getElementById('l-output');
+  out.textContent = txt;
+  out.classList.add('show');
+}
+
+// ===== 秋冬攻坚：自查打分 =====
+const GJ_Q=[
+"禁烧网格包保到户，承诺书签订率100%",
+"火点10分钟内核查机制，有值班表可查",
+"秸秆离田台账完整（已离田/未离田分别建档）",
+"本年度有1起以上禁烧处罚公示案例",
+"散煤用户台账动态更新",
+"清洁取暖「回头看」完成，复燃户数为零",
+"无证售煤网点取缔完毕",
+"工地「六个百分之百」逐一核查有记录",
+"渣土车密闭运输抽查有台账",
+"涉气企业一企一档清单完整",
+"错峰生产/应急减排清单企业签字确认",
+"预警2小时内通知到企业有记录",
+"预警接收AB角，24小时不断线",
+"分级响应措施清单到企业到工地",
+"响应期间每日上报落实情况",
+"餐饮油烟净化设施抽查覆盖率达标",
+"露天烧烤/垃圾焚烧取缔有记录",
+"春节禁燃禁放三个节点值守到位",
+"每次预警留痕归档（通知+照片+日报）",
+"秋冬攻坚总结复盘按时上报"];
+const gjList=document.getElementById('gj-qlist');
+GJ_Q.forEach(t=>{
+  const d=document.createElement('div');
+  d.className='check-item';
+  d.innerHTML=`<div class="check-box"></div><div class="check-text">${t}</div>`;
+  d.addEventListener('click',()=>d.classList.toggle('done'));
+  gjList.appendChild(d);
+});
+function gjCalc(show){
+  const items=[...gjList.querySelectorAll('.check-item')];
+  const n=items.filter(x=>x.classList.contains('done')).length;
+  const s=n*5;
+  const grade=s>=90?'优秀':s>=75?'良好':s>=60?'一般':'需重点加强';
+  const weak=items.filter(x=>!x.classList.contains('done')).map(x=>x.querySelector('.check-text').textContent);
+  const out=document.getElementById('gj-output');
+  out.innerHTML=`自查得分：${s} / 100（${grade}）\n`+(weak.length?`\n未得分项（短板）：\n${weak.map((t,i)=>`${i+1}. ${t}`).join('\n')}`:`\n全部达标，继续保持！`);
+  out.classList.add('show');
+  if(show) out.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function gjReset(){
+  gjList.querySelectorAll('.check-item').forEach(x=>x.classList.remove('done'));
+  document.getElementById('gj-output').classList.remove('show');
+}
+
+// 打印指定视图
+function printView(v){
+  document.body.classList.add('print-'+v);
+  window.print();
+}
+window.addEventListener('afterprint',()=>document.body.classList.remove('print-log','print-gj'));
+
+// 复制
+function copyText(id) {
+  const txt = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    alert('已复制到剪贴板，可直接粘贴到微信');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    alert('已复制到剪贴板');
+  });
+}
+</script>
+</body>
+</html>
