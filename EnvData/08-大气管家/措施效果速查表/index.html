@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>附录 · 措施效果速查表</title>
+<style>
+  @page { size: A4; margin: 0; }
+  *{ margin:0; padding:0; box-sizing:border-box;
+     -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  :root{
+    --ink:#16211c; --ink2:#4a5a52; --ink3:#7c8b83;
+    --green:#1a5c3a; --green2:#2f8a5e; --greenbg:#eef6f1;
+    --red:#b8342a; --redbg:#fdf0ee;
+    --amber:#9a6a12; --amberbg:#fdf6e8;
+    --blue:#1f5f8b; --bluebg:#eef4f9;
+    --line:#d5ded8; --line2:#e8eeea;
+  }
+  body{ font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;
+        color:var(--ink); background:#fff; font-size:10.2pt; line-height:1.62; }
+  .page{ width:210mm; height:297mm; padding:15mm 15mm 13mm; position:relative;
+         overflow:hidden; page-break-after:always; background:#fff; }
+  .page:last-child{ page-break-after:auto; }
+  .pfoot{ position:absolute; left:15mm; right:15mm; bottom:6.5mm;
+          border-top:.5pt solid var(--line); padding-top:2mm;
+          display:flex; justify-content:space-between;
+          font-size:7.6pt; color:var(--ink3); }
+  .phead{ position:absolute; top:6.5mm; left:15mm; right:15mm;
+          display:flex; justify-content:space-between;
+          font-size:7.6pt; color:var(--ink3); letter-spacing:.06em; }
+  .sec-h{ display:flex; align-items:baseline; gap:3mm; margin:0 0 3.5mm; }
+  .sec-h .bar{ width:1.4mm; height:6.4mm; background:var(--green); border-radius:1mm; }
+  .sec-h h2{ font-size:15pt; font-weight:800; letter-spacing:-.2pt; }
+  .sec-d{ font-size:9.4pt; color:var(--ink2); margin:0 0 4mm 4.4mm; line-height:1.7; }
+  .sec-d b{ color:var(--ink); }
+  table{ width:100%; border-collapse:collapse; font-size:9.2pt; margin-bottom:4mm; }
+  th{ background:var(--green); color:#fff; padding:2.6mm 2.4mm; text-align:left;
+      font-size:9.4pt; }
+  td{ border:.5pt solid var(--line); padding:2.4mm; vertical-align:top; line-height:1.6; }
+  tr:nth-child(even) td{ background:#fbfdfc; }
+  td b{ color:var(--ink); }
+  td .src{ display:block; font-size:8.2pt; color:var(--ink3); margin-top:1mm; }
+  td .warn-t{ color:var(--amber); font-weight:700; }
+  .box{ border:.6pt solid var(--line); border-left:1.4mm solid var(--blue);
+        border-radius:0 2.5mm 2.5mm 0; padding:4.4mm 5.4mm; margin-bottom:3.6mm;
+        background:#fcfdfe; }
+  .box h4{ font-size:11.4pt; font-weight:700; margin-bottom:2.6mm; color:var(--blue); }
+  .box p{ font-size:9.6pt; color:var(--ink2); line-height:1.72; margin-bottom:1.8mm; }
+  .box p:last-child{ margin-bottom:0; }
+  .box b{ color:var(--ink); }
+  .box.green{ border-left-color:var(--green); }
+  .box.green h4{ color:var(--green); }
+  .box.red{ border-left-color:var(--red); }
+  .box.red h4{ color:var(--red); }
+  .mini{ background:var(--greenbg); border-left:1mm solid var(--green2);
+         border-radius:0 1.8mm 1.8mm 0; padding:1.5mm 3.2mm; margin-top:1.2mm;
+         font-size:9pt; color:#25543c; line-height:1.58; }
+  .mini b{ color:#17452f; }
+  .use{ display:flex; gap:3mm; padding:2.4mm 0; border-bottom:.5pt solid var(--line2); }
+  .use:last-child{ border-bottom:none; }
+  .use .n{ flex:0 0 8mm; height:8mm; border-radius:2.2mm; background:var(--greenbg);
+           color:var(--green); font-weight:800; font-size:11pt;
+           display:flex; align-items:center; justify-content:center; }
+  .use .bd{ flex:1; }
+  .use h4{ font-size:10.5pt; font-weight:700; margin-bottom:1mm; }
+  .use p{ font-size:9.4pt; color:var(--ink2); line-height:1.64; }
+  .use b{ color:var(--ink); }
+  .final{ background:var(--green); color:#fff; border-radius:2.5mm;
+          padding:5.4mm 6.4mm; margin-top:4mm; }
+  .final h3{ font-size:11.4pt; font-weight:800; margin-bottom:2.6mm; }
+  .final p{ font-size:9.8pt; line-height:1.75; color:#dff0e7; }
+  .final b{ color:#fff; }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+
+<!-- ================= P1 总表 ================= -->
+<div class="page">
+  <div class="phead"><span>附录 · 措施效果速查表</span><span>第 1 页 / 共 2 页</span></div>
+  <div class="sec-h"><span class="bar"></span><h2>措施效果速查表</h2></div>
+  <p class="sec-d">跟乡镇谈措施、写方案时，直接引用这张表。<b>所有数字都有出处</b>，出处等级见最后一列。</p>
+
+  <table>
+    <tr><th style="width:16%">措施</th><th style="width:26%">实测效果</th><th style="width:30%">有效条件 / 备注</th><th style="width:28%">数据来源</th></tr>
+    <tr>
+      <td><b>道路湿式保洁</b></td>
+      <td>保洁后1h内扬尘控制效率 <b>23%~47%</b>；1~2h：20%~40%；2~2.5h：5%~27%</td>
+      <td><b>有效期约2小时</b>，3小时后基本恢复原状；冬季减洒水量效果打折</td>
+      <td>李冬等《环境科学研究》2022，<b>郑州市实测</b><span class="src">期刊论文 · 硬数据</span></td>
+    </tr>
+    <tr>
+      <td><b>混合保洁作业</b></td>
+      <td>1h内控制效率 <b>37%~51%</b>（各类工艺中最高）</td>
+      <td>湿式+干式配合，效率最高的保洁方式</td>
+      <td>同上<span class="src">期刊论文 · 硬数据</span></td>
+    </tr>
+    <tr>
+      <td><b>干式保洁</b></td>
+      <td>控制效率仅 <b>5%~19%</b></td>
+      <td>只扫不洒，基本等于做样子</td>
+      <td>同上<span class="src">期刊论文 · 硬数据</span></td>
+    </tr>
+    <tr>
+      <td><b>施工扬尘管控</b></td>
+      <td>产生系数：市政（拆迁）<b>1.64</b>、建筑施工 <b>1.01</b>（千克/平方米·月）</td>
+      <td>围挡、覆盖、冲洗、洒水、抑制剂各有对应削减系数，做方案时直接引用</td>
+      <td>施工扬尘产生·削减系数技术文件<span class="src">技术文件 · 可引用</span></td>
+    </tr>
+    <tr>
+      <td><b>秸秆严控焚烧</b></td>
+      <td>试点地区 PM2.5 浓度降幅达 <b>30%</b></td>
+      <td>分区管理+AI筛焚烧窗口+报备制；<span class="warn-t">该数为自媒体转述，引用前建议核实原文</span></td>
+      <td>湖南、安徽2023年试点<span class="src">自媒体转述 · 待核实</span></td>
+    </tr>
+    <tr>
+      <td><b>重污染应急减排</b></td>
+      <td>重点企业废气排放降<b>两成以上</b>；柴油货车进出厂降<b>四成以上</b></td>
+      <td>减排清单不打折执行；效果最确定的一招</td>
+      <td>京津冀应急响应实践，2026年期刊论文<span class="src">期刊论文 · 硬数据</span></td>
+    </tr>
+    <tr>
+      <td><b>全国大盘</b></td>
+      <td>2013—2025年 PM2.5 年均浓度降 <b>36%</b>，重污染天数减 <b>68%</b></td>
+      <td>各项措施叠加的结果，说明这套办法整体管用</td>
+      <td>生态环境部<span class="src">官方口径 · 定心丸</span></td>
+    </tr>
+  </table>
+
+  <div class="box red">
+    <h4>⚠️ 口径说明（引用前必读）</h4>
+    <p>表里的数字是<b>「控制效率」</b>（针对扬尘/排放本身），<b>不是「站点浓度下降X%」</b>。从措施到站点读数，中间还隔着<b>扩散条件、背景值、区域传输</b>三道坎。</p>
+    <p>所以跟乡镇只能说：<b>「道路扬尘降30~40%，站点PM10会有明显反应」</b>，不能说「洒水让AQI降30%」。口径严谨，才经得起问。</p>
+  </div>
+
+  <div class="pfoot"><span>附录 · 措施效果速查表</span><span>第 1 页 / 共 2 页</span></div>
+</div>
+
+<!-- ================= P2 怎么用 ================= -->
+<div class="page">
+  <div class="phead"><span>附录 · 措施效果速查表</span><span>第 2 页 / 共 2 页</span></div>
+  <div class="sec-h"><span class="bar"></span><h2>这张表怎么用</h2></div>
+  <p class="sec-d">四个场景，直接拿去用。</p>
+
+  <div class="use"><span class="n">1</span><div class="bd">
+    <h4>跟乡镇谈"为什么要加密洒水"</h4>
+    <p>郑州实测：洒水有效期只有2小时，3小时后回到原点。一天洒2次是做样子，<b>一天4~6次才真有效</b>。拿着论文数据说话，乡镇没法说"我们已经洒过了"。</p>
+  </div></div>
+
+  <div class="use"><span class="n">2</span><div class="bd">
+    <h4>写管控方案、申请经费</h4>
+    <p>施工扬尘产生系数（1.64/1.01）和削减系数是技术文件的数，<b>写进方案就是依据</b>。申请雾炮车、洒水车频次、覆盖材料经费时，附上这张表。</p>
+  </div></div>
+
+  <div class="use"><span class="n">3</span><div class="bd">
+    <h4>秋冬攻坚动员</h4>
+    <p>秸秆试点降30%、应急减排降两成以上——<b>用数字告诉乡镇"这事值得干"</b>，比喊口号管用。</p>
+  </div></div>
+
+  <div class="use"><span class="n">4</span><div class="bd">
+    <h4>应对"降不下来"的质疑</h4>
+    <p>全国PM2.5降36%、重污染天数减68%——<b>大盘证明这套办法整体管用</b>。单个乡镇降不下来，先查归因（本地源还是传输），再查执行（频次够不够），别怀疑方向。</p>
+  </div></div>
+
+  <div class="box green">
+    <h4>📢 时效信息：新国标要来了</h4>
+    <p>2025年12月，生态环境部发布新版《环境空气质量标准》征求意见稿：PM2.5二级<b>年均拟从35收严到25</b>、日均75→50；PM10二级年均50、日均100。</p>
+    <p>标准一收严，乡镇的达标压力更大——<b>这套"真降数"的方法论会更值钱</b>。建议持续跟踪正式稿发布时间。</p>
+    <div class="mini">💡 <b>打个比方</b>：分数线提高了，以前及格的现在可能不及格。<b>早按新线准备的人，到时候不慌。</b></div>
+  </div>
+
+  <div class="box">
+    <h4>数据来源清单</h4>
+    <p>· 李冬等《不同保洁工艺对道路尘负荷与扬尘控制效率差异的影响研究》，《环境科学研究》2022，DOI: 10.13198/j.issn.1001-6929.2022.04.05<br>
+       · 施工扬尘产生、削减系数表（技术文件）<br>
+       · 湖南、安徽秸秆严控焚烧试点报道（自媒体转述，引用前请核实原文）<br>
+       · 《重污染天气应急响应措施的精准化改进》，2026年第5卷第6期<br>
+       · 生态环境部：2013—2025年全国空气质量改善数据<br>
+       · 生态环境部：《环境空气质量标准（征求意见稿）》2025年12月</p>
+  </div>
+
+  <div class="final">
+    <h3>最后一句</h3>
+    <p>这张表的价值不在数字本身，在于<b>每个数字都能说出出处</b>。跟政府客户打交道，<b>有出处的话才站得住</b>——这也是本清单一贯的原则。</p>
+  </div>
+
+  <div class="pfoot"><span>附录 · 措施效果速查表</span><span>第 2 页 / 共 2 页</span></div>
+</div>
+
+</body>
+</html>
