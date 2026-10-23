@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>看天管控 · 县级大气分级对策落地方案</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif; background:#eef1f4; color:#1d2733; }
+  .page { max-width:860px; margin:0 auto; background:#fff; padding:36px 42px 28px; }
+  header { border-bottom:3px solid #0d5c46; padding-bottom:14px; margin-bottom:16px; }
+  .kicker { font-size:13px; letter-spacing:2px; color:#0d5c46; font-weight:700; }
+  h1 { font-size:28px; line-height:1.3; margin:6px 0; }
+  h1 .hl { color:#0d5c46; }
+  .sub { font-size:14px; line-height:1.65; color:#4a5a6a; }
+  h2 { font-size:18px; color:#0d5c46; margin:22px 0 8px; padding-left:9px; border-left:4px solid #0d5c46; }
+  h3 { font-size:15px; color:#123c2e; margin:14px 0 6px; }
+  p, li { font-size:13.5px; line-height:1.7; color:#2c3e50; }
+  ul { padding-left:18px; }
+  li { margin:2px 0; }
+  b.k { color:#0d5c46; }
+  .verdict { background:#123c2e; color:#e8f2ec; border-radius:10px; padding:14px 18px; margin:14px 0; }
+  .verdict .t { font-size:16px; font-weight:800; color:#ffd98a; margin-bottom:5px; }
+  .verdict p { color:#e8f2ec; font-size:13.5px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0 4px; }
+  th, td { border:1px solid #d8e2dc; padding:7px 10px; font-size:12.5px; line-height:1.55; vertical-align:top; text-align:left; }
+  th { background:#0d5c46; color:#fff; font-size:13px; }
+  td.c { text-align:center; white-space:nowrap; }
+  .auto { display:inline-block; background:#0d5c46; color:#fff; font-size:11px; font-weight:700; border-radius:4px; padding:1px 7px; }
+  .semi { display:inline-block; background:#ffe9b8; color:#8a5a12; font-size:11px; font-weight:700; border-radius:4px; padding:1px 7px; }
+  .man { display:inline-block; background:#e8edf1; color:#4a5a6a; font-size:11px; font-weight:700; border-radius:4px; padding:1px 7px; }
+  .cards { display:flex; gap:10px; margin:8px 0; }
+  .card { flex:1; border:1px solid #d8e2dc; border-radius:10px; padding:11px 13px; background:#f7faf8; }
+  .card h3 { margin-top:0; font-size:14px; }
+  .card p, .card li { font-size:12.5px; }
+  .warn { background:#fdf3e7; border:1px solid #f0d9bd; border-radius:8px; padding:10px 14px; margin:8px 0; }
+  .warn p { color:#6b4d1f; font-size:13px; }
+  .ok { background:#eef4f0; border-radius:8px; padding:10px 14px; margin:8px 0; }
+  .ok p { font-size:13px; }
+  footer { margin-top:22px; border-top:1px solid #dde5e0; padding-top:11px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:13px; color:#4a5a6a; }
+  footer .brand { font-weight:700; color:#123c2e; }
+  footer .mail { color:#0d5c46; font-weight:700; }
+  @media (max-width:640px){
+    .page{ padding:22px 16px 18px; }
+    h1{ font-size:23px; }
+    .cards{ flex-direction:column; }
+    th,td{ padding:6px 7px; font-size:12px; }
+  }
+  @media print {
+    body{ background:#fff; }
+    .page{ max-width:none; padding:10mm 12mm; }
+    @page{ size:A4; margin:6mm 0; }
+  }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+<div class="page">
+  <header>
+    <div class="kicker">县级大气服务数字化支持包 · 落地实施方案 v1.0</div>
+    <h1>看天管控：<span class="hl">县级大气分级对策方案</span></h1>
+    <div class="sub">核心思想一句话：<b>风决定大势，人决定名次。</b>县级管控不与天气对抗，而是按气象过程分型、按扩散条件分级，把有限的管控力量集中到边际收益最高的静稳窗口与临界天上；其余时间轻管维持合规底线。本方案给出完整工作流、自动化与人工分工、周版对策的出版节奏，以及可执行性与有效性的诚实评估口径。</div>
+  </header>
+
+  <div class="verdict">
+    <div class="t">三问三答（结论先行）</div>
+    <p>① <b>每周一版详细对策可行吗？</b>可行——但须采用“周计划 + 日订正”两级节奏：周版定一周的过程日历与分级安排，日订正只发一行触发消息修正偏差。纯周版不订正，遇预报误差必失灵。② <b>可执行吗？</b>有条件可执行——关键在触发标准事先由县里签认（预授权）、每镇每日动作不超过 3 条、联动预警期间服从市级统一调度。③ <b>有效吗？</b>对“过程峰值、临界天保良、相对排名”有效且可验证；对“年均浓度包降多少”不承诺——那主要由气象年景与区域趋势决定，本方案用去气象化评估把“天的功劳”和“人的功劳”分开算账。</p>
+  </div>
+
+  <h2>一、方法框架（四层）</h2>
+  <div class="cards">
+    <div class="card"><h3>1 · 过程分型</h3><p>按未来 72 小时形势分四型：<b>静稳积累型</b>（主战场）、<b>区域传输型</b>（不添乱 + 备说明）、<b>大风扬尘型</b>（只管尘源）、<b>扩散良好型</b>（轻管躺平）。夏季另设臭氧版分型（高温强光型等），与秋冬版分开运行。</p></div>
+    <div class="card"><h3>2 · 气象分级</h3><p>按预报风速、边界层高度、通风量与湿度定三档：轻管（合规底线）→ 升档布防（静稳前 48h）→ 满档（静稳中）。升档提前、降档滞后，防反复横跳。</p></div>
+    <div class="card"><h3>3 · 乡镇分型</h3><p>用各乡镇站历史数据按风向分组算“指纹”：传输敏感型 / 局地源主导型 / 扬尘型 / 背景型。指纹分冬夏两版（盛行风反转）。县级过程类型 × 乡镇指纹 = 每镇当日动作。</p></div>
+    <div class="card"><h3>4 · 考核校正</h3><p>乡镇月度考核做气象/传输校正：传输过程中的区域性超标不简单记在乡镇头上，采用绝对值 + 改善率双轨计分，保住奖惩的服人程度与制度信用。</p></div>
+  </div>
+
+  <h2>二、自动化 / 人工分工总表</h2>
+  <p>原则：<b class="k">机器管数据和提醒，人管判断和执行。</b>全流程自动化率约 70%（按工时计），但最关键的升档拍板与现场执行永远保留人工——这既是科学边界（预报是概率不是确定值），也是责任边界（管控措施扰动生产生活，须有人担责）。</p>
+  <table>
+    <tr><th style="width:17%">环节</th><th>内容</th><th style="width:11%">方式</th><th style="width:15%">现状</th></tr>
+    <tr><td>火点监测</td><td>FIRMS 多星抓取、工业热源剔除、全省晨检卡生成</td><td class="c"><span class="auto">全自动</span></td><td>已运行（每日 08:15/08:30，异常才推）</td></tr>
+    <tr><td>气象形势抓取</td><td>逐日/逐时风、边界层高度、湿度、通风量预报入库</td><td class="c"><span class="auto">全自动</span></td><td>可建（公开预报源）</td></tr>
+    <tr><td>过程分型初判</td><td>按规则引擎给四型初判 + 置信度</td><td class="c"><span class="auto">全自动</span></td><td>可建（规则明确）</td></tr>
+    <tr><td>乡镇站数据汇总</td><td>逐时数据清洗、排名、异常（突跳/背离/缺测）标记</td><td class="c"><span class="auto">全自动</span></td><td>依赖县里开放数据接口或定期提供数据包</td></tr>
+    <tr><td>分级触发判定</td><td>对照触发表给出建议档位；生成日订正一行消息</td><td class="c"><span class="auto">全自动</span></td><td>可建（阈值签认后）</td></tr>
+    <tr><td>周版对策成稿</td><td>过程日历、分日分级、乡镇重点名单、动作清单自动成稿约 80%</td><td class="c"><span class="semi">半自动</span></td><td>可建（模板化）</td></tr>
+    <tr><td>乡镇指纹计算</td><td>历史数据风向分组、类型判定、冬夏两版一镇一卡</td><td class="c"><span class="semi">半自动</span></td><td>算法自动，类型认定需人工结合本地源清单复核</td></tr>
+    <tr><td>去气象化归因</td><td>剥离气象影响后的浓度趋势、与邻县对照（双重差分）</td><td class="c"><span class="semi">半自动</span></td><td>算法自动，结论表述人工</td></tr>
+    <tr><td>申诉证据包</td><td>沙尘剔除、传输过程申诉的轨迹/同步数据/卫星图汇编</td><td class="c"><span class="semi">半自动</span></td><td>材料自动汇编，申诉文书与对上沟通人工</td></tr>
+    <tr><td>升/降档拍板</td><td>确认进入或退出满档；与市级联动预警衔接</td><td class="c"><span class="man">人工</span></td><td>县局/驻场专家组，按预授权触发表执行</td></tr>
+    <tr><td>现场执行</td><td>巡查处置、企业错峰协商、工地与道路管控、夜巡</td><td class="c"><span class="man">人工</span></td><td>乡镇网格与驻场团队；系统只派单与留痕</td></tr>
+    <tr><td>会商与对外汇报</td><td>周会商、向上汇报口径、约谈应对材料定稿</td><td class="c"><span class="man">人工</span></td><td>专家定稿，数据图表由系统供</td></tr>
+  </table>
+
+  <h2>三、周版对策方案：可行性与出版规范</h2>
+  <h3>为什么“周”是合适的节奏</h3>
+  <ul>
+    <li>大尺度形势 3–5 天可预报、7 天可看趋势，周版恰好卡在可预报窗口的上限：再短（日版）人力跟不上，再长（月版）形势全变。</li>
+    <li>县乡工作本就以周为调度单位（周例会、周排班），周版能直接进现成的工作节奏，不另造流程。</li>
+    <li>成本账：成稿 80% 自动化后，人工只需复核研判约 1–2 小时/县/周。一名专家 + 一条管线可同时支撑多县——这是本模式区别于“一县驻一个团队”的成本根基。</li>
+  </ul>
+  <h3>周版固定结构（八节，缺一不发）</h3>
+  <table>
+    <tr><th style="width:22%">章节</th><th>内容要点</th><th style="width:11%">方式</th></tr>
+    <tr><td>1. 上周复盘</td><td>预报命中率、上周过程实际走势、措施落实率、去气象化小结（本节决定本方案的信用）</td><td class="c"><span class="semi">半自动</span></td></tr>
+    <tr><td>2. 本周形势总览</td><td>一周天气形势一句话定性 + 置信度分级（高/中/低）</td><td class="c"><span class="semi">半自动</span></td></tr>
+    <tr><td>3. 过程日历</td><td>逐日过程型（静稳/传输/扬尘/扩散）与预计强度，标注不确定性最大的两天</td><td class="c"><span class="semi">半自动</span></td></tr>
+    <tr><td>4. 分日分级表</td><td>逐日建议档位与升/降档时点；与市级预警的衔接说明（联动期间以市级为准）</td><td class="c"><span class="semi">半自动</span></td></tr>
+    <tr><td>5. 乡镇重点名单</td><td>按指纹点出本过程每类乡镇各盯哪几个、盯什么源；每镇动作 ≤3 条</td><td class="c"><span class="semi">半自动</span></td></tr>
+    <tr><td>6. 分源动作清单</td><td>工业错峰、工地、道路、禁烧、餐饮、重卡六类源在本周各档位下的具体动作，含防抢产/防平移提示</td><td class="c"><span class="man">人工</span> 定稿</td></tr>
+    <tr><td>7. 临界天提示</td><td>预计卡在优良阈值附近的日期与乡镇——本周的胜负手，单独预警</td><td class="c"><span class="auto">全自动</span></td></tr>
+    <tr><td>8. 证据与申诉事项</td><td>上周可申诉剔除事项的证据包进度、本周需留存的证据清单</td><td class="c"><span class="semi">半自动</span></td></tr>
+  </table>
+  <div class="warn"><p><b>日订正纪律：</b>周版发布后，每日清晨只发一行订正消息（例：“订正：周四静稳提前至周三晚，升档时间提前 12h，其余不变”）。无变化不发。与晨检卡同一逻辑：异常才推，静默即正常。这条纪律是防“狼来了”的关键——订正发得越克制，升档通知越有人听。</p></div>
+
+  <h2>四、可执行性：五个前提与四条设计纪律</h2>
+  <h3>前提（缺一则降级运行或不启动）</h3>
+  <ul>
+    <li><b class="k">数据前提：</b>乡镇站逐时数据可获得（接口或定期数据包）。拿不到时只能做县级版（用县站 + 周边市站），乡镇分型章节停用并如实标注——这是全方案唯一的硬门槛。</li>
+    <li><b class="k">授权前提：</b>《分级触发表》须经县局事先签认：达到哪档、自动执行哪套动作，不必逐次开会请示。无预授权，48 小时提前量会被请示流程吃光。</li>
+    <li><b class="k">执行前提：</b>驻场/乡镇网格有人接单。系统只负责研判与派单，不能替代现场人力；无人执行的县只卖研判版，不承诺落地效果。</li>
+    <li><b class="k">服从前提：</b>区域联动预警启动期间，本方案档位自动让位于市级统一调度，方案只做本地细化补充，不另发指令。</li>
+    <li><b class="k">民生前提：</b>满档动作避开民生保供行业，动作清单发布前过一遍民生清单——为管控而断供，是最快的翻车方式。</li>
+  </ul>
+  <h3>设计纪律</h3>
+  <ul>
+    <li><b>低后悔动作优先：</b>预报准确率约八成，按“后悔成本”排动作顺序——先上洒扫、覆盖检查、巡查加密这类错了也无害的；停工限产类高成本动作等置信度升至高档、或进 48h 窗口后才上。给空报留预算：一个季度允许约 1–2 次升档空报，写进方案明处，不藏着。</li>
+    <li><b>每镇每日 ≤3 条动作：</b>乡镇人手薄，清单超过 3 条等于没有清单。</li>
+    <li><b>防平移与抢产：</b>错峰避开夜间逆温最强时段；升档通知不提前过量发布高成本措施细节，防企业抢生产把排放堆到过程前夜。</li>
+    <li><b>时段对齐污染节律：</b>发力时段为傍晚—夜间（火点、重卡、散烧高发 + 逆温生成），巡查排班按污染时钟排，不按行政班次排。</li>
+  </ul>
+
+  <h2>五、有效性：承诺边界与验证方法</h2>
+  <div class="cards">
+    <div class="card"><h3>能承诺（可验证）</h3><ul><li>升档提前量 ≥48h 的过程占比</li><li>临界天保良成功率（阈值 ±10μg 内保住优良的次数）</li><li>过程峰值相对同类历史过程的削减</li><li>措施落实率、申诉剔除成功天数</li><li>相对名次：与同市邻县的去气象化差距变化</li></ul></div>
+    <div class="card"><h3>不能承诺（写进合同免责）</h3><ul><li>年均 PM2.5 绝对下降数值</li><li>优良天数绝对增加天数</li><li>单次过程的峰值精确数值</li><li>全省/全市排名的具体名次</li></ul><p>以上四项主要由气象年景与区域趋势决定，承诺即失真——这是本方案与同行“包效果”话术的根本区别。</p></div>
+  </div>
+  <h3>效果验证三件套（每季末出评估页）</h3>
+  <ul>
+    <li><b class="k">去气象化趋势：</b>用气象归一化方法剥离天气影响后看浓度变化，回答“人的功劳有几分”。</li>
+    <li><b class="k">邻县对照（双重差分）：</b>同市、同天气的邻县是最天然的对照组——大家共享同一场风，差值即本地管控的净效果。此法不需要对方配合，公开数据可算。</li>
+    <li><b class="k">过程复盘对照：</b>每轮过程与历史上同型、同强度过程比峰值与时长，逐轮积累样本，一季后即有可信结论。</li>
+  </ul>
+  <p><b>试点退出条件：</b>以一季（秋冬）为试点期。季末若去气象化与邻县对照两法均显示无正向差距、且临界天保良效果不达预期，则如实告知客户本模式在该县不成立，停续约、不拿天气好转冒充功劳。</p>
+
+  <h2>六、实施路线与角色</h2>
+  <table>
+    <tr><th style="width:15%">阶段</th><th>内容</th><th style="width:20%">产出</th></tr>
+    <tr><td>第 0 期（2 周）</td><td>数据接入与核验；乡镇指纹冬版计算与本地源清单复核；触发表阈值与县局共同签认</td><td>一镇一卡（冬版）、触发表 v1</td></tr>
+    <tr><td>第 1 期（首月）</td><td>周版对策 + 日订正试运行；以落实率与预报命中率为唯一考核，不谈浓度</td><td>周版 ×4、首月复盘页</td></tr>
+    <tr><td>第 2 期（整季）</td><td>正式运行；每月去气象化小结；申诉证据包按件办理</td><td>周版连续出版、月度归因页</td></tr>
+    <tr><td>季末</td><td>三件套效果评估；与客户共同决定续约/调整/停止</td><td>季评估报告</td></tr>
+  </table>
+  <p><b>角色分工：</b>数字化支持方（我方）负责管线运行、周版成稿与归因评估，只交成品、以合作方品牌交付，不接触客户的客户；服务商驻场团队负责会商定稿、派单与现场督办；县局负责数据授权、触发表签认与升档拍板。按县订阅，费用与所服务项目的规模挂钩。</p>
+
+  <div class="ok"><p><b>与既有交付物的关系：</b>本方案为《县级大气服务数字化支持包》的第四个组件，前三件为晨检卡（已改为异常触发）、《卫星火点 vs 蓝天卫士》对照页、县级指挥大屏。本方案中的“周版对策”即支持包一页纸中“污染过程复盘/专家咨询弹药”的正式产品形态。</p></div>
+
+  <footer>
+    <div><span class="brand">小宋的环保笔记</span> · 环保数字化专家 ｜ 让环境数据自己干活</div>
+    <div>联系：<span class="mail">jinghao.song@gmail.com</span></div>
+  </footer>
+</div>
+</body>
+</html>
