@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北方某县空气质量排名下滑诊断（公开数据版 v1）</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif; background:#eef1f4; color:#1d2733; line-height:1.65; }
+  .page { max-width:820px; margin:0 auto; background:#fff; padding:30px 34px 24px; }
+  .kicker { font-size:12.5px; letter-spacing:2px; color:#0d5c46; font-weight:700; }
+  h1 { font-size:25px; line-height:1.3; margin:6px 0 4px; }
+  .meta { font-size:12.5px; color:#71808e; margin-bottom:14px; }
+  .concl { background:#123c2e; color:#e8f2ec; border-radius:10px; padding:14px 17px; font-size:14.5px; margin-bottom:18px; }
+  .concl b { color:#ffd98a; }
+  h2 { font-size:16.5px; color:#0d5c46; margin:18px 0 7px; padding-bottom:4px; border-bottom:2px solid #e2eae5; }
+  p, li { font-size:13.8px; }
+  ul { padding-left:18px; }
+  li { margin:3.5px 0; }
+  .fact { background:#f7faf8; border:1px solid #d8e2dc; border-radius:8px; padding:11px 14px; margin:8px 0; font-size:13.5px; }
+  .fact b { color:#0d5c46; }
+  .warn { background:#fdf3e7; border:1px solid #f0d9bd; border-radius:8px; padding:11px 14px; margin:8px 0; font-size:13.5px; color:#6b4d1f; }
+  table { width:100%; border-collapse:collapse; margin:8px 0 4px; font-size:13px; }
+  th { background:#0d5c46; color:#fff; text-align:left; padding:7px 9px; font-size:13px; }
+  td { border-bottom:1px solid #e2eae5; padding:7px 9px; vertical-align:top; }
+  tr td:first-child { font-weight:700; color:#123c2e; white-space:nowrap; }
+  .tag { display:inline-block; background:#e8f2ec; color:#0d5c46; font-size:11px; border-radius:4px; padding:0 6px; margin-right:4px; font-weight:700; }
+  .tag.hot { background:#fde8e0; color:#a03c14; }
+  footer { margin-top:20px; border-top:1px solid #dde5e0; padding-top:10px; font-size:12px; color:#71808e; }
+  @media (max-width:640px){ .page{ padding:20px 15px 16px; } h1{ font-size:21px; } tr td:first-child{ white-space:normal; } }
+  @media print { body{ background:#fff; } .page{ max-width:none; padding:8mm 10mm; } @page{ size:A4; margin:0; } }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+<div class="page">
+  <div class="kicker">公开数据版 V1</div>
+  <h1>北方某县空气质量排名下滑诊断</h1>
+  <div class="meta">对象：豫北某市下辖县 ｜ 时间：2026年10月15日 ｜ 版本说明：本版基于公开数据与考核机制分析；定量结论待县站内部数据补齐后出 V2</div>
+
+  <div class="concl">
+    一句话结论：该县的县级站数据<b>不对公众开放</b>，公开渠道无法直接复算排名——但排名下滑的原因无外五种（见第三节），每种都有明确的验证方法，拿到市局每月通报和县站逐月数据后<b>一天内可定案</b>。秋冬季（10—12月）是全年排名的决战期，现在动手还来得及。
+  </div>
+
+  <h2>一、先把口径说清：这个排名是怎么来的</h2>
+  <p>河南省对县（市、区）的空气质量排名采用<b>得分制</b>：由空气质量综合指数、PM2.5浓度的<b>同比变化幅度</b>合成得分，全省 100 余个县（市、区）参评，得分越低名次越靠前。这个机制有个要害——<b>它不只比"绝对值"，还比"改善幅度"</b>。一个县哪怕浓度没升，只要别人降得比你快、你原地踏步，名次照样往下掉。所以"突然掉到倒一"有两种可能：自己真变差了，或者别人进步太快把你衬到了最后。两种病因，药方完全不同，必须先分清。</p>
+
+  <h2>二、已查实的事实（公开数据实测）</h2>
+  <div class="fact"><b>基线（2024年4月省厅县排名通报）：</b>北方某县得分位列全省百余个参评县的前三分之一；当月综合指数同比小幅上升，为豫北某市所辖县中恶化幅度最小。当时的该县，底子是好的。</div>
+  <div class="fact"><b>县内站点格局：</b>该县有 2 个县级空气站——县广播电视局站、县生命果站。其中<b>生命果站的数据更新止于 2021 年 2 月</b>（据国际空气质量平台 WAQI 存档），如属实，近年实际承担考核的应为广播电视局站一站。单站考核的县，站点周边环境就是排名的命门（见假设四）。</div>
+  <div class="fact"><b>当日实测（2026年10月14日卫星过境）：</b>北方某县域内火点 <b>0 个</b>（当日全省火点集中在商丘、濮阳、三门峡）。至少说明：当前时段田间火点不是该县的扣分项，管控精力不应被火点牵着走。</div>
+  <div class="warn"><b>数据边界声明：</b>县级站逐日/逐月数据未向公众发布。本次已实测五条公开路径——生态环境部总站官方接口、CNEMC 公开数据仓库（仅含地级市站点）、真气网（该县无收录数据）、天气后报（访问受限）、WAQI 国际平台（免费历史仅到 2021 年）——均无法取得该县 2025—2026 年序列。本报告不使用任何估算或编造数字；所有定量判断留待内部数据补齐（见第五节清单）。</div>
+
+  <h2>三、掉队原因：五种假设与验证方法（按可能性排序）</h2>
+  <table>
+    <tr><th style="width:22%">假设</th><th style="width:40%">机理</th><th>验证方法（拿到数据后）</th></tr>
+    <tr><td><span class="tag hot">假设一</span>相对掉队</td><td>该县浓度绝对值没有明显恶化，但全省各县普遍改善、该县改善幅度垫底，得分制下被甩到末位。</td><td>对比通报中该县的综合指数<b>绝对值名次</b>与<b>得分名次</b>：若绝对值名次明显靠前而得分垫底，即为相对掉队。</td></tr>
+    <tr><td><span class="tag hot">假设二</span>臭氧拖累</td><td>农业县本地排放低，但身处豫北输送通道，夏季区域臭氧污染重；O3 超标天数多会直接抬高综合指数。</td><td>调 2026 年 1—9 月首要污染物天数分布，看 O3 占比及同比；再看 O3 浓度同比变化率。</td></tr>
+    <tr><td><span class="tag">假设三</span>PM10 扬尘反弹</td><td>县城建设、道路扬尘、秋收后裸露农田，PM10 抬升是农业县最常见的失分项。</td><td>看 PM10 月均同比与 PM10/PM2.5 比值：比值显著上升即指向粗颗粒（扬尘）主导。</td></tr>
+    <tr><td><span class="tag">假设四</span>站点周边因素</td><td>单站考核下，站点周边施工、道路、餐饮、停车场等微环境变化，会让一个站的数据代表全县背锅。</td><td>核查广播电视局站周边 500 米内今年有无新施工、新道路、烧烤聚集点；并查数据有效率有无异常月份。</td></tr>
+    <tr><td><span class="tag">假设五</span>冬春季 PM2.5 过程</td><td>散煤复燃、区域输送叠加静稳天气，1—3 月几场重污染过程就能吃掉全年大半改善空间。</td><td>看 2026 年 1—3 月 PM2.5 月均同比和重污染天数，定位"丢分月份"。</td></tr>
+  </table>
+
+  <h2>四、秋冬季翻盘抓手（不等数据，先能动的）</h2>
+  <ul>
+    <li><b>乡镇站日调度：</b>全县各乡镇站每日排名通报，PM10/PM2.5 突高的乡镇当日核查、当日反馈，把县站单点保卫战变成全县面源压降。</li>
+    <li><b>站点周边 500 米专项排查：</b>对应假设四——施工裸土、道路积尘、餐饮油烟、露天烧烤逐项过，这是投入最小、见效最快的一项。</li>
+    <li><b>臭氧尾巴管理：</b>10 月仍有臭氧超标风险日，高温日对涉 VOCs 企业和加油站装卸油时段做错峰管控。</li>
+    <li><b>散煤防反弹复查：</b>采暖季前完成建成区散煤复燃排查，别等 11 月污染过程来了再被动。</li>
+    <li><b>应急清单做实：</b>重污染天气应急减排清单提前逐企核对，预警发布时直接执行，不临时编名单。</li>
+    <li><b>火点保持巡查即可：</b>当前卫星实测县域零火点，维持卫星监测+网格处置的常规闭环，不必加码投入。</li>
+  </ul>
+
+  <h2>五、补齐诊断所需数据（请项目组协助提供）</h2>
+  <ul>
+    <li>市局（或省厅）2026 年以来各月<b>县（市、区）空气质量排名通报</b>中北方某县所在页（看得分构成与名次轨迹）；</li>
+    <li>北方某县站（广播电视局站）<b>2025 年、2026 年 1—9 月逐月六项污染物均值</b>（PM2.5、PM10、SO₂、NO₂、CO、O₃），或逐日数据导出；</li>
+    <li>2026 年以来历次<b>重污染天气过程日期</b>及县里启动的预警等级。</li>
+  </ul>
+  <p>以上数据到位后，可在一日内输出 V2 定量版：定位丢分月份与丢分污染物，给出秋冬季逐月目标拆解。</p>
+
+  <footer>
+    数据来源：河南省生态环境厅 2024 年 4 月县（市、区）环境空气质量排名通报（公开存档）；FIRMS 卫星火点数据（2026-10-14 过境，本单位监测管线）；WAQI 平台站点存档。排名下滑情况据项目一线反馈，未经官方通报复核。｜ 小宋的环保笔记 · 环保数字化支持
+  </footer>
+</div>
+</body>
+</html>
