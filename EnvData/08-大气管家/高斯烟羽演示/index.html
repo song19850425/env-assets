@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>污染扩散仿真 P0 Demo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230F766E'/%3E%3Cpath d='M12 4 C12 8 8 10 8 14 a4 4 0 0 0 8 0 C16 10 12 8 12 4Z' fill='%23E8862D'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#1B2B26;--deep:#0F3D33;--green:#0F766E;--orange:#E8862D;
+    --blue:#2F6FD0;--red:#C8453D;--gray:#5A6B64;--line:#D9E2DC;
+    --paper:#F7F8F5;--card:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;font-size:14px;}
+  header{background:linear-gradient(135deg,var(--deep),#17614E);color:#fff;padding:20px 0 16px;}
+  .head-inner{max-width:1180px;margin:0 auto;padding:0 16px;}
+  .kicker{font-size:12px;letter-spacing:2px;color:#BFD9D2;margin-bottom:6px;}
+  h1{font-size:22px;font-weight:800;}
+  .sub{font-size:13px;color:#D6E8E2;margin-top:4px;max-width:800px;}
+  .wrap{max-width:1180px;margin:0 auto;padding:14px 16px 40px;}
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
+  .panel h2{font-size:14px;font-weight:800;color:var(--deep);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px;}
+  .field{margin-bottom:10px;}
+  .field label{display:block;font-size:12.5px;color:var(--gray);margin-bottom:2px;}
+  .field .val{font-weight:800;color:var(--deep);font-size:13px;}
+  input[type=range]{width:100%;accent-color:var(--green);}
+  select{width:100%;padding:5px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:13px;}
+  .btn-row{display:flex;gap:8px;margin-top:12px;}
+  .btn{flex:1;padding:8px 0;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:var(--green);color:#fff;}
+  .btn.alt{background:#fff;border:1px solid var(--green);color:var(--green);}
+  .btn.orange{background:var(--orange);}
+  .panel p.note{font-size:11.5px;color:var(--gray);margin-top:10px;line-height:1.55;}
+  .stage-box{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  canvas{display:block;width:100%;height:auto;background:#E9F1EE;}
+  .stage-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--card);border-bottom:1px solid var(--line);}
+  .stage-head span{font-size:12.5px;color:var(--gray);}
+  .timeline{display:flex;align-items:center;gap:10px;padding:8px 12px;}
+  .timeline input{flex:1;}
+  .timeline .tl{font-size:12px;color:var(--deep);font-weight:700;white-space:nowrap;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;}
+  th{background:var(--green);color:#fff;font-size:12px;padding:6px 8px;text-align:left;}
+  td{font-size:12.5px;padding:6px 8px;border-bottom:1px solid var(--line);}
+  tr:nth-child(even) td{background:#FBFCFB;}
+  .formula{background:#123A30;color:#E7F1EC;border-radius:10px;padding:12px 14px;font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;}
+  .formula b{color:#F9C07A;}
+  .formula .hl{color:#9FE0C9;}
+  .foot{margin-top:16px;color:var(--gray);font-size:12px;}
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;}
+    .row2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+
+<header>
+  <div class="head-inner">
+    <div class="kicker">P0 DEMO · 环保AI仿真MVP · 2026-10</div>
+    <h1>污染扩散仿真 · 高斯烟羽可视化</h1>
+    <div class="sub">确定性解析引擎（Briggs 城市 D 类扩散参数）+ 程序化 3D 街区 + 粒子烟羽动画。所有浓度均由公式现算、可手算复核；无外部依赖，断网可跑。</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+
+    <div class="panel">
+      <h2>排放参数（示例口径）</h2>
+      <div class="field">
+        <label>源强 Q（mg/s）<span class="val" id="vQ">5000</span></label>
+        <input type="range" id="inQ" min="500" max="20000" step="100" value="5000">
+      </div>
+      <div class="field">
+        <label>风速 u（m/s）<span class="val" id="vU">2.5</span></label>
+        <input type="range" id="inU" min="0.5" max="10" step="0.1" value="2.5">
+      </div>
+      <div class="field">
+        <label>烟囱高度 H（m）<span class="val" id="vH">20</span></label>
+        <input type="range" id="inH" min="5" max="60" step="1" value="20">
+      </div>
+      <div class="field">
+        <label>场景模板</label>
+        <select id="inScene">
+          <option value="blocks" selected>街区（居民区）</option>
+          <option value="factory">厂区（大烟囱群）</option>
+          <option value="water">水域（开阔岸边）</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btnPlay">播放</button>
+        <button class="btn alt" id="btnReset">重置</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn orange" id="btnExport">导出 JSON</button>
+      </div>
+      <p class="note">稳定度：城市 D 类（Briggs 扩散参数）。风向：西→东。数值为演示口径，非实测标定。</p>
+    </div>
+
+    <div class="stage-box">
+      <div class="stage-head">
+        <span>下风向：西（左）→ 东（右），烟囱在 x=0</span>
+        <span>拖拽旋转（角度限位）· 滚轮缩放</span>
+      </div>
+      <canvas id="cv" width="900" height="480"></canvas>
+      <div class="timeline">
+        <span class="tl" id="tlLabel">100%</span>
+        <input type="range" id="inT" min="0" max="1000" step="1" value="1000">
+        <span class="tl" style="color:var(--orange)">时间轴</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="panel">
+      <h2>微站点位浓度（实时现算）</h2>
+      <div class="stage-box" style="border:none;">
+        <table>
+          <colgroup><col style="width:28%"><col style="width:30%"><col style="width:42%"></colgroup>
+          <tr><th>点位</th><th>坐标 (x, y)</th><th>地面浓度 (mg/m³)</th></tr>
+          <tbody id="stTb"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>手算校验（下风向 x=100 m 中心线）</h2>
+      <div class="formula" id="fCalc"></div>
+      <p class="note">引擎浓度与上方公式同源现算，逐项展开如上，可自行按计算器复核。</p>
+    </div>
+  </div>
+
+  <div class="foot">模型：稳态高斯烟羽全反射公式 C = Q/(π·u·σy·σz)·exp(−y²/2σy²)·exp(−H²/2σz²)（z=0 地面）· σy=0.16x(1+0.0004x)^−½ · σz=0.14x(1+0.0003x)^−½（Briggs 城市 D 类）。动画仅表达烟羽发展过程，稳态浓度场由解析公式给出。</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+function sigY(x){ return 0.16*x*Math.pow(1+0.0004*x,-0.5); }
+function sigZ(x){ return 0.14*x*Math.pow(1+0.0003*x,-0.5); }
+function conc(XQ,U,H,x,y,z){
+  if(x<=0.5) return 0;
+  var sy=sigY(x), sz=sigZ(x);
+  if(sy<=0||sz<=0) return 0;
+  var c=XQ/(Math.PI*U*sy*sz)
+        *Math.exp(-y*y/(2*sy*sy))
+        *Math.exp(-H*H/(2*sz*sz));
+  return c;
+}
+function fieldMax(Q,U,H){
+  var m=0;
+  for(var x=10;x<=320;x+=10){ var cc=conc(Q,U,H,x,0,0); if(cc>m) m=cc; }
+  return m>0?m:1;
+}
+function seedRand(s){ return function(){ s=(s*9301+49297)%233280; return s/233280; }; }
+function buildScene(kind){
+  var rnd=seedRand(kind==="blocks"?11:kind==="factory"?23:37);
+  var list=[]; var i;
+  if(kind==="blocks"){
+    for(var row=0;row<2;row++){
+      for(var col=0;col<4;col++){
+        var bx=22+col*52; var bz=14+row*26;
+        var h=8+Math.round(rnd()*4)*3;
+        list.push({x:bx,z:bz,w:22,d:14,h:h,c:"#C9D8D0"});
+      }
+    }
+  }else if(kind==="factory"){
+    for(i=0;i<5;i++){
+      var fx=-8+i*40; var fz=-18+(i%2)*24;
+      var fh=14+Math.round(rnd()*5)*4;
+      list.push({x:fx,z:fz,w:26,d:18,h:fh,c:"#B8C9C4"});
+    }
+    list.push({x:-6,z:-10,w:10,d:10,h:30,c:"#9FB8B1"});
+    list.push({x:30,z:8,w:10,d:10,h:36,c:"#9FB8B1"});
+  }else{
+    for(i=0;i<4;i++){
+      var wx=10+i*70; var wz=-30+(i%2)*44;
+      list.push({x:wx,z:wz,w:16,d:12,h:6+Math.round(rnd()*3)*3,c:"#C9D8D0"});
+    }
+  }
+  return list;
+}
+var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
+var DPR=Math.min(2,window.devicePixelRatio||1);
+var W=900,H=480;
+var yaw=0.6, pitch=0.42, zoom=1.0;
+var buildings=buildScene("blocks");
+var dragging=false,lastX=0,lastY=0;
+function iso(x,y,z){
+  var a=yaw, p=pitch;
+  var cx=W/2 + (x*Math.cos(a)-y*Math.sin(a))*zoom*2.4;
+  var cy=H*0.52 + (x*Math.sin(a)+y*Math.cos(a))*zoom*1.1*Math.sin(p) - z*zoom*1.9;
+  return [cx,cy];
+}
+function drawPoly(points,color){
+  ctx.fillStyle=color; ctx.beginPath();
+  ctx.moveTo(points[0][0],points[0][1]);
+  for(var i=1;i<points.length;i++) ctx.lineTo(points[i][0],points[i][1]);
+  ctx.closePath(); ctx.fill();
+}
+function drawBox(x,y,z,w,d,h,c){
+  var topP=[iso(x,y,z+h),iso(x+w,y,z+h),iso(x+w,y+d,z+h),iso(x,y+d,z+h)];
+  var frontP=[iso(x,y,z),iso(x+w,y,z),iso(x+w,y,z+h),iso(x,y,z+h)];
+  var rightP=[iso(x+w,y,z),iso(x+w,y+d,z),iso(x+w,y+d,z+h),iso(x+w,y,z+h)];
+  drawPoly(frontP,shade(c,0.92));
+  drawPoly(rightP,shade(c,0.78));
+  drawPoly(topP,shade(c,1.0));
+}
+function shade(hex,f){
+  var n=parseInt(hex.slice(1),16);
+  var r=Math.min(255,Math.round((n>>16)*f)),g=Math.min(255,Math.round(((n>>8)&255)*f)),b=Math.min(255,Math.round((n&255)*f));
+  return "rgb("+r+","+g+","+b+")";
+}
+var N=900;
+var seeds=[];
+for(var si=0;si<N;si++) seeds.push(Math.random());
+function plumeParticles(t, Q,U,H){
+  var L=300*t; var pts=[]; var i;
+  for(i=0;i<N;i++){
+    var s=seeds[i];
+    var x=s*L;
+    if(x<2) continue;
+    var sy=sigY(x), sz=sigZ(x);
+    var g1=normInv(s), g2=normInv((s*7919)%1);
+    var y=g1*sy*1.2;
+    var z=Math.max(0.5, H + g2*sz*0.9);
+    var c=conc(Q,U,H,x,0,0);
+    var sp=iso(x,y,z);
+    pts.push({x:x,y:y,z:z,c:c,sx:sp[0],sy:sp[1]});
+  }
+  pts.sort(function(a,b){ return a.sy-b.sy; });
+  return pts;
+}
+function normInv(p){
+  var a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
+  var b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
+  var c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
+  var d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+  // Acklam 标准式：中央区 r=q²，尾部 r=√(−2·ln)，符号与原作者参考实现一致
+  var plow=0.02425, phigh=1-plow;
+  if(p<plow){
+    var ql=Math.sqrt(-2*Math.log(p));
+    return (((((c[0]*ql+c[1])*ql+c[2])*ql+c[3])*ql+c[4])*ql+c[5])/((((d[0]*ql+d[1])*ql+d[2])*ql+d[3])*ql+1);
+  }
+  if(p<=phigh){
+    var q=p-0.5, r=q*q;
+    return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+  }
+  var qu=Math.sqrt(-2*Math.log(1-p));
+  return -(((((c[0]*qu+c[1])*qu+c[2])*qu+c[3])*qu+c[4])*qu+c[5])/((((d[0]*qu+d[1])*qu+d[2])*qu+d[3])*qu+1);
+}
+function concColor(c,cmax){
+  if(c<=0) return "rgba(60,110,160,0)";
+  var t=Math.min(1,c/cmax);
+  var col;
+  if(t<0.25){ var u=t/0.25; col=[60+(210-60)*u,110+(200-110)*u,160+(80-160)*u]; }
+  else if(t<0.5){ col=[210,200,80]; }
+  else if(t<0.75){ var u3=(t-0.5)/0.25; col=[210+(235-210)*u3,200-(200-120)*u3,80-(80-20)*u3]; }
+  else { var u4=(t-0.75)/0.25; col=[235-(235-225)*u4,120-(120-40)*u4,20]; }
+  return "rgb("+Math.round(col[0])+","+Math.round(col[1])+","+Math.round(col[2])+")";
+}
+function heatGrid(Q,U,H,alpha){
+  var stepX=16,stepY=20;
+  var cMax=fieldMax(Q,U,H);
+  for(var gx=0;gx<320;gx+=stepX){
+    for(var gy=-140;gy<140;gy+=stepY){
+      var cx4=gx+stepX/2, cy4=gy+stepY/2;
+      var c=conc(Q,U,H,cx4,cy4,0);
+      if(c>0){
+        var p0=iso(gx,gy,0),p1=iso(gx+stepX,gy,0),p2=iso(gx+stepX,gy+stepY,0),p3=iso(gx,gy+stepY,0);
+        var col=concColor(c*alpha,cMax*Math.max(0.2,alpha));
+        ctx.globalAlpha=0.42*alpha;
+        drawPoly([p0,p1,p2,p3],col);
+      }
+    }
+  }
+  ctx.globalAlpha=1;
+}
+var stations=[{x:50,y:0},{x:100,y:0},{x:150,y:0},{x:220,y:0}];
+function drawStations(Q,U,H){
+  var i;
+  for(i=0;i<stations.length;i++){
+    var sx=stations[i].x, sy=stations[i].y;
+    var c=conc(Q,U,H,sx,sy,0);
+    var p=iso(sx,sy,3);
+    ctx.fillStyle="#1B2B26";
+    ctx.beginPath();ctx.arc(p[0],p[1],5,0,7);ctx.fill();
+    ctx.fillStyle=concColor(Math.max(c*0.5,0.05),1);
+    ctx.beginPath();ctx.arc(p[0],p[1],3,0,7);ctx.fill();
+  }
+}
+var t=1.0, playing=false, speed=0.004;
+var needRender=true;
+function requestRender(){ needRender=true; }
+function render(){
+  var Q=parseFloat(document.getElementById("inQ").value);
+  var U=parseFloat(document.getElementById("inU").value);
+  var H=parseFloat(document.getElementById("inH").value);
+  ctx.save();
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+  var grd=ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,"#DFECE8");grd.addColorStop(1,"#C4DBD4");
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(90,107,100,0.5)";ctx.lineWidth=1;
+  for(var lx=-80;lx<=420;lx+=40){
+    var pa=iso(lx,-160,0),pb=iso(lx,160,0);
+    ctx.beginPath();ctx.moveTo(pa[0],pa[1]);ctx.lineTo(pb[0],pb[1]);ctx.stroke();
+  }
+  for(var ly=-160;ly<=160;ly+=40){
+    var pc=iso(-80,ly,0),pd=iso(420,ly,0);
+    ctx.beginPath();ctx.moveTo(pc[0],pc[1]);ctx.lineTo(pd[0],pd[1]);ctx.stroke();
+  }
+  heatGrid(Q,U,H,t);
+  var bItems=buildings.map(function(b){
+    var cy=iso(b.x+b.w/2,b.z+b.d/2,b.h/2)[1];
+    return {cy:cy,b:b};
+  });
+  bItems.sort(function(a,b2){ return a.cy-b2.cy; });
+  bItems.forEach(function(it){ drawBox(it.b.x,it.b.z,0,it.b.w,it.b.d,it.b.h,it.b.c); });
+  drawChimney(H);
+  var pts=plumeParticles(t,Q,U,H);
+  var cMax=fieldMax(Q,U,H);
+  var i;
+  for(i=0;i<pts.length;i++){
+    var pt=pts[i];
+    var r=1.6+4.2*(1-t*0.5);
+    ctx.fillStyle=concColor(pt.c,cMax);
+    ctx.globalAlpha=0.75;
+    ctx.beginPath();ctx.arc(pt.sx,pt.sy,r,0,7);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  drawStations(Q,U,H);
+  ctx.fillStyle="#1B2B26";
+  ctx.font="13px 'Microsoft YaHei',sans-serif";
+  ctx.fillText("风向 →",14,22);
+  ctx.fillStyle="#5A6B64";
+  ctx.font="11px 'Microsoft YaHei',sans-serif";
+  ctx.fillText("等距示意 · 非真实影像",14,38);
+  ctx.restore();
+  updateTables(Q,U,H);
+}
+function drawChimney(H){
+  var w=4;
+  drawPoly([iso(-w,-w,0),iso(w,-w,0),iso(w,-w,H),iso(-w,-w,H)],shade("#9FB8B1",0.9));
+  drawPoly([iso(w,-w,0),iso(w,w,0),iso(w,w,H),iso(w,-w,H)],shade("#9FB8B1",0.72));
+  drawPoly([iso(-w,-w,H),iso(w,-w,H),iso(w,w,H),iso(-w,w,H)],shade("#9FB8B1",1));
+  var top=iso(0,0,H);
+  ctx.fillStyle="#E8862D";
+  ctx.beginPath();ctx.arc(top[0],top[1]-3,4,0,7);ctx.fill();
+}
+function updateTables(Q,U,H){
+  var tb=document.getElementById("stTb");
+  var html="";
+  for(var i=0;i<stations.length;i++){
+    var c=conc(Q,U,H,stations[i].x,stations[i].y,0);
+    html+="<tr><td>微站 S"+(i+1)+"</td><td>("+stations[i].x+", "+stations[i].y+")</td><td><b>"+c.toFixed(4)+"</b></td></tr>";
+  }
+  tb.innerHTML=html;
+  var sy=sigY(100),sz=sigZ(100);
+  var C=Q/(Math.PI*U*sy*sz)*Math.exp(-H*H/(2*sz*sz));
+  var f=document.getElementById("fCalc");
+  f.innerHTML="σy(100) = 0.16·100·(1+0.04)^−½ = <b>"+sy.toFixed(3)+" m</b><br>"
+    +"σz(100) = 0.14·100·(1+0.03)^−½ = <b>"+sz.toFixed(3)+" m</b><br>"
+    +"C = Q/(π·u·σy·σz) · exp(−H²/2σz²)<br>"
+    +"&nbsp;&nbsp;= "+Q+"/(3.1416·"+U+"·"+sy.toFixed(3)+"·"+sz.toFixed(3)+") · exp(−"+H+"²/"+ (2*sz*sz).toFixed(1) +")<br>"
+    +"&nbsp;&nbsp;= <b class=\"hl\">"+C.toFixed(4)+" mg/m³</b>（引擎同公式现算："+conc(Q,U,H,100,0,0).toFixed(4)+"）";
+}
+function resizeCanvas(){
+  var box=cv.parentNode.getBoundingClientRect();
+  var w=Math.max(300,Math.floor(box.width));
+  var h=Math.max(240,Math.round(w*480/900));
+  cv.width=w*DPR;cv.height=h*DPR;
+  cv.style.width=w+"px";cv.style.height=h+"px";
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  W=w;H=h;
+}
+cv.addEventListener("mousedown",function(e){ dragging=true;lastX=e.clientX;lastY=e.clientY;e.preventDefault(); });
+window.addEventListener("mouseup",function(){ dragging=false; });
+cv.addEventListener("mousemove",function(e){
+  if(!dragging) return;
+  yaw=Math.min(1.15,Math.max(0.15,yaw+(e.clientX-lastX)*0.008));
+  pitch=Math.min(1.1,Math.max(0.15,pitch-(e.clientY-lastY)*0.006));
+  lastX=e.clientX;lastY=e.clientY;
+  requestRender();
+});
+cv.addEventListener("wheel",function(e){
+  zoom=Math.min(1.8,Math.max(0.5,zoom+(e.deltaY>0?-0.06:0.06)));
+  e.preventDefault();
+  requestRender();
+},{passive:false});
+document.getElementById("inT").addEventListener("input",function(e){
+  t=parseInt(e.target.value,10)/1000;
+  document.getElementById("tlLabel").textContent=Math.round(t*100)+"%";
+  requestRender();
+});
+document.getElementById("btnPlay").addEventListener("click",function(){
+  playing=!playing;
+  this.textContent=playing?"暂停":"播放";
+});
+document.getElementById("btnReset").addEventListener("click",function(){
+  t=0;playing=false;
+  document.getElementById("inT").value=0;
+  document.getElementById("tlLabel").textContent="0%";
+  document.getElementById("btnPlay").textContent="播放";
+  requestRender();
+});
+document.getElementById("btnExport").addEventListener("click",function(){
+  var Q=parseFloat(document.getElementById("inQ").value);
+  var U=parseFloat(document.getElementById("inU").value);
+  var H=parseFloat(document.getElementById("inH").value);
+  var grid=[];
+  for(var x=0;x<=320;x+=10){
+    for(var y=-120;y<=120;y+=20){
+      var c=conc(Q,U,H,x,y,0);
+      if(c>0.00001) grid.push({x:x,y:y,z:0,c:+c.toFixed(6)});
+    }
+  }
+  var payload={
+    version:"p0-demo-v1",
+    model:"gaussian-plume-briggs-urban-D",
+    note:"演示口径，非实测标定",
+    params:{Q_mg_s:Q,U_m_s:U,H_m:H,stability:"D(urban)",wind:"W->E"},
+    scene:document.getElementById("inScene").value,
+    stations:stations.map(function(s){ var c=conc(Q,U,H,s.x,s.y,0); return {x:s.x,y:s.y,C_mg_m3:+c.toFixed(4)}; }),
+    gridSample:grid
+  };
+  var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="gaussian-plume-demo.json";
+  document.body.appendChild(a);a.click();a.remove();
+});
+["inQ","inU","inH"].forEach(function(id){
+  document.getElementById(id).addEventListener("input",function(){
+    document.getElementById("vQ").textContent=Math.round(parseFloat(document.getElementById("inQ").value));
+    document.getElementById("vU").textContent=parseFloat(document.getElementById("inU").value).toFixed(1);
+    document.getElementById("vH").textContent=Math.round(parseFloat(document.getElementById("inH").value));
+    requestRender();
+  });
+});
+document.getElementById("inScene").addEventListener("change",function(){
+  buildings=buildScene(this.value);
+  requestRender();
+});
+function loop(){
+  if(playing){
+    t+=speed;
+    if(t>=1){ t=1; playing=false; document.getElementById("btnPlay").textContent="播放"; }
+    document.getElementById("inT").value=Math.round(t*1000);
+    document.getElementById("tlLabel").textContent=Math.round(t*100)+"%";
+  }
+  if(playing || needRender){ render(); needRender=false; }
+  requestAnimationFrame(loop);
+}
+window.addEventListener("resize",function(){ resizeCanvas();requestRender(); });
+resizeCanvas();
+render();
+loop();
+})();
+</script>
+</body>
+</html>
