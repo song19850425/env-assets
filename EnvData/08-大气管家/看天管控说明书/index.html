@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乡镇空气管控说明书（一页纸）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; background: #e8e4dc; color: #26221c; line-height: 1.55; padding: 18px 10px 30px; }
+  .page { max-width: 880px; margin: 0 auto; background: #fdfbf7; border-radius: 10px; padding: 30px 34px 24px; box-shadow: 0 4px 24px rgba(60,50,30,.14); }
+  h1 { font-size: 30px; letter-spacing: 1px; text-align: center; }
+  .sub { text-align: center; color: #6d6455; font-size: 14.5px; margin: 6px 0 20px; }
+  .sub b { color: #b45309; }
+  h2 { font-size: 17px; margin: 20px 0 10px; padding-left: 10px; border-left: 5px solid #d97706; letter-spacing: .5px; }
+  h2 .hint { font-size: 12.5px; color: #8a8172; font-weight: normal; margin-left: 6px; }
+  .kitchen { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .kcard { background: #f7f1e3; border: 1px solid #e4d9c2; border-radius: 8px; padding: 10px 10px 8px; }
+  .kcard .t { font-size: 15.5px; font-weight: 700; color: #92400e; margin-bottom: 3px; }
+  .kcard .d { font-size: 12.5px; color: #57503f; line-height: 1.5; }
+  .qa { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px; }
+  .q { padding: 7px 0 7px 2px; border-bottom: 1px dashed #ddd3bd; }
+  .q .qt { font-weight: 700; font-size: 15px; }
+  .q .qt span { color: #d97706; margin-right: 5px; }
+  .q .qd { font-size: 13.5px; color: #454034; margin-top: 2px; }
+  .q .qd b { color: #b45309; }
+  .q.wide { grid-column: 1 / -1; }
+  .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .act { border-radius: 8px; padding: 11px 12px 9px; border: 1px solid; }
+  .act .at { font-size: 15.5px; font-weight: 700; margin-bottom: 4px; }
+  .act ul { list-style: none; font-size: 13px; line-height: 1.65; }
+  .act ul li::before { content: "· "; font-weight: 700; }
+  .a1 { background: #f0f7ee; border-color: #cfe3c8; } .a1 .at { color: #3f7a33; }
+  .a2 { background: #fdf6e0; border-color: #eee0ae; } .a2 .at { color: #96700a; }
+  .a3 { background: #fdeeec; border-color: #f3cfc9; } .a3 .at { color: #b03a2e; }
+  .truth { background: #26221c; color: #f5efe2; border-radius: 8px; padding: 14px 18px 12px; }
+  .truth .tt { font-size: 15px; font-weight: 700; color: #fbbf24; margin-bottom: 6px; }
+  .truth ol { margin-left: 20px; font-size: 14.5px; line-height: 1.75; }
+  .redline { margin-top: 14px; border: 1.5px solid #c0392b; border-radius: 8px; padding: 10px 14px; background: #fff8f7; font-size: 13.5px; }
+  .redline b { color: #c0392b; }
+  .foot { margin-top: 16px; text-align: center; font-size: 12px; color: #9a917e; }
+  @media (max-width: 640px) {
+    .page { padding: 22px 16px 18px; }
+    h1 { font-size: 24px; }
+    .kitchen { grid-template-columns: repeat(2, 1fr); }
+    .qa { grid-template-columns: 1fr; }
+    .acts { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { box-shadow: none; border-radius: 0; max-width: none; padding: 4px 2px; }
+    h1 { font-size: 23px; }
+    .sub { font-size: 12px; margin-bottom: 10px; }
+    h2 { font-size: 14.5px; margin: 11px 0 6px; }
+    .kcard { padding: 6px 8px 5px; }
+    .kcard .t { font-size: 13.5px; }
+    .kcard .d { font-size: 11px; line-height: 1.45; }
+    .q { padding: 4px 0; }
+    .q .qt { font-size: 13px; }
+    .q .qd { font-size: 11.5px; line-height: 1.5; }
+    .act { padding: 7px 9px 6px; }
+    .act .at { font-size: 13.5px; }
+    .act ul { font-size: 11.5px; line-height: 1.55; }
+    .truth { padding: 9px 14px 7px; }
+    .truth ol { font-size: 12.5px; line-height: 1.6; }
+    .redline { margin-top: 9px; padding: 7px 11px; font-size: 11.5px; }
+    .foot { margin-top: 9px; font-size: 10.5px; }
+    @page { size: A4; margin: 9mm; }
+  }
+</style>
+</head>
+<body>
+<a href="../../../index.html#envdata" style="position:fixed;top:10px;left:10px;z-index:9999;background:#123F31;color:#fff;font-size:13px;padding:7px 14px;border-radius:16px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">← 返回 env-assets 总目录</a>
+<div class="page">
+
+  <h1>乡镇空气管控说明书</h1>
+  <div class="sub">一页纸讲清三件事：<b>数是从哪来的 · 你能管什么 · 什么时候使劲</b><br>发给乡镇干部开会讲，也能直接讲给老百姓听。</div>
+
+  <h2>先记住一个比方：全镇是一间大厨房</h2>
+  <div class="kitchen">
+    <div class="kcard"><div class="t">监测站 = 鼻子</div><div class="d">站就在镇政府旁、人最密的地方。它闻到的，就是街上人每天吸的那口空气。</div></div>
+    <div class="kcard"><div class="t">本镇的烟 = 自家灶</div><div class="d">做饭取暖的烟、过路车扬的土、工地和饭馆的烟，都是自家灶上冒出来的。</div></div>
+    <div class="kcard"><div class="t">风 = 抽油烟机</div><div class="d">风大的日子烟散得快，不用怎么管，数自己就降下来了。</div></div>
+    <div class="kcard"><div class="t">没风天 = 扣锅盖</div><div class="d">天闷、没风，烟出不去，只能在屋里一点点攒，数涨得最快。</div></div>
+    <div class="kcard"><div class="t">外来污染 = 隔壁炒辣椒</div><div class="d">上风向飘来的，不是你家的错——但呛的是你，排名算的也是你。</div></div>
+  </div>
+
+  <h2>五个问题，一次说清</h2>
+  <div class="qa">
+    <div class="q"><div class="qt"><span>1</span>数是哪来的？</div><div class="qd">站测的不是山里的空气，是<b>镇政府所在地、街上人每天吸的那口空气</b>。数高先别喊冤：它测的本来就是人最密、车最多、灶最集中的地方。</div></div>
+    <div class="q"><div class="qt"><span>2</span>为什么忽高忽低？</div><div class="qd">灶还是那些灶，<b>天不一样，数就不一样</b>。风大自动降，扣锅盖的天攒着涨。数跳了，先看天，再找人，别上来就骂干活的。</div></div>
+    <div class="q"><div class="qt"><span>3</span>为什么隔壁镇比咱好？</div><div class="qd">各镇<b>体质不一样</b>：有的镇饭馆工地多（灶多），有的在风口上（烟机强）。所以考核要双轨算——绝对值一半、改善幅度一半，先认体质，再比干劲。</div></div>
+    <div class="q"><div class="qt"><span>4</span>咱能管住什么？</div><div class="qd"><b>自家灶和站边几百米，管得住；隔壁飘来的和老天爷的锅盖，管不住。</b>力气要花在管得住的地方，天天喊管不住的，只会把人喊泄气。</div></div>
+    <div class="q wide"><div class="qt"><span>5</span>什么时候使劲？</div><div class="qd">锅盖天能<b>提前两天</b>报出来。那两天是全年最要紧的日子：提前把灶压下去，比天天紧绷着管用得多；大风天该歇就歇，别瞎忙。<b>使劲，要使在刀刃上。</b></div></div>
+  </div>
+
+  <h2>动作清单<span class="hint">给乡镇干部：每天要动的就这些，不多加码</span></h2>
+  <div class="acts">
+    <div class="act a1"><div class="at">平时 · 轻管</div><ul><li>站周边路面日常保洁</li><li>工地围挡、裸土覆盖到位</li><li>饭馆油烟净化器开起来、用起来</li><li>原则：每天不超过 3 件事，贵在天天在</li></ul></div>
+    <div class="act a2"><div class="at">预报锅盖天 · 升档（提前 48 小时）</div><ul><li>洒水降尘加密（给路面，不是给站点）</li><li>土方作业暂停</li><li>散煤、露天焚烧巡查加密</li><li>原则：预报一出就动，不等数涨起来</li></ul></div>
+    <div class="act a3"><div class="at">县里启动应急 · 满档</div><ul><li>按县里统一调度执行</li><li>不自行加码，也不打折</li><li>联动期间服从市级、县级统一安排</li><li>原则：全县一盘棋，不单镇逞能</li></ul></div>
+  </div>
+
+  <h2>三句实话<span class="hint">把这三句说透，基层才信你</span></h2>
+  <div class="truth">
+    <div class="tt">算账的规矩</div>
+    <ol>
+      <li>老天爷的功劳和过错，先摘出去，再算人的账。</li>
+      <li>保住临界的那一天，靠的不是全年苦干，是坏天气来之前那两天。</li>
+      <li>干没干出效果，不跟去年比，跟隔壁镇同一天比。</li>
+    </ol>
+  </div>
+
+  <div class="redline"><b>一条红线：</b>给路面洒水降尘，是正经管控；围着站点洒、拿雾炮对着采样口吹，是<b>干扰采样</b>——轻的是考核作弊，重的是违法。两者只差一层窗户纸，别捅破。</div>
+
+  <div class="foot">通用版 · 各地可按本地考核细则调整动作清单与分档标准 · 配合每周《看天管控》对策使用</div>
+
+</div>
+</body>
+</html>
