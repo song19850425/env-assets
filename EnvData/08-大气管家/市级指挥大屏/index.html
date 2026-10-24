@@ -84,7 +84,7 @@ th{color:var(--dim);font-weight:500}
 <div id="stamp">空气质量时点 <span id="aqTime">2026-10-24 07:00</span>（点位平均）｜<span id="syncState">正在同步最新日报…</span></div>
 </div>
 <div class="hud">
-<div class="b"><div class="k">全市实时 AQI</div><div class="v"><span id="hAqi">96</span> <span style="font-size:13px" class="lv-良" id="hLv">良</span></div></div>
+<div class="b"><div class="k">全市实时 AQI（中国标准）</div><div class="v"><span id="hAqi">96</span> <span style="font-size:13px" class="lv-良" id="hLv">良</span></div></div>
 <div class="b"><div class="k">PM2.5 均值</div><div class="v"><span id="hPm25">72</span><span style="font-size:12px;color:var(--dim)"> μg/m³</span></div></div>
 <div class="b"><div class="k" id="hDate">----年--月--日</div><div class="v clock" id="clock">--:--:--</div></div>
 </div>
@@ -95,7 +95,7 @@ th{color:var(--dim);font-weight:500}
 <div class="panel">
 <h3>📊 全市概览 <small>实时小时值 · 点位平均</small></h3>
 <div class="ov">
-<div class="cell"><div class="k">城市 AQI</div><div class="v"><span id="kAqi">96</span> <span class="u lv-良" id="kLv">良</span></div></div>
+<div class="cell"><div class="k">城市 AQI（中国标准）</div><div class="v"><span id="kAqi">96</span> <span class="u lv-良" id="kLv">良</span></div></div>
 <div class="cell"><div class="k">首要污染物</div><div class="v" id="kPri" style="font-size:17px;padding-top:3px">PM2.5</div></div>
 <div class="cell"><div class="k">PM2.5 / PM10</div><div class="v"><span id="kPm25">72</span><span class="u"> / </span><span id="kPm10">103</span></div></div>
 <div class="cell"><div class="k">最高点位</div><div class="v" style="font-size:16px;padding-top:3px"><span id="ovTop">行政服务中心</span> <span style="color:var(--am)" id="ovTopV">121</span></div></div>
@@ -206,7 +206,7 @@ th{color:var(--dim);font-weight:500}
 </div>
 
 <div class="note">
-口径与红线：①空气质量为监测总站平台实时小时值（点位平均，HJ 663-2013），非日均、未经审核，对外结论以审核数据为准；日报同步失败时显示内置快照并标注时点。②地图分档为气象条件分档（攒不攒），不是浓度预测。③任务榜由规则自动生成，状态为"待确认"，经晨会人工确认后才生效；升档拍板永远人工。④县界为公开行政区划数据，界线以官方发布为准。
+口径与红线：①空气质量为监测总站平台实时小时值（点位平均，HJ 663-2013），非日均、未经审核，对外结论以审核数据为准；日报同步失败时显示内置快照并标注时点。②地图分档为气象条件分档（攒不攒），不是浓度预测。③任务榜由规则自动生成，状态为"待确认"，经晨会人工确认后才生效；升档拍板永远人工。④县界为公开行政区划数据，界线以官方发布为准；⑤国外平台（如 IQAir）显示的是美国 AQI，与本屏的中国 AQI 不是同一把尺——同一浓度下美标数字更高，不要直接对比。
 </div>
 </div>
 
