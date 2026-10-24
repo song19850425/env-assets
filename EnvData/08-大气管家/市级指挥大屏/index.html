@@ -81,11 +81,11 @@ th{color:var(--dim);font-weight:500}
 <div>
 <h1>新乡市大气环境指挥调度中心</h1>
 <div class="en">XINXIANG AIR QUALITY COMMAND CENTER · 全市 12 县区联网调度 · 秋冬攻坚战役期</div>
-<div id="stamp">空气质量时点 <span id="aqTime">2026-10-23 07:00</span>（点位平均）｜<span id="syncState">正在同步最新日报…</span></div>
+<div id="stamp">空气质量时点 <span id="aqTime">2026-10-24 07:00</span>（点位平均）｜<span id="syncState">正在同步最新日报…</span></div>
 </div>
 <div class="hud">
-<div class="b"><div class="k">全市实时 AQI</div><div class="v"><span id="hAqi">57</span> <span style="font-size:13px" class="lv-良" id="hLv">良</span></div></div>
-<div class="b"><div class="k">PM2.5 均值</div><div class="v"><span id="hPm25">37</span><span style="font-size:12px;color:var(--dim)"> μg/m³</span></div></div>
+<div class="b"><div class="k">全市实时 AQI</div><div class="v"><span id="hAqi">96</span> <span style="font-size:13px" class="lv-良" id="hLv">良</span></div></div>
+<div class="b"><div class="k">PM2.5 均值</div><div class="v"><span id="hPm25">72</span><span style="font-size:12px;color:var(--dim)"> μg/m³</span></div></div>
 <div class="b"><div class="k" id="hDate">----年--月--日</div><div class="v clock" id="clock">--:--:--</div></div>
 </div>
 </header>
@@ -95,11 +95,11 @@ th{color:var(--dim);font-weight:500}
 <div class="panel">
 <h3>📊 全市概览 <small>实时小时值 · 点位平均</small></h3>
 <div class="ov">
-<div class="cell"><div class="k">城市 AQI</div><div class="v"><span id="kAqi">57</span> <span class="u lv-良" id="kLv">良</span></div></div>
-<div class="cell"><div class="k">首要污染物</div><div class="v" id="kPri" style="font-size:17px;padding-top:3px">NO₂</div></div>
-<div class="cell"><div class="k">PM2.5 / PM10</div><div class="v"><span id="kPm25">37</span><span class="u"> / </span><span id="kPm10">63</span></div></div>
-<div class="cell"><div class="k">最高点位</div><div class="v" style="font-size:16px;padding-top:3px">环保西院 <span style="color:var(--am)">70</span></div></div>
-<div class="cell"><div class="k">达标点位</div><div class="v">7<span class="u"> / 7</span></div></div>
+<div class="cell"><div class="k">城市 AQI</div><div class="v"><span id="kAqi">96</span> <span class="u lv-良" id="kLv">良</span></div></div>
+<div class="cell"><div class="k">首要污染物</div><div class="v" id="kPri" style="font-size:17px;padding-top:3px">PM2.5</div></div>
+<div class="cell"><div class="k">PM2.5 / PM10</div><div class="v"><span id="kPm25">72</span><span class="u"> / </span><span id="kPm10">103</span></div></div>
+<div class="cell"><div class="k">最高点位</div><div class="v" style="font-size:16px;padding-top:3px"><span id="ovTop">行政服务中心</span> <span style="color:var(--am)" id="ovTopV">121</span></div></div>
+<div class="cell"><div class="k">达标点位（AQI≤100）</div><div class="v"><span id="ovOk">0</span><span class="u"> / 7</span></div></div>
 <div class="cell"><div class="k">今晚满档县区</div><div class="v" id="ovRed" style="color:var(--rd)">计算中</div></div>
 </div>
 </div>
@@ -115,16 +115,18 @@ th{color:var(--dim);font-weight:500}
 </div>
 
 <div class="panel">
-<h3>📍 国控点位排行 <small>快照 · 坐标核准后上图</small></h3>
+<h3>📍 国控点位排行 <small>随日报自动同步 · 坐标核准后上图</small></h3>
 <table>
 <tr><th>点位</th><th>AQI</th><th>首要</th><th>PM2.5</th><th>PM10</th></tr>
-<tr><td>环保西院</td><td>70</td><td>PM10</td><td>31</td><td>77</td></tr>
-<tr><td>行政服务中心</td><td>68</td><td>PM2.5</td><td>44</td><td>65</td></tr>
-<tr><td>建设东路46号</td><td>66</td><td>PM10</td><td>37</td><td>72</td></tr>
-<tr><td>环保东院</td><td>64</td><td>PM2.5</td><td>42</td><td>59</td></tr>
-<tr><td>市委党校</td><td>56</td><td>PM2.5</td><td>38</td><td>55</td></tr>
-<tr><td>市政府</td><td>56</td><td>PM10</td><td>34</td><td>58</td></tr>
-<tr><td>开发区</td><td>53</td><td>PM10</td><td>33</td><td>53</td></tr>
+<tbody id="stBody">
+<tr><td>行政服务中心</td><td>121</td><td>PM2.5</td><td>83</td><td>110</td></tr>
+<tr><td>市政府</td><td>112</td><td>PM2.5</td><td>73</td><td>102</td></tr>
+<tr><td>市委党校</td><td>111</td><td>PM2.5</td><td>72</td><td>99</td></tr>
+<tr><td>环保东院</td><td>110</td><td>PM2.5</td><td>70</td><td>83</td></tr>
+<tr><td>环保西院</td><td>109</td><td>PM2.5</td><td>69</td><td>107</td></tr>
+<tr><td>建设东路46号</td><td>103</td><td>PM2.5</td><td>63</td><td>118</td></tr>
+<tr><td>开发区</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
 </table>
 <div style="color:var(--dim);font-size:11.5px;margin-top:6px">移动源排放清单：待接入交管保有量数据后上线，本屏不估算充数。</div>
 </div>
@@ -171,7 +173,7 @@ th{color:var(--dim);font-weight:500}
 <div class="panel">
 <h3>📈 全市日 AQI 趋势 <small>近 14 天 · 日评价口径</small></h3>
 <div class="bars" id="bars14"></div>
-<div style="color:var(--dim);font-size:12px;margin-top:19px">10 月中旬臭氧季尾声与颗粒物季开局完成交接，其间 4 个轻度污染日。</div>
+<div style="color:var(--dim);font-size:12px;margin-top:19px" id="trendCap">近 14 天中轻度污染（AQI&gt;100）共 4 天，其余为优/良。10 月中旬臭氧季尾声与颗粒物季开局完成交接。</div>
 </div>
 
 <div class="panel">
@@ -224,11 +226,12 @@ const COUNTIES=[
  {n:"长垣市",lat:35.20,lon:114.65,g:"C 平原沿黄组",act:"产业源与扬尘双盯，传输时段保良"},
  {n:"原阳县",lat:34.90,lon:113.97,g:"C 平原沿黄组",act:"沿黄扬尘与南风传输通道预判"}
 ];
-const D14=[["10-09",128],["10-10",122],["10-11",113],["10-12",107],["10-13",80],["10-14",97],["10-15",88],["10-16",103],["10-17",40],["10-18",40],["10-19",49],["10-20",64],["10-21",40],["10-22",52]];
+let D14=[["10-10",128],["10-11",122],["10-12",107],["10-13",80],["10-14",97],["10-15",88],["10-16",103],["10-17",40],["10-18",40],["10-19",49],["10-20",64],["10-21",40],["10-22",52],["10-23",66]];
 function el(id){return document.getElementById(id)}
 function tick(){const d=new Date();el("clock").textContent=d.toLocaleTimeString("zh-CN",{hour12:false});el("hDate").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日 星期"+"日一二三四五六"[d.getDay()];}
 setInterval(tick,1000);tick();
-(function(){const max=130;el("bars14").innerHTML=D14.map(function(x){return '<div class="bar'+(x[1]>100?" hot":"")+'" style="height:'+Math.max(6,Math.round(x[1]/max*100))+'%"><span>'+x[1]+'</span><em>'+x[0]+'</em></div>'}).join("");})();
+function renderBars(){const max=130;el("bars14").innerHTML=D14.map(function(x){return '<div class="bar'+(x[1]>100?" hot":"")+'" style="height:'+Math.max(6,Math.round(x[1]/max*100))+'%"><span>'+x[1]+'</span><em>'+x[0]+'</em></div>'}).join("");}
+renderBars();
 function stripTags(h){const d=document.createElement("div");d.innerHTML=h;return (d.textContent||"").replace(/\s+/g," ");}
 function pick(t,re){const m=t.match(re);return m?m[1]:null;}
 fetch("../豫北每日一页纸/cities/新乡/latest.html").then(function(r){return r.text();}).then(function(h){
@@ -239,8 +242,50 @@ fetch("../豫北每日一页纸/cities/新乡/latest.html").then(function(r){ret
  const pri=pick(t,/首要污染物（IAQI最大）\s*(\S+)/); if(pri){el("kPri").textContent=pri;ok++;}
  const p25=t.match(/PM2\.5\s+(\d+)\s*μg\/m³\s+(\d+)/); if(p25){el("kPm25").textContent=p25[1];el("hPm25").textContent=p25[1];ok++;}
  const p10=t.match(/PM10\s+(\d+)\s*μg\/m³\s+(\d+)/); if(p10){el("kPm10").textContent=p10[1];ok++;}
- el("syncState").textContent= ok>=4 ? "已同步最新日报" : "日报解析不完整，显示内置快照";
-}).catch(function(){el("syncState").textContent="日报同步失败，显示内置快照（2026-10-23 08:15 生成）";});
+ /* 整表同步：点位榜 + 近14天趋势（按表头识别日报中的表格） */
+ let tblOk=0;
+ try{
+   const doc=new DOMParser().parseFromString(h,"text/html");
+   doc.querySelectorAll("table").forEach(function(tb){
+     const head=tb.querySelector("tr");
+     if(!head||!head.cells||!head.cells[0]) return;
+     const h0=head.cells[0].textContent||"";
+     if(h0.indexOf("点位")>=0){
+       const rowsOut=[]; let top=null, okN=0, totN=0;
+       tb.querySelectorAll("tr").forEach(function(tr,i){
+         if(i===0) return;
+         const c=tr.cells; if(!c||c.length<5) return;
+         const nm=c[0].textContent.trim(), aq=c[1].textContent.trim();
+         let pri=c[2].textContent.trim();
+         if(pri.indexOf("PM2.5")>=0)pri="PM2.5"; else if(pri.indexOf("PM10")>=0)pri="PM10"; else if(pri.indexOf("臭氧")>=0||pri.indexOf("O3")>=0)pri="O₃"; else if(pri==="NA"||pri==="")pri="—";
+         rowsOut.push("<tr><td>"+nm+"</td><td>"+aq+"</td><td>"+pri+"</td><td>"+c[3].textContent.trim()+"</td><td>"+c[4].textContent.trim()+"</td></tr>");
+         const v=parseInt(aq,10); totN++;
+         if(!isNaN(v)){ if(v<=100)okN++; if(!top||v>top.v)top={n:nm,v:v}; }
+       });
+       if(rowsOut.length>=3){ el("stBody").innerHTML=rowsOut.join(""); tblOk++;
+         if(top){ el("ovTop").textContent=top.n; el("ovTopV").textContent=top.v; window.__aqTop=top; }
+         el("ovOk").textContent=okN; window.__aqOk={ok:okN,total:totN};
+         if(window.__tiersDone&&typeof renderAlerts==="function") renderAlerts();
+       }
+     }
+     if(h0.indexOf("日期")>=0){
+       const arr=[];
+       tb.querySelectorAll("tr").forEach(function(tr,i){
+         if(i===0) return;
+         const c=tr.cells; if(!c||c.length<2) return;
+         const v=parseInt(c[1].textContent,10);
+         if(!isNaN(v)) arr.push([c[0].textContent.trim(), v]);
+       });
+       if(arr.length>=7){ arr.reverse(); D14=arr; renderBars(); tblOk++;
+         const hot=arr.filter(function(x){return x[1]>100;}).length;
+         el("trendCap").textContent="近 14 天中轻度污染（AQI>100）共 "+hot+" 天，其余为优/良。10 月中旬臭氧季尾声与颗粒物季开局完成交接。";
+       }
+     }
+   });
+ }catch(e){ /* 表格同步失败不影响 KPI 同步 */ }
+ el("syncState").textContent= ok>=4 ? (tblOk>=2 ? "已同步最新日报（含站点榜与 14 天趋势）" : "已同步最新日报") : "日报解析不完整，显示内置快照";
+
+}).catch(function(){el("syncState").textContent="日报同步失败，显示内置快照（2026-10-24 08:15 生成）";});
 function solarAlt(lat,lon,date){
  const rad=Math.PI/180;
  const start=Date.UTC(date.getFullYear(),0,0); const doy=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-start)/864e5);
@@ -314,6 +359,19 @@ function selectCounty(name){
    return '<div class="hour"><div class="hb"><i style="height:'+Math.min(100,Math.round(h.w/6*100))+'%;'+(hot?"background:#ef4444":"")+'"></i></div><div class="st" style="color:'+(hot?"#fca5a5":"#8aa0c8")+'">'+h.cl+'</div>'+h.hh+':00</div>';
  }).join("");
 }
+window.__aqTop={n:"行政服务中心",v:121}; window.__aqOk={ok:0,total:7};
+function renderAlerts(){
+ const rows=window.__tierRows; if(!rows) return;
+ const reds=rows.filter(function(r){return r.tier==="满档";}), ambers=rows.filter(function(r){return r.tier==="升档";});
+ const top=window.__aqTop, okd=window.__aqOk;
+ const aqLine= top&&top.v>100
+   ? '<div class="alert">🚨 空气质量侧：最高点位 '+top.n+' AQI '+top.v+'（轻度污染），达标点位 '+okd.ok+'/'+okd.total+'，颗粒物过程进行中。</div>'
+   : '<div class="alert green">空气质量侧：当前无超标点位（最高点位 '+(top?top.n+" "+top.v:"—")+'）。</div>';
+ el("alerts").innerHTML= aqLine +
+   (reds.length? '<div class="alert">🚨 气象静稳告警：今晚 '+reds.length+' 个县区满档（'+reds.slice(0,4).map(function(r){return r.c.n;}).join("、")+(reds.length>4?" 等":"")+'），夜巡前置，晨会确认升档。</div>':"")+
+   (ambers.length? '<div class="alert amber">⚠ 升档关注：'+ambers.map(function(r){return r.c.n;}).join("、")+'，盯临界天保良。</div>':"")+
+   (!reds.length&&!ambers.length? '<div class="alert green">今晚各县区均轻管，执行排放平移窗口。</div>':"");
+}
 function compute(){
  const lats=COUNTIES.map(function(c){return c.lat;}).join(","), lons=COUNTIES.map(function(c){return c.lon;}).join(",");
  const url="https://api.open-meteo.com/v1/forecast?latitude="+lats+"&longitude="+lons+"&hourly=wind_speed_10m,cloud_cover&wind_speed_unit=ms&timezone=Asia%2FShanghai&forecast_days=3";
@@ -337,11 +395,7 @@ function compute(){
    rows.sort(function(a,b){return b.low-a.low;});
    const reds=rows.filter(function(r){return r.tier==="满档";}), ambers=rows.filter(function(r){return r.tier==="升档";});
    el("ovRed").textContent=reds.length+" 个";
-   el("alerts").innerHTML=
-     '<div class="alert green">空气质量侧：当前无超标点位（AQI 最高点位 70，快照口径）。</div>'+
-     (reds.length? '<div class="alert">🚨 气象静稳告警：今晚 '+reds.length+' 个县区满档（'+reds.slice(0,4).map(function(r){return r.c.n;}).join("、")+(reds.length>4?" 等":"")+'），夜巡前置，晨会确认升档。</div>':"")+
-     (ambers.length? '<div class="alert amber">⚠ 升档关注：'+ambers.map(function(r){return r.c.n;}).join("、")+'，盯临界天保良。</div>':"")+
-     (!reds.length&&!ambers.length? '<div class="alert green">今晚各县区均轻管，执行排放平移窗口。</div>':"");
+   window.__tierRows=rows; window.__tiersDone=true; renderAlerts();
    el("rankList").innerHTML=rows.slice(0,8).map(function(r,i){
      return '<div class="rank" data-n="'+r.c.n+'"><span class="no">'+(i+1)+'</span><span style="width:64px">'+r.c.n+'</span><span class="bar"><i style="width:'+(r.low*10)+'%"></i></span><span>'+r.low+'h · '+r.tier+'</span></div>';
    }).join("");
